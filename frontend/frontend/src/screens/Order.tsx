@@ -155,13 +155,13 @@ const Order = () => {
                 </div>
 
                 <div className="info-container">
-                <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '0px', display: 'flex', flexDirection:'column', alignItems: 'center'}}>
+                <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '0px', display: 'flex', flexDirection:'column', }}>
                         <AccordionSummary
                         expandIcon={<ArrowDownwardIcon style={{color: 'rgb(76, 121, 212)'}}/>}
                         aria-controls="panel1-content"
                         id="panel1-header"
                         >
-                        <Typography style={{ gap: '0.5rem', display: 'flex', color: 'rgb(49, 97, 192)'}}>
+                        <Typography style={{display: 'flex', color: 'rgb(49, 97, 192)', alignItems: 'center', gap: '1rem'}}>
                             <IoWarningOutline className="warning-icon"/> 
                             <p>Geben Sie bitte die Schreibwiesen von Namen,die in Dokumenten anwesend sind (falls vorhanden)</p>
                         </Typography>
@@ -219,7 +219,8 @@ const Order = () => {
                         multiple 
                     />
 
-                    <div>
+                    <div className="files-container">
+
                         {uploadedFiles.length > 0 && (
                             <div className="files-container">
                                 {uploadedFiles.map((file, index) => (
@@ -231,11 +232,13 @@ const Order = () => {
                                 ))}
                             </div>
                         )}
+                        
                     </div>
+                    <button className="send-btn">ABSENDEN<IoSendSharp/></button>
 
-                    <div className="order-contacts-content" style={{marginTop: '0rem'}}>
-                        <button className="send-btn">ABSENDEN<IoSendSharp/></button>
-                    </div>
+                  
+
+                    
 
                 </div>
 

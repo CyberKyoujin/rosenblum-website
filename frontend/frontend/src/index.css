@@ -1192,6 +1192,7 @@ html, body {
 
 .files-container{
   display: flex;
+  flex-direction: column;
   gap: 2rem;
 }
 
@@ -1279,4 +1280,7 @@ html, body {
   .send-icon{
     display: none;
   }
+  .pass-container img{
+    width: 300px;
+ }
 }
