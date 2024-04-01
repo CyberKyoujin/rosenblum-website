@@ -19,6 +19,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Typography from '@mui/material/Typography';
 import ukrPass from '../assets/ukr_pass.jpg'
 import dePass from '../assets/pass_de.jpg'
+import orderStore from "../zustand/orderStore";
 
 
 const Order = () => {
@@ -37,7 +38,7 @@ const Order = () => {
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    console.log(uploadedFiles);
+    const { createOrder } = orderStore.getState();
 
     const handleFiles = (newFiles: File[]) => {
         setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
@@ -91,7 +92,7 @@ const Order = () => {
         }
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData();
         uploadedFiles.forEach(file => {
@@ -99,13 +100,15 @@ const Order = () => {
         })
         formData.append('name', name);
         formData.append('email', email);
-        formData.append('phoneNumber', number);
+        formData.append('phone_number', number);
         formData.append('city', city);
         formData.append('street', street);
-        formData.append('plz', plz);
+        formData.append('zip', plz);
+        formData.append('message', message);
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
+        await createOrder(formData);
     }
 
     useEffect(() => {
