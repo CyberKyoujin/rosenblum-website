@@ -11,8 +11,6 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 from base.models import CustomUser
 from django.conf import settings
-from rest_framework_simplejwt.views import TokenRefreshView
-
 
 class UserRegisterView(APIView):
     def post(self, request):

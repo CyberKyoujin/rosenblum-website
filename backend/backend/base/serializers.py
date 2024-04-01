@@ -2,9 +2,7 @@ from rest_framework import serializers
 from .models import CustomUser,Order,File
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.tokens import AccessToken
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     
@@ -24,24 +22,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.profile_img.url)
         else:
             return obj.profile_img.url if obj.profile_img else None
-        
-class CustomTokenRefreshSerializer(TokenRefreshSerializer):
-    def validate(self, attrs):
-        data = super().validate(attrs)
-
-        refresh = RefreshToken(attrs['refresh'])
-        user = get_user_model().objects.get(id=refresh['user_id'])
-
-        access = AccessToken.for_user(user)
-
-        access['email'] = user.email
-        access['first_name'] = user.first_name
-        access['last_name'] = user.last_name
-        access['profile_img_url'] = user.profile_img_url  
-
-        data['access'] = str(access)
-
-        return data
     
     
 class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
