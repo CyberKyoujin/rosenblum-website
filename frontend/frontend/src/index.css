@@ -1115,7 +1115,7 @@ html, body {
 .order-container{
   max-width: 1200px;
   margin: auto;
-  margin-top: 2rem;
+  margin-top: 0rem;
   padding: 1.5rem;
 }
 
@@ -1126,7 +1126,7 @@ html, body {
 }
 
 .send-icon{
-  width: 50px;
+  width: 150px;
 }
 
 .order-title-text{

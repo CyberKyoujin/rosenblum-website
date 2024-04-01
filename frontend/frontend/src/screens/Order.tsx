@@ -21,16 +21,11 @@ import ukrPass from '../assets/ukr_pass.jpg'
 import dePass from '../assets/pass_de.jpg'
 
 
-interface FileDetail {
-    name: string;
-    size: number;
-}
-
 const Order = () => {
 
     const { user } = useAuthStore.getState();
-    const [name, setName] = useState(user?.first_name + ' ' + user?.last_name)
-    const [email, setEmail] = useState(user?.email);
+    const [name, setName] = useState(user?.first_name + ' ' + user?.last_name || '')
+    const [email, setEmail] = useState(user?.email || '');
     const [number, setNumber] = useState('')
     const [showNotification, setShowNotification] = useState<boolean>(true);
     const [city, setCity] = useState('')
@@ -39,57 +34,53 @@ const Order = () => {
     const [message, setMessage] = useState('')
 
     const [dragging, setDragging] = useState(false);
-    const [uploadedFiles, setUploadedFiles] = useState<FileDetail[]>([]);
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     console.log(uploadedFiles);
 
-    const handleFiles = (files: File[]) => {
-        const newFiles: FileDetail[] = files.map(file => ({
-            name: file.name,
-            size: file.size
-        }));
+    const handleFiles = (newFiles: File[]) => {
         setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
-    };
+      };
     
-    const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+      const handleDrop = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         setDragging(false);
         if (e.dataTransfer.items) {
-            const files = Array.from(e.dataTransfer.items)
+          const newFiles = Array.from(e.dataTransfer.items)
             .filter(item => item.kind === 'file')
             .map(item => item.getAsFile())
-            .filter((file): file is File => file !== null); 
-            handleFiles(files);
-            e.dataTransfer.clearData();
+            .filter((file): file is File => file !== null);
+          handleFiles(newFiles);
+          e.dataTransfer.clearData();
         }
-    };
+      };
     
-    const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+      const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         if (!dragging) {
           setDragging(true);
         }
       };
     
-    const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+      const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
         setDragging(false);
-    };
+      };
     
-    const handleClick = () => {
+      const handleClick = () => {
         fileInputRef.current?.click();
-    };
+      };
     
-    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
           const filesArray: File[] = Array.from(e.target.files);
           handleFiles(filesArray);
         }
-    };
-
-    const removeFile = (index: number) => {
+      };
+    
+      const removeFile = (index: number) => {
         setUploadedFiles(currentFiles => currentFiles.filter((_, fileIndex) => fileIndex !== index));
-    };
+      };
 
     const validatePhoneNumber = (number: string) => {
         try {
@@ -97,6 +88,23 @@ const Order = () => {
             return !phoneNumber || !phoneNumber.isValid();
         } catch(error) {
             return true;
+        }
+    }
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData();
+        uploadedFiles.forEach(file => {
+            formData.append('files', file);
+        })
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('phoneNumber', number);
+        formData.append('city', city);
+        formData.append('street', street);
+        formData.append('plz', plz);
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
         }
     }
 
@@ -108,15 +116,15 @@ const Order = () => {
     return(
         <>
         <div>
-            <div className="order-container">
+            <form className="order-container" onSubmit={handleSubmit}>
 
                 <div className="order-title">
-                    <div>
-                        <img src={sendIcon} alt="" className="send-icon"/>
-                    </div>
                     <div className="order-title-text">
                         <h1>Unterlagen</h1>
                         <h1 className="header-span">absenden</h1>
+                    </div>
+                    <div>
+                        <img src={sendIcon} alt="" className="send-icon"/>
                     </div>
                 </div>
 
@@ -234,15 +242,11 @@ const Order = () => {
                         )}
                         
                     </div>
-                    <button className="send-btn">ABSENDEN<IoSendSharp/></button>
-
-                  
-
-                    
+                    <button type="submit" className="send-btn">ABSENDEN<IoSendSharp/></button>
 
                 </div>
 
-            </div>
+            </form>
         </div>
         <Footer/>
         </>
