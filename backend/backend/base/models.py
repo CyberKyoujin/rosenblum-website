@@ -53,14 +53,22 @@ class Order(models.Model):
     street = models.CharField(max_length = 264)
     zip = models.CharField(max_length = 10)
     message = models.CharField(max_length = 1000)
+    status = models.CharField(max_length=40, default='review')
 
     def __str__(self):
         return f'Order number {self.pk}'
 
 
 class File(models.Model):
-    order = models.ForeignKey(Order,models.CASCADE)
+    order = models.ForeignKey(Order,models.CASCADE, related_name='files')
     file = models.FileField(upload_to='files/')
+    file_name = models.CharField(max_length=255, blank=True)  
+    file_size = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  
+
+    def save(self, *args, **kwargs):
+        self.file_name = self.file.name
+        self.file_size = self.file.size / (1024 * 1024)  
+        super(File, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'File {self.pk} to {self.order}'

@@ -20,6 +20,9 @@ import Typography from '@mui/material/Typography';
 import ukrPass from '../assets/ukr_pass.jpg'
 import dePass from '../assets/pass_de.jpg'
 import orderStore from "../zustand/orderStore";
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
+import { useNavigate } from "react-router-dom";
 
 
 const Order = () => {
@@ -33,6 +36,9 @@ const Order = () => {
     const [street, setStreet] = useState('')
     const [plz, setPlz] = useState('')
     const [message, setMessage] = useState('')
+    const [buttonDisabled, setButtonDisabled] = useState(false);
+
+    const navigate = useNavigate();
 
     const [dragging, setDragging] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -94,10 +100,11 @@ const Order = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setButtonDisabled(true);
         const formData = new FormData();
         uploadedFiles.forEach(file => {
-            formData.append('files', file);
-        })
+            formData.append('files', file); 
+        });
         formData.append('name', name);
         formData.append('email', email);
         formData.append('phone_number', number);
@@ -105,10 +112,10 @@ const Order = () => {
         formData.append('street', street);
         formData.append('zip', plz);
         formData.append('message', message);
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-        await createOrder(formData);
+       
+        createOrder(formData).then(() => {
+                navigate('/send-order');
+        })
     }
 
     useEffect(() => {
@@ -118,8 +125,18 @@ const Order = () => {
 
     return(
         <>
-        <div>
-            <form className="order-container" onSubmit={handleSubmit}>
+        <div style={{padding: '1rem'}}>
+
+            <div role="presentation" className="profile-navigation">
+                <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/">Home</Link>
+                <Typography color="text.primary">Auftrag</Typography>
+                </Breadcrumbs>
+            </div>
+
+            <form className="order-container" onSubmit={handleSubmit} style={{marginTop: '2rem'}}>
+
+                
 
                 <div className="order-title">
                     <div className="order-title-text">
@@ -228,9 +245,10 @@ const Order = () => {
                         onChange={handleFileInputChange}
                         style={{ display: 'none' }} 
                         multiple 
+                        accept=".jpg,.png,.jpeg,.pdf,.doc,.docx,.xlsx"
                     />
 
-                    <div className="files-container">
+                    <div>
 
                         {uploadedFiles.length > 0 && (
                             <div className="files-container">
@@ -245,7 +263,7 @@ const Order = () => {
                         )}
                         
                     </div>
-                    <button type="submit" className="send-btn">ABSENDEN<IoSendSharp/></button>
+                    <button type="submit" className="send-btn" disabled={buttonDisabled}>ABSENDEN<IoSendSharp/></button>
 
                 </div>
 

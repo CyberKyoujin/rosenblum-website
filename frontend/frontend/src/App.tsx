@@ -8,6 +8,9 @@ import Register from './screens/Register'
 import useAuthStore from './zustand/useAuthStore'
 import Profile from './screens/Profile'
 import Order from './screens/Order'
+import OrderDetails from './screens/OrderDetails'
+import OrderWait from './screens/OrderWait'
+import EditProfile from './screens/EditProfile'
 
 
 function App() {
@@ -26,7 +29,7 @@ function App() {
     return () => clearInterval(refreshTokenInterval);
   }, [authStore]);
 
-  console.log(authStore.user, authStore.authTokens)
+  console.log(authStore.user, authStore.userData)
 
   return (
     <main>
@@ -37,6 +40,9 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/order' element={<Order/>}/>
+        <Route path='/order/:orderId' element={<OrderDetails/>}/>
+        <Route path='/send-order' element={<OrderWait/>}/>
+        <Route path='/edit-profile' element={<EditProfile/>}/>
       </Routes>
     </main>
   )
