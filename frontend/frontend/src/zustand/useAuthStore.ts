@@ -1,16 +1,23 @@
 import axios from "axios";
 import { create } from 'zustand';
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-
 
 
 interface User {
     email: string | null;
     first_name: string | null;
     last_name: string | null;
-    profile_img_url: string | null;
+    profile_img_url: string;
 } 
+
+interface UserData {
+    date_joined: string | null;
+    phone_number: string | null;
+    city: string | null;
+    street: string | null;
+    zip: string | null;
+    image_url: string | null;
+}
 
 interface AuthTokens {
     access: string;
@@ -20,6 +27,7 @@ interface AuthTokens {
 interface AuthState {
     authTokens: AuthTokens | null;
     user: User | null;
+    userData: UserData | null;
     isAuthenticated: boolean;
     emailAlreadyExists: boolean;
     setTokens: (authTokens: AuthTokens | null) => void; 
@@ -29,6 +37,9 @@ interface AuthState {
     googleLogin: (accessToken: string) => Promise<void>;
     updateToken: () => void;
     logoutUser: () => void;
+    fetchUserData: () => Promise<void>;
+    setUserData: (data: UserData | null) => void;
+    updateUserProfile: (formData: FormData) => Promise<void>;
 }
 
 
@@ -38,6 +49,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
     user: localStorage.getItem('authTokens') ? jwtDecode<User>(JSON.parse(localStorage.getItem('authTokens') || '').access) : null,
     isAuthenticated: !!localStorage.getItem('authTokens'),
     emailAlreadyExists: false,
+    userData: null,
 
     setTokens: (authTokens: AuthTokens | null) => {
         if (authTokens){
@@ -115,9 +127,47 @@ const useAuthStore = create<AuthState>((set,get) =>({
     logoutUser: () => {
         set({authTokens: null, user: null, isAuthenticated: false});
         localStorage.removeItem('authTokens');
+    },
+
+    setUserData: (userData) => set({userData}),
+
+    fetchUserData: async() => {
+        const authTokens = get().authTokens || '';
+        if(authTokens){
+            try{
+                const response = await axios.get('http://127.0.0.1:8000/user/user-data/', {
+                    headers: {
+                        Authorization: `Bearer ${get().authTokens?.access}`
+                    }
+                })
+                if (response.status === 200){
+                    get().setUserData(response.data)
+                } else {
+                    get().logoutUser();
+                }
+            } catch(error) {
+                console.error(error);
+            }
+        }
+    },
+
+    updateUserProfile: async (formData: FormData) => {
+        const authTokens = get().authTokens || '';
+        if (authTokens){
+            try{
+                const response = await axios.put('http://127.0.0.1:8000/user/update/', formData, {
+                    headers: {
+                        'Authorization': `Bearer ${get().authTokens?.access}`
+                    }
+                })
+                if (response.status === 200){
+                    window.location.href = '/profile';
+                }
+            } catch (error){
+                console.error('Error updating profile:', error);
+            }
+        }
     }
-
-
 
 }))
     

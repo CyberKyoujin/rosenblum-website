@@ -98,9 +98,9 @@ const Home = () => {
                 <h1>{t('weAre')}</h1>
                 <h1 className="header-span">{t('reliable')}.</h1>
                 <div className="home-header-content">
-                    <p className="reliable-item"><img src={tick} alt="" style={{width: '35px'}}/>{t('certified')}</p>
+                    <p className="reliable-item-left"><img src={tick} alt="" style={{width: '35px'}}/>{t('certified')}</p>
                     <p className="reliable-item"><img src={tick} alt="" style={{width: '35px'}}/>{t('swornTranslators')}</p>
-                    <p className="reliable-item"><img src={tick} alt="" style={{width: '35px'}}/>{t('orderTime')}</p>
+                    <p className="reliable-item-left"><img src={tick} alt="" style={{width: '35px'}}/>{t('orderTime')}</p>
                     <p className="reliable-item"><img src={tick} alt="" style={{width: '35px'}}/>{t('fairPrices')}</p>
                 </div>
                 <button className="home-header-btn">{t('learnMore')}<FaInfo/></button>
@@ -146,7 +146,7 @@ const Home = () => {
         </div>
 
         <div className="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map" width="1200" height="500" style={{ border: 0 }} allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map" width="1200" height="500" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
         </div>
 
 
