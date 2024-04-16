@@ -107,7 +107,7 @@ const EditProfile = () => {
             </div>
           </div>
 
-          <button type="submit" className="confirm-btn" style={{ width: '100%' }}>Speichern</button>
+          <button type="submit" className="confirm-btn hover-btn" style={{ width: '100%' }}>Speichern</button>
         </form>
       </div>
     </div>

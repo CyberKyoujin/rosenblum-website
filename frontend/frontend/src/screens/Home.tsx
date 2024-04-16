@@ -13,6 +13,7 @@ import { MdLocalOffer } from "react-icons/md";
 import { FaInfo } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { HiPhone } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
@@ -22,6 +23,8 @@ const Home = () => {
   const [years, setYears] = useState<number>(0);
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
+
+  const navigate = useNavigate();
 
   const animateCounter = (from: number, to: number, duration: number, setFunction: React.Dispatch<React.SetStateAction<number>>): void => {
     const difference = to - from;
@@ -58,7 +61,7 @@ const Home = () => {
                     <p>{t('excellentTranslations')}</p>
                 </div>
                 <div className="btn-overlay"></div>
-                <button className="home-header-btn">{t('orderOffer')} <MdLocalOffer/></button>
+                <button className="home-header-btn hover-btn" onClick={() => navigate('/order')}>{t('orderOffer')}<MdLocalOffer/></button>
             </div>
         </div>
 
@@ -103,7 +106,7 @@ const Home = () => {
                     <p className="reliable-item-left"><img src={tick} alt="" style={{width: '35px'}}/>{t('orderTime')}</p>
                     <p className="reliable-item"><img src={tick} alt="" style={{width: '35px'}}/>{t('fairPrices')}</p>
                 </div>
-                <button className="home-header-btn">{t('learnMore')}<FaInfo/></button>
+                <button className="home-header-btn hover-btn" onClick={() => navigate('/about-us')}>{t('learnMore')}<FaInfo/></button>
             </div>
             <img src={smartphoneIcon} alt="" />
         </div>

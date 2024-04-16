@@ -263,7 +263,7 @@ const Order = () => {
                         )}
                         
                     </div>
-                    <button type="submit" className="send-btn" disabled={buttonDisabled}>ABSENDEN<IoSendSharp/></button>
+                    <button type="submit" className="send-btn hover-btn" disabled={buttonDisabled}>ABSENDEN<IoSendSharp/></button>
 
                 </div>
 
