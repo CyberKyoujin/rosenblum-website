@@ -2,14 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from base.serializers import CustomUserSerializer, UserTokenObtainPairSerializer, UserDataSerializer
+from base.serializers import CustomUserSerializer, UserTokenObtainPairSerializer, UserDataSerializer, MessageSerializer
 from social_django.utils import load_strategy, load_backend
 from social_core.backends.oauth import BaseOAuth2
 from rest_framework_simplejwt.tokens import RefreshToken
 from social_core.exceptions import AuthForbidden, AuthFailed
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from base.models import CustomUser
+from base.models import CustomUser, Message
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
@@ -78,3 +78,11 @@ class UserUpdateView(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+       
+class UserMesagesView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        messages = Message.objects.filter(receiver=request.user).order_by('timestamp')
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

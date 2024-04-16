@@ -143,8 +143,8 @@ html, body {
   margin-left: auto;
   position: absolute;
   font-size: 30px;
-  top: 0.85rem;
-  right: 1rem;
+  top: 0;
+  right: 0;
   cursor: pointer;
 }
 
@@ -160,6 +160,7 @@ html, body {
 .services-menu:hover{
   background-color: rgb(235, 235, 235);
 }
+
 .translate-icon{
   font-size: 100px;
   color: rgb(68 113 203);
@@ -232,6 +233,48 @@ html, body {
   border-radius: 50%;
 }
 
+.nav-message-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+}
+
+.messages-counter{
+  position: absolute;
+  background-color: rgb(253, 41, 41);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  top: 5px;
+  right: 2px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.messages-dropdown{
+  position: absolute;
+  padding: 2rem;
+  background-color: white;
+  top: 5rem;
+  border-radius: 5px;
+  right: 1rem;
+  border: 2px solid rgb(58, 96, 173);
+  display: block;
+  transform: translateY(-25%);
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
+}
+
+.show-messages-dropdown{
+  transform: translateY(10%);
+  opacity: 1;
+}
+
 @media (max-width: 1200px){
   .services-menu{
     display: block;
@@ -286,7 +329,7 @@ html, body {
   }
 }
 
-@media (max-width: 370px){
+@media (max-width: 460px){
   .language-container{
     display: none;
   }
@@ -527,12 +570,7 @@ html, body {
   
 }
 
-.home-header-btn:hover{
-  background-image: linear-gradient(to right, rgb(106, 144, 222) 0%, rgb(76, 121, 212) 50%, rgb(0, 70, 211) 100%);
-  background-size: 200% 200%; 
-  animation: moveGradient 3s ease infinite; 
-  border: none;
-}
+
 
 .home-counter-container{
   max-width: 1280px;
@@ -1240,10 +1278,6 @@ html, body {
   cursor: pointer;
 }
 
-.send-btn:hover{
-  background-color: rgb(53, 103, 202);
-}
-
 .info-container{
   margin-top: 2rem;
 }
@@ -1453,7 +1487,7 @@ html, body {
   }
 }
 
-@media (max-width: 450px){
+@media (max-width: 500px){
   .data-item{
     display: flex;
     flex-direction: column;
@@ -1554,9 +1588,10 @@ html, body {
   color: white;
   font-size: 18px;
   letter-spacing: 2px;
+  margin-top: 1rem;
 }
 
-.no-orders-btn:hover{
+.hover-btn:hover{
   background-color: rgb(53, 103, 202);
   cursor: pointer;
 }

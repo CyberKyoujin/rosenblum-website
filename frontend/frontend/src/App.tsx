@@ -11,7 +11,7 @@ import Order from './screens/Order'
 import OrderDetails from './screens/OrderDetails'
 import OrderWait from './screens/OrderWait'
 import EditProfile from './screens/EditProfile'
-
+import AboutUs from './screens/AboutUs'
 
 function App() {
 
@@ -43,6 +43,7 @@ function App() {
         <Route path='/order/:orderId' element={<OrderDetails/>}/>
         <Route path='/send-order' element={<OrderWait/>}/>
         <Route path='/edit-profile' element={<EditProfile/>}/>
+        <Route path='/about-us' element={<AboutUs/>}/>
       </Routes>
     </main>
   )

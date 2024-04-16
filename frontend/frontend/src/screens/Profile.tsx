@@ -62,7 +62,7 @@ const Profile = () => {
                         <p>Mitglied seit {userData?.date_joined?.slice(0,10)}</p>
                     </div>
       
-                    <button className="profile-btn" onClick={() => navigate('/edit-profile')}> <FaUserEdit style={{fontSize: '22px'}}/> <p>Profil bearbeiten</p></button>
+                    <button className="profile-btn hover-btn" onClick={() => navigate('/edit-profile')}> <FaUserEdit style={{fontSize: '22px'}}/> <p>Profil bearbeiten</p></button>
                 </div>
 
                 <Divider className='divider-vertical' orientation="vertical" sx={{height: '260px', width: '1px', background: 'rgb(76, 121, 212)', margin: 0}}/>
@@ -99,7 +99,7 @@ const Profile = () => {
                     <div className="no-orders-container">
                             <MdOutlineStickyNote2 style={{fontSize: '100px'}}/>
                             <h3>Sie haben noch keine Aufträge</h3>
-                            <button className="no-orders-btn" onClick={() => navigate('/order')}>ANGEBOT ANFORDERN</button>
+                            <button className="no-orders-btn hover-btn" onClick={() => navigate('/order')}>ANGEBOT ANFORDERN</button>
                     </div>
 
                 ) 

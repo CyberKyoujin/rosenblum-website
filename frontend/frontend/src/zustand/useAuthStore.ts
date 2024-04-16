@@ -24,10 +24,17 @@ interface AuthTokens {
     refresh: string;
 }
 
+interface Message {
+    message: string | null;
+    viewed: boolean;
+    timestamp: string | null;
+}
+
 interface AuthState {
     authTokens: AuthTokens | null;
     user: User | null;
     userData: UserData | null;
+    userMessages: Message[] | null;
     isAuthenticated: boolean;
     emailAlreadyExists: boolean;
     setTokens: (authTokens: AuthTokens | null) => void; 
@@ -39,6 +46,8 @@ interface AuthState {
     logoutUser: () => void;
     fetchUserData: () => Promise<void>;
     setUserData: (data: UserData | null) => void;
+    fetchUserMessages: () => Promise<void>;
+    setMessages: (messages: []) => void;
     updateUserProfile: (formData: FormData) => Promise<void>;
 }
 
@@ -50,6 +59,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
     isAuthenticated: !!localStorage.getItem('authTokens'),
     emailAlreadyExists: false,
     userData: null,
+    userMessages: null,
 
     setTokens: (authTokens: AuthTokens | null) => {
         if (authTokens){
@@ -165,6 +175,26 @@ const useAuthStore = create<AuthState>((set,get) =>({
                 }
             } catch (error){
                 console.error('Error updating profile:', error);
+            }
+        }
+    },
+
+    setMessages: (userMessages) => set({userMessages}),
+
+    fetchUserMessages: async () => {
+        const authTokens = get().authTokens || '';
+        if (authTokens){
+            try{
+                const response = await axios.get('http://127.0.0.1:8000/user/messages/', {
+                    headers: {
+                        'Authorization': `Bearer ${get().authTokens?.access}`
+                    }
+                })
+                if (response.status === 200){
+                    get().setMessages(response.data)
+                }
+            } catch(error: any) {
+                console.log('Error while fetching messages...' + error.message)
             }
         }
     }

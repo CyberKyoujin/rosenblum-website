@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Order,File
+from .models import CustomUser,Order,File, Message
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
@@ -90,3 +90,8 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = '__all__'
         
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = '__all__'

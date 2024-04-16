@@ -72,6 +72,16 @@ class File(models.Model):
 
     def __str__(self):
         return f'File {self.pk} to {self.order}'
+    
+class Message(models.Model):
+    sender = models.ForeignKey(CustomUser, related_name='sent_messages', on_delete=models.CASCADE, blank=True, null=True)
+    receiver = models.ForeignKey(CustomUser, related_name='received_messages', on_delete=models.CASCADE, blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    viewed = models.BooleanField(default=False)
+    
+    def __str__(self) -> str:
+        return self.receiver.first_name + ' ' + self.receiver.last_name + ' ' + self.message[0:15]
 
 
 
