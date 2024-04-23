@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
-
+from django.utils import timezone
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -79,6 +79,10 @@ class Message(models.Model):
     message = models.TextField(blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     viewed = models.BooleanField(default=False)
+    
+    def formatted_timestamp(self) -> str:
+        local_timestamp = timezone.localtime(self.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')
     
     def __str__(self) -> str:
         return self.receiver.first_name + ' ' + self.receiver.last_name + ' ' + self.message[0:15]

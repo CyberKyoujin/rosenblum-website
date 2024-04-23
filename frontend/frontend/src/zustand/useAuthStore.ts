@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 
 
 interface User {
+    id: string | null;
     email: string | null;
     first_name: string | null;
     last_name: string | null;
@@ -25,9 +26,13 @@ interface AuthTokens {
 }
 
 interface Message {
-    message: string | null;
+    id: string;
+    sender: string;
+    receiver: string;
+    message: string;
     viewed: boolean;
-    timestamp: string | null;
+    timestamp: string;
+    formatted_timestamp: string;
 }
 
 interface AuthState {
@@ -49,6 +54,8 @@ interface AuthState {
     fetchUserMessages: () => Promise<void>;
     setMessages: (messages: []) => void;
     updateUserProfile: (formData: FormData) => Promise<void>;
+    toggleMessages: () => Promise<void>;
+    sendMessage: (messageContent: string) => Promise<void>;
 }
 
 
@@ -195,6 +202,42 @@ const useAuthStore = create<AuthState>((set,get) =>({
                 }
             } catch(error: any) {
                 console.log('Error while fetching messages...' + error.message)
+            }
+        }
+    },
+
+    toggleMessages: async () => {
+        const authTokens = get().authTokens || '';
+        if (authTokens){
+            try{
+                const response = await axios.get('http://127.0.0.1:8000/user/toggle-messages', {
+                    headers: {
+                        'Authorization': `Bearer ${get().authTokens?.access}`
+                    }
+                })
+                if (response.status === 200){
+                    console.log('Successfully toggled messages!')
+                }
+            } catch(error){
+                console.error(error);
+            }
+        }
+    },
+
+    sendMessage: async(messageContent: string) => {
+        const authTokens = get().authTokens || '';
+        if (authTokens){
+            try{
+                const response = await axios.post('http://127.0.0.1:8000/user/send-message/', { message: messageContent }, {
+                    headers: {
+                        'Authorization': `Bearer ${get().authTokens?.access}`
+                    }
+                })
+                if (response.status === 200){
+                    console.log('Successfully sent a message!')
+                }
+            } catch (error){
+                console.error(error);
             }
         }
     }

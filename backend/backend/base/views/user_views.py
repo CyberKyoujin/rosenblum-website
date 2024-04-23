@@ -13,7 +13,7 @@ from base.models import CustomUser, Message
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
-
+from django.db.models import Q
 
 
 class UserRegisterView(APIView):
@@ -83,6 +83,25 @@ class UserUpdateView(APIView):
 class UserMesagesView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
-        messages = Message.objects.filter(receiver=request.user).order_by('timestamp')
+        messages = Message.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).order_by('-timestamp')
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class ToggleViewed(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        messages = Message.objects.filter(Q(sender=request.user) | Q(receiver=request.user))
+        messages.update(viewed=True)
+        return Response(status=status.HTTP_200_OK)
+    
+    
+class SendMessageView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        message = request.data.get('message')
+        receiver = CustomUser.objects.get(email="tester@gmail.com")
+        sender = request.user
+        print(message, receiver, sender)
+        Message.objects.create(sender=sender, receiver=receiver, message=message)
+        return Response(status=status.HTTP_200_OK)

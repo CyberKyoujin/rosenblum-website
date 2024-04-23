@@ -28,7 +28,7 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [profileUrl, setProfileUrl] = useState<string>('');
 
-  const profileImg = user?.profile_img_url;
+  const profileImg = user?.profile_img_url ? user.profile_img_url : userData?.image_url;
 
   const navigate = useNavigate();
 
@@ -90,11 +90,11 @@ const EditProfile = () => {
             <div className="edit-avatar-container" style={{display: user?.profile_img_url ? 'none' : 'block'}}>
 
                 <div className='image-container'>
-                    <img src={profileUrl || profileImg || undefined} alt="User Avatar"/>
+                    <img src={profileUrl || profileImg}/>
                 </div>
               
               <input type="file" id="file-input" style={{ display: 'none' }} onChange={handleFileChange} />
-              <label htmlFor="file-input" className="edit-avatar-btn">
+              <label htmlFor="file-input" className="edit-avatar-btn hover-btn">
                 <MdAddAPhoto style={{ fontSize: '25px', color: 'white', marginBottom: '2px' }} />
               </label>
             </div>

@@ -12,6 +12,8 @@ import OrderDetails from './screens/OrderDetails'
 import OrderWait from './screens/OrderWait'
 import EditProfile from './screens/EditProfile'
 import AboutUs from './screens/AboutUs'
+import Messages from './screens/Messages'
+
 
 function App() {
 
@@ -29,7 +31,6 @@ function App() {
     return () => clearInterval(refreshTokenInterval);
   }, [authStore]);
 
-  console.log(authStore.user, authStore.userData)
 
   return (
     <main>
@@ -44,6 +45,7 @@ function App() {
         <Route path='/send-order' element={<OrderWait/>}/>
         <Route path='/edit-profile' element={<EditProfile/>}/>
         <Route path='/about-us' element={<AboutUs/>}/>
+        <Route path='/messages' element={<Messages/>}/>
       </Routes>
     </main>
   )
