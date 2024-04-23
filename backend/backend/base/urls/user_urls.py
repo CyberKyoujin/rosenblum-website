@@ -1,5 +1,5 @@
 from django.urls import path
-from base.views.user_views import UserRegisterView, UserTokenObtainPairView, GoogleLogin, UserView, UserUpdateView, UserMesagesView
+from base.views.user_views import UserRegisterView, UserTokenObtainPairView, GoogleLogin, UserView, UserUpdateView, UserMesagesView, ToggleViewed, SendMessageView
 from rest_framework_simplejwt.views import TokenRefreshView 
 
 urlpatterns = [
@@ -10,4 +10,6 @@ urlpatterns = [
     path('login/google/', GoogleLogin.as_view(), name='google_login'),
     path('user-data/', UserView.as_view(), name='user_data'),
     path('messages/', UserMesagesView.as_view(), name='messages'),
+    path('toggle-messages/', ToggleViewed.as_view(), name='toggle-messages'),
+    path('send-message/', SendMessageView.as_view(), name='send-message'),
 ]

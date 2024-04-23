@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
-
+from django.utils import timezone
 
 class CustomUserSerializer(serializers.ModelSerializer):
     
@@ -57,6 +57,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
 
         access = AccessToken.for_user(user)
 
+        access['id'] = user.id
         access['email'] = user.email
         access['first_name'] = user.first_name
         access['last_name'] = user.last_name
@@ -70,6 +71,7 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
+        token['id'] = user.id
         token['email'] = user.email
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
@@ -92,6 +94,11 @@ class OrderSerializer(serializers.ModelSerializer):
         
 
 class MessageSerializer(serializers.ModelSerializer):
+    formatted_timestamp = serializers.SerializerMethodField()
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = '__all__' 
+        
+    def get_formatted_timestamp(self, obj):
+        local_timestamp = timezone.localtime(obj.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')

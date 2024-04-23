@@ -15,50 +15,69 @@ import MessagesDropdown from "./MessagesDropdown";
 import ServicesMenu from "./ServicesMenu";
 
 const Navbar: React.FC = () => {
-  const [servicesOpened, setServicesOpened] = useState<boolean>(false);
-  const [sliderOpened, setSliderOpened] = useState<boolean>(false);
-  const [messagesOpen, setMessagesOpen] = useState<boolean>(false);
-
+    
+  const [openedComponent, setOpenedComponent] = useState<string | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { fetchUserMessages, userMessages, isAuthenticated } = useAuthStore.getState();
 
   useEffect(() => {
-      fetchUserMessages();
+    fetchUserMessages();
   }, [fetchUserMessages]);
+
+  const messagesCount = userMessages?.filter(message => !message.viewed).length;
+
+  const handleOverlayClick = () => {
+    if (openedComponent) {
+      setOpenedComponent(null);
+    }
+  };
+
+  const toggleServices = () => {
+    setOpenedComponent(openedComponent === 'services' ? null : 'services');
+  };
+
+  const toggleMessages = () => {
+    setOpenedComponent(openedComponent === 'messages' ? null : 'messages');
+  };
+
+  const toggleSlider = () => {
+    setOpenedComponent(openedComponent === 'slider' ? null : 'slider');
+  };
+
 
   return (
       <div className='navbar'>
           <div className='nav-container'>
               <div className='nav-header'>
-                  <img src={logo} alt="" className='logo' onClick={() => navigate('/')}/>
-                  <img src={smallLogo} alt="" className="small-logo" onClick={() => navigate('/')}/>
+                  <img src={logo} alt="Logo" className='logo' onClick={() => navigate('/')}/>
+                  <img src={smallLogo} alt="Small Logo" className="small-logo" onClick={() => navigate('/')}/>
               </div>
 
+              <div className={openedComponent ? "overlay overlay-show" : "overlay"} onClick={handleOverlayClick}></div>
+
               <div className='nav-center'>
-                  <button className='services-btn' onClick={() => setServicesOpened(!servicesOpened)}>
-                      {t('services')} {servicesOpened ? <MdKeyboardArrowUp/> : <MdKeyboardArrowDown/>}
+                  <button className='services-btn' onClick={(e) => {e.stopPropagation(); toggleServices();}}>
+                      {t('services')} {openedComponent === 'services' ? <MdKeyboardArrowUp/> : <MdKeyboardArrowDown/>}
                   </button>
-                  <div className={servicesOpened ? "overlay overlay-show" : "overlay"} onClick={() => setServicesOpened(!servicesOpened)}></div>
-                  
-                  <AiOutlineMenu className="services-menu" onClick={() => setSliderOpened(!sliderOpened)}/>
-                  
-                  <ServicesMenu isOpened={servicesOpened} setOpened={setServicesOpened}/>
+
+                  <ServicesMenu isOpened={openedComponent === 'services'} setOpened={toggleServices}/>
+
+                  <AiOutlineMenu className="services-menu"  onClick={(event) => {event.stopPropagation(); toggleSlider();}}/>
                   
                   <p className="nav-link">{t('aboutUs')}</p>
                   <p className="nav-link">{t('contact')}</p>
                   <button className='order-btn' onClick={() => navigate('/order')}>{t('offer')}</button>
                   <p>|</p>
 
-                  <div className="nav-message-container" style={{display: !isAuthenticated ? 'none' : 'block'}} onClick={() => setMessagesOpen(!messagesOpen)}>
-                      <BiSolidMessageDetail style={{fontSize: '45px', color: 'rgb(68 113 203)', cursor: 'pointer'}}/>
-
-                      <div className="messages-counter">
-                          <p>1</p>
+                  <button className="nav-message-container" style={{ display: isAuthenticated ? 'block' : 'none' }} onClick={(e) => {e.stopPropagation(); toggleMessages();}}>
+                      <BiSolidMessageDetail style={{fontSize: '45px', color: 'rgb(68 113 203)'}}/>
+                      <div className="messages-counter" style={{display: messagesCount > 0 ? 'block': 'none'}}>
+                          <p style={{marginTop: '2px'}}>{messagesCount}</p>
                       </div>
 
-                      <MessagesDropdown isOpened={messagesOpen}/>
-                  </div>
+                      <MessagesDropdown isOpened={openedComponent === 'messages'}/>
+                  </button>
 
                   <div className="language-container">
                       <LanguageDropdown/>
@@ -68,10 +87,10 @@ const Navbar: React.FC = () => {
               </div>
           </div>
 
-          <MenuSlider sliderOpened={sliderOpened} setSliderOpened={setSliderOpened}/>
+          <MenuSlider sliderOpened={openedComponent === 'slider'} setSliderOpened={() => setOpenedComponent('slider')}/>
       </div>
   );
 };
 
 
-export default Navbar
+export default Navbar;

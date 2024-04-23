@@ -21,29 +21,36 @@ const Profile = () => {
     const { user, fetchUserData, userData} = useAuthStore.getState();
     const { orders, fetchOrders } = orderStore.getState();
 
-    const profileImg = user?.profile_img_url ? user.profile_img_url : userData?.image_url;
-
     const navigate = useNavigate();
-
-    console.log(userData)
-
 
     useEffect(() => {
         fetchUserData();
         fetchOrders();
-    }, [])
+    }, []);
+
+
+    console.log("User Data:", userData);
+    console.log("User:", user);
+
+    const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
+
+    const handleImageError = (e) => {
+        e.target.src = defaultAvatar; 
+        console.error("Failed to load user image from URL:", e.target.src);
+    };
 
 
     return (
         <>
         <div style={{padding: '1rem'}}>
 
-            <div role="presentation" className="profile-navigation">
-                <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">Home</Link>
-                <Typography color="text.primary">Profil</Typography>
-                </Breadcrumbs>
-            </div>
+        <div role="presentation" className="profile-navigation">
+                    <Breadcrumbs aria-label="breadcrumb">
+                        <Link underline="hover" color="inherit" href="/">Home</Link>
+                        <Typography color="text.primary">Profil</Typography>
+                    </Breadcrumbs>
+                </div>
+
 
 
 
@@ -51,19 +58,18 @@ const Profile = () => {
 
                 
 
-                <div className="profile-avatar-container">
-                
-                    <div className='image-container'>
-                        <img src={profileImg ? profileImg : defaultAvatar} alt=""  className="user-avatar"/>
+            <div className="profile-avatar-container">
+                        <div className='image-container'>
+                            <img src={profileImg} alt="User Avatar" className="user-avatar" onError={handleImageError} />
+                        </div>
+                        <div className="profile-name-container">
+                            <h2>{`${user?.first_name} ${user?.last_name}`}</h2>
+                            <p>Mitglied seit {userData?.date_joined?.slice(0,10)}</p>
+                        </div>
+                        <button className="profile-btn hover-btn" onClick={() => navigate('/edit-profile')}>
+                            <FaUserEdit style={{fontSize: '22px'}}/><p>Profil bearbeiten</p>
+                        </button>
                     </div>
-
-                    <div className="profile-name-container">
-                        <h2>{`${user?.first_name} ${user?.last_name}`}</h2>
-                        <p>Mitglied seit {userData?.date_joined?.slice(0,10)}</p>
-                    </div>
-      
-                    <button className="profile-btn hover-btn" onClick={() => navigate('/edit-profile')}> <FaUserEdit style={{fontSize: '22px'}}/> <p>Profil bearbeiten</p></button>
-                </div>
 
                 <Divider className='divider-vertical' orientation="vertical" sx={{height: '260px', width: '1px', background: 'rgb(76, 121, 212)', margin: 0}}/>
                 <Divider className="divider-horizontal" orientation="horizontal" sx={{background: 'rgb(76, 121, 212)', margin: 0}}/>
