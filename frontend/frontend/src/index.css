@@ -15,7 +15,6 @@ html, body {
   font-family: "Rubik", sans-serif;
 }
 
-
 /* NAVBAR */
 
 .navbar{
@@ -412,17 +411,13 @@ html, body {
   padding: 2rem;
   transition: 0.3s ease-in-out all;
   transform: translateX(-100%);
-  overflow-y: auto; /* Allow vertical scrolling */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling for touch devices */
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch; 
   z-index: 1200;
 }
 
 .show-slider{
   transform: translateX(0);
-}
-
-.slider-header{
-
 }
 
 .slider-logo{
@@ -1831,7 +1826,7 @@ html, body {
 .messages-container{
   max-width: 1280px;
   margin: auto;
-  margin-top: 5rem;
+  margin-top: 3rem;
   padding: 1.5rem;
 }
 
@@ -1843,7 +1838,7 @@ html, body {
 
 .messages-main-container{
   max-width: 1280px;
-  height: 500px;
+  height: 600px;
   overflow-y: auto;
   margin-top: 2rem;
   margin-bottom: 2rem;
@@ -1904,16 +1899,16 @@ html, body {
 }
 
 .message-input{
-  width: 100%;
-  padding: 1rem 5rem 1rem 1rem;
-  resize: none; 
-  overflow: hidden;
-  border-radius: 5px;
-  border: 1px solid rgb(62, 113, 216);
-  outline: none;
-  display: flex;
-  align-items: center;
-  
+  width: 100%;  
+  padding: 1rem 5rem 1rem 1rem;     
+  box-sizing: border-box; 
+  border: 2px solid rgb(77, 137, 241); 
+  border-radius: 15px; 
+  resize: none;       
+  outline: none;      
+  box-shadow: inset 0 1px 8px -3px #ababab; 
+  overflow: hidden; 
+  font-size: 16px;
 }
 
 
@@ -1927,7 +1922,7 @@ html, body {
   font-size: 25px;
   justify-content: center;
   align-items: center;
-  top: 10px;
+  top: 15px;
   right: 15px;
   border: none;
 }
@@ -1967,6 +1962,9 @@ html, body {
   .timestamp{
     font-size: 13px;
   }
+  .message-input{
+    font-size: 13px;
+  }
   .message-avatar{
     width: 40px;
     height: 40px;
@@ -1975,7 +1973,7 @@ html, body {
     padding: 0.35rem 1rem;
   }
   .messages-main-container{
-    max-height: 300px;
+    max-height: 400px;
     margin-top: 2rem;
   }
   .messages-container{

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
 
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -42,6 +43,8 @@ class CustomUser(AbstractUser, PermissionsMixin):
     
     def __str__(self):
         return self.email + ", Name: " + self.first_name + self.last_name
+    
+        
     
 class Order(models.Model):
     user = models.ForeignKey(CustomUser,models.CASCADE,null=True,blank=True)
@@ -87,5 +90,18 @@ class Message(models.Model):
     def __str__(self) -> str:
         return self.receiver.first_name + ' ' + self.receiver.last_name + ' ' + self.message[0:15]
 
+    def save(self, *args, **kwargs):
+      
+        super(Message, self).save(*args, **kwargs)
+
+        if kwargs.get('created', True):
+            send_mail(
+                subject='Sie haben eine neue Nachricht!',
+                message=f"""Eine neue Nachricht wurde für Sie zugestellt. 
+                Die Nachricht können Sie unter dem folgenden Link finden: http://localhost:5173/messages""",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[self.receiver.email],
+                fail_silently=False,
+            )
 
 
