@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
 
                   <AiOutlineMenu className="services-menu"  onClick={(event) => {event.stopPropagation(); toggleSlider();}}/>
                   
-                  <p className="nav-link">{t('aboutUs')}</p>
+                  <p className="nav-link" onClick={() => navigate('/about-us')}>{t('aboutUs')}</p>
                   <p className="nav-link">{t('contact')}</p>
                   <button className='order-btn' onClick={() => navigate('/order')}>{t('offer')}</button>
                   <p>|</p>

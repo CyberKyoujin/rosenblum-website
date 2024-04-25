@@ -60,7 +60,10 @@ html, body {
   position: relative;
 }
 
-
+.nav-link:hover{
+  cursor: pointer;
+  color: rgb(53, 100, 196);
+}
 .order-btn{
   background-color: RGB(68 113 203);
   border: none;
@@ -1979,4 +1982,60 @@ html, body {
   .messages-container{
     margin-top: 2rem;
   }
+}
+
+
+/* ABOUT US */
+
+.about-main-container{
+  max-width: 1280px;
+  margin: auto;
+  margin-top: 3rem;
+}
+
+.about-header{
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.about-container{
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.about-container img{
+  width: 700px;
+}
+
+.about-container h1{
+  font-size: 40px;
+}
+
+.about-container p{
+  font-size: 20px;
+  line-height: 40px;
+}
+
+.about-text{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-us-btn{
+  margin-top: 5rem;
+  width: 100%;
+  padding: 1.5rem;
+  font-size: 20px;
+  border: none;
+  color: white;
+  background-color: rgb(76 121 212);
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
 }
