@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
     fetchUserMessages();
   }, [fetchUserMessages]);
 
-  const messagesCount = userMessages?.filter(message => !message.viewed).length;
+  const messagesCount = userMessages?.filter(message => !message.viewed).length || 0;
 
   const handleOverlayClick = () => {
     if (openedComponent) {

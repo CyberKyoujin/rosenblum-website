@@ -27,14 +27,14 @@ import { useNavigate } from "react-router-dom";
 
 const Order = () => {
 
-    const { user } = useAuthStore.getState();
+    const { user, userData } = useAuthStore.getState();
     const [name, setName] = useState(user?.first_name + ' ' + user?.last_name || '')
     const [email, setEmail] = useState(user?.email || '');
-    const [number, setNumber] = useState('')
+    const [number, setNumber] = useState(userData?.phone_number || '')
     const [showNotification, setShowNotification] = useState<boolean>(true);
-    const [city, setCity] = useState('')
-    const [street, setStreet] = useState('')
-    const [plz, setPlz] = useState('')
+    const [city, setCity] = useState(userData?.city || '')
+    const [street, setStreet] = useState(userData?.street || '')
+    const [plz, setPlz] = useState(userData?.zip || '')
     const [message, setMessage] = useState('')
     const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -70,7 +70,7 @@ const Order = () => {
         }
       };
     
-      const handleDragLeave = (e: DragEvent<HTMLDivElement>) => {
+      const handleDragLeave = () => {
         setDragging(false);
       };
     
@@ -164,10 +164,10 @@ const Order = () => {
                         <IoWarningOutline className="warning-icon"/>
                         <p>Bitte geben Sie nur eine deutsche Telefonnummer ein !</p>
                     </div>
-                    <TextField type="number" required id="outlined-basic" label='Telefonumer' variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
-                    <TextField required id="outlined-basic" label='Stadt' variant="outlined" style={{width: '100%'}}  onChange={(e) => setCity(e.target.value)}/>
-                    <TextField required id="outlined-basic" label='Straße' variant="outlined" style={{width: '100%'}} onChange={(e) => setStreet(e.target.value)}/>
-                    <TextField type="number" required id="outlined-basic" label="PLZ" variant="outlined" style={{width: '100%'}}  onChange={(e) => setPlz(e.target.value)}/>
+                    <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : 'Telefonnummer'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
+                    <TextField value={city} required id="outlined-basic" label={city ? "" : 'Stadt'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setCity(e.target.value)}/>
+                    <TextField value={street} required id="outlined-basic" label={street ? "" : 'Straße'} variant="outlined" style={{width: '100%'}} onChange={(e) => setStreet(e.target.value)}/>
+                    <TextField value={plz} type="number" required id="outlined-basic" label={plz ? "" : 'PLZ'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setPlz(e.target.value)}/>
                 </div>
 
                 <Divider flexItem orientation="horizontal" style={{height: '32px', marginTop: '1rem'}}/>

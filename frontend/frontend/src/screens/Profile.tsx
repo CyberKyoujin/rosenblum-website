@@ -1,6 +1,6 @@
 import useAuthStore from "../zustand/useAuthStore";
 import Divider from '@mui/material/Divider';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { FaUserEdit } from "react-icons/fa";
 import { IoMail } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa6";
@@ -15,7 +15,6 @@ import { MdOutlineStickyNote2 } from "react-icons/md";
 import Footer from "../components/Footer";
 
 
-
 const Profile = () => {
 
     const { user, fetchUserData, userData} = useAuthStore.getState();
@@ -26,15 +25,13 @@ const Profile = () => {
     useEffect(() => {
         fetchUserData();
         fetchOrders();
-    }, []);
+    }, [fetchUserData, fetchOrders]);
 
 
-    console.log("User Data:", userData);
-    console.log("User:", user);
 
     const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
 
-    const handleImageError = (e) => {
+    const handleImageError = (e: any) => {
         e.target.src = defaultAvatar; 
         console.error("Failed to load user image from URL:", e.target.src);
     };
@@ -63,7 +60,7 @@ const Profile = () => {
                             <img src={profileImg} alt="User Avatar" className="user-avatar" onError={handleImageError} />
                         </div>
                         <div className="profile-name-container">
-                            <h2>{`${user?.first_name} ${user?.last_name}`}</h2>
+                            <h2 style={{textAlign: 'center'}}>{`${user?.first_name} ${user?.last_name}`}</h2>
                             <p>Mitglied seit {userData?.date_joined?.slice(0,10)}</p>
                         </div>
                         <button className="profile-btn hover-btn" onClick={() => navigate('/edit-profile')}>

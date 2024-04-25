@@ -12,19 +12,22 @@ interface Props {
 }
 
 const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
-    const { fetchUserMessages, userMessages, toggleMessages } = useAuthStore.getState();
+    const { fetchUserMessages, userMessages, toggleMessages, user } = useAuthStore.getState();
     const navigate = useNavigate();
+
 
     useEffect(() => {
         fetchUserMessages();
     }, [fetchUserMessages]);
 
+    const messages = userMessages?.filter((message) => message.receiver === user?.id)
+
     return (
         <div className={`messages-dropdown ${isOpened ? 'show-messages-dropdown' : ''}`}>
-            {userMessages?.length > 0 ? (
-                userMessages?.slice(0, 3).map((message) => (
+            {messages && messages?.length > 0 ? (
+                messages?.slice(0, 3).map((message) => (
                     <React.Fragment key={message.id}>
-                        <div className="message-container">
+                        <div className="message-container" onClick={() => navigate('/messages')}>
                             <img src={smallLogo} alt="" style={{width: '45px', height: '45px'}} />
                             <div className="message-content">
                                 <div className="message-timestamp">
@@ -55,8 +58,8 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
                 </>
                 
             )}
-            <div className="messages-footer">
-                <button className="messages-btn" onClick={() => { toggleMessages(); navigate('/messages'); }}>
+            <div className="messages-footer" onClick={() => { toggleMessages(); navigate('/messages'); }}>
+                <button className="messages-btn">
                     Alle Nachrichten
                 </button>
             </div>
