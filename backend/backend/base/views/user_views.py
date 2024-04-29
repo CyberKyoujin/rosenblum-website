@@ -9,12 +9,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from social_core.exceptions import AuthForbidden, AuthFailed
 from google.oauth2 import id_token
 from google.auth.transport import requests
-from base.models import CustomUser, Message
+from base.models import CustomUser, Message, File
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
 from django.db.models import Q
-
+from rest_framework.decorators import api_view
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -99,9 +99,16 @@ class ToggleViewed(APIView):
 class SendMessageView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        message = request.data.get('message')
+        message_text = request.data.get('message')
         receiver = CustomUser.objects.get(email="tester@gmail.com")
         sender = request.user
-        print(message, receiver, sender)
-        Message.objects.create(sender=sender, receiver=receiver, message=message)
+        
+        message = Message.objects.create(sender=sender, receiver=receiver, message=message_text)
+        
+        if request.FILES.getlist('files'):
+            for file in request.FILES.getlist('files'):
+                File.objects.create(message=message, file=file)
+    
         return Response(status=status.HTTP_200_OK)
+    
+

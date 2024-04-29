@@ -18,7 +18,7 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
 
     useEffect(() => {
         fetchUserMessages();
-    }, [fetchUserMessages]);
+    }, []);
 
     const messages = userMessages?.filter((message) => message.receiver === user?.id)
 
