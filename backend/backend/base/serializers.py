@@ -95,6 +95,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     formatted_timestamp = serializers.SerializerMethodField()
+    files = FileSerializer(many=True,read_only=True)
     class Meta:
         model = Message
         fields = '__all__' 

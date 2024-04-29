@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
-
+from django.core.mail import send_mail
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -61,20 +64,6 @@ class Order(models.Model):
     def __str__(self):
         return f'Order number {self.pk}'
 
-
-class File(models.Model):
-    order = models.ForeignKey(Order,models.CASCADE, related_name='files')
-    file = models.FileField(upload_to='files/')
-    file_name = models.CharField(max_length=255, blank=True)  
-    file_size = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  
-
-    def save(self, *args, **kwargs):
-        self.file_name = self.file.name
-        self.file_size = self.file.size / (1024 * 1024)  
-        super(File, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return f'File {self.pk} to {self.order}'
     
 class Message(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_messages', on_delete=models.CASCADE, blank=True, null=True)
@@ -105,3 +94,20 @@ class Message(models.Model):
             )
 
 
+class File(models.Model):
+    order = models.ForeignKey(Order,models.CASCADE, related_name='files', blank=True, null=True)
+    message = models.ForeignKey(Message, models.CASCADE, related_name='files', blank=True, null=True)
+    file = models.FileField(upload_to='files/')
+    file_name = models.CharField(max_length=255, blank=True)  
+    file_size = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  
+
+    def save(self, *args, **kwargs):
+        self.file_name = self.file.name
+        self.file_size = self.file.size / (1024 * 1024)  
+        super(File, self).save(*args, **kwargs)
+
+    def __str__(self):
+        if self.order:
+            return f'File {self.pk} to {self.order}'
+        else: 
+            return f'File {self.pk} to {self.message}'

@@ -25,6 +25,12 @@ interface AuthTokens {
     refresh: string;
 }
 
+interface File {
+    id: string | null;
+    file_name: string | null;
+    file_size: string | null;
+}
+
 interface Message {
     id: string;
     sender: string;
@@ -33,6 +39,7 @@ interface Message {
     viewed: boolean;
     timestamp: string;
     formatted_timestamp: string;
+    files: File[];
 }
 
 interface AuthState {
@@ -55,7 +62,7 @@ interface AuthState {
     setMessages: (messages: []) => void;
     updateUserProfile: (formData: FormData) => Promise<void>;
     toggleMessages: () => Promise<void>;
-    sendMessage: (messageContent: string) => Promise<void>;
+    sendMessage: (formData: FormData) => Promise<void>;
 }
 
 
@@ -224,11 +231,11 @@ const useAuthStore = create<AuthState>((set,get) =>({
         }
     },
 
-    sendMessage: async(messageContent: string) => {
+    sendMessage: async(formData: FormData) => {
         const authTokens = get().authTokens || '';
         if (authTokens){
             try{
-                const response = await axios.post('http://127.0.0.1:8000/user/send-message/', { message: messageContent }, {
+                const response = await axios.post('http://127.0.0.1:8000/user/send-message/', formData, {
                     headers: {
                         'Authorization': `Bearer ${get().authTokens?.access}`
                     }
