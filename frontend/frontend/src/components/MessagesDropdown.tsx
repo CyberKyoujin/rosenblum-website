@@ -22,6 +22,8 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
 
     const messages = userMessages?.filter((message) => message.receiver === user?.id)
 
+    console.log(user, userMessages)
+
     return (
         <div className={`messages-dropdown ${isOpened ? 'show-messages-dropdown' : ''}`}>
             {messages && messages?.length > 0 ? (
@@ -51,7 +53,7 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
                 <>
                     <div className="no-messages">
                         <SiGooglemessages style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>
-                        <p>Sie haben noch keine Nachrichten</p>
+                        <p>Sie haben keine neue Nachrichten</p>
                     </div>
 
                     <Divider />

@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 const Order = () => {
 
     const { user, userData } = useAuthStore.getState();
-    const [name, setName] = useState(user?.first_name + ' ' + user?.last_name || '')
+    const [name, setName] = useState(user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : '')
     const [email, setEmail] = useState(user?.email || '');
     const [number, setNumber] = useState(userData?.phone_number || '')
     const [showNotification, setShowNotification] = useState<boolean>(true);
@@ -125,7 +125,7 @@ const Order = () => {
 
     return(
         <>
-        <div style={{padding: '1rem'}}>
+        <div style={{padding: '2rem 4rem'}}>
 
             <div role="presentation" className="profile-navigation">
                 <Breadcrumbs aria-label="breadcrumb">
@@ -255,7 +255,7 @@ const Order = () => {
                                 {uploadedFiles.map((file, index) => (
                                     <div key={index} className="file-container">
                                         <FaFile style={{fontSize: '40px', color: 'rgb(76, 121, 212)'}}/>
-                                        <p>{file.name.length > 15 ? `${file.name.slice(0, 12)}...` : file.name}</p>
+                                        <p>{file.name.length > 10 ? `${file.name.slice(0, 10)}...` : file.name}</p>
                                         <button className="file-remove-btn" onClick={() => removeFile(index)}><RiDeleteBin6Fill style={{fontSize: '20px'}}/></button>
                                     </div>
                                 ))}

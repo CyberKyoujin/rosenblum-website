@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Navbar from './components/Navbar'
 import Home from './screens/Home'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import Login from './screens/Login'
 import Register from './screens/Register'
 import useAuthStore from './zustand/useAuthStore'
@@ -18,6 +18,7 @@ import ContactUs from './screens/ContactUs'
 function App() {
 
   const authStore = useAuthStore();
+
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(async () => {
