@@ -9,135 +9,136 @@ import Login  from '@mui/icons-material/Login';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../zustand/useAuthStore';
+import defaultAvatar from '../assets/default_avatar.png'
 
 export default function AccountMenu() {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+  const { isAuthenticated, user, logoutUser, userData } = useAuthStore.getState();
 
-    const { isAuthenticated, user, logoutUser } = useAuthStore.getState();
+  const { t } = useTranslation();
+  const navigate = useNavigate();
 
-    const { t } = useTranslation();
-    const navigate = useNavigate();
+  const profileImg = user?.profile_img_url || userData?.image_url || '';
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
+  console.log(user);
 
-    return (
-      <React.Fragment>
-        <div>
-          
-            <IconButton
-              onClick={handleClick}
-              size="small"
-              aria-controls={open ? 'account-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-            >
-              {user?.profile_img_url ? <img className='profile-img-sm' src={user?.profile_img_url || ''}  alt="Profile" />: <Avatar sx={{ width: 46, height: 46, background: 'rgb(76, 121, 212)' }}>{user?.first_name?.[0]}</Avatar> }
-            </IconButton>
-        
-        </div>
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={handleClose}
-          onClick={handleClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              padding: '0.5rem',
-              borderRadius: '0px',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '& .MuiAvatar-root': {
-                width: 32,
-                height: 32,
-                ml: -0.5,
-                mr: 1,
-              },
-              '&::before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleImageError = (e: any) => {
+    e.target.src = defaultAvatar; 
+    console.error("Failed to load user image from URL:", e.target.src);
+  };  
+
+  return (
+    <React.Fragment>
+      <div>
+        <IconButton
+          onClick={handleClick}
+          size="small"
+          aria-controls={open ? 'account-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
         >
+          {profileImg != '' ? (
+            <img className='profile-img-sm' src={profileImg} alt="Profile" style={{ width: 46, height: 46 }} />
+          ) : (
+            <Avatar sx={{ width: 46, height: 46, background: 'rgb(76, 121, 212)' }}>
+              {user?.first_name?.[0]}
+            </Avatar>
+          )}
+
+        </IconButton>
+      </div>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={() => {
+          handleClose();
+          isAuthenticated ? navigate('/profile') : navigate('/register');
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {profileImg ? (
+              <img className='profile-img-sm' src={profileImg} style={{ width: '35px', marginRight: "0.5rem" }} alt="Profile" />
+            ) : (
+              <Avatar sx={{ background: 'rgb(76, 121, 212)' }}>{user?.first_name?.[0]}</Avatar>
+            )}
+            {isAuthenticated ? `${user?.first_name} ${user?.last_name}` : t('profile')}
+          </div>
+        </MenuItem>
+        <Divider />
+        {isAuthenticated ? (
           <MenuItem onClick={() => {
             handleClose();
-            if (isAuthenticated){
-              navigate('/profile');
-            } else {
-              navigate('/register')
-            }
+            logoutUser();
+            navigate('/login');
           }}>
-            {user?.profile_img_url ? <img className='profile-img-sm' style={{width: '35px', marginRight:"0.5rem"}} src={user?.profile_img_url || ''} alt="Profile" /> : <div><Avatar sx={{background: 'rgb(76, 121, 212)'}}>{user?.first_name?.[0]}</Avatar></div> } {isAuthenticated ? user?.first_name + " " + user?.last_name : t('profile')}
+            <ListItemIcon>
+              <Login fontSize="small" />
+            </ListItemIcon>
+            {t('logout')}
           </MenuItem>
-          <Divider />
-
-          { isAuthenticated ? (
-
-            <div>
-
+        ) : (
+          <>
             <MenuItem onClick={() => {
               handleClose();
-              logoutUser();
-              navigate('/login')
-            }}>
-              <ListItemIcon>
-                <Login fontSize="small" />
-              </ListItemIcon>
-              {t('logout')}
-            </MenuItem>
-
-            </div>
-
-          )
-          : 
-          (
-            <div>
-            <MenuItem onClick={() => {
-              handleClose();
-              navigate('/register')
+              navigate('/register');
             }}>
               <ListItemIcon>
                 <Login fontSize="small" />
               </ListItemIcon>
               {t('register')}
             </MenuItem>
-  
             <MenuItem onClick={() => {
               handleClose();
-              navigate('/login')
+              navigate('/login');
             }}>
               <ListItemIcon>
                 <Login fontSize="small" />
               </ListItemIcon>
               {t('login')}
             </MenuItem>
-            </div>
-
-          )}
-
-          
-
-        </Menu>
-      </React.Fragment>
-    );
-  }
+          </>
+        )}
+      </Menu>
+    </React.Fragment>
+  );
+}

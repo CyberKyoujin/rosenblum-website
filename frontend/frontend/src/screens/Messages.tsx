@@ -66,6 +66,9 @@ const Messages = () => {
                 console.error('Failed to send message:', error);
             }
             setIsLoading(false); 
+        } else {
+            setMessage('');
+            setIsLoading(false);
         }
     };
 
@@ -111,7 +114,7 @@ const Messages = () => {
 
     return(
 
-        <div className="messages-container">
+        <div className="messages-container" style={{padding: '1rem 4rem'}}>
 
         <div role="presentation" style={{marginBottom: '3rem'}}>
             <Breadcrumbs aria-label="breadcrumb">
@@ -142,7 +145,7 @@ const Messages = () => {
                                 </div>
                                 
                                     {message.files && 
-                                    <div className="small-files-container">
+                                    <div className="small-files-container" style={{display: message.files.length === 0 && 'none'}}>
                                         {message.files.map((file) => (
                                             <div className="small-file-container">
                                                 <FaFile style={{color: 'rgb(76,121,212)', fontSize: '30px'}}/>
@@ -172,7 +175,7 @@ const Messages = () => {
                 {uploadedFiles.length > 0 && (
                             <div className="files-container" style={{marginTop:'1rem', marginBottom: '1.5rem', justifyContent: 'flex-start', gap: '0.7rem', fontSize: '14px'}}>
                                 {uploadedFiles.map((file, index) => (
-                                    <div key={index} className="file-container" style={{width: '100px', gap: '0.5rem', height: '150px'}}>
+                                    <div key={index} className="file-container">
                                         <FaFile style={{fontSize: '40px', color: 'rgb(76, 121, 212)'}}/>
                                         <p>{file.name.length > 15 ? `${file.name.slice(0, 12)}...` : file.name}</p>
                                         <button className="file-remove-btn" onClick={() => removeFile(index)}><RiDeleteBin6Fill style={{fontSize: '20px'}}/></button>

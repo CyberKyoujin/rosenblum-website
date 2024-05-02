@@ -87,7 +87,7 @@ class Message(models.Model):
             send_mail(
                 subject='Sie haben eine neue Nachricht!',
                 message=f"""Eine neue Nachricht wurde für Sie zugestellt. 
-                Die Nachricht können Sie unter dem folgenden Link finden: http://localhost:5173/messages""",
+Die Nachricht können Sie unter dem folgenden Link finden: http://localhost:5173/messages""",
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[self.receiver.email],
                 fail_silently=False,
@@ -111,3 +111,14 @@ class File(models.Model):
             return f'File {self.pk} to {self.order}'
         else: 
             return f'File {self.pk} to {self.message}'
+        
+
+class Request(models.Model):
+    name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone_numer = models.CharField(max_length=255)
+    message = models.TextField()
+    
+    def __str__(self):
+        return f'Request number {self.pk} of {self.name}'
+    

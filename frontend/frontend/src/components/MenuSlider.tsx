@@ -38,8 +38,8 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
 
           <div className="slider-item-container">
 
-            <div className="slider-title">
-              <BsTranslate/>
+            <div className="slider-title-top">
+              <BsTranslate style={{color: 'RGB(76 121 212)'}}/>
               <p>{t('translations')}</p>
             </div>
 
@@ -53,8 +53,8 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
 
           <div className="slider-item-container">
 
-            <div className="slider-title">
-              <FaLanguage/>
+            <div className="slider-title-top">
+              <FaLanguage style={{color: 'RGB(76 121 212)'}}/>
               <p>{t('languages')}</p>
             </div>
 
@@ -68,8 +68,8 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
 
           <div className="slider-item-container">
 
-            <div className="slider-title">
-              <TbTools/>
+            <div className="slider-title-top">
+              <TbTools style={{color: 'RGB(76 121 212)'}}/>
               <p>{t('expertise')}</p>
             </div>
 
@@ -81,34 +81,28 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
 
           </div>
 
-          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', marginTop: '1rem', marginBottom: '0.5rem'}}/>
+          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', marginTop: '1rem'}}/>
 
-          <div className="slider-footer-container">
-            <div className="slider-title">
+          <div className="slider-footer-container" onClick={() => {navigate('about-us/'); setSliderOpened(!setSliderOpened)}}>
                 <FaInfo className="slider-icon"/>
                 <p>{t('aboutUs')}</p>
-            </div>
           </div>
 
-          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', marginTop: '0.5rem', marginBottom: '0.5rem'}}/>
+          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', padding: '0px'}}/>
 
-          <div className="slider-footer-container">
-            <div className="slider-title">
+          <div className="slider-footer-container" onClick={() => {navigate('contact-us/'); setSliderOpened(!setSliderOpened)}}>
                 <GrContactInfo className="slider-icon"/>
                 <p>{t('contact')}</p>
-            </div>
           </div>
 
-          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', marginTop: '0.5rem', marginBottom: '0.5rem'}}/>
+          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
 
-          <div className="slider-footer-container">
-            <div className="slider-title" onClick={() => {navigate('/order'); setSliderOpened(!setSliderOpened)}}>
+          <div className="slider-footer-container" onClick={() => {navigate('/order'); setSliderOpened(!setSliderOpened)}}>
                 <MdLocalOffer className="slider-icon"/>
                 <p>{t('offer')}</p>
-            </div>
           </div>
 
-          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', marginTop: '0.5rem'}}/>
+          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
 
         </div>
 

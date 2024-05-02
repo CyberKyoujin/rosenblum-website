@@ -8,6 +8,10 @@ import Footer from "../components/Footer";
 import quality from "../assets/quality.png"
 import { GrContactInfo } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import Typography from '@mui/material/Typography';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
+
 
 const AboutUs = () => {
 
@@ -15,7 +19,16 @@ const AboutUs = () => {
     const navigate = useNavigate();
 
     return(
-        <div>
+        <>
+        <div style={{padding: '1 4rem'}}>
+
+            <div role="presentation" className="profile-navigation">
+                <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/">Home</Link>
+                <Typography color="text.primary">Über uns</Typography>
+                </Breadcrumbs>
+            </div>
+
             <div className="about-main-container">
                 
 
@@ -30,9 +43,9 @@ const AboutUs = () => {
                     </div>
                 </div>
 
-                <Divider style={{marginTop: '1rem', marginBottom: '1rem'}}/>
+                <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
-                <div className="about-container" style={{gap:'10rem'}}>
+                <div className="about-container about-container-gap">
                     <div className="about-text">
                         <div className="about-header">
                             <h1>Unser</h1>
@@ -40,13 +53,13 @@ const AboutUs = () => {
                         </div>
                         <p>Unser Team besteht aus erfahrenen und qualifizierten Übersetzern und Dolmetschern, die sich durch ihre Leidenschaft für Sprachen und interkulturelle Kommunikation auszeichnen. Alle unsere Fachkräfte sind muttersprachlich und verfügen über branchenspezifische Kenntnisse, um die Genauigkeit und Relevanz jeder Übersetzung zu gewährleisten.</p>
                     </div>
-                    <img src={team} alt="" style={{width: '400px'}}/>
+                    <img src={team} alt=""/>
                 </div>
 
-                <Divider style={{marginTop: '1rem', marginBottom: '1rem'}}/>
+                <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
-                <div className="about-container" style={{gap:'8rem'}}>
-                    <img src={mission} alt="" style={{width: '350px'}}/>
+                <div className="about-container about-container-gap">
+                    <img src={mission} alt=""/>
                     <div className="about-text">
                         <div className="about-header">
                             <h1>Unsere</h1>
@@ -56,9 +69,9 @@ const AboutUs = () => {
                     </div>
                 </div>
 
-                <Divider style={{marginTop: '1rem', marginBottom: '2rem'}}/>
+                <Divider style={{marginTop: '3rem', marginBottom: '3rem'}}/>
 
-                <div className="about-container" style={{gap:'8rem'}}>
+                <div className="about-container about-container-gap">
                     <div className="about-text">
                         <div className="about-header">
                             <h1>Warum</h1>
@@ -66,15 +79,16 @@ const AboutUs = () => {
                         </div>
                         <p>Bei Rosenblum Übersetzungsbüro stehen Qualität und Kundenzufriedenheit an erster Stelle. Wir nutzen modernste Technologien und Arbeitsmethoden, um die Effizienz unserer Prozesse zu steigern und Ihnen schnelle Turnaround-Zeiten zu bieten. Unsere strengen Qualitätskontrollverfahren stellen sicher, dass jedes Projekt unseren hohen Standards entspricht.</p>
                     </div>
-                    <img src={quality} alt="" style={{width: '350px'}}/>
+                    <img src={quality} alt=""/>
                 </div>
 
                 <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
 
        
             </div>
-            <Footer/>
         </div>
+        <Footer/>
+        </>
     )
 }
 

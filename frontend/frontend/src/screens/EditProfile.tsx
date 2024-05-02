@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
-
+import defaultAvatar from '../assets/default_avatar.png'
 
 interface UserData {
   phone_number?: string;
@@ -28,7 +28,7 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [profileUrl, setProfileUrl] = useState<string>('');
 
-  const profileImg = user?.profile_img_url ? user.profile_img_url : userData?.image_url;
+  const profileImg = user?.profile_img_url || userData?.image_url || '';
 
   const navigate = useNavigate();
 
@@ -90,7 +90,7 @@ const EditProfile = () => {
             <div className="edit-avatar-container" style={{display: user?.profile_img_url ? 'none' : 'block'}}>
 
                 <div className='image-container'>
-                    <img src={profileUrl || profileImg}/>
+                    <img src={profileUrl || profileImg || defaultAvatar}/>
                 </div>
               
               <input type="file" id="file-input" style={{ display: 'none' }} onChange={handleFileChange} />
@@ -100,10 +100,10 @@ const EditProfile = () => {
             </div>
 
             <div className="edit-form">
-              <TextField required id="phone-number" label={!phoneNumber ? "Telefonnummer" : undefined} variant="outlined" fullWidth value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+              <TextField required id="phone-number" type="number" label={!phoneNumber ? "Telefonnummer" : undefined} variant="outlined" fullWidth value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
               <TextField required id="city" label={!city ? "Stadt" : undefined} variant="outlined" fullWidth value={city} onChange={(e) => setCity(e.target.value)} />
               <TextField required id="street" label={!street ? "Straße" : undefined} variant="outlined" fullWidth value={street} onChange={(e) => setStreet(e.target.value)} />
-              <TextField required id="zip" label={!zip ? "PLZ" : undefined} variant="outlined" fullWidth value={zip} onChange={(e) => setZip(e.target.value)} />
+              <TextField required id="zip" type="number" label={!zip ? "PLZ" : undefined} variant="outlined" fullWidth value={zip} onChange={(e) => setZip(e.target.value)} />
             </div>
           </div>
 

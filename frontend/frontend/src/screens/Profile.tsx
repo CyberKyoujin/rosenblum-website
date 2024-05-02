@@ -29,7 +29,8 @@ const Profile = () => {
 
 
 
-    const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
+    const profileImg = user?.profile_img_url || userData?.image_url || '';
+    
 
     const handleImageError = (e: any) => {
         e.target.src = defaultAvatar; 
@@ -39,7 +40,7 @@ const Profile = () => {
 
     return (
         <>
-        <div style={{padding: '1rem'}}>
+        <div style={{padding: '1rem 4rem'}}>
 
         <div role="presentation" className="profile-navigation">
                     <Breadcrumbs aria-label="breadcrumb">
@@ -57,7 +58,7 @@ const Profile = () => {
 
             <div className="profile-avatar-container">
                         <div className='image-container'>
-                            <img src={profileImg} alt="User Avatar" className="user-avatar" onError={handleImageError} />
+                            <img src={profileImg} className="user-avatar" referrerPolicy="no-referrer" onError={handleImageError}/>
                         </div>
                         <div className="profile-name-container">
                             <h2 style={{textAlign: 'center'}}>{`${user?.first_name} ${user?.last_name}`}</h2>

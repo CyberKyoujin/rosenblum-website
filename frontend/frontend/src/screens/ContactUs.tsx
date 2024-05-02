@@ -1,12 +1,138 @@
-import React from "react";
+import React, { useState } from "react";
+import { LuContact } from "react-icons/lu";
+import Divider from '@mui/material/Divider';
+import { FaMapLocationDot } from "react-icons/fa6";
+import { FaSquarePhone } from "react-icons/fa6";
+import { IoMail } from "react-icons/io5";
+import { GoDotFill } from "react-icons/go";
+import { RiContactsFill } from "react-icons/ri";
+import { FaClock } from "react-icons/fa6";
+import Footer from "../components/Footer";
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { IoWarningOutline } from "react-icons/io5";
+import useAuthStore from "../zustand/useAuthStore";
 
 
 
 const ContactUs = () => {
+
+    const [name, setName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [number, setNumber] = useState<string>('');
+    const [message, setMessage] = useState<string>('');
+
+    const {sendRequest} = useAuthStore.getState();
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('number', number);
+        formData.append('message', message);
+        sendRequest(formData);
+    }
+
     return (
-        <div>
-            Contact Us
+        <>
+        <div style={{padding: '5rem'}}>
+            <div className="contact-main-container">
+                <div className="contact-title">
+                    <LuContact style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>
+                    <div className="contact-title-container">
+                        <h1>Kontakt</h1>
+                    </div>
+                </div>
+
+                <Divider style={{marginTop: '1rem', marginBottom: '1rem'}}/>
+
+                <div className="contact-info-container">
+
+                    <div className="main-info contact-gap">
+
+                        <div className="main-info-title">
+                            <RiContactsFill style={{fontSize: '25px', color: 'rgb(76 121 212)'}}/>
+                            <h3>Kontaktinformationen</h3>
+                        </div>
+
+                        <div className="info-item">
+                            <FaMapLocationDot style={{fontSize: '25px', color: 'rgb(76 121 212)'}}/>
+                            <p>Sutthauser Str. 23, 49080 Osnabrück</p>
+                        </div>
+
+                        <div className="info-item">
+                            <FaSquarePhone style={{fontSize: '25px', color: 'rgb(76 121 212)'}}/>
+                            <p>+49 17677353978</p>
+                        </div>
+
+                        <div className="info-item" >
+                            <IoMail style={{fontSize: '25px', color: 'rgb(76 121 212)'}}/>
+                            <p>olegrosenblum@freenet.de</p>
+                        </div>
+
+                    </div>
+
+                    
+                    <div className="hours-info">
+
+                        <div className="hours-title">
+                            <FaClock className="hours-icon"/>
+                            <h3>Unsere Öffnungszeiten</h3>
+                            <p className="hours-detail">(oder nach Vereinbarung)</p>
+                        </div>
+
+                        <div className="hours-items-container">
+
+                            <div className="hours-dots hours-item-container">
+                                <p><GoDotFill className="dot-icon"/> Montag</p>
+                                <p><GoDotFill className="dot-icon"/> Dienstag</p>
+                                <p><GoDotFill className="dot-icon"/> Mittwoch</p>
+                                <p><GoDotFill className="dot-icon"/> Donnerstag</p>
+                                <p><GoDotFill className="dot-icon"/> Freitag</p>
+                            </div>
+                            <div className="hours-item-container">
+                                <p>9:00-12:00</p>
+                                <p>15:00-18:00</p>
+                                <p>15:00-18:00</p>
+                                <p>9:00-12:00</p>
+                                <p>9:00-12:00</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div className="map-container" style={{marginTop: '4rem',maxWidth: '1000px', width: '100%'}}>
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map" width="1200" height="500" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+
+                <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
+
+                <div className="contact-form-title">
+                    <h1 className="header-span">Kontaktieren</h1>
+                    <h1>Sie uns !</h1>
+                </div>
+
+                <form className="contact-form">
+                    <TextField required id="outlined-basic" label={name ? "" : 'Name'} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
+                    <TextField required id="outlined-basic" label={email ? "" : 'Email'} variant="outlined" style={{width: '100%'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <div className={"phone-notification show-notification"}>
+                        <IoWarningOutline className="warning-icon"/>
+                        <p>Bitte geben Sie nur eine deutsche Telefonnummer ein !</p>
+                    </div>
+                    <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : 'Telefonnummer'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
+                    <TextField required multiline label="Ihre Nachricht..." variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
+                    <button className="contact-btn hover-btn">ABSENDEN</button>
+                </form>
+
+
+
+            </div>
         </div>
+        <Footer/>
+        </>
     )
 }
 

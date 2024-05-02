@@ -63,6 +63,7 @@ interface AuthState {
     updateUserProfile: (formData: FormData) => Promise<void>;
     toggleMessages: () => Promise<void>;
     sendMessage: (formData: FormData) => Promise<void>;
+    sendRequest: (formData: FormData) => Promise<void>;
 }
 
 
@@ -244,6 +245,18 @@ const useAuthStore = create<AuthState>((set,get) =>({
                     console.log('Successfully sent a message!')
                 }
             } catch (error){
+                console.error(error);
+            }
+        }
+    },
+
+    sendRequest: async(formData: FormData) => {
+        const authTokens = get().authTokens || '';
+        if (authTokens){
+            try{
+                const response = await axios.post('http://127.0.0.1:8000/user/new-request/', formData);
+
+            } catch (error) {
                 console.error(error);
             }
         }

@@ -103,7 +103,7 @@ const OrderDetails = () => {
 
                     <div className="order-details-message">
                         <h3 style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}><BiMessageDetail style={{fontSize: '25px', color: 'rgb(76, 121, 212)'}}/>Ihre Nachricht</h3>
-                        <p className="order-details-item">{orderData?.message}</p>
+                        <p className="order-details-item">{orderData?.message || 'Sie haben keine Nachricht gelassen.'}</p>
                         
                     </div>
 
