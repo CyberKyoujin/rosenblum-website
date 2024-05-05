@@ -40,7 +40,7 @@ const Profile = () => {
 
     return (
         <>
-        <div style={{padding: '1rem 4rem'}}>
+        <div style={{padding: '1rem 2rem'}}>
 
         <div role="presentation" className="profile-navigation">
                     <Breadcrumbs aria-label="breadcrumb">

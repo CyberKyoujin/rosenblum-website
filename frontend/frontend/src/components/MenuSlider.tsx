@@ -44,9 +44,9 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
             </div>
 
             <div className="slider-item">
-              <p>{t('prof_translations')}</p>
-              <p>{t('sworn_translations')}</p>
-              <p>{t('verbalTranslations')}</p>
+                <p>{t('sworn_translations')}</p>
+                <p>{t('verbalTranslations')}</p>
+                <p>{t('appostile')}</p>
             </div>
 
           </div>
@@ -74,9 +74,9 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
             </div>
 
             <div className="slider-item">
-              <p>{t('pricesAndDocuments')}</p>
-              <p>{t('medicine')}</p>
-              <p>{t('law')}</p>
+                <p>{t('pricesAndDocuments')}</p>
+                <p>{t('expertise')}</p>
+                <p>{t('faq')}</p>
             </div>
 
           </div>

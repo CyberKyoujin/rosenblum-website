@@ -42,11 +42,21 @@ interface Message {
     files: File[];
 }
 
+interface Review {
+    author_name: string | null;
+    author_url: string | null;
+    profile_photo_url: string | null;
+    rating: number;
+    relative_time_description: string | null;
+    text: string | null;
+}
+
 interface AuthState {
     authTokens: AuthTokens | null;
     user: User | null;
     userData: UserData | null;
     userMessages: Message[] | null;
+    reviews: Review[] | null;
     isAuthenticated: boolean;
     emailAlreadyExists: boolean;
     setTokens: (authTokens: AuthTokens | null) => void; 
@@ -60,10 +70,12 @@ interface AuthState {
     setUserData: (data: UserData | null) => void;
     fetchUserMessages: () => Promise<void>;
     setMessages: (messages: []) => void;
+    setReviews: (reviews: Review[]) => void;
     updateUserProfile: (formData: FormData) => Promise<void>;
     toggleMessages: () => Promise<void>;
     sendMessage: (formData: FormData) => Promise<void>;
-    sendRequest: (formData: FormData) => Promise<void>;
+    sendRequest: (name: string, email: string, phone_number: string, message: string) => Promise<void>;
+    fetchReviews: () => Promise<void>;
 }
 
 
@@ -75,6 +87,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
     emailAlreadyExists: false,
     userData: null,
     userMessages: null,
+    reviews: null,
 
     setTokens: (authTokens: AuthTokens | null) => {
         if (authTokens){
@@ -250,15 +263,27 @@ const useAuthStore = create<AuthState>((set,get) =>({
         }
     },
 
-    sendRequest: async(formData: FormData) => {
-        const authTokens = get().authTokens || '';
-        if (authTokens){
+    sendRequest: async(name: string, email: string, phone_number: string, message: string) => {
+        
             try{
-                const response = await axios.post('http://127.0.0.1:8000/user/new-request/', formData);
+                const response = await axios.post('http://127.0.0.1:8000/user/new-request/', {name, email, phone_number, message});
 
             } catch (error) {
                 console.error(error);
             }
+        
+    },
+
+    setReviews: (reviews) => set({reviews: reviews}), 
+
+    fetchReviews: async() => {
+        try{
+            const response = await axios.get('http://127.0.0.1:8000/user/reviews');
+            if (response.status === 200){
+                get().setReviews(response.data);
+            }
+        } catch(error){
+            console.error(error);
         }
     }
 

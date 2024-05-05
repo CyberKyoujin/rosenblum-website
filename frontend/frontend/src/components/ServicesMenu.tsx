@@ -23,9 +23,9 @@ const ServicesMenu: React.FC<Props> = ({ isOpened, setOpened }) => {
                 <div className="services-col">
                     <BsTranslate className="translate-icon"/>
                     <h5>{t('translations')}</h5>
-                    <p>{t('prof_translations')}</p>
                     <p>{t('sworn_translations')}</p>
                     <p>{t('verbalTranslations')}</p>
+                    <p>{t('appostile')}</p>
                 </div>
 
                 <div className="services-col">
@@ -40,8 +40,8 @@ const ServicesMenu: React.FC<Props> = ({ isOpened, setOpened }) => {
                     <TbTools className="translate-icon"/>
                     <h5>{t('expertise')}</h5>
                     <p>{t('pricesAndDocuments')}</p>
-                    <p>{t('medicine')}</p>
-                    <p>{t('law')}</p>
+                    <p>{t('expertise')}</p>
+                    <p>{t('faq')}</p>
                 </div>
             </div>
         </div>

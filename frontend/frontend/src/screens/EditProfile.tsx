@@ -93,7 +93,7 @@ const EditProfile = () => {
                     <img src={profileUrl || profileImg || defaultAvatar}/>
                 </div>
               
-              <input type="file" id="file-input" style={{ display: 'none' }} onChange={handleFileChange} />
+              <input type="file" id="file-input" style={{ display: 'none' }} onChange={handleFileChange} accept=".jpg, .png, .jpeg"/>
               <label htmlFor="file-input" className="edit-avatar-btn hover-btn">
                 <MdAddAPhoto style={{ fontSize: '25px', color: 'white', marginBottom: '2px' }} />
               </label>

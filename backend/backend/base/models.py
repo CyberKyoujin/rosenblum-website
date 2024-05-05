@@ -116,9 +116,35 @@ class File(models.Model):
 class Request(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
-    phone_numer = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=255)
     message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    
+    
+    def formatted_timestamp(self) -> str:
+        local_timestamp = timezone.localtime(self.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')
     
     def __str__(self):
-        return f'Request number {self.pk} of {self.name}'
+        return f'Request number {self.pk} of {self.name}, time: {self.formatted_timestamp()}'
+    
+    def save(self, *args, **kwargs):
+      
+        super(Request, self).save(*args, **kwargs)
+
+        if kwargs.get('created', True):
+            send_mail(
+                subject='Bestätigung Ihrer Anfrage',
+                message=f"""Sie haben eine Anfrage für uns gelassen! 
+                
+Name: {self.name}
+Telefonnumer: {self.phone_number}
+Datum und Uhrzeit : {self.formatted_timestamp()}
+Ihre Anfrage: {self.message}
+
+Mit freundlichen Grüßen, Team Rosenblum.""",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[self.email],
+                fail_silently=False,
+            )
     

@@ -12,7 +12,7 @@ import Link from '@mui/material/Link';
 import { FaPaperclip } from "react-icons/fa6";
 import { FaFile } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 
 
@@ -85,14 +85,14 @@ const Messages = () => {
         fileInputRef.current?.click();
     };
 
-    const handleFileInputChange = (e) => {
+    const handleFileInputChange = (e: any) => {
         if (e.target.files) {
             const filesArray = Array.from(e.target.files);
             handleFiles(filesArray);
         }
     };
 
-    const removeFile = (index) => {
+    const removeFile = (index: number) => {
         setUploadedFiles(currentFiles => {
             const newFiles = currentFiles.filter((_, fileIndex) => fileIndex !== index);
             if (newFiles.length <= 3) {
@@ -114,7 +114,7 @@ const Messages = () => {
 
     return(
 
-        <div className="messages-container" style={{padding: '1rem 4rem'}}>
+        <div className="messages-container" style={{padding: '1rem'}}>
 
         <div role="presentation" style={{marginBottom: '3rem'}}>
             <Breadcrumbs aria-label="breadcrumb">
@@ -189,10 +189,7 @@ const Messages = () => {
                 <Alert severity="error">Sie können maximal 3 Files hochladen</Alert>
             </div>
 
-            <div className="progress-container" style={{display: isLoading ? 'flex': 'none'}}>
-                <LinearProgress style={{color: 'RGB(76 121 212)',width: '60%'}}/>  
-                <p>Die Nachricht wird versandt...</p>                      
-            </div>
+            
 
             <form className="message-input-container" onSubmit={handleSubmit}>
                 <textarea
@@ -225,9 +222,10 @@ const Messages = () => {
                 />
 
                 <button className="send-message-container hover-btn" type="submit">
-                    <RiMailSendLine/>
+                    {isLoading ? <CircularProgress style={{color: 'white', width: '24px', height: '24px'}}/> : <RiMailSendLine/>}
                 </button>
             </form>
+
 
         </div>
         

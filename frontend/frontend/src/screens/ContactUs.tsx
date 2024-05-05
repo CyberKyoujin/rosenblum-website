@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LuContact } from "react-icons/lu";
 import Divider from '@mui/material/Divider';
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { IoWarningOutline } from "react-icons/io5";
 import useAuthStore from "../zustand/useAuthStore";
+import { Alert } from "@mui/material";
 
 
 
@@ -22,21 +23,37 @@ const ContactUs = () => {
     const [number, setNumber] = useState<string>('');
     const [message, setMessage] = useState<string>('');
 
+    const [successfullySent, setSuccessfullySent] = useState<boolean>(false);
+
     const {sendRequest} = useAuthStore.getState();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        if(successfullySent){
+            const timeout = setTimeout(() =>{
+                setSuccessfullySent(false);
+            }, 5000);
+
+            return () => clearTimeout(timeout)
+        }
+    }, [successfullySent])
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('email', email);
-        formData.append('number', number);
-        formData.append('message', message);
-        sendRequest(formData);
+        try{
+
+            await sendRequest(name, email, number, message);
+            setSuccessfullySent(true);
+
+        } catch(error: any) {
+
+            console.error(error.mesage);
+
+        }
     }
 
     return (
         <>
-        <div style={{padding: '5rem'}}>
+        <div style={{padding: '1rem 2rem'}}>
             <div className="contact-main-container">
                 <div className="contact-title">
                     <LuContact style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>
@@ -115,7 +132,8 @@ const ContactUs = () => {
                     <h1>Sie uns !</h1>
                 </div>
 
-                <form className="contact-form">
+                <form className="contact-form" onSubmit={handleSubmit}>
+                    <Alert severity="success" style={{border: '1px solid green', borderRadius: '0', padding: '0.6rem', display: !successfullySent && 'none'}}>Ihre Anfrage wurde erfolgreich versandt!</Alert>
                     <TextField required id="outlined-basic" label={name ? "" : 'Name'} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
                     <TextField required id="outlined-basic" label={email ? "" : 'Email'} variant="outlined" style={{width: '100%'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <div className={"phone-notification show-notification"}>
@@ -124,7 +142,7 @@ const ContactUs = () => {
                     </div>
                     <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : 'Telefonnummer'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
                     <TextField required multiline label="Ihre Nachricht..." variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
-                    <button className="contact-btn hover-btn">ABSENDEN</button>
+                    <button className="contact-btn hover-btn" type="submit">ABSENDEN</button>
                 </form>
 
 
