@@ -16,6 +16,8 @@ from django.db import transaction
 from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
+import requests
+
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -115,6 +117,31 @@ class SendMessageView(APIView):
 class RequestView(CreateAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
+    
+    
+class GoogleMapsReviewsView(APIView):
+    def get(self, request):
+        api_key = 'AIzaSyCnNksFKoHCykmmkc0hOGbbFr9kNJMawjI'
+        place_id = 'ChIJ24yqnoXluUcRZd5qepqJYHA'
+        url = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=name,rating,reviews&key={api_key}"
+        
+        try:
+            
+            response = requests.get(url)
+            response.raise_for_status()
+            google_response = response.json()
+            reviews = google_response.get('result', {}).get('reviews', [])
+            
+            print(reviews)
+            
+            return Response(reviews, status=status.HTTP_200_OK)
+        
+        except requests.exceptions.RequestException as e:
+            
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            
+            
     
     
     

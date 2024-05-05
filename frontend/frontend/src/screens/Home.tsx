@@ -14,6 +14,8 @@ import { FaInfo } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { HiPhone } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import useAuthStore from "../zustand/useAuthStore";
 
 
 const Home = () => {
@@ -23,6 +25,8 @@ const Home = () => {
   const [years, setYears] = useState<number>(0);
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
+
+  const { fetchReviews, reviews } = useAuthStore.getState();
 
   const navigate = useNavigate();
 
@@ -41,6 +45,14 @@ const Home = () => {
       });
     }, 10); 
   };
+
+  useEffect(() => {
+    
+    fetchReviews();
+
+  }, [])
+
+  console.log(reviews);
 
   useEffect(() => {
     animateCounter(0, 8, 3000, setYears); 
@@ -120,16 +132,15 @@ const Home = () => {
 
         <div className="slider-container">
             <CustomSlider>
-                { reviews.map((review) => (
-                    <div className="review-container" key={review.id}>
+                { reviews?.map((review, index) => (
+                    <div className="review-container" key={index}>
                         <div className="review-header">
-                            <img src={review.img} alt="" />
-                            <h3>{review.name}</h3>
-                            <p style={{fontSize: '11px'}}>{review.date}</p>
+                            <img src={review.profile_photo_url} alt="" />
+                            <h3>{review.author_name}</h3>
                             <Rating name="read-only" value={5} readOnly />
                         </div>
                         <div className="review-text">
-                            <p>{review.review}</p>
+                            <p style={{fontSize: '14px'}}>{review.text}</p>
                         </div>
                     </div>
                 ))}

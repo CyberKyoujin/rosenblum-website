@@ -1,5 +1,6 @@
 from django.urls import path
-from base.views.user_views import UserRegisterView, UserTokenObtainPairView, GoogleLogin, UserView, UserUpdateView, UserMesagesView, ToggleViewed, SendMessageView, RequestView
+from base.views.user_views import UserRegisterView, UserTokenObtainPairView, GoogleLogin, UserView, UserUpdateView, UserMesagesView, ToggleViewed, SendMessageView, RequestView, GoogleMapsReviewsView
+
 from rest_framework_simplejwt.views import TokenRefreshView 
 
 urlpatterns = [
@@ -13,4 +14,6 @@ urlpatterns = [
     path('toggle-messages/', ToggleViewed.as_view(), name='toggle-messages'),
     path('send-message/', SendMessageView.as_view(), name='send-message'),
     path('new-request/', RequestView.as_view(), name='request'),
+    path('reviews/', GoogleMapsReviewsView.as_view(), name='google_maps_reviews'),
+    
 ]
