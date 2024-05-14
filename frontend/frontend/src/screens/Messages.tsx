@@ -149,7 +149,7 @@ const Messages = () => {
                                         {message.files.map((file) => (
                                             <div className="small-file-container">
                                                 <FaFile style={{color: 'rgb(76,121,212)', fontSize: '30px'}}/>
-                                                <p>{file.file_name?.length > 8 ? file.file_name?.slice(0,9) + '...' : file.file_name}</p>
+                                                <p>{file.file_name?.length > 8 ? file.file_name?.slice(0,7) + '...' : file.file_name}</p>
                                                 <p>{file.file_size} MB</p>
                                             </div>
                                         ))}
