@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../zustand/useAuthStore";
 
-
 const Home = () => {
 
   const { t } = useTranslation();

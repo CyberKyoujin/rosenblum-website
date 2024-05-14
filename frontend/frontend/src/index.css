@@ -2335,3 +2335,259 @@ html, body {
     font-size: 14px;
   }
 }
+
+
+/* SWORN TRANSLATIONS */
+
+.main-translations-container{
+  max-width: 1280px;
+  margin: auto;
+  margin-top: 5rem;
+}
+
+.translations-section{
+  display: flex;
+  align-items: center;
+
+}
+
+.first-image{
+  width: 330px;
+  margin-right: 10rem;
+}
+
+.second-image{
+  width: 600px;
+}
+
+.translations-section p{
+  font-size: 18px;
+}
+
+.translations-section-text{
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  line-height: 40px;
+}
+
+
+.translations-services-title{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.translations-section-title{
+  display: flex;
+  gap: 0.5rem;
+}
+
+.translations-process-title{
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.third-image{
+  width: 500px;
+}
+
+.services-list{
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-size: 18px;
+  margin-top: 2rem;
+  margin-left: 1.4rem;
+}
+
+.services-list span{
+  font-weight: bold;
+  margin-right: 0.2rem;
+}
+
+.translations-contact-title{
+  display: flex;
+  gap: 0.5rem;
+}
+
+.services-send-btn{
+  padding: 0.7rem;
+  border: none;
+  color: white;
+  background-color: rgb(76 121 212);
+  font-size: 16px;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.translations-contact-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.translations-contact-text{
+  line-height: 30px;
+}
+
+.translations-contact-container p{
+  font-size: 20px;
+  text-align: center;
+}
+
+@media (max-width: 1325px){
+  .translations-section-title{
+    flex-direction: column;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 1150px){
+  .first-image{
+    width: 280px;
+  }
+  .second-image{
+    width: 500px;
+  }
+}
+
+@media (max-width: 1050px){
+  .translations-section{
+    flex-direction: column;
+  }
+  .translations-section-text{
+    text-align: center;
+  }
+  .first-image{
+    margin-right: 0px;
+    margin-bottom: 2rem;
+  }
+  .second-image{
+    order: -1;
+  }
+}
+
+@media (max-width: 920px){
+  .translations-services-title{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0rem;
+  }
+  .translations-section-title{
+    gap: 0;
+  }
+
+}
+
+@media (max-width: 540px){
+  .translations-section-title{
+    font-size: 12px;
+  }
+  .first-image{
+    width: 200px;
+  }
+  .second-image{
+    width: 400px;
+  }
+  .translations-section-text{
+    gap: 1rem;
+  }
+  .translations-section-text p{
+    font-size: 15px;
+    line-height: 30px;
+  }
+  .translations-services-title{
+    font-size: 13px;
+  }
+  .services-list li{
+    font-size: 15px;
+  }
+  .translations-process-title h1{
+    font-size: 25px;
+  }
+  .third-image{
+    width: 400px;
+  }
+  .translations-contact-title{
+    font-size: 13px;
+  }
+  .translations-contact-text p{
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 390px){
+  .second-image{
+    width: 350px;
+  }
+  .third-image{
+    width: 300px;
+  }
+}
+
+/* VERBAL TRANSLATIONS */
+
+.verbal-first-image{
+  width: 400px;
+}
+
+
+@media (max-width: 540px){
+  .verbal-first-image{
+    width: 300px;
+  }
+  
+}
+
+
+/* APOSTILLE */
+
+.apostille-section{
+  width: 100%;
+}
+
+.apostille-section-title{
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.apostille-images{
+ display: flex;
+ justify-content: space-evenly;
+}
+
+.apostille-images img{
+  border: 4px solid rgb(76 121 212);
+  padding: 1rem;
+}
+
+.apostille-first-img{
+  width: 450px;
+  height: 500px;
+}
+
+.apostille-second-img{
+  width: 450px;
+  height: 500px;
+}
+
+.apostille-notification{
+  display: flex;
+  max-width: 1027px;
+  align-items: center;
+  gap: 1rem;
+  margin: auto;
+  margin-top: 4rem;
+  border: 1px solid rgb(76, 121, 212);
+  color: rgb(49, 97, 192);
+  background-color: rgb(230, 238, 252);
+  padding: 1rem;
+}

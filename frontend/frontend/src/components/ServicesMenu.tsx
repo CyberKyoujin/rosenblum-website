@@ -4,6 +4,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { BsTranslate } from 'react-icons/bs';
 import { FaLanguage } from 'react-icons/fa';
 import { TbTools } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
     isOpened: boolean;
@@ -12,6 +13,8 @@ interface Props {
 
 const ServicesMenu: React.FC<Props> = ({ isOpened, setOpened }) => {
     const { t } = useTranslation();
+
+    const navigate = useNavigate();
 
     return (
         <div className={isOpened ? 'services-container show-services' : 'services-container'}>
@@ -23,26 +26,27 @@ const ServicesMenu: React.FC<Props> = ({ isOpened, setOpened }) => {
                 <div className="services-col">
                     <BsTranslate className="translate-icon"/>
                     <h5>{t('translations')}</h5>
-                    <p>{t('sworn_translations')}</p>
-                    <p>{t('verbalTranslations')}</p>
-                    <p>{t('appostile')}</p>
+                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('sworn_translations')}</p>
+                    <p onClick={() => {navigate('/verbal-translations'); setOpened(false)}}>{t('verbalTranslations')}</p>
+                    <p onClick={() => {navigate('/apostille'); setOpened(false)}}>{t('appostile')}</p>
                 </div>
 
                 <div className="services-col">
                     <FaLanguage className="translate-icon"/>
                     <h5>{t('languages')}</h5>
-                    <p>{t('german')}</p>
-                    <p>{t('ukrainian')}</p>
-                    <p>{t('russian')}</p>
+                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('german')}</p>
+                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('ukrainian')}</p>
+                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('russian')}</p>
                 </div>
 
                 <div className="services-col">
                     <TbTools className="translate-icon"/>
                     <h5>{t('expertise')}</h5>
-                    <p>{t('pricesAndDocuments')}</p>
-                    <p>{t('expertise')}</p>
-                    <p>{t('faq')}</p>
+                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('pricesAndDocuments')}</p>
+                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('expertise')}</p>
+                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('faq')}</p>
                 </div>
+                
             </div>
         </div>
     );

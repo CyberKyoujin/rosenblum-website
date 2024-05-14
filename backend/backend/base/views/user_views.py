@@ -8,7 +8,7 @@ from social_core.backends.oauth import BaseOAuth2
 from rest_framework_simplejwt.tokens import RefreshToken
 from social_core.exceptions import AuthForbidden, AuthFailed
 from google.oauth2 import id_token
-from google.auth.transport import requests
+from google.auth.transport import requests as google_requests
 from base.models import CustomUser, Message, File, Request
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
@@ -48,7 +48,7 @@ class GoogleLogin(APIView):
     def post(self, request, *args, **kwargs):
         try:
             token = request.data.get('access_token')
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY)
+            idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY)
 
             print(idinfo)
             
