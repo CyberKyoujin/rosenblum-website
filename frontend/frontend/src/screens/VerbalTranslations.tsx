@@ -10,7 +10,10 @@ import { useNavigate } from "react-router-dom";
 import gears from "../assets/gears.gif"
 import { GrContactInfo } from "react-icons/gr";
 import phone from "../assets/phone.gif"
-
+import contact from "../assets/contact.jpg"
+import Typography from '@mui/material/Typography';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
 
 
 const VerbalTranslations = () => {
@@ -21,6 +24,16 @@ const VerbalTranslations = () => {
     return (
         <>
         <div style={{padding: '1rem 2rem'}}>
+
+
+            <div role="presentation" className="profile-navigation">
+                <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/">Home</Link>
+                <Typography color="text.primary">Dolmetschen</Typography>
+                </Breadcrumbs>
+            </div>
+
+
             <div className="main-translations-container">
 
                 <div className="translations-section">
@@ -97,21 +110,22 @@ const VerbalTranslations = () => {
 
                 </div>
 
-                <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
+                <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-                <div className="translations-contact-container">
+                <div className="translations-section">
 
-                    <div className="translations-contact-title">
-                        <h1 className="header-span">Kontaktieren</h1>
-                        <h1>Sie uns</h1>
-                    </div>
-
-                    <div className="translations-contact-text">
+                    <div className="translations-section-text">
+                        <div className="translations-section-title">
+                            <h1 className="header-span">Kontaktieren</h1>
+                            <h1>Sie uns</h1>
+                        </div>
                         <p>{t('translationsContact')}</p>
+                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
+
                     </div>
 
-                    <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
-
+                    <img src={contact} alt="" className="contact-image"/>
+                   
                 </div>
 
                 

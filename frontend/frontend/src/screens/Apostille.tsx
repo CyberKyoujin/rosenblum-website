@@ -10,6 +10,11 @@ import apostille_ukr from "../assets/apostille_ukr.jpg"
 import { IoWarningOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { GrContactInfo } from "react-icons/gr";
+import contact from "../assets/contact.jpg"
+import Typography from '@mui/material/Typography';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Link from '@mui/material/Link';
+
 
 const Apostille = () => {
 
@@ -19,7 +24,17 @@ const Apostille = () => {
 
     return (
         <>
+
         <div style={{padding: '1rem 2rem'}}>
+
+
+            <div role="presentation" className="profile-navigation">
+                <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/">Home</Link>
+                <Typography color="text.primary">Apostille</Typography>
+                </Breadcrumbs>
+            </div>
+
             <div className="main-translations-container">
 
             <div className="translations-section">
@@ -29,7 +44,7 @@ const Apostille = () => {
                         <div className="translations-section-title">
                             <h1 className="header-span">Apostille.</h1>
                         </div>
-                        <p>{t('dolmetschen')}</p>
+                        <p>{t('apostille')}</p>
                     </div>
             </div>
 
@@ -42,7 +57,7 @@ const Apostille = () => {
                             <h1>Was ist</h1>
                             <h1 className="header-span">eine Apostille?</h1>
                         </div>
-                        <p>{t('whatAreVerbalTranslations')}</p>
+                        <p>{t('wasIstApostille')}</p>
                     </div>
 
                     <img src={translations_second} alt="" className="second-image"/>
@@ -89,22 +104,23 @@ const Apostille = () => {
                 </div>
             </div>
 
-            <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
+            <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-            <div className="translations-contact-container">
+            <div className="translations-section">
 
-                    <div className="translations-contact-title">
-                        <h1 className="header-span">Kontaktieren</h1>
-                        <h1>Sie uns</h1>
-                    </div>
-
-                    <div className="translations-contact-text">
+                    <div className="translations-section-text">
+                        <div className="translations-section-title">
+                            <h1 className="header-span">Kontaktieren</h1>
+                            <h1>Sie uns</h1>
+                        </div>
                         <p>{t('translationsContact')}</p>
+                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
+
                     </div>
 
-                    <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
-
-                </div>
+                    <img src={contact} alt="" className="contact-image"/>
+                   
+            </div>
 
             </div>
         </div>
