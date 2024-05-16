@@ -34,15 +34,15 @@ const ServicesMenu: React.FC<Props> = ({ isOpened, setOpened }) => {
                 <div className="services-col">
                     <FaLanguage className="translate-icon"/>
                     <h5>{t('languages')}</h5>
-                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('german')}</p>
-                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('ukrainian')}</p>
-                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('russian')}</p>
+                    <p onClick={() => {navigate('/languages'); setOpened(false)}}>{t('german')}</p>
+                    <p onClick={() => {navigate('/languages'); setOpened(false)}}>{t('ukrainian')}</p>
+                    <p onClick={() => {navigate('/languages'); setOpened(false)}}>{t('russian')}</p>
                 </div>
 
                 <div className="services-col">
                     <TbTools className="translate-icon"/>
                     <h5>{t('expertise')}</h5>
-                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('pricesAndDocuments')}</p>
+                    <p onClick={() => {navigate('/pricing'); setOpened(false)}}>{t('pricesAndDocuments')}</p>
                     <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('expertise')}</p>
                     <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('faq')}</p>
                 </div>

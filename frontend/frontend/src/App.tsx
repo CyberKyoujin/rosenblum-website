@@ -18,6 +18,8 @@ import ContactUs from './screens/ContactUs';
 import Translations from "./screens/Translations";
 import VerbalTranslations from "./screens/VerbalTranslations";
 import Apostille from "./screens/Apostille";
+import Languages from "./screens/Languages";
+import Pricing from "./screens/Pricing";
 
 
 function App() {
@@ -53,6 +55,8 @@ function App() {
         <Route path='/sworn-translations' element={<Translations/>}/>
         <Route path='/verbal-translations' element={<VerbalTranslations/>}/>
         <Route path="/apostille" element={<Apostille/>}/>
+        <Route path="/languages" element={<Languages/>}/>
+        <Route path="/pricing" element={<Pricing/>}/>
       </Routes>
     </main>
   );
