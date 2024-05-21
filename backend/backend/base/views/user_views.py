@@ -132,7 +132,7 @@ class GoogleMapsReviewsView(APIView):
             google_response = response.json()
             reviews = google_response.get('result', {}).get('reviews', [])
             
-            print(reviews)
+        
             
             return Response(reviews, status=status.HTTP_200_OK)
         

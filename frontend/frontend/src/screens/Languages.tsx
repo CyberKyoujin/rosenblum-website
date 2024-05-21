@@ -13,7 +13,8 @@ import { GrContactInfo } from "react-icons/gr";
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
-
+import Section from "../components/Section"
+import ContactSection from "../components/ContactSection";
 
 const Languages = () => {
 
@@ -96,19 +97,8 @@ const Languages = () => {
 
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
-                <div className="translations-section">
+                <Section image={languages_first} imageClass="second-image" titleTextFirst="Warum die Sprachvielfalt" titleTextSecond="wichtig ist?" text="vielfalt" order={false}/>
 
-                    <div className="translations-section-text">
-                    <div className="translations-section-title">
-                            <h1>Warum die Sprachvielfalt</h1>
-                            <h1 className="header-span">wichtig ist?</h1>
-                        </div>
-                        <p>{t('vielfalt')}</p>
-                    </div>
-
-                    <img src={languages_first} alt="" className="second-image"/>
-
-                </div>
 
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
@@ -133,21 +123,7 @@ const Languages = () => {
 
                 <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-                <div className="translations-section">
-
-                    <div className="translations-section-text">
-                        <div className="translations-section-title">
-                            <h1 className="header-span">Kontaktieren</h1>
-                            <h1>Sie uns</h1>
-                        </div>
-                        <p>{t('translationsContact')}</p>
-                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
-
-                    </div>
-
-                    <img src={contact} alt="" className="contact-image"/>
-                   
-            </div>
+                <ContactSection text="translationsContact"/>
 
             </div>
             

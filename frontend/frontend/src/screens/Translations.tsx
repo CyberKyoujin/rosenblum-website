@@ -1,5 +1,5 @@
 import React from "react";
-import translations_first from '../assets/translations_first.png'
+import translations_first from '../assets/register_icon.jpg'
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
 import translations_second from "../assets/translations_second.jpg"
@@ -14,6 +14,8 @@ import contact from "../assets/contact.jpg"
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import Section from "../components/Section"
+import ContactSection from "../components/ContactSection";
 
 const Translations = () => {
 
@@ -23,7 +25,7 @@ const Translations = () => {
 
     return (
         <>
-        <div style={{padding: '1rem 2rem'}}>
+        <div style={{padding: '1rem 3rem'}}>
 
             <div role="presentation" className="profile-navigation">
                 <Breadcrumbs aria-label="breadcrumb">
@@ -35,36 +37,11 @@ const Translations = () => {
 
             <div className="main-translations-container">
 
-                <div className="translations-section">
-                    <img src={translations_first} alt="" className="first-image"/>
-
-                    <div className="translations-section-text">
-                        <div className="translations-section-title">
-                            <h1>Beglaubigte</h1>
-                            <h1 className="header-span">Übersetzungen.</h1>
-                        </div>
-                        <p>{t('translationsFirstSection')}</p>
-                    </div>
-
-                    
-
-                </div>
+                <Section image={translations_first} imageClass="first-image" titleTextFirst="Beglaubigte" titleTextSecond="Übersetzungen." text="translationsFirstSection" order={true}/>
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-                <div className="translations-section">
-
-                    <div className="translations-section-text">
-                    <div className="translations-section-title">
-                            <h1>Was sind</h1>
-                            <h1 className="header-span">beglaubigte Übersetzungen?</h1>
-                        </div>
-                        <p>{t('whatAreTranslations')}</p>
-                    </div>
-
-                    <img src={translations_second} alt="" className="second-image"/>
-
-                </div>
+                <Section image={translations_second} imageClass="second-image" titleTextFirst="Was sind" titleTextSecond="beglaubigte Übersetzungen?" text="whatAreTranslations" order={false}/>
 
                 <Divider style={{marginTop: '2rem', marginBottom: '3rem'}}/>
 
@@ -116,23 +93,8 @@ const Translations = () => {
 
                 <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-                <div className="translations-section">
+                <ContactSection text="translationsContact"/>
 
-                    <div className="translations-section-text">
-                        <div className="translations-section-title">
-                            <h1 className="header-span">Kontaktieren</h1>
-                            <h1>Sie uns</h1>
-                        </div>
-                        <p>{t('translationsContact')}</p>
-                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
-
-                    </div>
-
-                    <img src={contact} alt="" className="contact-image"/>
-                   
-                </div>
-
-                
                 
             </div>
         </div>

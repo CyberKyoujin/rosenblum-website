@@ -138,9 +138,12 @@ const useAuthStore = create<AuthState>((set,get) =>({
         try{
             const response = await axios.post('http://127.0.0.1:8000/user/login/google/', { access_token: accessToken });
             console.log("Successfully logged in with Google", response.data);
+            const userData = jwtDecode(response.data.access) as User;
+            get().setUser(userData);
             get().setTokens(response.data);
             console.log(response.status)
             if (response.status === 200){
+                window.location.href = '/order';
                 window.location.href = '/profile';
             }
         } catch (error: any) {
@@ -280,7 +283,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
         try{
             const response = await axios.get('http://127.0.0.1:8000/user/reviews');
             if (response.status === 200){
-                get().setReviews(response.data);
+                get().setReviews(response.data);  
             }
         } catch(error){
             console.error(error);

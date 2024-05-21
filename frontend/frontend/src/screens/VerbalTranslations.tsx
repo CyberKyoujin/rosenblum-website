@@ -14,6 +14,9 @@ import contact from "../assets/contact.jpg"
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import planetIcon from "../assets/smartphone_icon.jpg"
+import Section from "../components/Section"
+import ContactSection from "../components/ContactSection";
 
 
 const VerbalTranslations = () => {
@@ -23,7 +26,7 @@ const VerbalTranslations = () => {
 
     return (
         <>
-        <div style={{padding: '1rem 2rem'}}>
+        <div style={{padding: '1rem 3rem'}}>
 
 
             <div role="presentation" className="profile-navigation">
@@ -36,35 +39,11 @@ const VerbalTranslations = () => {
 
             <div className="main-translations-container">
 
-                <div className="translations-section">
-                    <img src={verbal_first} alt="" className="first-image verbal-first-image"/>
-
-                    <div className="translations-section-text">
-                        <div className="translations-section-title">
-                            <h1 className="header-span">Dolmetschen.</h1>
-                        </div>
-                        <p>{t('dolmetschen')}</p>
-                    </div>
-
-                    
-
-                </div>
+                <Section image={planetIcon} imageClass="first-image verbal-first-image" titleTextFirst="" titleTextSecond="Dolmetschen." text="dolmetschen" order={true}/>
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-                <div className="translations-section">
-
-                    <div className="translations-section-text">
-                    <div className="translations-section-title">
-                            <h1>Was ist</h1>
-                            <h1 className="header-span">Dolmetschen?</h1>
-                        </div>
-                        <p>{t('whatAreVerbalTranslations')}</p>
-                    </div>
-
-                    <img src={translations_second} alt="" className="second-image"/>
-
-                </div>
+                <Section image={translations_second} imageClass="second-image" titleTextFirst="Was ist" titleTextSecond="Dolmetschen?" text="whatAreVerbalTranslations" order={false}/>
 
                 <Divider style={{marginTop: '2rem', marginBottom: '3rem'}}/>
 
@@ -112,21 +91,7 @@ const VerbalTranslations = () => {
 
                 <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-                <div className="translations-section">
-
-                    <div className="translations-section-text">
-                        <div className="translations-section-title">
-                            <h1 className="header-span">Kontaktieren</h1>
-                            <h1>Sie uns</h1>
-                        </div>
-                        <p>{t('translationsContact')}</p>
-                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
-
-                    </div>
-
-                    <img src={contact} alt="" className="contact-image"/>
-                   
-                </div>
+                <ContactSection text="verbalTranslationsContact"/>
 
                 
             </div>

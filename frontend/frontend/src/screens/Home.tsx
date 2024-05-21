@@ -16,6 +16,17 @@ import { HiPhone } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../zustand/useAuthStore";
+import { translateReviews } from "../utils/TranslationService";
+
+interface Review {
+    author_name: string;
+    author_url: string;
+    profile_photo_url: string;
+    rating: number;
+    relative_time_description: string;
+    text: string;
+}
+
 
 const Home = () => {
 
@@ -26,6 +37,8 @@ const Home = () => {
   const [languages, setLanguages] = useState<number>(0);
 
   const { fetchReviews, reviews } = useAuthStore.getState();
+
+  const [translatedReviews, setTranslatedReviews] = useState<Review[]>([]);
 
   const navigate = useNavigate();
 
@@ -46,12 +59,29 @@ const Home = () => {
   };
 
   useEffect(() => {
-    
     fetchReviews();
-
   }, [])
 
-  console.log(reviews);
+  useEffect(() => {
+    
+    const translate = async () => {
+        try {
+            if (reviews){
+            const translated = await translateReviews(reviews);
+            setTranslatedReviews(translated);
+            }
+        } catch (error) {
+            console.error('Error translating reviews:', error);
+        }
+    };
+
+    translate();
+
+  }, [reviews])
+
+
+  console.log(translatedReviews);
+
 
   useEffect(() => {
     animateCounter(0, 8, 3000, setYears); 
@@ -131,15 +161,15 @@ const Home = () => {
 
         <div className="slider-container">
             <CustomSlider>
-                { reviews?.map((review, index) => (
+                { translatedReviews.map((review, index) => (
                     <div className="review-container" key={index}>
                         <div className="review-header">
                             <img src={review.profile_photo_url} alt="" />
                             <h3>{review.author_name}</h3>
-                            <Rating name="read-only" value={5} readOnly />
+                            <Rating name="read-only" value={review.rating} readOnly />
                         </div>
                         <div className="review-text">
-                            <p style={{fontSize: '14px'}}>{review.text}</p>
+                            <p style={{fontSize: '14px'}}>{review?.text.length > 400 ? `${review.text.slice(0, 400)}...` : review.text}</p>
                         </div>
                     </div>
                 ))}
