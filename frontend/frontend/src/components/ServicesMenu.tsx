@@ -43,8 +43,8 @@ const ServicesMenu: React.FC<Props> = ({ isOpened, setOpened }) => {
                     <TbTools className="translate-icon"/>
                     <h5>{t('expertise')}</h5>
                     <p onClick={() => {navigate('/pricing'); setOpened(false)}}>{t('pricesAndDocuments')}</p>
-                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('expertise')}</p>
-                    <p onClick={() => {navigate('/sworn-translations'); setOpened(false)}}>{t('faq')}</p>
+                    <p onClick={() => {navigate('/areas'); setOpened(false)}}>{t('expertise')}</p>
+                    <p onClick={() => {navigate('/faq'); setOpened(false)}}>{t('faq')}</p>
                 </div>
                 
             </div>

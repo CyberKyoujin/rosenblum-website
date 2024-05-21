@@ -20,7 +20,8 @@ import VerbalTranslations from "./screens/VerbalTranslations";
 import Apostille from "./screens/Apostille";
 import Languages from "./screens/Languages";
 import Pricing from "./screens/Pricing";
-
+import Areas from "./screens/Areas";
+import Faq from "./screens/FAQ";
 
 function App() {
   const authStore = useAuthStore();
@@ -36,6 +37,8 @@ function App() {
 
     return () => clearInterval(refreshTokenInterval);
   }, [authStore]);
+
+  console.log(authStore.user?.profile_img_url);
 
   return (
     <main>
@@ -57,6 +60,8 @@ function App() {
         <Route path="/apostille" element={<Apostille/>}/>
         <Route path="/languages" element={<Languages/>}/>
         <Route path="/pricing" element={<Pricing/>}/>
+        <Route path="/areas" element={<Areas/>}/>
+        <Route path="/faq" element={<Faq/>}/>
       </Routes>
     </main>
   );
