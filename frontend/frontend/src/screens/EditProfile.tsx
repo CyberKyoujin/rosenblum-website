@@ -8,6 +8,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 import defaultAvatar from '../assets/default_avatar.png'
+import { useTranslation } from 'react-i18next';
 
 interface UserData {
   phone_number?: string;
@@ -31,6 +32,7 @@ const EditProfile = () => {
   const profileImg = user?.profile_img_url || userData?.image_url || '';
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -74,11 +76,11 @@ const EditProfile = () => {
         <div className="profile-title-container">
           <div style={{display: 'flex', gap: '0.5rem'}}>
             <RiEdit2Fill size={40} style={{ color: 'rgb(76, 121, 212)' }} />
-            <h1>Profil</h1>
-            <h1 className="header-span">bearbeiten</h1>
+            <h1>{t('editProfileFirst')}</h1>
+            <h1 className="header-span">{t('editProfileSecond')}</h1>
           </div>
           <div className='cancel-container'>
-             <p onClick={() => navigate('/profile')}>Abbrechen</p>
+             <p onClick={() => navigate('/profile')}>{t('cancel')}</p>
           </div>
         </div>
 
@@ -100,14 +102,14 @@ const EditProfile = () => {
             </div>
 
             <div className="edit-form">
-              <TextField required id="phone-number" type="number" label={!phoneNumber ? "Telefonnummer" : undefined} variant="outlined" fullWidth value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
-              <TextField required id="city" label={!city ? "Stadt" : undefined} variant="outlined" fullWidth value={city} onChange={(e) => setCity(e.target.value)} />
-              <TextField required id="street" label={!street ? "Straße" : undefined} variant="outlined" fullWidth value={street} onChange={(e) => setStreet(e.target.value)} />
-              <TextField required id="zip" type="number" label={!zip ? "PLZ" : undefined} variant="outlined" fullWidth value={zip} onChange={(e) => setZip(e.target.value)} />
+              <TextField required id="phone-number" type="number" label={!phoneNumber ? t('phoneNumber') : undefined} variant="outlined" fullWidth value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+              <TextField required id="city" label={!city ? t('city') : undefined} variant="outlined" fullWidth value={city} onChange={(e) => setCity(e.target.value)} />
+              <TextField required id="street" label={!street ? t('street') : undefined} variant="outlined" fullWidth value={street} onChange={(e) => setStreet(e.target.value)} />
+              <TextField required id="zip" type="number" label={!zip ? t('zip') : undefined} variant="outlined" fullWidth value={zip} onChange={(e) => setZip(e.target.value)} />
             </div>
           </div>
 
-          <button type="submit" className="confirm-btn hover-btn" style={{ width: '100%' }}>Speichern</button>
+          <button type="submit" className="confirm-btn hover-btn" style={{ width: '100%' }}>{t('save')}</button>
         </form>
       </div>
     </div>

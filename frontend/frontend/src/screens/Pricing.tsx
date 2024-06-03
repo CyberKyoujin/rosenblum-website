@@ -24,8 +24,8 @@ const Pricing = () => {
             <div className="main-pricing-container">
 
                 <div className="pricing-title">
-                        <h1>Unsere</h1>
-                        <h1 className="header-span">Preise</h1>
+                        <h1>{t('our')}</h1>
+                        <h1 className="header-span">{t('prices')}</h1>
                 </div>
 
                 <div className="pricing-container">
@@ -34,18 +34,18 @@ const Pricing = () => {
                         <div className="pricing-card-header">
                             <h1>35,30€</h1>
                             <p className="tax">inkl. MwSt.</p>
-                            <p>/Dokument</p>
+                            <p>{"/ " + t('document')}</p>
                         </div>
                         <div className="pricing-card-description">
-                            <p>Standarddokumente, deren Textumfang in der Regel gleichbleibend ist.</p>
+                            <p>{t('standardDocuments')}</p>
                         </div>
                         <div className="pricing-card-bottom">
                             <div className="pricing-card-list">
-                                <p><HiBadgeCheck className="check-icon"/> Geburtsurkunden</p>
-                                <p><HiBadgeCheck className="check-icon"/> Heiratsurkunden</p>
-                                <p><HiBadgeCheck className="check-icon"/> Meldebescheinigungen</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('birth')}</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('marry')}</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('registration')}</p>
                             </div>
-                            <button className="offer-btn hover-btn" onClick={() => navigate('/order')}>ANGEBOT</button>
+                            <button className="offer-btn hover-btn" onClick={() => navigate('/order')}>{t('offer')}</button>
                         </div>
                     </div>
 
@@ -53,38 +53,38 @@ const Pricing = () => {
                         <div className="pricing-card-header">
                             <h1>1,40€</h1>
                             <p className="tax">inkl. MwSt.</p>
-                            <p>/ Zeile</p>
+                            <p>/ {t('line')}</p>
                         </div>
                         <div className="pricing-card-description">
-                            <p>Dokumente mit variablem Textumfang, deren Preis nach dem Umfang des fertigen Übersetzungstextes berechnet wird.</p>
+                            <p>{t('variableDocuments')}</p>
                         </div>
                         <div className="pricing-card-bottom">
                             <div className="pricing-card-list">
-                                <p><HiBadgeCheck className="check-icon"/> Arbietsbuch</p>
-                                <p><HiBadgeCheck className="check-icon"/> Bildungsdokumente</p>
-                                <p><HiBadgeCheck className="check-icon"/> Bescheinigungen</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('workBook')}</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('educationDocuments')}</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('certificates')}</p>
                             </div>
-                            <button className="offer-btn hover-btn" onClick={() => navigate('/order')}>ANGEBOT</button>
+                            <button className="offer-btn hover-btn" onClick={() => navigate('/order')}>{t('offer')}</button>
                         </div>
                     </div>
 
                     <div className="pricing-item pricing-item-blue">
                         <div className="pricing-card-header">
-                            <h1>Auf Anfrage</h1>
+                            <h1>{t('uponRequest')}</h1>
     
                         </div>
 
                         <div className="pricing-card-description">
-                            <p>Dokumente mit komplexem Inhalt, deren Preis jeweils individuell berechnet wird.</p>
+                            <p>{t('complicatedDocuments')}</p>
                         </div>
 
                         <div className="pricing-card-bottom">
                             <div className="pricing-card-list">
-                                <p><HiBadgeCheck className="check-icon"/> Diplome</p>
-                                <p><HiBadgeCheck className="check-icon"/> Gerichtsurteile</p>
-                                <p><HiBadgeCheck className="check-icon"/> Medizinische Befunde</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('diploma')}</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('court')}</p>
+                                <p><HiBadgeCheck className="check-icon"/> {t('findings')}</p>
                             </div>
-                            <button className="offer-btn hover-btn" onClick={() => navigate('/order')}>ANGEBOT</button>
+                            <button className="offer-btn hover-btn" onClick={() => navigate('/order')}>{t('offer')}</button>
                         </div>
                     </div>
 
@@ -93,7 +93,7 @@ const Pricing = () => {
                 <Divider style={{marginTop: '4rem'}}/>
                 
 
-                <Section image={pricing_first} imageClass="second-image" titleTextFirst="Qualität und" titleTextSecond="Zufriedenheit" text="qualityAndHappiness" order={true}/>
+                <Section image={pricing_first} imageClass="second-image" titleTextFirst={t('quality')} titleTextSecond={t('satisfaction')} text="qualityAndHappiness" order={true}/>
 
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>

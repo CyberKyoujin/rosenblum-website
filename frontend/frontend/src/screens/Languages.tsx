@@ -37,8 +37,8 @@ const Languages = () => {
                 <div className="languages-section">
 
                     <div className="languages-section-title">
-                        <h1>Unser</h1>
-                        <h1 className="header-span">Sprachportfolio</h1>
+                        <h1>{t('ourTwo')}</h1>
+                        <h1 className="header-span">{t('languagePortfolio')}</h1>
                     </div>
 
                     <div className="languages-items">
@@ -50,13 +50,13 @@ const Languages = () => {
                                         <img src={de} alt="Deutsch" />
                                     </div>
                                     <div className="flip-card-back">
-                                        <p>Mehr als</p>
+                                        <p>{t('moreThan')}</p>
                                         <p style={{fontWeight: 'bold', color: 'RGB(44 100 213)'}}>2000</p>
-                                        <p>Übersetzungen</p>
+                                        <p>{t('translationsTwo')}</p>
                                     </div>
                                 </div>
                             </div>
-                            <p>Deutsch</p>
+                            <p>{t('german')}</p>
                         </div>
 
                         <div className="languages-item">
@@ -66,13 +66,13 @@ const Languages = () => {
                                         <img src={ua} alt="Ukrainisch" />
                                     </div>
                                     <div className="flip-card-back">
-                                        <p>Mehr als</p>
+                                        <p>{t('moreThan')}</p>
                                         <p style={{fontWeight: 'bold', color: 'RGB(44 100 213)'}}>5000</p>
-                                        <p>Übersetzungen</p>
+                                        <p>{t('translationsTwo')}</p>
                                     </div>
                                 </div>
                             </div>
-                            <p>Ukrainisch</p>
+                            <p>{t('ukrainian')}</p>
                         </div>
 
                         <div className="languages-item">
@@ -82,13 +82,13 @@ const Languages = () => {
                                         <img src={ru} alt="Russisch" />
                                     </div>
                                     <div className="flip-card-back">
-                                        <p>Mehr als</p>
+                                        <p>{t('moreThan')}</p>
                                         <p style={{fontWeight: 'bold', color: 'RGB(44 100 213)'}}>1000</p>
-                                        <p>Übersetzungen</p>
+                                        <p>{t('translationsTwo')}</p>
                                     </div>
                                 </div>
                             </div>
-                            <p>Russisch</p>
+                            <p>{t('russian')}</p>
                         </div>
 
                     </div>
@@ -97,7 +97,7 @@ const Languages = () => {
 
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
-                <Section image={languages_first} imageClass="second-image" titleTextFirst="Warum die Sprachvielfalt" titleTextSecond="wichtig ist?" text="vielfalt" order={false}/>
+                <Section image={languages_first} imageClass="second-image" titleTextFirst={t('whyDiversity')} titleTextSecond={t('importantIs')} text="vielfalt" order={false}/>
 
 
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
@@ -108,8 +108,8 @@ const Languages = () => {
 
                     <div className="translations-section-text">
                             <div className="translations-section-title">
-                                <h1>Unsere</h1>
-                                <h1 className="header-span">Verpflichtung</h1>
+                                <h1>{t('our')}</h1>
+                                <h1 className="header-span">{t('responsibility')}</h1>
                             </div>
                             <ol className="services-list" style={{lineHeight: '25px', fontSize: '18px', marginLeft: '1rem'}}>
                                 <li><span>{t('qualitatTitle')}</span>{t('qualitat')}</li>

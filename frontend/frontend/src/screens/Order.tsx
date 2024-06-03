@@ -23,6 +23,8 @@ import orderStore from "../zustand/orderStore";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 
 
 const Order = () => {
@@ -39,6 +41,7 @@ const Order = () => {
     const [buttonDisabled, setButtonDisabled] = useState(false);
 
     const navigate = useNavigate();
+    const {t} = useTranslation();
 
     const [dragging, setDragging] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -140,8 +143,8 @@ const Order = () => {
 
                 <div className="order-title">
                     <div className="order-title-text">
-                        <h1>Unterlagen</h1>
-                        <h1 className="header-span">absenden</h1>
+                        <h1>{t('documents')}</h1>
+                        <h1 className="header-span">{t('sendSmall')}</h1>
                     </div>
                     <div>
                         <img src={sendIcon} alt="" className="send-icon"/>
@@ -154,20 +157,20 @@ const Order = () => {
                     <div className="step-number">
                         <GrContactInfo style={{fontSize: '30px'}}/>
                     </div>
-                    <h1>Kontaktdaten</h1>
+                    <h1>{t('contactInformation')}</h1>
                 </div>
 
                 <div className="order-contacts-content">
-                    <TextField required id="outlined-basic" label={name ? "" : 'Name'} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
-                    <TextField required id="outlined-basic" label={email ? "" : 'Email'} variant="outlined" style={{width: '100%'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <TextField required id="outlined-basic" label={name ? "" : t('name')} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
+                    <TextField required id="outlined-basic" label={email ? "" : t('email')} variant="outlined" style={{width: '100%'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <div className={showNotification ? "phone-notification show-notification" : 'phone-notification'}>
                         <IoWarningOutline className="warning-icon"/>
-                        <p>Bitte geben Sie nur eine deutsche Telefonnummer ein !</p>
+                        <p>{t('onlyGerman')}</p>
                     </div>
-                    <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : 'Telefonnummer'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
-                    <TextField value={city} required id="outlined-basic" label={city ? "" : 'Stadt'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setCity(e.target.value)}/>
-                    <TextField value={street} required id="outlined-basic" label={street ? "" : 'Straße'} variant="outlined" style={{width: '100%'}} onChange={(e) => setStreet(e.target.value)}/>
-                    <TextField value={plz} type="number" required id="outlined-basic" label={plz ? "" : 'PLZ'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setPlz(e.target.value)}/>
+                    <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : t('phoneNumber')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
+                    <TextField value={city} required id="outlined-basic" label={city ? "" : t('city')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setCity(e.target.value)}/>
+                    <TextField value={street} required id="outlined-basic" label={street ? "" : t('street')} variant="outlined" style={{width: '100%'}} onChange={(e) => setStreet(e.target.value)}/>
+                    <TextField value={plz} type="number" required id="outlined-basic" label={plz ? "" : t('zip')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setPlz(e.target.value)}/>
                 </div>
 
                 <Divider flexItem orientation="horizontal" style={{height: '32px', marginTop: '1rem'}}/>
@@ -178,7 +181,7 @@ const Order = () => {
                         <BiSolidMessageDetail style={{fontSize: '30px', marginTop: '3px'}}/>
                     </div>
                    
-                    <h1>Ihre Nachricht</h1>
+                    <h1>{t('yourMessageSecond')}</h1>
 
                 </div>
 
@@ -191,7 +194,7 @@ const Order = () => {
                         >
                         <Typography style={{display: 'flex', color: 'rgb(49, 97, 192)', alignItems: 'center', gap: '1rem'}}>
                             <IoWarningOutline className="warning-icon"/> 
-                            <p>Geben Sie bitte die Schreibwiesen von Namen,die in Dokumenten anwesend sind (falls vorhanden)</p>
+                            <p>{t('spelling')}</p>
                         </Typography>
                         </AccordionSummary>
                         <AccordionDetails style={{padding: '1rem 3rem 2rem 3rem'}}>
@@ -209,7 +212,7 @@ const Order = () => {
                 </div>
 
                 <div className="order-contacts-content">
-                    <TextField type="number" multiline label="Ihre Nachricht..." variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
+                    <TextField type="number" multiline label={t('yourMessage')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
                 </div>
 
                 <Divider flexItem orientation="horizontal" style={{height: '32px', marginTop: '1rem'}}/>
@@ -218,12 +221,12 @@ const Order = () => {
                     <div className="step-number">
                         <PiUploadFill style={{fontSize: '30px'}}/>
                     </div>
-                    <h1>Dokumente herunterladen</h1>
+                    <h1>{t('uploadDocuments')}</h1>
                 </div>
 
                 <div className="phone-notification show-notification" style={{marginTop: '2rem'}}>
                         <IoWarningOutline className="warning-icon"/>
-                        <p>Laden Sie bitte nur qualitative Photos und leserliche Unterlagen herunter !</p>
+                        <p>{t('qualityDocuments')}</p>
                 </div>
                 
 
@@ -236,7 +239,7 @@ const Order = () => {
                         className="file-upload"
                           >
                         <PiUploadFill style={{fontSize: '50px', color: 'rgb(76, 121, 212)'}}/>
-                        <p style={{fontSize: '20px'}}>Dateien zum Hochladen hierher ziehen oder klicken</p>
+                        <p style={{fontSize: '20px'}}>{t('uploadArea')}</p>
                     </div>
 
                     <input
@@ -263,7 +266,7 @@ const Order = () => {
                         )}
                         
                     </div>
-                    <button type="submit" className="send-btn hover-btn" disabled={buttonDisabled}>ABSENDEN<IoSendSharp/></button>
+                    <button type="submit" className="send-btn hover-btn" disabled={buttonDisabled}>{t('send')}<IoSendSharp/></button>
 
                 </div>
 

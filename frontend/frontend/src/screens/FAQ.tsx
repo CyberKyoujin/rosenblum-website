@@ -50,7 +50,7 @@ const Faq = () => {
                
                 <div className="faq-title">
                     <h1 className="header-span">FAQ</h1>
-                    <h1 className="faq-title-description">(Häufig gestellte Fragen)</h1>
+                    <h1 className="faq-title-description">{"(" + t('questions') + ")"}</h1>
                 </div>
                 
 
@@ -67,7 +67,7 @@ const Faq = () => {
                         <Typography>
                             {t('accordionTextFirst')}
                             <p style={{marginTop: '1rem'}}><span style={{fontWeight: 'bold'}}>Email:</span> olegrosenblum@freenet.de</p>
-                            <button className="accordion-btn hover-btn"><MdLocalOffer style={{fontSize: '25px'}}/> ANGEBOT ANFORDERN</button>
+                            <button className="accordion-btn hover-btn"><MdLocalOffer style={{fontSize: '25px'}}/>{t('offer')}</button>
                         </Typography>
                         </StyledAccordionDetails>
                     </StyledAccordion>
@@ -98,7 +98,7 @@ const Faq = () => {
                         <StyledAccordionDetails>
                         <Typography>
                             {t('accordionTextThird')}
-                            <button className="accordion-btn hover-btn" onClick={() => navigate('/languages')}><FaLanguage style={{fontSize: '25px'}}/> UNSERE SPRACHEN</button>
+                            <button className="accordion-btn hover-btn" onClick={() => navigate('/languages')}><FaLanguage style={{fontSize: '25px'}}/> {t('ourLanguages')}</button>
                         </Typography>
                         </StyledAccordionDetails>
                     </StyledAccordion>
@@ -114,7 +114,7 @@ const Faq = () => {
                         <StyledAccordionDetails>
                         <Typography>
                             {t('accordionTextFourth')}
-                            <button className="accordion-btn hover-btn" onClick={() => navigate('/pricing')}><RiMoneyEuroCircleFill style={{fontSize: '25px'}}/> UNSERE PREISE</button>
+                            <button className="accordion-btn hover-btn" onClick={() => navigate('/pricing')}><RiMoneyEuroCircleFill style={{fontSize: '25px'}}/>{t('ourPrices')}</button>
                         </Typography>
                         </StyledAccordionDetails>
                     </StyledAccordion>
@@ -130,7 +130,7 @@ const Faq = () => {
                         <StyledAccordionDetails>
                         <Typography>
                             {t('accordionTextFifth')}
-                            <button className="accordion-btn hover-btn" onClick={() => navigate('/sworn-translations')}><SiGoogletranslate style={{fontSize: '25px'}}/> BEGLAUBIGTE ÜBERSETZUNGEN</button>
+                            <button className="accordion-btn hover-btn" onClick={() => navigate('/sworn-translations')}><SiGoogletranslate style={{fontSize: '25px', textTransform:'capitalize'}}/>{t('sworn_translations')}</button>
                         </Typography>
                         </StyledAccordionDetails>
                     </StyledAccordion>
@@ -161,7 +161,7 @@ const Faq = () => {
                         <StyledAccordionDetails>
                         <Typography>
                             {t('accordionTextSeventh')}
-                            <button className="accordion-btn hover-btn" onClick={() => navigate('/sworn-translations')}><SiGoogletranslate style={{fontSize: '25px'}}/> DOLMETSCHEN</button>
+                            <button className="accordion-btn hover-btn" onClick={() => navigate('/sworn-translations')}><SiGoogletranslate style={{fontSize: '25px'}}/>{t('verbalTranslations')}</button>
                         </Typography>
                         </StyledAccordionDetails>
                     </StyledAccordion>
@@ -177,7 +177,7 @@ const Faq = () => {
                         <StyledAccordionDetails>
                         <Typography>
                             {t('accordionTextEights')}
-                            <button className="accordion-btn hover-btn" onClick={() => navigate('/contact-us')}><RiContactsFill style={{fontSize: '25px'}}/> KONTAKT AUFNEHMEN</button>
+                            <button className="accordion-btn hover-btn" onClick={() => navigate('/contact-us')}><RiContactsFill style={{fontSize: '25px'}}/>{t('contactUs')}</button>
                         </Typography>
                         </StyledAccordionDetails>
                     </StyledAccordion>
@@ -203,11 +203,11 @@ const Faq = () => {
                 <div className="faq-section">
                     <div className="faq-section-text">
                         <div className="faq-section-title">
-                            <h1>Haben Sie noch</h1>
-                            <h1 className="header-span">Fragen?</h1>
+                            <h1>{t('have')}</h1>
+                            <h1 className="header-span">{t('questionsTwo')}</h1>
                         </div>
                         <p>{t('faqText')}</p>
-                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
+                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>
                     </div>
                     <img src={quality} alt="" className="faq-section-image"/>
                 </div>

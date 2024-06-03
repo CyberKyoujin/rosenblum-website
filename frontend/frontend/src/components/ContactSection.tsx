@@ -19,11 +19,11 @@ const ContactSection: React.FC<ContactSectionProps> = ({text}) => {
 
                     <div className="translations-section-text">
                         <div className="translations-section-title">
-                            <h1 className="header-span">Kontaktieren</h1>
-                            <h1>Sie uns</h1>
+                            <h1 className="header-span">{t('contactUs')}</h1>
+                            <h1>{t('us')}</h1>
                         </div>
                         <p>{t(text)}</p>
-                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
+                        <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>
 
                     </div>
 
