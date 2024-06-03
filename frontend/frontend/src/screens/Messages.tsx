@@ -14,6 +14,7 @@ import { FaFile } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import { useTranslation } from "react-i18next";
 
 
 const Messages = () => {
@@ -28,6 +29,8 @@ const Messages = () => {
     const fileInputRef = useRef(null);
 
     const [isLoading, setIsLoading] = useState(false);
+
+    const { t } = useTranslation();
 
     useEffect(() => {
         fetchUserData();
@@ -126,8 +129,8 @@ const Messages = () => {
             <div className="messages-title-container">
                 <SiGooglemessages style={{fontSize: '45px', color: 'rgb(76, 121, 212)'}}/>
                 <div style={{display: 'flex', gap: '0.5rem'}}>
-                    <h1>Ihre</h1>
-                    <h1 className="header-span">Nachrichten</h1>  
+                    <h1>{t('messagesTitleFirst')}</h1>
+                    <h1 className="header-span">{t('messagesTitleSecond')}</h1>  
                 </div>
             </div>
 

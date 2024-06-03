@@ -9,8 +9,6 @@ import apostille from "../assets/apostille.jpg"
 import apostille_ukr from "../assets/apostille_ukr.jpg"
 import { IoWarningOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { GrContactInfo } from "react-icons/gr";
-import contact from "../assets/contact.jpg"
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
@@ -38,11 +36,11 @@ const Apostille = () => {
 
             <div className="main-translations-container">
 
-            <Section image={apostille_first} imageClass="first-image verbal-first-image" titleTextFirst="" titleTextSecond="Apostille." text="apostille" order={true}/>
+            <Section image={apostille_first} imageClass="first-image verbal-first-image" titleTextFirst="" titleTextSecond={t('appostile')} text="apostille" order={true}/>
 
             <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-            <Section image={translations_second} imageClass="second-image" titleTextFirst="Was ist" titleTextSecond="eine Apostille?" text="wasIstApostille" order={false}/>
+            <Section image={translations_second} imageClass="second-image" titleTextFirst={t('whatIs')} titleTextSecond={t('oneApostille') + " ?"} text="wasIstApostille" order={false}/>
 
             <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
@@ -52,8 +50,8 @@ const Apostille = () => {
 
                 <div className="translations-section-text">
                         <div className="translations-section-title">
-                            <h1>Wann benötigen Sie</h1>
-                            <h1 className="header-span">eine Apostille?</h1>
+                            <h1>{t('whenYouNeed')}</h1>
+                            <h1 className="header-span">{t('oneApostille') + " ?"}</h1>
                         </div>
                         <ol className="services-list" style={{lineHeight: '25px', fontSize: '18px', marginLeft: '1rem'}}>
                             <li><span>{t('rechtsdokumenteTitle')}</span>{t('rechtsdokumente')}</li>
@@ -69,8 +67,8 @@ const Apostille = () => {
 
             <div className="apostille-section">
                 <div className="apostille-section-title">
-                    <h1>Wie sieht</h1>
-                    <h1 className="header-span">eine Apostille aus?</h1>
+                    <h1>{t('howLooksLike')}</h1>
+                    <h1 className="header-span">{t('oneApostilleLooks') + " ?"}</h1>
                 </div>
 
                 <div className="apostille-images">
@@ -80,7 +78,7 @@ const Apostille = () => {
 
                 <div className="apostille-notification">
                         <IoWarningOutline className="warning-icon"/>
-                        <p>Wir können eine Apostille nur auf die Unterlagen stellen, die in Osnabrück oder im Landkreis Osnabrück ausgestellt wurden !</p>
+                        <p>{t('weCanApostille')}</p>
                 </div>
             </div>
 

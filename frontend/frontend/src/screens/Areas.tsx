@@ -21,8 +21,8 @@ const Areas = () => {
         <div style={{margin: '1rem 2rem'}}>
             <div className="areas-main-container">
                 <div className="areas-title">
-                    <h1>Unsere</h1>
-                    <h1 className="header-span">Fachgebiete</h1>
+                    <h1>{t('our')}</h1>
+                    <h1 className="header-span">{t('areasTitle')}</h1>
                 </div>
 
                 <div className="areas-section">
@@ -38,7 +38,7 @@ const Areas = () => {
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">
-                            <h1 className="header-span"><VscLaw/> Recht</h1>
+                            <h1 className="header-span"><VscLaw/> {t('law')}</h1>
                         </div>
 
                         <div className="areas-item">
@@ -58,7 +58,7 @@ const Areas = () => {
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">
-                            <h1 className="header-span"><RiMedicineBottleFill/> Medizin</h1>
+                            <h1 className="header-span"><RiMedicineBottleFill/> {t('medicine')}</h1>
                         </div>
 
                         <div className="areas-item">
@@ -83,7 +83,7 @@ const Areas = () => {
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">
-                            <h1 className="header-span"><FaBook/> Bildung</h1>
+                            <h1 className="header-span"><FaBook/> {t('education')}</h1>
                         </div>
 
                         <div className="areas-item">

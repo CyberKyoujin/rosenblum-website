@@ -39,19 +39,19 @@ const VerbalTranslations = () => {
 
             <div className="main-translations-container">
 
-                <Section image={planetIcon} imageClass="first-image verbal-first-image" titleTextFirst="" titleTextSecond="Dolmetschen." text="dolmetschen" order={true}/>
+                <Section image={planetIcon} imageClass="first-image verbal-first-image" titleTextFirst="" titleTextSecond={t('verbalTranslations')} text="dolmetschen" order={true}/>
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-                <Section image={translations_second} imageClass="second-image" titleTextFirst="Was ist" titleTextSecond="Dolmetschen?" text="whatAreVerbalTranslations" order={false}/>
+                <Section image={translations_second} imageClass="second-image" titleTextFirst={t('whatIs')} titleTextSecond={t('verbalTranslations') + " ?"} text="whatAreVerbalTranslations" order={false}/>
 
                 <Divider style={{marginTop: '2rem', marginBottom: '3rem'}}/>
 
                 <div className="translations-services">
 
                     <div className="translations-services-title">
-                        <h2 className="header-span">Unsere Dolmetschdienste</h2>
-                        <h2>umfassen:</h2>
+                        <h2 className="header-span">{t('ourSwornServices')}</h2>
+                        <h2>{t('include')}</h2>
                     </div>
 
                     <div className="translations-services-content">
@@ -73,13 +73,13 @@ const VerbalTranslations = () => {
                         <div className="translations-process-title">
                             <img src={gears} alt="" style={{width: '70px'}}/>
                            
-                            <h1 className="header-span">So funktionert</h1>
-                            <h1>es.</h1>
+                            <h1 className="header-span">{t('soWorks')}</h1>
+                            <h1>{t('it')}</h1>
                            
                         </div>
                         <ol className="services-list" style={{lineHeight: '25px', fontSize: '18px', marginLeft: '2rem'}}>
                             <li><span>{t('kontaktaufnahmeTitle')}</span>{t('kontaktaufnahme')}</li>
-                            <button className="hover-btn services-send-btn" onClick={() => navigate('/contact-us')}>KONTAKT AUFNEHMEN<FaArrowRightLong/></button>
+                            <button className="hover-btn services-send-btn" onClick={() => navigate('/contact-us')}>{t('contactUsFull')}<FaArrowRightLong/></button>
                             <li><span>{t('planungTitle')}</span>{t('planung')}</li>
                             <li><span>{t('übersetzungTitle')}</span>{t('übersetzung')}</li>
                             <li><span>{t('einsatzTitle')}</span>{t('einsatz')}</li>

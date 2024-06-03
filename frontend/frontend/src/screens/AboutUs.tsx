@@ -11,12 +11,14 @@ import { useNavigate } from "react-router-dom";
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
+import { useTranslation } from "react-i18next";
 
 
 const AboutUs = () => {
 
 
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     return(
         <>
@@ -36,10 +38,10 @@ const AboutUs = () => {
                     <img src={connect} alt="" />
                     <div className="about-text">
                         <div className="about-header">
-                            <h1>Über</h1>
-                            <h1 className="header-span">uns</h1>
+                            <h1>{t('aboutUsFirst')}</h1>
+                            <h1 className="header-span">{t('aboutUsSecond')}</h1>
                         </div>
-                        <p>Willkommen bei Rosenblum Übersetzungsbüro, Ihrem vertrauenswürdigen Partner für professionelle Sprachdienstleistungen. Seit unserer Gründung im Jahr 2016 haben wir es uns zur Aufgabe gemacht, die Kommunikationsbarrieren zwischen unterschiedlichen Kulturen und Sprachen zu überwinden.</p>
+                        <p>{t('aboutUsText')}</p>
                     </div>
                 </div>
 
@@ -48,10 +50,10 @@ const AboutUs = () => {
                 <div className="about-container about-container-gap">
                     <div className="about-text">
                         <div className="about-header">
-                            <h1>Unser</h1>
-                            <h1 className="header-span">Team</h1>
+                            <h1>{t('teamFirst')}</h1>
+                            <h1 className="header-span">{t('teamSecond')}</h1>
                         </div>
-                        <p>Unser Team besteht aus erfahrenen und qualifizierten Übersetzern und Dolmetschern, die sich durch ihre Leidenschaft für Sprachen und interkulturelle Kommunikation auszeichnen. Alle unsere Fachkräfte sind muttersprachlich und verfügen über branchenspezifische Kenntnisse, um die Genauigkeit und Relevanz jeder Übersetzung zu gewährleisten.</p>
+                        <p>{t('teamText')}</p>
                     </div>
                     <img src={team} alt=""/>
                 </div>
@@ -62,10 +64,10 @@ const AboutUs = () => {
                     <img src={mission} alt=""/>
                     <div className="about-text">
                         <div className="about-header">
-                            <h1>Unsere</h1>
-                            <h1 className="header-span">Mission</h1>
+                            <h1>{t('missionFirst')}</h1>
+                            <h1 className="header-span">{t('missionSecond')}</h1>
                         </div>
-                        <p>Unsere Mission ist es, Ihnen präzise und kulturell angepasste Übersetzungen zu bieten, die Ihre Botschaft weltweit verständlich und wirkungsvoll übermitteln. Wir verstehen, dass jede Übersetzung einzigartig ist, und setzen unser Fachwissen ein, um Lösungen zu bieten, die genau auf Ihre Bedürfnisse zugeschnitten sind.</p>
+                        <p>{t('missionText')}</p>
                     </div>
                 </div>
 
@@ -74,15 +76,15 @@ const AboutUs = () => {
                 <div className="about-container about-container-gap">
                     <div className="about-text">
                         <div className="about-header">
-                            <h1>Warum</h1>
-                            <h1 className="header-span">Rosenblum?</h1>
+                            <h1>{t('whyUsFirst')}</h1>
+                            <h1 className="header-span">{t('whyUsSecond')}</h1>
                         </div>
-                        <p>Bei Rosenblum Übersetzungsbüro stehen Qualität und Kundenzufriedenheit an erster Stelle. Wir nutzen modernste Technologien und Arbeitsmethoden, um die Effizienz unserer Prozesse zu steigern und Ihnen schnelle Turnaround-Zeiten zu bieten. Unsere strengen Qualitätskontrollverfahren stellen sicher, dass jedes Projekt unseren hohen Standards entspricht.</p>
+                        <p>{t('whyUsText')}</p>
                     </div>
                     <img src={quality} alt=""/>
                 </div>
 
-                <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')}><GrContactInfo style={{fontSize: '35px'}}/>KONTAKTIEREN SIE UNS</button>
+                <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>
 
        
             </div>

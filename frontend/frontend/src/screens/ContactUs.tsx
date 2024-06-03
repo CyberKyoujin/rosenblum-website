@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import { IoWarningOutline } from "react-icons/io5";
 import useAuthStore from "../zustand/useAuthStore";
 import { Alert } from "@mui/material";
+import { t } from "i18next";
 
 
 
@@ -58,7 +59,7 @@ const ContactUs = () => {
                 <div className="contact-title">
                     <LuContact style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>
                     <div className="contact-title-container">
-                        <h1>Kontakt</h1>
+                        <h1>{t('contactSmall')}</h1>
                     </div>
                 </div>
 
@@ -70,7 +71,7 @@ const ContactUs = () => {
 
                         <div className="main-info-title">
                             <RiContactsFill style={{fontSize: '25px', color: 'rgb(76 121 212)'}}/>
-                            <h3>Kontaktinformationen</h3>
+                            <h3>{t('contactInformation')}</h3>
                         </div>
 
                         <div className="info-item">
@@ -95,8 +96,8 @@ const ContactUs = () => {
 
                         <div className="hours-title">
                             <FaClock className="hours-icon"/>
-                            <h3>Unsere Öffnungszeiten</h3>
-                            <p className="hours-detail">(oder nach Vereinbarung)</p>
+                            <h3>{t('hours')}</h3>
+                            <p className="hours-detail">{"(" + t('hours') + ")"}</p>
                         </div>
 
                         <div className="hours-items-container">
@@ -128,21 +129,21 @@ const ContactUs = () => {
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
                 <div className="contact-form-title">
-                    <h1 className="header-span">Kontaktieren</h1>
-                    <h1>Sie uns !</h1>
+                    <h1 className="header-span">{t('contactUs')}</h1>
+                    <h1>{t('us') + " !"}</h1>
                 </div>
 
                 <form className="contact-form" onSubmit={handleSubmit}>
                     <Alert severity="success" style={{border: '1px solid green', borderRadius: '0', padding: '0.6rem', display: !successfullySent && 'none'}}>Ihre Anfrage wurde erfolgreich versandt!</Alert>
-                    <TextField required id="outlined-basic" label={name ? "" : 'Name'} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
-                    <TextField required id="outlined-basic" label={email ? "" : 'Email'} variant="outlined" style={{width: '100%'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <TextField required id="outlined-basic" label={name ? "" : t('name')} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
+                    <TextField required id="outlined-basic" label={email ? "" : t('email')} variant="outlined" style={{width: '100%'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <div className={"phone-notification show-notification"}>
                         <IoWarningOutline className="warning-icon"/>
-                        <p>Bitte geben Sie nur eine deutsche Telefonnummer ein !</p>
+                        <p>{t('onlyGerman')}</p>
                     </div>
-                    <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : 'Telefonnummer'} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
-                    <TextField required multiline label="Ihre Nachricht..." variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
-                    <button className="contact-btn hover-btn" type="submit">ABSENDEN</button>
+                    <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : t('phoneNumber')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
+                    <TextField required multiline label={t('yourMessage')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
+                    <button className="contact-btn hover-btn" type="submit">{t('send')}</button>
                 </form>
 
 

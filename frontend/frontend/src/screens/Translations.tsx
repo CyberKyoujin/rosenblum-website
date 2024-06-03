@@ -30,26 +30,26 @@ const Translations = () => {
             <div role="presentation" className="profile-navigation">
                 <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/">Home</Link>
-                <Typography color="text.primary">Beglaubigte Übersetzungen</Typography>
+                <Typography color="text.primary">{t('sworn_translations')}</Typography>
                 </Breadcrumbs>
             </div>
 
 
             <div className="main-translations-container">
 
-                <Section image={translations_first} imageClass="first-image" titleTextFirst="Beglaubigte" titleTextSecond="Übersetzungen." text="translationsFirstSection" order={true}/>
+                <Section image={translations_first} imageClass="first-image" titleTextFirst={t('sworn')} titleTextSecond={t('translations')} text="translationsFirstSection" order={true}/>
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-                <Section image={translations_second} imageClass="second-image" titleTextFirst="Was sind" titleTextSecond="beglaubigte Übersetzungen?" text="whatAreTranslations" order={false}/>
+                <Section image={translations_second} imageClass="second-image" titleTextFirst={t('whatAre')} titleTextSecond={t('swornTranslations') + '?'} text="whatAreTranslations" order={false}/>
 
                 <Divider style={{marginTop: '2rem', marginBottom: '3rem'}}/>
 
                 <div className="translations-services">
 
                     <div className="translations-services-title">
-                        <h2 className="header-span">Unsere Dienstleistungen</h2>
-                        <h2>für beglaubigte Übersetzungen umfassen:</h2>
+                        <h2 className="header-span">{t('ourSevices')}</h2>
+                        <h2>{t('forSwornTranslations')}</h2>
                     </div>
 
                     <div className="translations-services-content">
@@ -74,13 +74,13 @@ const Translations = () => {
                         <div className="translations-process-title">
                             <img src={gears} alt="" style={{width: '70px'}}/>
                            
-                            <h1 className="header-span">So funktionert</h1>
-                            <h1>es.</h1>
+                            <h1 className="header-span">{t('soWorks')}</h1>
+                            <h1>{t('it')}</h1>
                            
                         </div>
                         <ol className="services-list" style={{lineHeight: '25px', fontSize: '18px', marginLeft: '2rem'}}>
                             <li><span>{t('einreichungTitle')}</span>{t('einreichung')}</li>
-                            <button className="hover-btn services-send-btn" onClick={() => navigate('/order')}>UNTERLAGEN EINREICHEN<FaArrowRightLong/></button>
+                            <button className="hover-btn services-send-btn" onClick={() => navigate('/order')}>{t('sendDokuments')}<FaArrowRightLong/></button>
                             <li><span>{t('überprüfungTitle')}</span>{t('überprüfung')}</li>
                             <li><span>{t('übersetzungTitle')}</span>{t('übersetzung')}</li>
                             <li><span>{t('qualitätTitle')}</span>{t('qualität')}</li>

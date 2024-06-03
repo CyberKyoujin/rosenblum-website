@@ -5,6 +5,7 @@ import smallLogo from '../assets/logo2.png'
 import Divider from '@mui/material/Divider';
 import { useNavigate } from "react-router-dom";
 import { SiGooglemessages } from "react-icons/si";
+import { useTranslation } from "react-i18next";
 
 
 interface Props {
@@ -19,6 +20,8 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
     useEffect(() => {
         fetchUserMessages();
     }, []);
+
+    const {t} = useTranslation();
 
     const messages = userMessages?.filter((message) => message.receiver === user?.id)
 
@@ -53,7 +56,7 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
                 <>
                     <div className="no-messages">
                         <SiGooglemessages style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>
-                        <p>Sie haben keine neue Nachrichten</p>
+                        <p>{t('noMessages')}</p>
                     </div>
 
                     <Divider />
@@ -62,7 +65,7 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
             )}
             <div className="messages-footer" onClick={() => { toggleMessages(); navigate('/messages'); }}>
                 <button className="messages-btn">
-                    Alle Nachrichten
+                    {t('allMessages')}
                 </button>
             </div>
         </div>

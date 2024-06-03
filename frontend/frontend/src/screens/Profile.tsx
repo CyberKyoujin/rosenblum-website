@@ -13,6 +13,7 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import Footer from "../components/Footer";
+import { useTranslation } from "react-i18next";
 
 
 const Profile = () => {
@@ -27,7 +28,7 @@ const Profile = () => {
         fetchOrders();
     }, [fetchUserData, fetchOrders]);
 
-
+    const { t } = useTranslation();
 
     const profileImg = user?.profile_img_url || userData?.image_url || '';
     
@@ -62,10 +63,10 @@ const Profile = () => {
                         </div>
                         <div className="profile-name-container">
                             <h2 style={{textAlign: 'center'}}>{`${user?.first_name} ${user?.last_name}`}</h2>
-                            <p>Mitglied seit {userData?.date_joined?.slice(0,10)}</p>
+                            <p>{t('registered')} {userData?.date_joined?.slice(0,10)}</p>
                         </div>
                         <button className="profile-btn hover-btn" onClick={() => navigate('/edit-profile')}>
-                            <FaUserEdit style={{fontSize: '22px'}}/><p>Profil bearbeiten</p>
+                            <FaUserEdit style={{fontSize: '22px'}}/><p>{t('editProfile')}</p>
                         </button>
                     </div>
 
@@ -75,11 +76,11 @@ const Profile = () => {
                 <div className="profile-data-container">
 
                     <div className="data-title">
-                        <h2>Kontanktdaten</h2>
+                        <h2>{t('contactInformation')}</h2>
                         <div className="data-items">
                             <div className="data-item"><p className="data-header"><IoMail style={{fontSize: '25px'}}/> Email :</p> <span>{user?.email}</span></div>
-                            <div className="data-item"><p className="data-header"><FaPhone style={{fontSize: '25px'}}/> Telefonnumer : </p><span>{userData?.phone_number ? userData.phone_number : 'nicht angegeben'}</span></div>
-                            <div className="data-item"><p className="data-header"><MdLocationPin style={{fontSize: '30px'}}/> Anschrift : </p><span>{userData?.street ? `${userData?.street}, ${userData?.zip} ${userData?.city}` : 'nicht angegeben'}</span></div>
+                            <div className="data-item"><p className="data-header"><FaPhone style={{fontSize: '25px'}}/> {t('phoneNumber')} : </p><span>{userData?.phone_number ? userData.phone_number : 'nicht angegeben'}</span></div>
+                            <div className="data-item"><p className="data-header"><MdLocationPin style={{fontSize: '30px'}}/> {t('address')} : </p><span>{userData?.street ? `${userData?.street}, ${userData?.zip} ${userData?.city}` : 'nicht angegeben'}</span></div>
                         </div>
                     </div>
 
@@ -92,8 +93,8 @@ const Profile = () => {
             <div className="profile-orders-container">
 
                 <div className="orders-title">
-                    <h1>Ihre </h1>
-                    <h1 className="header-span">Aufträge</h1>
+                    <h1>{t('your')} </h1>
+                    <h1 className="header-span">{t('orders')}</h1>
                 </div>
 
             
@@ -114,9 +115,9 @@ const Profile = () => {
                     {orders?.map((order) => (
                         <div key={order.id} className="profile-order-container" onClick={() => navigate(`/order/${order.id}`)}>
                             <h4>{`# ro-${order.id}-2024`}</h4>
-                            <p className="order-date">Bestellt am {order.date}</p>
+                            <p className="order-date">{t('orderedAt')} {order.date}</p>
                             <div className="order-status-container">
-                                <p>{order.status === 'review' ? 'wird überprüft...': ''}</p>
+                                <p>{order.status === 'review' ? t('beeingChecked'): ''}</p>
                                 <div className="order-status"></div>
                             </div>
                         </div>
