@@ -267,7 +267,6 @@ const useAuthStore = create<AuthState>((set,get) =>({
     },
 
     sendRequest: async(name: string, email: string, phone_number: string, message: string) => {
-        
             try{
                 const response = await axios.post('http://127.0.0.1:8000/user/new-request/', {name, email, phone_number, message});
 
