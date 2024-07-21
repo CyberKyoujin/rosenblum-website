@@ -22,6 +22,7 @@ import Languages from "./screens/Languages";
 import Pricing from "./screens/Pricing";
 import Areas from "./screens/Areas";
 import Faq from "./screens/FAQ";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const authStore = useAuthStore();
@@ -47,13 +48,29 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path='/register' element={<Register/>}/>
         <Route path='/login' element={<Login/>}/>
-        <Route path='/profile' element={<Profile/>}/>
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile/>
+          </ProtectedRoute>
+        }/>
         <Route path='/order' element={<Order/>}/>
-        <Route path='/order/:orderId' element={<OrderDetails/>}/>
+        <Route path="/order/:orderId" element={
+          <ProtectedRoute>
+            <OrderDetails/>
+          </ProtectedRoute>
+        }/>
         <Route path='/send-order' element={<OrderWait/>}/>
-        <Route path='/edit-profile' element={<EditProfile/>}/>
+        <Route path="/edit-profile" element={
+          <ProtectedRoute>
+            <EditProfile/>
+          </ProtectedRoute>
+        }/>
         <Route path='/about-us' element={<AboutUs/>}/>
-        <Route path='/messages' element={<Messages/>}/>
+        <Route path="/messages" element={
+          <ProtectedRoute>
+            <Messages/>
+          </ProtectedRoute>
+        }/>
         <Route path='/contact-us' element={<ContactUs/>}/>
         <Route path='/sworn-translations' element={<Translations/>}/>
         <Route path='/verbal-translations' element={<VerbalTranslations/>}/>
