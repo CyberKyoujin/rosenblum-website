@@ -25,6 +25,7 @@ import Faq from "./screens/FAQ";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  
   const authStore = useAuthStore();
 
   useEffect(() => {
@@ -38,8 +39,6 @@ function App() {
 
     return () => clearInterval(refreshTokenInterval);
   }, [authStore]);
-
-  console.log(authStore.user?.profile_img_url);
 
   return (
     <main>

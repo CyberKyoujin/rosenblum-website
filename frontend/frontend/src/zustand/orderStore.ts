@@ -1,7 +1,7 @@
 import axios from "axios";
 import { json } from "react-router-dom";
 import { create } from 'zustand';
-
+import axiosInstance from "./axiosInstance";
 
 interface Order {
     id: string | null;
@@ -36,11 +36,10 @@ const orderStore = create<OrderState>((set, get) => ({
     createOrder: async (formData: FormData) => {
         set({loading: true});
         try{
-            const authTokens = JSON.parse(localStorage.getItem('authTokens') || '');
-            const response = await axios.post('http://127.0.0.1:8000/order/create/', formData, {
+        
+            const response = await axiosInstance.post('/order/create/', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${authTokens.access}`, 
+                    'Content-Type': 'multipart/form-data', 
                 }
             });
             if (response.status === 200){
@@ -57,11 +56,8 @@ const orderStore = create<OrderState>((set, get) => ({
 
     fetchOrders: async () => {
         try{
-            const authTokens = JSON.parse(localStorage.getItem('authTokens') || '');
-            const response = await axios.get('http://127.0.0.1:8000/order/orders/', {
-                headers: {
-                    Authorization: `Bearer ${authTokens.access}`
-                }
+            const response = await axiosInstance.get('/order/orders/', {
+    
             });
             if(response.status === 200){
                 get().setOrders(response.data)

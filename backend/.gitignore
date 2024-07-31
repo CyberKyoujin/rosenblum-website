@@ -9,3 +9,4 @@ venv/
 .vscode/
 *.sqlite3
 *.swp
+backend/service-account-file.json

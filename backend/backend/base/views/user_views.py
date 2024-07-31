@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from base.serializers import CustomUserSerializer, UserTokenObtainPairSerializer, UserDataSerializer, MessageSerializer, RequestSerializer
+from base.serializers import CustomUserSerializer, CustomTokenRefreshSerializer, UserTokenObtainPairSerializer, UserDataSerializer, MessageSerializer, RequestSerializer
 from social_django.utils import load_strategy, load_backend
 from social_core.backends.oauth import BaseOAuth2
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -17,6 +17,7 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
 import requests
+from rest_framework_simplejwt.views import TokenRefreshView
 
 
 class UserRegisterView(APIView):
@@ -42,6 +43,9 @@ class UserView(APIView):
 
 class UserTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
+    
+class UserTokenRefreshView(TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer
     
     
 class GoogleLogin(APIView):

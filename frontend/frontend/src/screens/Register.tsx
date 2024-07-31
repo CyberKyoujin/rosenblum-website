@@ -59,6 +59,7 @@ const Register = () => {
             }
             setError(null);
         } catch (error: any) {
+
             if (error.response.status === 306){
                 setError(t('emailAlreadyExists'));
                 setPopupVisible(!popupVisible);
