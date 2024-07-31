@@ -16,7 +16,6 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
     const { fetchUserMessages, userMessages, toggleMessages, user } = useAuthStore.getState();
     const navigate = useNavigate();
 
-
     useEffect(() => {
         fetchUserMessages();
     }, []);
@@ -24,8 +23,6 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
     const {t} = useTranslation();
 
     const messages = userMessages?.filter((message) => message.receiver === user?.id)
-
-    console.log(user, userMessages)
 
     return (
         <div className={`messages-dropdown ${isOpened ? 'show-messages-dropdown' : ''}`}>

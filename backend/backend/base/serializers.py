@@ -16,9 +16,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         
     def create(self, validated_data):
         return get_user_model().objects.create_user(**validated_data)
-    
-
-        
+     
     def update(self, instance, validated_data):
         profile_img = validated_data.get('profile_img')
         if 'profile_img' in validated_data:

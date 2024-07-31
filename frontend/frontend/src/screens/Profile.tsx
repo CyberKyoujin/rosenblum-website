@@ -31,6 +31,8 @@ const Profile = () => {
     const { t } = useTranslation();
 
     const profileImg = user?.profile_img_url || userData?.image_url || '';
+
+    console.log(userData, user);
     
 
     const handleImageError = (e: any) => {

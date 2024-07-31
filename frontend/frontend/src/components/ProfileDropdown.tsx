@@ -22,8 +22,6 @@ export default function AccountMenu() {
 
   const profileImg = user?.profile_img_url || userData?.image_url || '';
 
-  console.log(user);
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
