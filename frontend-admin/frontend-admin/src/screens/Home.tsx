@@ -13,7 +13,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import useAuthStore from "../zustand/useAuthStore";
-
+import Cookies from "js-cookie"
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 
@@ -21,8 +22,10 @@ const Home = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const [loginError, setLoginError] = useState(false);
     const { loginUser } = useAuthStore.getState();
+
+    const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -32,13 +35,11 @@ const Home = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData;
+        const formData = new FormData();
         formData.append('email', email);
         formData.append('password', password);
         await loginUser(formData);
     }
-
-    
 
     return (
         <div className="main-container">

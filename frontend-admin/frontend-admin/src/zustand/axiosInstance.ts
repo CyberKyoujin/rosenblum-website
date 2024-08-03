@@ -7,7 +7,14 @@ const BASE_URL = "http://127.0.0.1:8000";
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
+    headers: {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json, text/plain, */*'
+    }
 });
+
+axios.defaults.xsrfHeaderName = 'x-csrftoken'
+axios.defaults.xsrfCookieName = 'csrftoken'
 
 axiosInstance.interceptors.request.use(
     config => {
@@ -16,8 +23,9 @@ axiosInstance.interceptors.request.use(
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
         const csrfToken = Cookies.get('csrftoken');
+        console.log(csrfToken);
         if (csrfToken) {
-            config.headers['X-CSRFToken'] = csrfToken;
+            config.headers['HTTP_X_CSRFTOKEN'] = csrfToken;
         }
         return config;
     },
