@@ -23,6 +23,7 @@ import Pricing from "./screens/Pricing";
 import Areas from "./screens/Areas";
 import Faq from "./screens/FAQ";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Cookies from 'js-cookie';
 
 function App() {
   

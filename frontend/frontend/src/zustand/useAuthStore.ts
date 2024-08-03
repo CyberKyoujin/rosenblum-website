@@ -208,6 +208,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
             Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
             get().setTokens(tokens);
             get().setUser(jwtDecode(access) as User);
+            window.location.href = '/';
             window.location.href = '/profile';
         } catch (error: any) {
             console.error("Error while logging in: " + error.message);
@@ -255,21 +256,16 @@ const useAuthStore = create<AuthState>((set,get) =>({
     },
 
     logoutUser: () => {
+        Cookies.remove('access', { secure: true, sameSite: 'Strict' });
+        Cookies.remove('refresh', { secure: true, sameSite: 'Strict' });
         set({authTokens: null, user: null, isAuthenticated: false});
-        localStorage.removeItem('authTokens');
     },
 
     setUserData: (userData) => set({userData}),
 
     fetchUserData: async() => {
-        const authTokens = get().authTokens || '';
-        if(authTokens){
             try{
-                const response = await axiosInstance.get('/user/user-data/', {
-                    headers: {
-                        Authorization: `Bearer ${get().authTokens?.access}`
-                    }
-                })
+                const response = await axiosInstance.get('/user/user-data/')
                 if (response.status === 200){
                     get().setUserData(response.data)
                 } else {
@@ -278,81 +274,53 @@ const useAuthStore = create<AuthState>((set,get) =>({
             } catch(error) {
                 console.error(error);
             }
-        }
+        
     },
 
-    updateUserProfile: async (formData: FormData) => {
-        const authTokens = get().authTokens || '';
-        if (authTokens){
+    updateUserProfile: async (formData: FormData) => {  
             try{
-                const response = await axiosInstance.put('/user/update/', formData, {
-                    headers: {
-                        'Authorization': `Bearer ${get().authTokens?.access}`
-                    }
-                })
+                const response = await axiosInstance.put('/user/update/', formData)
                 if (response.status === 200){
                     window.location.href = '/profile';
                 }
             } catch (error){
                 console.error('Error updating profile:', error);
             }
-        }
     },
 
     setMessages: (userMessages) => set({userMessages}),
 
     fetchUserMessages: async () => {
-        const authTokens = get().authTokens || '';
-        if (authTokens){
             try{
-                const response = await axiosInstance.get('/user/messages/', {
-                    headers: {
-                        'Authorization': `Bearer ${get().authTokens?.access}`
-                    }
-                })
+                const response = await axiosInstance.get('/user/messages/')
                 if (response.status === 200){
                     get().setMessages(response.data)
                 }
             } catch(error: any) {
                 console.log('Error while fetching messages...' + error.message)
             }
-        }
     },
 
     toggleMessages: async () => {
-        const authTokens = get().authTokens || '';
-        if (authTokens){
             try{
-                const response = await axiosInstance.get('/user/toggle-messages', {
-                    headers: {
-                        'Authorization': `Bearer ${get().authTokens?.access}`
-                    }
-                })
+                const response = await axiosInstance.get('/user/toggle-messages')
                 if (response.status === 200){
                     console.log('Successfully toggled messages!')
                 }
             } catch(error){
                 console.error(error);
-            }
-        }
+            } 
     },
 
     sendMessage: async(formData: FormData) => {
-        const authTokens = get().authTokens || '';
-        if (authTokens){
             try{
-                const response = await axiosInstance.post('/user/send-message/', formData, {
-                    headers: {
-                        'Authorization': `Bearer ${get().authTokens?.access}`
-                    }
-                })
+                const response = await axiosInstance.post('/user/send-message/', formData)
                 if (response.status === 200){
                     console.log('Successfully sent a message!')
                 }
             } catch (error){
                 console.error(error);
             }
-        }
     },
 
     sendRequest: async(name: string, email: string, phone_number: string, message: string) => {

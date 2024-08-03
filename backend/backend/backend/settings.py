@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 import os
 from google.oauth2 import service_account
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,8 +51,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -65,7 +66,17 @@ REST_FRAMEWORK = {
    
 }
 
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5000",
+    "http://localhost:5000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',  # First app
+    "http://localhost:5000",
+]
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
@@ -97,19 +108,25 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
-
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # First app
+    "http://localhost:5000",  # Second app
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',
+CORS_ALLOW_CREDENTIALS = True
+
+# Optional headers and methods settings
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'X-CSRFToken',
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -133,8 +150,13 @@ STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 
 GS_FILE_OVERWRITE = False
 
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True
+
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_HTTPONLY = False
 
 # EMAIL SETTINGS
 
