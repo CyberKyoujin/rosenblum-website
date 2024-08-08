@@ -13,8 +13,7 @@ const axiosInstance = axios.create({
     }
 });
 
-axios.defaults.xsrfHeaderName = 'x-csrftoken'
-axios.defaults.xsrfCookieName = 'csrftoken'
+
 
 axiosInstance.interceptors.request.use(
     config => {
@@ -22,11 +21,7 @@ axiosInstance.interceptors.request.use(
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`;
         }
-        const csrfToken = Cookies.get('csrftoken');
-        console.log(csrfToken);
-        if (csrfToken) {
-            config.headers['HTTP_X_CSRFTOKEN'] = csrfToken;
-        }
+        
         return config;
     },
     error => Promise.reject(error)

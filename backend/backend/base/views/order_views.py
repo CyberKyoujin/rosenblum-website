@@ -46,6 +46,11 @@ class OrdersView(generics.ListAPIView):
         queryset = Order.objects.filter(user=user.id).prefetch_related('files').order_by('-date')
         return queryset
     
+class OrdersListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+    
 
 class OrderView(APIView):
     def get(self, request, pk):

@@ -13,8 +13,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import useAuthStore from "../zustand/useAuthStore";
-import Cookies from "js-cookie"
-import { useNavigate } from "react-router-dom";
+import Alert from '@mui/material/Alert';
 
 const Home = () => {
 
@@ -22,10 +21,9 @@ const Home = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loginError, setLoginError] = useState(false);
-    const { loginUser } = useAuthStore.getState();
+    
+    const { loginUser, loginError } = useAuthStore.getState();
 
-    const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -41,8 +39,9 @@ const Home = () => {
         await loginUser(formData);
     }
 
+
     return (
-        <div className="main-container">
+        <div className="main-container" style={{padding: '0rem 2rem'}}>
 
             <div className="home-title-container">
                 <h1>Melden Sie sich an</h1>
