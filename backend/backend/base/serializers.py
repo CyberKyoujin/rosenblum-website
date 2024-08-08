@@ -86,9 +86,14 @@ class FileSerializer(serializers.ModelSerializer):
         
 class OrderSerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True,read_only=True)
+    formatted_timestamp = serializers.SerializerMethodField()
     class Meta:
         model = Order
         fields = '__all__'
+        
+    def get_formatted_timestamp(self, obj):
+        local_timestamp = timezone.localtime(obj.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')
         
 
 class MessageSerializer(serializers.ModelSerializer):

@@ -39,7 +39,6 @@ class UserView(APIView):
         serializer = UserDataSerializer(user, many=False)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
-    
 
 class UserTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -107,7 +106,7 @@ class SendMessageView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
         message_text = request.data.get('message')
-        receiver = CustomUser.objects.get(email="tester@gmail.com")
+        receiver = CustomUser.objects.get(email="tester2@gmail.com")
         sender = request.user
         
         message = Message.objects.create(sender=sender, receiver=receiver, message=message_text)
@@ -121,8 +120,8 @@ class SendMessageView(APIView):
 class RequestView(CreateAPIView):
     queryset = Request.objects.all()
     serializer_class = RequestSerializer
-    
-    
+
+
 class GoogleMapsReviewsView(APIView):
     def get(self, request):
         api_key = 'AIzaSyCnNksFKoHCykmmkc0hOGbbFr9kNJMawjI'
@@ -135,9 +134,7 @@ class GoogleMapsReviewsView(APIView):
             response.raise_for_status()
             google_response = response.json()
             reviews = google_response.get('result', {}).get('reviews', [])
-            
-        
-            
+               
             return Response(reviews, status=status.HTTP_200_OK)
         
         except requests.exceptions.RequestException as e:

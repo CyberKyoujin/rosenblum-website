@@ -13,6 +13,8 @@ interface AuthTokens {
 interface User{
     id: number;
     email: string;
+    first_name: string;
+    last_name: string;
 }
 
 interface AuthState {
@@ -20,11 +22,14 @@ interface AuthState {
     isAuthenticated: boolean;
     user: User | null;
     loginError: boolean;
+    loginSuperuserError: boolean;
     setTokens: (tokens: AuthTokens) => void;
     setUser: (user: User) => void;
     loginUser: (formData: FormData) => Promise<void>;
     logoutUser: () => void;
     refreshToken: () => Promise<void>;
+    setLoginError: () => void;
+    setSuperuserError: () => void;
 }
 
 
@@ -34,6 +39,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
     isAuthenticated: false,
     user: null,
     loginError: false,
+    loginSuperuserError: false,
 
     setTokens: (tokens: AuthTokens) => {
         if (tokens){
@@ -55,19 +61,26 @@ const useAuthStore = create<AuthState>((set, get) => ({
                 Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
                 get().setTokens(tokens);
                 window.location.href = '/dashboard';
-            } else if (response.status === 403){
+            } else if (response.status === 401){
                 set({loginError: true})
+            } else {
+                set({loginSuperuserError: true})
             }
         } catch (err) {
             console.error(err);
         } 
     },
 
+    setLoginError: () => set({loginError: false}),
+    
+    setSuperuserError: () => set({loginSuperuserError: false}),
+
 
     logoutUser: () => {
         Cookies.remove('access', { secure: true, sameSite: 'Strict' });
         Cookies.remove('refresh', { secure: true, sameSite: 'Strict' });
         set({authTokens: null, user: null, isAuthenticated: false});
+        window.location.href = '/';
     },
 
     refreshToken: async () => {

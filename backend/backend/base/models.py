@@ -60,9 +60,15 @@ class Order(models.Model):
     zip = models.CharField(max_length = 10)
     message = models.CharField(max_length = 1000)
     status = models.CharField(max_length=40, default='review')
+    timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    new = models.BooleanField(default=True, null=True, blank=True)
 
     def __str__(self):
         return f'Order number {self.pk}'
+    
+    def formatted_timestamp(self) -> str:
+        local_timestamp = timezone.localtime(self.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')
 
     
 class Message(models.Model):
@@ -76,8 +82,6 @@ class Message(models.Model):
         local_timestamp = timezone.localtime(self.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
     
-    def __str__(self) -> str:
-        return self.receiver.first_name + ' ' + self.receiver.last_name + ' ' + self.message[0:15]
 
     def save(self, *args, **kwargs):
       
