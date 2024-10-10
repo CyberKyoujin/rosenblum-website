@@ -18,7 +18,9 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
+import { FaCheck } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 
 interface File{
     id: string;
@@ -44,10 +46,20 @@ interface OrderData {
     formatted_timestamp: string;
 }
 
+const statusValues = {
+    "review": "wird überprüft",
+    "sent": "Versand",
+    "progress": "In Bearbeitung",
+    "picked": "Abgeholt",
+    "ready": "Abholbereit"
+};
+
+
 const OrderDetails = () => {
 
     const { orderId } = useParams();
     const [orderData, setOrderData] = useState<OrderData | null>(null);
+    const [formActive, setFormActive] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -68,6 +80,7 @@ const OrderDetails = () => {
             <div className="order-details-container">
 
                 <div className="order-details-title">
+
                     <div style={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
                         <FaFileAlt style={{fontSize: '25px', color: 'rgb(76, 121, 212)', marginBottom: '4px'}}/>
                         <div style={{display: 'flex'}}>
@@ -75,10 +88,41 @@ const OrderDetails = () => {
                             <h1 className="header-span">übersicht</h1>
                         </div>
                     </div>
+
                     <div className="order-btn-container">
-                        <button className="order-action-btn green-btn"><MdEditSquare style={{fontSize: '18px'}}/> Bearbeiten</button>
-                        <button className="order-action-btn red-btn"><FaRegTrashAlt style={{fontSize: '18px'}}/> Löschen</button>
+
+                    <button
+                        className="order-action-btn green-btn"
+                        onClick={() => setFormActive(!formActive)}
+                        >
+                        {formActive ? (
+                            <>
+                            <FaCheck style={{ fontSize: '18px' }} /> Speichern
+                            </>
+                        ) : (
+                            <>
+                            <MdEditSquare style={{ fontSize: '18px' }} /> Bearbeiten
+                            </>
+                        )}
+                    </button>
+
+                    <button 
+                        className="order-action-btn red-btn"
+                        onClick={() => setFormActive(!formActive)}
+                        >
+                        {formActive ? (
+                            <>
+                            <RxCross2 style={{fontSize: '18px'}}/> Abbrechen
+                            </>
+                        ) : (
+                            <>
+                            <FaRegTrashAlt style={{fontSize: '18px'}}/> Löschen
+                            </>
+                        )}
+                    </button>
+                    
                     </div>
+
                 </div>
 
                 <Divider orientation="horizontal" style={{marginTop: '1.5rem'}}/>
@@ -93,11 +137,12 @@ const OrderDetails = () => {
                         </div>
 
                         <div className="order-details-status">
-                            <p>Status: {orderData?.status === 'review' ? 'wird überprüft': ''}</p>
-                            <div className="order-status"></div>
-                                <FormControl fullWidth>
-                                    <InputLabel id="demo-simple-select-label">Age</InputLabel>
-                                    <Select labelId="demo-simple-select-label" id="demo-simple-select" label="Age">
+                            <p>Status: {statusValues[orderData?.status]}</p>
+                            <div className={(orderData?.status === "review" || orderData?.status === "progress") && "order-status yellow-div"}></div>
+
+                                <FormControl style={{display: formActive ? "block" : "none", }}>
+                                    <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                    <Select labelId="demo-simple-select-label" id="demo-simple-select" label="Age" style={{width: '150px'}}>
                                     <MenuItem value="wird überprüft">wird überprüft</MenuItem>
                                     <MenuItem value="wird bearbeitet">wird bearbeitet</MenuItem>
                                     <MenuItem value="bei Martha">bei Martha</MenuItem>

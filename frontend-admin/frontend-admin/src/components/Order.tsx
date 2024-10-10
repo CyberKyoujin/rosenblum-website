@@ -18,7 +18,7 @@ const Order = ({id, name, timestamp, status, is_new}: OrderProps) => {
     const { toggleOrder } = useMainStore.getState();
 
     return (
-        <div className="small-order-container" onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}>
+        <div className="small-order-container" key={id} onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}>
             <div className="order-header">
                 <p style={{fontWeight: 'bold', color: is_new ? 'RGB(68 113 203)': 'black'}}># ro-{id}</p>
                 <p>{name}</p>

@@ -41,7 +41,7 @@ interface Message{
 }
 
 interface MainState {
-    orders: Order[] | null;
+    orders: Order[] | [];
     messages: Message[] | null;
     userData: UserData | null;
     fetchOrders: () => Promise<void>;
@@ -52,16 +52,14 @@ interface MainState {
     sendMessage: (formData: FormData, id: string) => Promise<void>;
 }
 
-
 const useMainStore = create<MainState>((set, get) => ({
-    orders: null,
+    orders: [],
     userData: null,
     messages: null,
 
     fetchOrders: async () => {
         try {
             const response = await axiosInstance.get('/admin-user/orders/');
-            console.log(response.data);
             set({orders: response.data});
 
         } catch (err) {

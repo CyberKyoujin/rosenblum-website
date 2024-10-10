@@ -12,10 +12,10 @@ const Dashboard = () => {
 
     const location = useLocation();
 
-
     useEffect(() => {
         fetchOrders();
-    }, [location])
+    }, [])
+
 
     return (
         <div className="main-container">
