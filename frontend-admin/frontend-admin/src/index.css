@@ -221,9 +221,25 @@ html, body {
   }
   
   .order-details-status{
+    max-width: 1200px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
+    text-wrap: nowrap;
+  }
+
+  .order-status{
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+  }
+
+  .yellow-div{
+    background-color: yellow;
+  }
+
+  .green-div{
+    background-color: rgb(1, 175, 1);
   }
   
   .order-details-header{

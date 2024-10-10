@@ -24,7 +24,6 @@ const Home = () => {
     
     const { loginUser, loginError } = useAuthStore.getState();
 
-
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
