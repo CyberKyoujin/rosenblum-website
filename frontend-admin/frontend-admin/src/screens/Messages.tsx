@@ -42,7 +42,7 @@ const Messages = () => {
         return messages?.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         const formData = new FormData();
@@ -81,7 +81,7 @@ const Messages = () => {
         fileInputRef.current?.click();
     };
 
-    const handleFileInputChange = (e) => {
+    const handleFileInputChange = (e: React.FormEvent<HTMLFormElement>) => {
         if (e.target.files) {
             const filesArray = Array.from(e.target.files);
             handleFiles(filesArray);

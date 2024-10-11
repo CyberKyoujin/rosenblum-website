@@ -21,6 +21,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { FaCheck } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
+import useMainStore from "../zustand/useMainStore";
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface File{
     id: string;
@@ -57,26 +59,63 @@ const statusValues = {
 
 const OrderDetails = () => {
 
-    const { orderId } = useParams();
     const [orderData, setOrderData] = useState<OrderData | null>(null);
     const [formActive, setFormActive] = useState<boolean>(false);
+    const [status, setStatus] = useState<string>("");
 
-    useEffect(() => {
-        const fetchOrder = async () => {
-            try{
-                const response = await axiosInstance.get(`/order/${orderId}/`);
-                setOrderData(response.data);
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        fetchOrder();
-    }, [])
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const { orderId } = useParams();
 
     const navigate = useNavigate();
 
+    const {updateOrder} = useMainStore.getState();
+
+    const fetchOrder = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axiosInstance.get(`/order/${orderId}/`);
+            setOrderData(response.data);
+            setStatus(response.data.status);
+            
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchOrder(); 
+    }, [orderId]);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (status !== orderData?.status) {
+            try {
+                await updateOrder(orderId, status); 
+                setFormActive(false);
+                fetchOrder(); 
+            } catch (error) {
+                console.log("Error updating the order: ", error);
+            }
+        }
+    };
+
+    const handleDelete = async () => {
+        try { 
+            const response = await axiosInstance.delete(`/admin-user/orders/${orderId}/delete/`);
+            if (response.status === 204){
+                navigate('/dashboard', { state: { message: "Order successfully deleted!" } });
+            }
+        }catch (error) {
+            console.log("Error deleting the order: ", error);
+        }
+    }
+
     return(
         <div className="order-details">
+            <form onSubmit={handleSubmit}>
             <div className="order-details-container">
 
                 <div className="order-details-title">
@@ -93,22 +132,35 @@ const OrderDetails = () => {
 
                     <button
                         className="order-action-btn green-btn"
-                        onClick={() => setFormActive(!formActive)}
+                        type="submit"
+                        style={{display: formActive ? "flex" : "none"}}
                         >
-                        {formActive ? (
-                            <>
-                            <FaCheck style={{ fontSize: '18px' }} /> Speichern
-                            </>
-                        ) : (
-                            <>
-                            <MdEditSquare style={{ fontSize: '18px' }} /> Bearbeiten
-                            </>
-                        )}
+                        
+                        <FaCheck style={{ fontSize: '18px' }} /> Speichern
+                            
+                    </button>
+
+                    <button
+                        className="order-action-btn green-btn"
+                        onClick={() => setFormActive(true)}
+                        type="button"
+                        style={{display: formActive ? "none" : "flex"}}
+                        >
+                        
+                        <MdEditSquare style={{ fontSize: '18px' }} /> Bearbeiten
+                            
                     </button>
 
                     <button 
                         className="order-action-btn red-btn"
-                        onClick={() => setFormActive(!formActive)}
+                        onClick={() => {
+                            if (formActive) {
+                                setFormActive(false);
+                            } else {
+                                handleDelete();
+                            }
+                        }}
+                        type="button"
                         >
                         {formActive ? (
                             <>
@@ -127,7 +179,15 @@ const OrderDetails = () => {
 
                 <Divider orientation="horizontal" style={{marginTop: '1.5rem'}}/>
 
-                <div className="order-details-content">
+                {isLoading ? (
+
+                    <div className="spinner-container">
+                        <CircularProgress style={{width: 50, height: 50, marginTop: "10rem"}}/>
+                    </div>
+
+                ) : (
+
+                    <div className="order-details-content">
 
                     <div className="order-details-top">
 
@@ -142,17 +202,22 @@ const OrderDetails = () => {
 
                                 <FormControl style={{display: formActive ? "block" : "none", }}>
                                     <InputLabel id="demo-simple-select-label">Status</InputLabel>
-                                    <Select labelId="demo-simple-select-label" id="demo-simple-select" label="Age" style={{width: '150px'}}>
-                                    <MenuItem value="wird überprüft">wird überprüft</MenuItem>
-                                    <MenuItem value="wird bearbeitet">wird bearbeitet</MenuItem>
-                                    <MenuItem value="bei Martha">bei Martha</MenuItem>
-                                    <MenuItem value="erledigt">erledigt</MenuItem>
-                                    <MenuItem value="per Post geschickt">per Post geschickt</MenuItem>
+                                    <Select labelId="demo-simple-select-label" id="demo-simple-select" label="Age" 
+                                    style={{width: '150px'}}
+                                    value={status}
+                                    onChange={(e) => setStatus(e.target.value)}>
+                                    {Object.keys(statusValues).map((key) => (
+                                    <MenuItem key={key} value={key}>
+                                        {statusValues[key]}
+                                    </MenuItem>
+                                    ))}
                                     </Select>
                                 </FormControl>
                         </div>
 
                     </div>
+
+                    
 
                     <Divider orientation="horizontal" sx={{background: 'rgb(76, 121, 212)', marginTop: '2rem'}}/>
 
@@ -200,8 +265,13 @@ const OrderDetails = () => {
 
                 </div>
 
+                )}
+
+                
+
 
             </div>
+            </form>
         </div>
     )
 }

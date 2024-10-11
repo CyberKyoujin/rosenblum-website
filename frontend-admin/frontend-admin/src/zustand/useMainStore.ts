@@ -44,26 +44,31 @@ interface MainState {
     orders: Order[] | [];
     messages: Message[] | null;
     userData: UserData | null;
+    isLoading: boolean;
     fetchOrders: () => Promise<void>;
     toggleOrder: (id: number) => Promise<void>;
     fetchUserData: (id: string) => Promise<void>;
     fetchUserMessages: (id: string) => Promise<void>;
     toggleMessages: (id: string) => Promise<void>;
     sendMessage: (formData: FormData, id: string) => Promise<void>;
+    updateOrder: (id: string, status: string) => Promise<void>;
 }
 
 const useMainStore = create<MainState>((set, get) => ({
     orders: [],
     userData: null,
     messages: null,
+    isLoading: false,
 
     fetchOrders: async () => {
+        set({ isLoading: true }); 
         try {
             const response = await axiosInstance.get('/admin-user/orders/');
-            set({orders: response.data});
-
+            set({ orders: response.data });
         } catch (err) {
             console.error("Error while fetching orders:" + err);
+        } finally {
+            set({ isLoading: false }); 
         }
     },
 
@@ -111,6 +116,17 @@ const useMainStore = create<MainState>((set, get) => ({
             const response = await axiosInstance.post(`/admin-user/user/${id}/send-message`, formData);
         } catch (error) {
             console.log('Error while sending message: ' + error);
+        }
+    },
+
+    updateOrder: async (id: string, status: string) => {
+        try{
+            const response = await axiosInstance.patch(`/admin-user/orders/${id}/update/`, {status: status});
+            if (response.status === 200){
+                console.log("Successfully updated order!");
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 
