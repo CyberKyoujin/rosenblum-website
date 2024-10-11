@@ -60,3 +60,30 @@ class OrderView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
             return Response({'detail': 'Order not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class OrderUpdateView(generics.UpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', True)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+    
+    def perform_update(self, serializer):
+        serializer.save()
+        
+class OrderDeleteView(generics.DestroyAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"message": "Order successfully deleted"}, status=status.HTTP_204_NO_CONTENT)
+    
+    def perform_destroy(self, instance):
+        instance.delete()
