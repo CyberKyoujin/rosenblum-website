@@ -62,6 +62,7 @@ const OrderDetails = () => {
     const [orderData, setOrderData] = useState<OrderData | null>(null);
     const [formActive, setFormActive] = useState<boolean>(false);
     const [status, setStatus] = useState<string>("");
+    const [notificationOpen, setNotificationOpen] = useState<boolean>(false);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -107,6 +108,7 @@ const OrderDetails = () => {
             const response = await axiosInstance.delete(`/admin-user/orders/${orderId}/delete/`);
             if (response.status === 204){
                 navigate('/dashboard', { state: { message: "Order successfully deleted!" } });
+                setNotificationOpen(false);
             }
         }catch (error) {
             console.log("Error deleting the order: ", error);
@@ -114,9 +116,33 @@ const OrderDetails = () => {
     }
 
     return(
+        <>
+        <div 
+        className={notificationOpen ? "overlay show" : "overlay"}
+        onClick={() => setNotificationOpen(false)}
+        >
+        </div>
+
+        
         <div className="order-details">
+
+
             <form onSubmit={handleSubmit}>
             <div className="order-details-container">
+
+                <div className={notificationOpen ? "confirm-notification-container show-flex" : "confirm-notification-container"}>
+                    <p>Wollen Sie den Auftrag löschen?</p>
+                    <div className="notification-btn-container">
+                        <button 
+                        className="notification-btn-confirm"
+                        onClick={handleDelete}
+                        >Löschen</button>
+                        <button 
+                        className="notification-btn-cancel"
+                        onClick={() => setNotificationOpen(false)}
+                        >Abbrechen</button>
+                    </div>
+                </div>
 
                 <div className="order-details-title">
 
@@ -157,7 +183,7 @@ const OrderDetails = () => {
                             if (formActive) {
                                 setFormActive(false);
                             } else {
-                                handleDelete();
+                                setNotificationOpen(true);
                             }
                         }}
                         type="button"
@@ -273,6 +299,7 @@ const OrderDetails = () => {
             </div>
             </form>
         </div>
+        </>
     )
 }
 

@@ -14,15 +14,28 @@ html, body {
   font-family: "Rubik", sans-serif;
 }
 
+.overlay{
+  position: fixed; 
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); 
+  display: none;
+}
+
+
 
 /* NAVBAR */
 
 .main-nav-container{
+    display: flex;
+    align-items: center;
+    gap: 3rem;
     height: 7rem;
     background-color: white;
     border-bottom: 1px solid grey;
-    display: flex;
-    align-items: center;
     padding: 1rem 2rem;
 }
 
@@ -35,6 +48,36 @@ html, body {
     display: none;
 }
 
+.nav-links-container{
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link-container{
+  background-color: RGB(76 121 212);
+  padding: 0.7rem;
+  width: 150px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.nav-link-container:hover{
+  background-color: white;
+  border: 1px solid RGB(76 121 212);
+  color: RGB(76 121 212);
+}
+
+.nav-link{
+  text-decoration: none;
+  color: white;
+}
+
+.nav-link-container:hover .nav-link{
+  color: RGB(76 121 212);
+}
+
 .navbar-user-container{
     margin-left: auto;
     display: flex;
@@ -42,6 +85,34 @@ html, body {
     align-items: center;
 }
 
+.search-container{
+  position: relative;
+}
+
+.search-container input{
+  padding: 0.7rem;
+  width: 300px;
+  border: 2px solid RGB(76 121 212);
+  border-radius: 5px;
+}
+
+.search-container button{
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  display: flex;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  font-size: 25px;
+  transition: transform 1s ease;
+  cursor: pointer;
+  color: RGB(52 105 212);
+}
+
+.search-container button:hover{
+  transform: rotateZ(360deg);
+}
 @media (max-width: 700px){
     .logo{
         display: none;
@@ -95,12 +166,15 @@ html, body {
 }
 
 .btn{
+    display: flex;
     padding: 1rem;
     background-color: RGB(76 121 212);
     border: none;
     color: white;
     font-size: 18px;
     border-radius: 5px;
+    align-items: center;
+    justify-content: center;
 }
 .spinner-container{
   display: flex;
@@ -108,7 +182,32 @@ html, body {
   justify-content: center;
 }
 
+.success-notification-container {
+  position: fixed;
+  width: 400px;
+  border: 1px solid green;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
 
+.show-notification {
+  animation: slideDown 1s ease forwards;
+  opacity: 1;
+  visibility: visible;
+}
+
+@keyframes slideDown {
+  0% {
+    top: -100px; 
+  }
+  100% {
+    top: 10rem; 
+  }
+}
 
 @media (max-width: 700px){
     .main-form-container{
@@ -169,7 +268,67 @@ html, body {
     gap: 1rem;
 }
 
-/**/
+/* ORDER DETAILS*/
+
+.confirm-notification-container{
+  position: fixed;
+  background-color: white;
+  display: flex;
+  z-index: 3000;
+  top: 15%;
+  left: 50%; 
+  transform: translateX(-50%);
+  padding: 2.5rem;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  font-size: 20px;
+  border-radius: 5px;
+  display: none;
+}
+
+.show{
+  display: block;
+}
+
+.show-flex{
+  display: flex;
+}
+
+.notification-btn-container{
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.notification-btn{
+  padding: 0.5rem;
+  width: 150px;
+  cursor: pointer;
+}
+
+.notification-btn-confirm{
+  padding: 0.75rem;
+  width: 150px;
+  border: 2px solid rgb(76, 121, 212);
+  background-color: transparent;
+  color: rgb(38, 95, 209);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.notification-btn-cancel{
+  padding: 0.5rem;
+  width: 150px;
+  background-color: rgb(76, 121, 212);
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 .order-details{
     padding: 1.5rem;
   }
@@ -208,8 +367,16 @@ html, body {
     background-color: rgb(252, 36, 36);
   }
 
+  .red-btn:hover{
+    background-color: rgb(207, 2, 2);
+  }
+
   .green-btn{
     background-color: rgb(1, 160, 1);
+  }
+
+  .green-btn:hover{
+    background-color: rgb(1, 116, 1);
   }
   
   .order-details-content{
