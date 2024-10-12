@@ -16,7 +16,7 @@ import { IoMdDownload } from "react-icons/io";
 
 const Messages = () => {
     const { userId } = useParams();
-    const { userData, fetchUserData, fetchUserMessages, messages, toggleMessages, sendMessage } = useMainStore((state) => state); // Ensure correct store hook usage
+    const { userData, fetchUserData, fetchUserMessages, messages, toggleMessages, sendMessage } = useMainStore((state) => state); 
     const [message, setMessage] = useState('');
     const messagesEndRef = useRef(null);
     const navigate = useNavigate();

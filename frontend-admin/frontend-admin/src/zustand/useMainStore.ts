@@ -82,13 +82,15 @@ const useMainStore = create<MainState>((set, get) => ({
     },
 
     fetchUserData: async (id: string) => {
+        set({ isLoading: true }); 
         try{
             const response = await axiosInstance.get(`/admin-user/user/${id}`);
-            if (response.status === 200) {
-                set({userData: response.data});
-            }
+            set({userData: response.data});
+            
         } catch (error) {
             console.log('Error while fetching user data:' + error);
+        } finally {
+            set({ isLoading: false });
         }
     },
 
