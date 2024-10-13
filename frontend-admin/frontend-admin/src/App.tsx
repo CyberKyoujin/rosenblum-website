@@ -10,6 +10,9 @@ import OrderDetails from './screens/OrderDetails'
 import UserDetails from './screens/UserDetails'
 import LoginProtectedRoute from './components/LoginProtectedRoute'
 import Messages from './screens/Messages'
+import Customers from './screens/Customers'
+import SearchResults from './screens/SearchResults'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -57,6 +60,16 @@ function App() {
         <Route path='/user/:userId/messages' element={
           <ProtectedRoute>
             <Messages/>
+          </ProtectedRoute>
+        }/>
+        <Route path='/customers' element={
+          <ProtectedRoute>
+            <Customers/>
+          </ProtectedRoute>
+        }/>
+        <Route path='/search' element={
+          <ProtectedRoute>
+            <SearchResults/>
           </ProtectedRoute>
         }/>
 

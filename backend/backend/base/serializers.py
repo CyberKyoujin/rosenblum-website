@@ -6,8 +6,13 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
 from django.utils import timezone
+from .models import Order
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    
+    image_url = serializers.SerializerMethodField()
+    orders = serializers.SerializerMethodField()
     
     class Meta:
         model = CustomUser
@@ -30,6 +35,16 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.zip = validated_data.get('zip', instance.zip)
         instance.save()
         return instance
+    
+    def get_image_url(self, obj):
+        request = self.context.get('request', None)
+        if request:
+            return request.build_absolute_uri(obj.profile_img.url)
+        else:
+            return obj.profile_img.url if obj.profile_img else None
+        
+    def get_orders(self, obj):
+        return Order.objects.filter(user=obj).count()
         
 class UserDataSerializer(serializers.ModelSerializer):
     

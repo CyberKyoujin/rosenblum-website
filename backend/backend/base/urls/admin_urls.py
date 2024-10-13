@@ -1,10 +1,11 @@
 from django.urls import path
-from base.views.admin_views import AdminLoginView
+from base.views.admin_views import AdminLoginView, CustomerListView
 from base.views.admin_views import UserListView, FileURLView, UserDataView, ToggleOrder, UserOrdersView, UserMessagesView, ToggleViewed, SendMessageView
 from base.views.order_views import OrdersListView, OrderUpdateView, OrderDeleteView
 urlpatterns = [
     path('login/', AdminLoginView.as_view(), name='login'),
     path('users/', UserListView.as_view(), name='users'),
+    path('customers/', CustomerListView.as_view(), name='customers'),
     path('file/', FileURLView.as_view(), name='file'),
     path('orders/', OrdersListView.as_view(), name='orders'),
     path('user/<int:pk>/', UserDataView.as_view(), name='user'),
