@@ -41,11 +41,13 @@ html, body {
 
 .logo {
     width: 250px;
+    cursor: pointer;
 }
 
 .small-logo{
     width: 90px;
     display: none;
+    cursor: pointer;
 }
 
 .nav-links-container{
@@ -175,6 +177,7 @@ html, body {
     border-radius: 5px;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 .spinner-container{
   display: flex;
@@ -852,4 +855,66 @@ html, body {
     width: 73px;
     font-size: 12px;
   }
+}
+
+/* CUSTOMER */
+
+.customers-container{
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+  margin-top: 2rem;
+}
+
+.customer-container{
+  display: flex;
+  background-color: rgb(230,238,252);
+  border: 2px solid rgb(76,121,212);
+  padding: 1rem;
+  justify-content: space-between;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.customer-main{
+  display: flex;
+  gap: 2rem;
+}
+
+.customer-avatar{
+  width: 75px;
+  border-radius: 50%;
+  border: 3px solid rgb(76,121,212);
+}
+
+.customer-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.customer-bottom{
+  display: flex;
+  align-items: center;
+}
+
+.customers-dashboard-title{
+  display: flex;
+  justify-content: space-between;
+}
+
+.dashboard-title-top{
+  display: flex;
+  gap: 1rem;
+}
+
+.no-customers{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 5rem;
+  font-size: 20px;
 }

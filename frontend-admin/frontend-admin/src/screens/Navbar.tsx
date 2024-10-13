@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/logo.png";
 import useAuthStore from "../zustand/useAuthStore";
 import logo2 from "../assets/logo2.png"
@@ -10,8 +10,15 @@ import { IoSearch } from "react-icons/io5";
 const Navbar = () => {
 
     const { logoutUser, user, isAuthenticated } = useAuthStore.getState();
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (searchQuery.trim().length > 0) {
+            navigate('/search', { state: { message: searchQuery } });
+        }
+    }
 
     return (
         <div className="main-nav-container">
@@ -26,7 +33,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="nav-link-container">
-                    <Link to="/" className="nav-link">Kunden</Link>
+                    <Link to="/customers" className="nav-link">Kunden</Link>
                 </div>
             </div>
 
@@ -35,8 +42,8 @@ const Navbar = () => {
             <div className="navbar-user-container">
 
                 <div className="search-container">
-                    <input type="text" placeholder="Suche..."/>
-                    <button><IoSearch/></button>
+                    <input type="text" placeholder="Suche..." onChange={(e) => setSearchQuery(e.target.value)}/>
+                    <button type="button" onClick={handleClick}><IoSearch/></button>
                 </div>
 
                 <p>Hallo, {user?.first_name}</p>

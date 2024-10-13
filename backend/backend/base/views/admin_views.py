@@ -15,6 +15,7 @@ from django.conf import settings
 import datetime
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
+from rest_framework import generics
 
 class AdminLoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -117,3 +118,9 @@ class SendMessageView(APIView):
                 File.objects.create(message=message, file=file)
     
         return Response(status=status.HTTP_200_OK)
+
+class CustomerListView(APIView):
+    def get(self, request):
+        customers = CustomUser.objects.filter(is_superuser=False)
+        serializer = CustomUserSerializer(customers, many=True)    
+        return Response(serializer.data, status=status.HTTP_200_OK)
