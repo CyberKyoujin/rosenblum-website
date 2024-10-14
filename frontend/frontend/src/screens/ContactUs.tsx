@@ -14,7 +14,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import useAuthStore from "../zustand/useAuthStore";
 import { Alert } from "@mui/material";
 import { t } from "i18next";
-
+import sutthausen1 from "../assets/sutthausen1.jpg"
 
 
 const ContactUs = () => {
@@ -122,8 +122,9 @@ const ContactUs = () => {
 
                 </div>
 
-                <div className="map-container" style={{marginTop: '4rem',maxWidth: '1000px', width: '100%'}}>
-                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map" width="1200" height="500" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+                <div className="map-container">
+                    <img src={sutthausen1} alt="" className="map-img"/>
+                   <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map"  loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
                 </div>
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>

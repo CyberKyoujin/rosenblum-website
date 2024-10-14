@@ -122,7 +122,7 @@ const Messages = () => {
             <div className="messages-main-container" id="scroll-div" ref={messagesEndRef}>
                 {messages && messages.length > 0 ? (
                     sortMessagesAscending()?.map((message) => (
-                        <div key={message.id} className={`message ${message.sender === userData?.id ? '' : 'message-user'}`} onClick={() => navigate('/messages')}>
+                        <div key={message.id} className={`message ${message.sender === userData?.id ? '' : 'message-user'}`}>
                             <img src={message.sender === userData?.id ? userData.profile_img_url || userData?.profile_img : smallLogo} alt="" className="message-avatar" />
                             <div className="message-item">
                                 <div className="message-body" style={{ background: message.sender === userData?.id && 'rgb(177, 203, 248)' }}>

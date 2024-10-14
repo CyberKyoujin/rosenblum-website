@@ -49,7 +49,7 @@ class OrdersView(generics.ListAPIView):
 class OrdersListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('-timestamp')
     
 
 class OrderView(APIView):

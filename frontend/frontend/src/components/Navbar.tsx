@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
   const [openedComponent, setOpenedComponent] = useState<string | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { fetchUserMessages, userMessages, isAuthenticated, user } = useAuthStore.getState();
+  const { fetchUserMessages, userMessages, isAuthenticated, user, userData } = useAuthStore.getState();
 
   useEffect(() => {
     fetchUserMessages();
