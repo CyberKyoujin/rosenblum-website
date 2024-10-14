@@ -44,9 +44,21 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
             </div>
 
             <div className="slider-item">
-                <p>{t('sworn_translations')}</p>
-                <p>{t('verbalTranslations')}</p>
-                <p>{t('appostile')}</p>
+
+                <p 
+                onClick={()=> {navigate('/sworn-translations'); setSliderOpened(false)}}>
+                {t('sworn_translations')}
+                </p>
+
+                <p 
+                onClick={()=> {navigate('/verbal-translations'); setSliderOpened(false)}}>
+                {t('verbalTranslations')}
+                </p>
+
+                <p
+                onClick={()=> {navigate('/apostille'); setSliderOpened(false)}}>
+                {t('appostile')}
+                </p>
             </div>
 
           </div>
@@ -59,9 +71,22 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
             </div>
 
             <div className="slider-item">
-              <p><img src={deFlag} alt="" />{t('german')}</p>
-              <p><img src={uaFlag} alt="" />{t('ukrainian')}</p>
-              <p><img src={ruFlag} alt="" />{t('russian')}</p>
+
+              <p
+              onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
+              <img src={deFlag} alt="" />{t('german')}
+              </p>
+
+              <p
+              onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
+              <img src={uaFlag} alt="" />{t('ukrainian')}
+              </p>
+
+              <p
+              onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
+              <img src={ruFlag} alt="" />{t('russian')}
+              </p>
+
             </div>
 
           </div>
@@ -74,9 +99,22 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
             </div>
 
             <div className="slider-item">
-                <p>{t('pricesAndDocuments')}</p>
-                <p>{t('expertise')}</p>
-                <p>{t('faq')}</p>
+
+                <p 
+                onClick={()=> {navigate('/pricing'); setSliderOpened(false)}}>
+                {t('prices')}
+                </p>
+
+                <p 
+                onClick={()=> {navigate('/areas'); setSliderOpened(false)}}>
+                {t('expertise')}
+                </p>
+
+                <p 
+                onClick={()=> {navigate('/faq'); setSliderOpened(false)}}>
+                {t('faq')}
+                </p>
+
             </div>
 
           </div>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import TextField from '@mui/material/TextField';
 import { FiUserX } from "react-icons/fi";
 import Customer from "../components/Customer";
-
+import default_avatar from "../assets/default_avatar.png"
 
 interface Customer{
     email: string;
@@ -33,6 +33,7 @@ const Customers = () => {
                 console.error('Error fetching customers:', error);
             }
         };
+        console.log(customerList);
         fetchCustomers();
     }, []);
 

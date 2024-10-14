@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Login  from '@mui/icons-material/Login';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useAuthStore from '../zustand/useAuthStore';
 import defaultAvatar from '../assets/default_avatar.png'
 
@@ -15,12 +15,12 @@ export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const { isAuthenticated, user, logoutUser, userData } = useAuthStore.getState();
+  const { isAuthenticated, user, logoutUser, userData, fetchUserData } = useAuthStore.getState();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const profileImg = user?.profile_img_url || userData?.image_url || '';
+  const avatar = user?.profile_img_url || userData?.image_url || defaultAvatar;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -28,6 +28,11 @@ export default function AccountMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  React.useEffect(() => {
+    fetchUserData();
+    
+  }, [])
 
   const handleImageError = (e: any) => {
     e.target.src = defaultAvatar; 
@@ -44,8 +49,8 @@ export default function AccountMenu() {
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
         >
-          {profileImg != '' ? (
-            <img className='profile-img-sm' src={profileImg} alt="Profile" style={{ width: 46, height: 46 }} />
+          {avatar != '' ? (
+            <img className='profile-img-sm' src={avatar} alt="Profile" style={{ width: 46, height: 46 }} />
           ) : (
             <Avatar sx={{ width: 46, height: 46, background: 'rgb(76, 121, 212)' }}>
               {user?.first_name?.[0]}
@@ -94,8 +99,8 @@ export default function AccountMenu() {
           isAuthenticated ? navigate('/profile') : navigate('/register');
         }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {profileImg ? (
-              <img className='profile-img-sm' src={profileImg} style={{ width: '35px', marginRight: "0.5rem" }} alt="Profile" />
+            {avatar ? (
+              <img className='profile-img-sm' src={avatar} style={{ width: '35px', marginRight: "0.5rem" }} alt="Profile" />
             ) : (
               <Avatar sx={{ background: 'rgb(76, 121, 212)' }}>{user?.first_name?.[0]}</Avatar>
             )}
