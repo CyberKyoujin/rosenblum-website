@@ -24,8 +24,6 @@ interface OrderState {
     fetchOrders: () => Promise<void>;
 }
 
-
-
 const orderStore = create<OrderState>((set, get) => ({
     orders: null,
     successfullyCreated: false,
