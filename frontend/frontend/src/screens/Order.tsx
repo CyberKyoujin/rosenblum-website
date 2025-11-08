@@ -24,7 +24,9 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 
 const Order = () => {
@@ -215,6 +217,11 @@ const Order = () => {
                     <TextField type="number" multiline label={t('yourMessage')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
                 </div>
 
+                <FormGroup className="order-checkbox-container">
+                    <FormControlLabel required control={<Checkbox defaultChecked />} label="Ich brauche einen Kostenvorschlag" />
+                    <FormControlLabel required control={<Checkbox />} label="Ich bin sicher" />
+                </FormGroup>
+
                 <Divider flexItem orientation="horizontal" style={{height: '32px', marginTop: '1rem'}}/>
 
                 <div className="oreder-contacts-header">
@@ -266,6 +273,8 @@ const Order = () => {
                         )}
                         
                     </div>
+
+        
                     <button type="submit" className="send-btn hover-btn" disabled={buttonDisabled}>{t('send')}<IoSendSharp/></button>
 
                 </div>

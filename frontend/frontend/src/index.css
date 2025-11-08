@@ -1318,6 +1318,10 @@ html, body {
   display: flex;
 }
 
+.order-checkbox-container{
+  margin-top: 2.5rem;
+}
+
 .file-upload{
   border: 2px dashed rgb(76, 121, 212);
   padding: 20px;
@@ -2838,6 +2842,8 @@ html, body {
   font-size: 16px;
   font-weight: bold;
   margin-top: auto;
+  text-decoration: none;
+  text-align: center;
 }
 
 .tax{
@@ -2854,7 +2860,12 @@ html, body {
   background-color: rgb(76, 121, 212);
 }
 
-.pricing-item-blue h1{
+.pricing-item h2{
+  font-size: 30px;
+}
+
+.pricing-item-blue h2{
+  font-size: 30px;
   color: white;
 }
 

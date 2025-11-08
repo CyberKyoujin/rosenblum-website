@@ -27,7 +27,6 @@ interface Review {
     text: string;
 }
 
-
 const Home = () => {
 
   const { t } = useTranslation();
