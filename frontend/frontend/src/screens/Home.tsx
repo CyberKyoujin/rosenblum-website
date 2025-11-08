@@ -6,7 +6,6 @@ import Divider from '@mui/material/Divider';
 import { useState, useEffect } from "react";
 import tick from '../assets/tick.gif'
 import { CustomSlider } from "../components/Slider";
-import reviews from "../data";
 import Rating from '@mui/material/Rating';
 import Footer from "../components/Footer";
 import { MdLocalOffer } from "react-icons/md";
@@ -14,17 +13,17 @@ import { FaInfo } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { HiPhone } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import useAuthStore from "../zustand/useAuthStore";
-import { translateReviews } from "../utils/TranslationService";
+import { useReviews } from "../hooks/useReviews";
 
-interface Review {
+interface Review{
+    id: number;
     author_name: string;
-    author_url: string;
-    profile_photo_url: string;
     rating: number;
-    relative_time_description: string;
+    original_language: string;
     text: string;
+    review_timestamp: string;
+    profile_photo_url: string;
 }
 
 const Home = () => {
@@ -34,10 +33,9 @@ const Home = () => {
   const [years, setYears] = useState<number>(0);
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
-
-  const { fetchReviews, reviews } = useAuthStore.getState();
-
   const [translatedReviews, setTranslatedReviews] = useState<Review[]>([]);
+
+  const { reviews, loading, error } = useReviews();
 
   const navigate = useNavigate();
 
@@ -54,33 +52,9 @@ const Home = () => {
         }
         return newValue;
       });
-    }, 10); 
+    }, 10);
+
   };
-
-  useEffect(() => {
-    fetchReviews();
-  }, [])
-
-  useEffect(() => {
-    
-    const translate = async () => {
-        try {
-            if (reviews){
-            const translated = await translateReviews(reviews);
-            setTranslatedReviews(translated);
-            }
-        } catch (error) {
-            console.error('Error translating reviews:', error);
-        }
-    };
-
-    translate();
-
-  }, [reviews])
-
-
-  console.log(translatedReviews);
-
 
   useEffect(() => {
     animateCounter(0, 8, 3000, setYears); 
@@ -160,7 +134,7 @@ const Home = () => {
 
         <div className="slider-container">
             <CustomSlider>
-                { translatedReviews.map((review, index) => (
+                { reviews.map((review, index) => (
                     <div className="review-container" key={index}>
                         <div className="review-header">
                             <img src={review.profile_photo_url} alt="" />

@@ -6,6 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { TbLogout2 } from "react-icons/tb";
 import { IoSearch } from "react-icons/io5";
+import { MdGTranslate } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { BiSolidMessageSquareDetail } from "react-icons/bi";
+
 
 const Navbar = () => {
 
@@ -29,12 +33,20 @@ const Navbar = () => {
 
             <div className="nav-links-container">
                 <div className="nav-link-container">
-                    <Link to="/" className="nav-link">Übersetzer</Link>
+                    <MdGTranslate style={{fontSize: "20px"}}/>
+                    <Link to="/translator" className="nav-link">Übersetzer</Link>
                 </div>
 
                 <div className="nav-link-container">
+                    <FaUser style={{fontSize: "20px"}}/>
                     <Link to="/customers" className="nav-link">Kunden</Link>
                 </div>
+
+                <div className="nav-link-container">
+                    <BiSolidMessageSquareDetail style={{fontSize: "20px"}}/>
+                    <Link to="/messages" className="nav-link">Nachrichten</Link>
+                </div>
+
             </div>
 
 

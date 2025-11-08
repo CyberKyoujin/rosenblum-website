@@ -117,7 +117,7 @@ class File(models.Model):
             return f'File {self.pk} to {self.message}'
         
 
-class Request(models.Model):
+class RequestObject(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     phone_number = models.CharField(max_length=255)
@@ -134,7 +134,7 @@ class Request(models.Model):
     
     def save(self, *args, **kwargs):
       
-        super(Request, self).save(*args, **kwargs)
+        super(RequestObject, self).save(*args, **kwargs)
 
         if kwargs.get('created', True):
             send_mail(
@@ -151,4 +151,40 @@ Mit freundlichen Grüßen, Team Rosenblum.""",
                 recipient_list=[self.email],
                 fail_silently=False,
             )
+
+
+class Review(models.Model):
+    google_review_id = models.CharField(max_length=255, unique=True)
+    place_id = models.CharField(max_length=255)  
+    author_name = models.CharField(max_length=255)
+    profile_photo_url = models.URLField(blank=True, null=True)
+
+    rating = models.PositiveSmallIntegerField()
+    original_language = models.CharField(max_length=10)  # 'en', 'de', 'ru', 'uk', ...
+    original_text = models.TextField()
+
+    review_timestamp = models.DateTimeField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+        
+    class Meta:
+        ordering = ['-review_timestamp']
+            
+    def __str__(self):
+        return f"{self.author_name} ({self.rating})"
+          
+    
+class ReviewTranslation(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='translations')
+    
+    language = models.CharField(max_length=10) 
+    translated_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('review', 'language')
+
+    def __str__(self):
+        return f"{self.review_id} -> {self.language}"
     

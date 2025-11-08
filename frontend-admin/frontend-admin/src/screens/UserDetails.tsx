@@ -11,7 +11,7 @@ import Order from "../components/Order";
 import { FaInfoCircle } from "react-icons/fa";
 import useMainStore from "../zustand/useMainStore";
 import CircularProgress from '@mui/material/CircularProgress';
-
+import default_avatar from "../assets/default_avatar.png"
 
 interface Order{
     id: number;
@@ -63,7 +63,7 @@ const UserDetails = () => {
                 <>
                     <div className="user-data-container">
                     <div className="user-data-header">
-                        <img src={userData?.profile_img || userData?.profile_img_url} alt="" className="user-avatar"/>
+                        <img src={userData?.profile_img || userData?.profile_img_url || default_avatar} alt="" className="user-avatar"/>
                         <div className="user-header-text">
                             <h2>{userData?.first_name} {userData?.last_name}</h2>
                             <p>Mitglied seit {userData?.date_joined.slice(0, 10)}</p>

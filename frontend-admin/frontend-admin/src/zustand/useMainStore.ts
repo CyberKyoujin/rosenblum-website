@@ -40,12 +40,23 @@ interface Message{
     receiver: number;
 }
 
+interface Request {
+    id: number;
+    name: string;
+    email: string;
+    phone_number: string;
+    message: string;
+    formatted_timestamp: string
+}
+
 interface MainState {
     orders: Order[] | [];
+    requests: Request[];
     messages: Message[] | null;
     userData: UserData | null;
     isLoading: boolean;
     fetchOrders: () => Promise<void>;
+    fetchRequests: () => Promise<void>;
     toggleOrder: (id: number) => Promise<void>;
     fetchUserData: (id: string) => Promise<void>;
     fetchUserMessages: (id: string) => Promise<void>;
@@ -56,6 +67,7 @@ interface MainState {
 
 const useMainStore = create<MainState>((set, get) => ({
     orders: [],
+    requests: [],
     userData: null,
     messages: null,
     isLoading: false,
@@ -129,6 +141,18 @@ const useMainStore = create<MainState>((set, get) => ({
             }
         } catch (error) {
             console.error(error);
+        }
+    },
+
+    fetchRequests: async () => {
+        set({ isLoading: true }); 
+        try {
+            const response = await axiosInstance.get('/admin-user/requests/');
+            set({ requests: response.data });
+        } catch (err) {
+            console.error("Error while fetching requests:" + err);
+        } finally {
+            set({ isLoading: false }); 
         }
     }
 

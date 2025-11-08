@@ -12,6 +12,8 @@ import LoginProtectedRoute from './components/LoginProtectedRoute'
 import Messages from './screens/Messages'
 import Customers from './screens/Customers'
 import SearchResults from './screens/SearchResults'
+import GlobalMessages from './screens/GlobalMessages'
+import Translator from './screens/Translator'
 
 
 function App() {
@@ -57,6 +59,11 @@ function App() {
             <UserDetails/>
           </ProtectedRoute>
         }/>
+        <Route path='/messages' element={
+          <ProtectedRoute>
+            <GlobalMessages/>
+          </ProtectedRoute>
+        }/>
         <Route path='/user/:userId/messages' element={
           <ProtectedRoute>
             <Messages/>
@@ -70,6 +77,11 @@ function App() {
         <Route path='/search' element={
           <ProtectedRoute>
             <SearchResults/>
+          </ProtectedRoute>
+        }/>
+        <Route path='/translator' element={
+          <ProtectedRoute>
+            <Translator/>
           </ProtectedRoute>
         }/>
 

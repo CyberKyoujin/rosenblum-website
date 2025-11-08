@@ -62,6 +62,9 @@ html, body {
   border-radius: 5px;
   display: flex;
   justify-content: center;
+  align-items: center;
+  color: white;
+  gap: 0.5rem;
   cursor: pointer;
 }
 
@@ -256,7 +259,7 @@ html, body {
 
 /* DASHBOARD */
 
-.dashboard-title{
+.dashboard-title-orders{
     display: flex;
     gap: 1rem;
     align-items: flex-start;
@@ -269,6 +272,12 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+}
+
+.dashboard-title-requests{
+  display: flex;
+  margin-top: 2rem;
+  gap: 1rem;
 }
 
 /* ORDER DETAILS*/
@@ -558,6 +567,10 @@ html, body {
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
+}
+
+.user-header-text h2{
+  text-align: center;
 }
 
 .user-message-btn{
@@ -883,6 +896,7 @@ html, body {
 
 .customer-avatar{
   width: 75px;
+  height: 75px;
   border-radius: 50%;
   border: 3px solid rgb(76,121,212);
 }
@@ -917,4 +931,19 @@ html, body {
   gap: 2rem;
   margin-top: 5rem;
   font-size: 20px;
+}
+
+/* FOOTER */
+
+.footer{
+  width: 100%;
+  background-color: rgb(76, 121, 212);
+  height: 20rem;
+  margin-top: 12rem;
+}
+
+@media (max-width: 475px){
+  .footer{
+    margin-top: 5rem;
+  }
 }

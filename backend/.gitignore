@@ -4,9 +4,10 @@ __pycache__/
 *.pyd
 .Python
 env/
+.env
 venv/
 .idea/
 .vscode/
 *.sqlite3
 *.swp
-backend/service-account-file.json
+service-account-file.json
