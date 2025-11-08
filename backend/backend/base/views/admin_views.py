@@ -4,10 +4,10 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView
-from base.serializers import UserTokenObtainPairSerializer
+from base.serializers import UserTokenObtainPairSerializer, RequestSerializer
 from django.middleware.csrf import get_token
 from rest_framework.decorators import api_view
-from base.models import CustomUser, Order, Message, File
+from base.models import CustomUser, Order, Message, File, RequestObject
 from base.serializers import CustomUserSerializer, UserDataSerializer, OrderSerializer, MessageSerializer
 from django.contrib.auth import authenticate
 from google.cloud import storage
@@ -123,4 +123,21 @@ class CustomerListView(APIView):
     def get(self, request):
         customers = CustomUser.objects.filter(is_superuser=False)
         serializer = CustomUserSerializer(customers, many=True)    
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class SearchView(APIView):
+    def post(self, request):
+        search_query = request.data.get('query')
+        customers = CustomUser.objects.filter(Q(first_name__icontains=search_query)| Q(last_name__icontains=search_query) | Q(email__icontains=search_query))
+        orders = Order.objects.filter(Q(email__icontains=search_query) | Q(name__icontains=search_query))
+        serializer = CustomUserSerializer(customers, many=True)
+        orders_serializer = OrderSerializer(orders, many=True)
+        data = {"customers": serializer.data, "orders": orders_serializer.data}
+        return Response(data, status=status.HTTP_200_OK)
+    
+class RequestView(APIView):
+    def get (self, request):
+        requests = RequestObject.objects.all().order_by("-timestamp")
+        serializer = RequestSerializer(requests, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

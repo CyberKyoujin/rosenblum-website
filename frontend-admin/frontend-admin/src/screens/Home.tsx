@@ -1,9 +1,5 @@
 import React from "react";
-import { useState, useEffect } from 'react';
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
-import { useTranslation } from "react-i18next";
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
@@ -13,7 +9,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import useAuthStore from "../zustand/useAuthStore";
-import Alert from '@mui/material/Alert';
 
 const Home = () => {
 
@@ -22,12 +17,12 @@ const Home = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     
-    const { loginUser, loginError } = useAuthStore.getState();
+    const { loginUser } = useAuthStore.getState();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
+    const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,10 +42,18 @@ const Home = () => {
             </div>
 
             <form className="main-form-container" onSubmit={handleSubmit}>
-                <TextField fullWidth required id="outlined-basic1" label="Email" variant="outlined" value={email} onChange={(e) => {setEmail(e.target.value)}}/>
+
+                <TextField fullWidth required 
+                id="outlined-basic1" 
+                label="Email" 
+                variant="outlined" 
+                value={email} 
+                onChange={(e) => {setEmail(e.target.value)}}/>
 
                 <FormControl fullWidth variant="outlined" required>
+
                     <InputLabel htmlFor="outlined-adornment-password">Passwort</InputLabel>
+
                     <OutlinedInput
                     id="outlined-adornment-password"
                     value={password}
@@ -58,7 +61,6 @@ const Home = () => {
                     onChange={(e) => {
                         const newPassword = e.target.value;
                         setPassword(newPassword); 
-
                     }}
                     endAdornment={
                         <InputAdornment position="end">

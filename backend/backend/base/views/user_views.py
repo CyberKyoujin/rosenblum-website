@@ -2,14 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from base.serializers import CustomUserSerializer, CustomTokenRefreshSerializer, UserTokenObtainPairSerializer, UserDataSerializer, MessageSerializer, RequestSerializer
+from base.serializers import CustomUserSerializer, CustomTokenRefreshSerializer, UserTokenObtainPairSerializer, UserDataSerializer, MessageSerializer, RequestSerializer, ReviewSerializer
 from social_django.utils import load_strategy, load_backend
 from social_core.backends.oauth import BaseOAuth2
 from rest_framework_simplejwt.tokens import RefreshToken
 from social_core.exceptions import AuthForbidden, AuthFailed
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from base.models import CustomUser, Message, File, Request
+from base.models import CustomUser, Message, File, RequestObject, Review
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
@@ -18,7 +18,9 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
 import requests
 from rest_framework_simplejwt.views import TokenRefreshView
-
+from google_maps_reviews import ReviewsClient
+import requests
+from rest_framework import generics
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -118,32 +120,25 @@ class SendMessageView(APIView):
         return Response(status=status.HTTP_200_OK)
     
 class RequestView(CreateAPIView):
-    queryset = Request.objects.all()
+    queryset = RequestObject.objects.all()
     serializer_class = RequestSerializer
 
 
-class GoogleMapsReviewsView(APIView):
-    def get(self, request):
-        api_key = 'AIzaSyCnNksFKoHCykmmkc0hOGbbFr9kNJMawjI'
-        place_id = 'ChIJ24yqnoXluUcRZd5qepqJYHA'
-        url = f"https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=name,rating,reviews&key={api_key}"
-        
-        try:
-            
-            response = requests.get(url)
-            response.raise_for_status()
-            google_response = response.json()
-            reviews = google_response.get('result', {}).get('reviews', [])
-               
-            return Response(reviews, status=status.HTTP_200_OK)
-        
-        except requests.exceptions.RequestException as e:
-            
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
-            
-            
+class ReviewListView(generics.ListAPIView):
+    serializer_class = ReviewSerializer
     
-    
-    
+    def get_queryset(self):
+        return (
+            Review.objects
+            .all()
+            .prefetch_related("translations")
+            .order_by("-review_timestamp")
+        )
 
+    def get_serializer_context(self):
+        ctx = super().get_serializer_context()
+        ctx["lang"] = self.request.query_params.get("lang")
+        return ctx
+            
+            
+            
