@@ -19,3 +19,4 @@ urlpatterns = [
     path('orders/<str:pk>/delete/', OrderDeleteView.as_view(), name='order-delete'),
     path('search/', SearchView.as_view(), name='search'),
 ]
+

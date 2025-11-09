@@ -64,6 +64,7 @@ class GoogleLogin(APIView):
                     user.first_name = idinfo['given_name']
                     user.last_name = idinfo['family_name']
                     user.profile_img_url = idinfo['picture']
+                    user.is_active = True
                     user.save()
 
                 refresh = RefreshToken.for_user(user)

@@ -1,25 +1,64 @@
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from base.models import CustomUser
+from base.models import CustomUser, Order
+
+from base.models import Message
+from base.services.email_notifications import send_new_message_email, send_order_ready_email, send_message_account_created
+
 
 @receiver(post_save, sender=CustomUser)
-def send_welcome_email(sender, instance, created, **kwargs):
-    if created:
-        send_mail(
-            subject='Herzlich Willkommen bei der Rosenblum Übersetzungsbüro!',
-            message=f"""Sehr geehrte/r {instance.first_name + ' ' + instance.last_name},
+def user_created_handler(sender, instance: CustomUser, created: bool, **kwargs):
+    if not created:
+        return
+    
+    send_message_account_created(instance.email, instance.first_name, instance.last_name)
+
+
+
+        
+
+@receiver(post_save, sender=Message)
+def message_created_handler(sender, instance: Message, created: bool, **kwargs):
+    
+    if not created:
+        return 
+
+    if not instance.receiver or not instance.receiver.email:
+        return
+    
+    send_new_message_email(instance.receiver.email)
+    
+    
+@receiver(pre_save, sender=Order)
+def order_status_changed_handler(sender, instance: Order, **kwargs):
+    if instance.pk is None:
+        return
+
+    try:
+        old = Order.objects.get(pk=instance.pk)
+    except Order.DoesNotExist:
+        return
+
+    old_status = old.status
+    new_status = instance.status
+
+    print(
+        "ORDER STATUS SIGNAL:",
+        "id=", instance.pk,
+        "old=", old_status,
+        "new=", new_status,
+    )
+
+    if old_status != "ready" and new_status == "ready":
+        email = None
+        if instance.user and instance.user.email:
+            email = instance.user.email
+        elif instance.email:
+            email = instance.email
+
+        if email:
+            send_order_ready_email(email, instance.pk)
             
-            herzlich willkommen bei Rosenblum Übersetzungsbüro! Wir freuen uns sehr, dass Sie sich entschieden haben, Teil unserer Gemeinschaft zu werden.
-            
-            Als Ihr Partner für sprachliche Dienstleistungen möchten wir sicherstellen, dass Sie die bestmögliche Erfahrung bei uns haben. 
-            
-            Link zu ihrem Profil: http://localhost:5173/profile
-            
-            Mit freundlichen Grüßen, Ihr Rosenblum Übersetzungsbüro-Team""",
-            
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[instance.email],
-            fail_silently=False,
-        )
+    
