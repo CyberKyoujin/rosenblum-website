@@ -12,6 +12,7 @@ import { FiPaperclip } from "react-icons/fi";
 import { FaFile } from "react-icons/fa";
 import { MdInfoOutline } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+import Footer from "../components/Footer";
 
 interface File{
     id: string;
@@ -64,6 +65,7 @@ const OrderDetails = () => {
     console.log(orderData)
 
     return (
+        <>
         <div className="order-details">
             <div className="order-details-container">
 
@@ -139,7 +141,11 @@ const OrderDetails = () => {
 
 
             </div>
+
+            
         </div>
+        <Footer></Footer>
+        </>
     )
 
 }

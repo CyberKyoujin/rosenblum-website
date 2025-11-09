@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from datetime import timedelta
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -36,7 +37,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     profile_img = models.ImageField(upload_to='profile_images/', blank=True, null=True)
     profile_img_url = models.CharField(max_length=100, null=True, blank=True)
     
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     
     objects = CustomUserManager()
@@ -47,7 +48,20 @@ class CustomUser(AbstractUser, PermissionsMixin):
     def __str__(self):
         return self.email + ", Name: " + self.first_name + self.last_name
     
-        
+
+class EmailVerification(models.Model):
+    user = models.OneToOneField(CustomUser, models.CASCADE)
+    code = models.CharField(max_length=6, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    used = models.BooleanField(default=False)
+    
+    @property
+    def expiration_date(self):
+        return self.created_at + timedelta(minutes=15)
+    
+    def is_expired(self):
+        return timezone.now() > self.expiration_date
+
     
 class Order(models.Model):
     user = models.ForeignKey(CustomUser,models.CASCADE,null=True,blank=True)
@@ -69,7 +83,6 @@ class Order(models.Model):
     def formatted_timestamp(self) -> str:
         local_timestamp = timezone.localtime(self.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
-
     
 class Message(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_messages', on_delete=models.CASCADE, blank=True, null=True)
@@ -81,22 +94,6 @@ class Message(models.Model):
     def formatted_timestamp(self) -> str:
         local_timestamp = timezone.localtime(self.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
-    
-
-    def save(self, *args, **kwargs):
-      
-        super(Message, self).save(*args, **kwargs)
-
-        if kwargs.get('created', True):
-            send_mail(
-                subject='Sie haben eine neue Nachricht!',
-                message=f"""Eine neue Nachricht wurde für Sie zugestellt. 
-Die Nachricht können Sie unter dem folgenden Link finden: http://localhost:5173/messages""",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[self.receiver.email],
-                fail_silently=False,
-            )
-
 
 class File(models.Model):
     order = models.ForeignKey(Order,models.CASCADE, related_name='files', blank=True, null=True)
@@ -116,7 +113,6 @@ class File(models.Model):
         else: 
             return f'File {self.pk} to {self.message}'
         
-
 class RequestObject(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
@@ -124,34 +120,12 @@ class RequestObject(models.Model):
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     
-    
     def formatted_timestamp(self) -> str:
         local_timestamp = timezone.localtime(self.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
     
     def __str__(self):
         return f'Request number {self.pk} of {self.name}, time: {self.formatted_timestamp()}'
-    
-    def save(self, *args, **kwargs):
-      
-        super(RequestObject, self).save(*args, **kwargs)
-
-        if kwargs.get('created', True):
-            send_mail(
-                subject='Bestätigung Ihrer Anfrage',
-                message=f"""Sie haben eine Anfrage für uns gelassen! 
-                
-Name: {self.name}
-Telefonnumer: {self.phone_number}
-Datum und Uhrzeit : {self.formatted_timestamp()}
-Ihre Anfrage: {self.message}
-
-Mit freundlichen Grüßen, Team Rosenblum.""",
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[self.email],
-                fail_silently=False,
-            )
-
 
 class Review(models.Model):
     google_review_id = models.CharField(max_length=255, unique=True)
@@ -174,7 +148,6 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.author_name} ({self.rating})"
           
-    
 class ReviewTranslation(models.Model):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='translations')
     

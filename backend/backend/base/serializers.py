@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Order,File, Message, RequestObject, Review
+from .models import CustomUser,Order,File, Message, RequestObject, Review, EmailVerification
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
@@ -7,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
 from django.utils import timezone
 from .models import Order
-
+from base.services.email_verification import send_verification_code
 
 class CustomUserSerializer(serializers.ModelSerializer):
     
@@ -20,7 +20,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
         
     def create(self, validated_data):
-        return get_user_model().objects.create_user(**validated_data)
+        
+        user = CustomUser.objects.create_user(**validated_data)
+        verification_code = send_verification_code(user.email, user.first_name, user.last_name)
+        EmailVerification.objects.create(user=user, email=user.email, code=verification_code)
+        
+        
+        return user
      
     def update(self, instance, validated_data):
         profile_img = validated_data.get('profile_img')
