@@ -1004,7 +1004,6 @@ html, body {
   width: 100%;
   background-color: rgb(76, 121, 212);
   height: 20rem;
-  margin-top: 12rem;
 }
 
 @media (max-width: 475px){
@@ -1057,7 +1056,7 @@ html, body {
 }
 
 .register-img-container img{
-  width: 500px;
+  width: 440px;
   margin-top: 1.9rem;
 }
 
@@ -3085,5 +3084,123 @@ html, body {
 @media (max-width: 400px) {
   .faq-title-description{
     font-size: 20px;
+  }
+}
+
+/* EMAIL VERIFICATION */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.otp-form__container {
+  flex: 1;                      
+  display: flex;
+  flex-direction: column;
+  width: 35vh;
+  align-items: center;
+  justify-content: center;      
+  gap: 4rem;                   
+  margin-bottom: 5rem;
+  z-index: 1000000;
+}
+
+.otp-form__header{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.otp-form__data{
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.otp_btn {
+  width: 100%;
+  height: 50px;
+  font-size: 20px;
+  font-weight: 500;
+  border-radius: 15px;
+}
+
+.otp-form__resend-code{
+  background-color: transparent;
+  border: none;
+  color: RGB(76 121 212);
+  text-decoration: underline;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.otp_btn:hover{
+  color: RGB(76 121 212);
+}
+
+.otp-form__span{
+  color: RGB(76 121 212);
+  font-weight: 700;
+}
+
+/* Verification Success */
+
+.verification_success__page{
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.verification_success__container{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15rem;
+}
+
+.verification_success__details{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+.verification_success__icon{
+  width: 20rem;
+}
+
+.verification_success__btn{
+  display: flex;
+  width: 80%;
+  text-decoration: none;
+  background-color: RGB(76 121 212);
+  padding: 1rem;
+  justify-content: center;
+  color:white;
+  border-radius: 15px;
+  font-size: 20px;
+  text-align: center;
+  justify-content: center;
+}
+
+@media (max-width: 500px) {
+  .verification_success__icon{
+    width: 15rem;
+  }
+  .verification_success__container{
+    margin: 0;
+  }
+  .verification_success__container h1{
+    font-size: 1.7rem;
   }
 }

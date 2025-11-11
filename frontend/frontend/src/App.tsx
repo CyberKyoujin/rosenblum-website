@@ -24,6 +24,8 @@ import Areas from "./screens/Areas";
 import Faq from "./screens/FAQ";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Cookies from 'js-cookie';
+import EmailVerification from "./screens/EmailVerification";
+import EmailVerificationSuccess from "./screens/EmailVerificationSuccess";
 
 function App() {
   
@@ -47,6 +49,8 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/register' element={<Register/>}/>
+        <Route path='/email-verification' element={<EmailVerification/>}/>
+        <Route path='/verification-success' element={<EmailVerificationSuccess/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path="/profile" element={
           <ProtectedRoute>
