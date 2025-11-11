@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.utils import timezone
 from .models import Order
 from base.services.email_verification import send_verification_code
+from django.db import transaction
 
 class CustomUserSerializer(serializers.ModelSerializer):
     
@@ -21,10 +22,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
         
     def create(self, validated_data):
         
-        user = CustomUser.objects.create_user(**validated_data)
-        verification_code = send_verification_code(user.email, user.first_name, user.last_name)
-        EmailVerification.objects.create(user=user, email=user.email, code=verification_code)
-        
+        with transaction.atomic():
+            user = CustomUser.objects.create_user(**validated_data)
+            verification_code = send_verification_code(user.email, user.first_name, user.last_name)
+            EmailVerification.objects.create(user=user, code=verification_code)
         
         return user
      

@@ -54,6 +54,7 @@ class EmailVerification(models.Model):
     code = models.CharField(max_length=6, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     used = models.BooleanField(default=False)
+    attempts = models.PositiveSmallIntegerField(default=3)
     
     @property
     def expiration_date(self):
@@ -61,6 +62,12 @@ class EmailVerification(models.Model):
     
     def is_expired(self):
         return timezone.now() > self.expiration_date
+    
+    def has_no_attempts_left(self):
+        return self.attempts <= 0
+    
+    def __str__(self):
+        return f"Email verification for {self.user.email}"
 
     
 class Order(models.Model):

@@ -9,7 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from social_core.exceptions import AuthForbidden, AuthFailed
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from base.models import CustomUser, Message, File, RequestObject, Review
+from base.models import CustomUser, Message, File, RequestObject, Review, EmailVerification
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
@@ -21,19 +21,71 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from google_maps_reviews import ReviewsClient
 import requests
 from rest_framework import generics
+from base.services.email_verification import verify_email, send_verification_code
+from django.shortcuts import get_object_or_404
 
 class UserRegisterView(APIView):
     def post(self, request):
-        email = request.data['email']
+        
+        raw_email = request.data.get('email', '')
+        email = raw_email.strip()
+        
         if CustomUser.objects.filter(email=email).exists():
             return Response(status=status.HTTP_306_RESERVED)
-        serializer = CustomUserSerializer(data=request.data)
+        
+        data = request.data.copy()
+        data['email'] = email
+        
+        serializer = CustomUserSerializer(data=data)
         if serializer.is_valid(): 
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EmailVerificationView(APIView):
+    def post(self, request):
+        user_email = request.data.get('email', '')
+        verification_code = request.data.get('code', '')  
+        
+        if not user_email or not verification_code:
+            return Response(
+                {"detail": "Email and code are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        result = verify_email(user_email, verification_code)
+        
+        if not result.ok:
+            error_map = {
+                'user_not_found': ({"detail": 'User not found.'}, status.HTTP_404_NOT_FOUND),
+                'no_active_verification': ({"detail": "No active verification found."}, status.HTTP_400_BAD_REQUEST),
+                'verification_code_expired': ({"detail": "Verification code expired."}, status.HTTP_400_BAD_REQUEST),
+                'no_verification_attempts': ({"detail": "No verification attempts left."}, status.HTTP_400_BAD_REQUEST),
+                'invalid_verification_code': ({"detail": "Invalid verification code.", "attempts": result.attempts}, status.HTTP_400_BAD_REQUEST),   
+            }
+            
+            body, code_status = error_map.get(result.error, ({"detail": "Unknown error"}, status.HTTP_400_BAD_REQUEST))
+            
+            return Response(body, status=code_status)
+        
+        return Response({"detail": "Email verified!"}, status=status.HTTP_200_OK)
     
     
+class ResendVerificationCode(APIView):
+    def post(self, request):
+        email = request.data.get("email", "").strip()
+        
+        user = get_object_or_404(CustomUser, email=email)
+        
+        EmailVerification.objects.filter(user=user).delete()
+        
+        verification_code = send_verification_code(email, user.first_name, user.last_name)
+        EmailVerification.objects.create(user=user, code=verification_code)
+        
+        return Response({"detail": "New verification code sent."}, status=status.HTTP_200_OK)
+        
+
+
 class UserView(APIView):
     permission_classes = [IsAuthenticated,]
     def get(self, request):

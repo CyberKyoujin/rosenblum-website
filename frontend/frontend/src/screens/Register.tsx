@@ -11,19 +11,22 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import registerIcon from '../assets/register_icon.jpg'
+import registerIcon from '../assets/registerIcon.png'
 import tick from '../assets/tick.svg'
 import cross from '../assets/cross.svg'
 import Footer from "../components/Footer";
 import useAuthStore from '../zustand/useAuthStore';
 import { IoWarningOutline } from "react-icons/io5";
-
+import { useNavigate } from 'react-router-dom';
+import planetIcon from "../assets/planet_icon.jpg"
 const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
 
 const Register = () => {
 
     const { t } = useTranslation();
-    const { registerUser, googleLogin, loginUser } = useAuthStore.getState();
+    const { registerUser, googleLogin } = useAuthStore.getState();
+
+    const navigate = useNavigate();
 
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
 
@@ -55,7 +58,7 @@ const Register = () => {
         try {
             if (containsCharacters && containsNumbers && containsUppercase) {
                 await registerUser(email, firstName, lastName, password);
-                await loginUser(email, password);
+                navigate('/email-verification', {state: {email}});
             }
             setError(null);
         } catch (error: any) {
@@ -67,7 +70,6 @@ const Register = () => {
         }
     }
 
-    
 
     useEffect(() => {
         const googleSinginButton = document.getElementById("google-signin-btn");
