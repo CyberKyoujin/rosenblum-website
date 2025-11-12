@@ -18,7 +18,7 @@ const Areas = () => {
 
     return (
         <>
-        <div style={{margin: '1rem 2rem'}}>
+        <div className="main-app-container">
             <div className="areas-main-container">
                 <div className="areas-title">
                     <h1>{t('our')}</h1>

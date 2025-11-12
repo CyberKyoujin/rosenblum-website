@@ -96,6 +96,25 @@ class UserView(APIView):
 
 class UserTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email", "").strip()
+
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if not user.is_active:
+            return Response(
+                {"detail": "Email not verified. Please verify your email first."},
+                status=status.HTTP_403_FORBIDDEN 
+            )
+
+        response = super().post(request, *args, **kwargs)
+        response.data["message"] = "Login successful"
+        return response
+        
     
 class UserTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer

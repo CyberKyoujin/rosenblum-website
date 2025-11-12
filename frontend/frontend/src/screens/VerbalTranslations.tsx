@@ -26,7 +26,7 @@ const VerbalTranslations = () => {
 
     return (
         <>
-        <div style={{padding: '1rem 3rem'}}>
+        <div className="main-app-container">
 
 
             <div role="presentation" className="profile-navigation">

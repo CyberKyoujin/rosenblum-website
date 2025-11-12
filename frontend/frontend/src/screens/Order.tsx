@@ -130,7 +130,7 @@ const Order = () => {
 
     return(
         <>
-        <div style={{padding: '2rem 2rem'}}>
+        <div className="main-app-container">
 
             <div role="presentation" className="profile-navigation">
                 <Breadcrumbs aria-label="breadcrumb">
