@@ -2,7 +2,7 @@ import React from "react";
 import planetIcon from '../assets/planet_icon.jpg'
 import smartphoneIcon from '../assets/smartphone_icon.jpg'
 import { useTranslation } from "react-i18next";
-import Divider from '@mui/material/Divider';
+import Divider, { dividerClasses } from '@mui/material/Divider';
 import { useState, useEffect } from "react";
 import tick from '../assets/tick.gif'
 import { CustomSlider } from "../components/Slider";
@@ -15,6 +15,7 @@ import { HiPhone } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
 import { useReviews } from "../hooks/useReviews";
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface Review{
     id: number;
@@ -33,7 +34,6 @@ const Home = () => {
   const [years, setYears] = useState<number>(0);
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
-  const [translatedReviews, setTranslatedReviews] = useState<Review[]>([]);
 
   const { reviews, loading, error } = useReviews();
 
@@ -60,10 +60,13 @@ const Home = () => {
     animateCounter(0, 8, 3000, setYears); 
     animateCounter(0, 10000, 3000, setTranslations); 
     animateCounter(0, 5000, 3000, setLanguages);
+    console.log(loading)
   }, []);
 
   return(
     <>
+
+    <div className="main-app-container">
 
     <div className="home-container">
         <div className="home-header">
@@ -133,7 +136,8 @@ const Home = () => {
         </div>
 
         <div className="slider-container">
-            <CustomSlider>
+            { !loading ?
+            (<CustomSlider>
                 { reviews.map((review, index) => (
                     <div className="review-container" key={index}>
                         <div className="review-header">
@@ -147,6 +151,11 @@ const Home = () => {
                     </div>
                 ))}
             </CustomSlider>
+            ) :(
+            <div> <CircularProgress/></div>
+            ) 
+            }   
+            
         </div>
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
@@ -165,6 +174,8 @@ const Home = () => {
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map" width="1200" height="500" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
         </div>
 
+
+    </div>
 
     </div>
 

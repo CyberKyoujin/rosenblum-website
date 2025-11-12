@@ -30,6 +30,10 @@ html, body {
   letter-spacing: 1px;
 }
 
+.main-app-container{
+  padding: 0rem 1rem 7rem 1rem;
+}
+
 .nav-container{
   max-width: 1280px;
   width: 100%;
@@ -1043,6 +1047,7 @@ html, body {
 }
 
 .register-container{
+
   max-width: 1280px;
   margin: auto;
   padding: 2rem;
@@ -1056,7 +1061,7 @@ html, body {
 }
 
 .register-img-container img{
-  width: 440px;
+  width: 450px;
   margin-top: 1.9rem;
 }
 
@@ -1072,7 +1077,7 @@ html, body {
 .register-img-container{
   display: flex;
   flex-direction: column;
-  gap: 3.4rem;
+  gap: 3rem;
 }
 
 .divider-container{
@@ -1098,6 +1103,9 @@ html, body {
   background-color: white;
 }
 
+.login-link{
+  color: rgb(76, 121, 212);
+}
 
 .google-btn img{
   width: 30px;
@@ -1553,6 +1561,11 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+.profile_register_date{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
 }
 
 .profile-info-container{

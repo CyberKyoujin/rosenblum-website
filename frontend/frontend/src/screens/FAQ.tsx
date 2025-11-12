@@ -44,7 +44,7 @@ const Faq = () => {
 
     return (
         <>
-        <div style={{margin: '1rem 2rem'}}>
+        <div className="main-app-container">
             <div className="main-faq-container">
 
                

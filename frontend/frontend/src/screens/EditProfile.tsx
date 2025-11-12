@@ -9,6 +9,7 @@ import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 import defaultAvatar from '../assets/default_avatar.png'
 import { useTranslation } from 'react-i18next';
+import Footer from '../components/Footer';
 
 interface UserData {
   phone_number?: string;
@@ -61,7 +62,9 @@ const EditProfile = () => {
   }, [fetchUserData]);
 
   return (
-    <div style={{ padding: '1.5rem' }}>
+
+    <>
+    <div className='main-app-container'>
 
 
     <div role="presentation" className="profile-navigation">
@@ -112,7 +115,10 @@ const EditProfile = () => {
           <button type="submit" className="confirm-btn hover-btn" style={{ width: '100%' }}>{t('save')}</button>
         </form>
       </div>
+
     </div>
+    
+    </>
   );
 };
 

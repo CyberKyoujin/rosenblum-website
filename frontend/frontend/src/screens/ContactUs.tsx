@@ -54,7 +54,7 @@ const ContactUs = () => {
 
     return (
         <>
-        <div style={{padding: '1rem 2rem'}}>
+        <div className="main-app-container">
             <div className="contact-main-container">
                 <div className="contact-title">
                     <LuContact style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>

@@ -22,7 +22,7 @@ const AboutUs = () => {
 
     return(
         <>
-        <div style={{padding: '1rem 2rem'}}>
+        <div className="main-app-container">
 
             <div role="presentation" className="profile-navigation">
                 <Breadcrumbs aria-label="breadcrumb">

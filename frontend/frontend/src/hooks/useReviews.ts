@@ -16,7 +16,7 @@ interface Review{
 export function useReviews() {
   const { i18n } = useTranslation();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -34,8 +34,7 @@ export function useReviews() {
           params: { lang },
           signal: controller.signal, 
         });
-        console.log("Reviews response:", response.data);
-        console.log(reviews);
+        
         setReviews(response.data);
       } catch (err: any) {
         if (axios.isCancel(err) || err.code === "ERR_CANCELED") return; 

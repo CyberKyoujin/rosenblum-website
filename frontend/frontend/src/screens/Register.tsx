@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
+import Link from '@mui/material/Link'
+import { Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -18,7 +19,6 @@ import Footer from "../components/Footer";
 import useAuthStore from '../zustand/useAuthStore';
 import { IoWarningOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
-import planetIcon from "../assets/planet_icon.jpg"
 const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
 
 const Register = () => {
@@ -97,7 +97,7 @@ const Register = () => {
     return (
         <>
             
-        
+        <div className='main-app-container'>
         <div className="register-container">
 
 
@@ -118,7 +118,11 @@ const Register = () => {
                     <h1 className="register-title-span">{t('join')}</h1>
                 </div>
 
-                <div className={popupVisible ? 'register-error-popup show-error' : 'register-error-popup'}> <IoWarningOutline className='error-icon'/><p>{error}</p></div>
+                <div className={popupVisible ? 'register-error-popup show-error' : 'register-error-popup'}> 
+                    <IoWarningOutline className='error-icon'/>
+                    <p>{error}.</p> 
+                    <RouterLink to="/login" className='login-link'>Anmelden</RouterLink>
+                </div>
 
                 <form className="form-container" onSubmit={handleSubmit}>
                     
@@ -191,7 +195,9 @@ const Register = () => {
             </div>
 
 
-
+                        
+        </div>
+       
         </div>
         <Footer/>
         </>

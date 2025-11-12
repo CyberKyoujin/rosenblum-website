@@ -43,7 +43,7 @@ const Profile = () => {
 
     return (
         <>
-        <div style={{padding: '1rem 2rem'}}>
+        <div className="main-app-container">
 
         <div role="presentation" className="profile-navigation">
                     <Breadcrumbs aria-label="breadcrumb">
@@ -55,7 +55,7 @@ const Profile = () => {
 
 
 
-            <div className="profile-container">
+        <div className="profile-container">
 
                 
 
@@ -65,15 +65,14 @@ const Profile = () => {
                         </div>
                         <div className="profile-name-container">
                             <h2 style={{textAlign: 'center'}}>{`${user?.first_name} ${user?.last_name}`}</h2>
-                            <p>{t('registered')} {userData?.date_joined?.slice(0,10)}</p>
+                            <p className="profile_register_date">{t('registered')} <span>{userData?.date_joined?.slice(0,10)}</span></p>
                         </div>
                         <button className="profile-btn hover-btn" onClick={() => navigate('/edit-profile')}>
                             <FaUserEdit style={{fontSize: '22px'}}/><p>{t('editProfile')}</p>
                         </button>
                     </div>
 
-                <Divider className='divider-vertical' orientation="vertical" sx={{height: '260px', width: '1px', background: 'rgb(76, 121, 212)', margin: 0}}/>
-                <Divider className="divider-horizontal" orientation="horizontal" sx={{background: 'rgb(76, 121, 212)', margin: 0}}/>
+                <Divider className='divider-vertical' orientation="vertical" sx={{height: '350px', width: '1px', background: 'rgb(76, 121, 212)', margin: 0}}/>
 
                 <div className="profile-data-container">
 
@@ -87,8 +86,6 @@ const Profile = () => {
                     </div>
 
                 </div>
-
-
 
             </div>
 

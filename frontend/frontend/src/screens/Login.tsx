@@ -14,6 +14,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
 import { IoWarningOutline } from "react-icons/io5";
+import { Link as RouterLink } from 'react-router-dom';
+import useEmailVerification from '../hooks/useEmailVerification';
+
 
 const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
 
@@ -21,6 +24,7 @@ const Login = () => {
 
     const { t } =useTranslation(); 
     const { loginUser, googleLogin } = useAuthStore.getState();
+    const {verifyEmail} = useEmailVerification();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -44,6 +48,10 @@ const Login = () => {
                 setError(t('userNotExists'));
                 setPopupVisible(true);
             }
+
+            if (error.response.status === 403){
+                setError("Account not virified.")
+            }
         }
     }
 
@@ -62,6 +70,8 @@ const Login = () => {
         } else {
           console.error('Google sign-in button element not found');
         }
+
+        console.log(error);
       }, []);
 
     const handleCredentialResponse = (response: any) => {
@@ -69,6 +79,10 @@ const Login = () => {
         googleLogin(response.credential);
     };
 
+    const handleVerificationClick = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        navigate('/email-verification', {state: {email}});
+    }
 
     return (
         <div className="register-container">
@@ -108,7 +122,11 @@ const Login = () => {
                         <p className="login-span" onClick={() => {navigate('/register'); setPopupVisible(false);}}>{t('register')}</p>
                     </div>
 
-                    <div className={popupVisible ? 'register-error-popup show-error' : 'register-error-popup'}> <IoWarningOutline className='error-icon'/><p>{error}</p></div>
+                    <div className={error ? 'register-error-popup show-error' : 'register-error-popup'}> 
+                        <IoWarningOutline className='error-icon'/>
+                        <p>{error}</p>
+                        <button className='otp-form__resend-code' onClick={handleVerificationClick}>Verfizieren</button>
+                    </div>
 
                 </div>
 
