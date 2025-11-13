@@ -5,7 +5,7 @@ import ContactSection from "../components/ContactSection";
 import Section from "../components/Section"
 import pricing_first from "../assets/pricing_first.jpg"
 import PricingCard from "../components/PricingCard";
-
+import qualityIcon from "../assets/quality_image.png"
 
 const Pricing = () => {
 
@@ -59,7 +59,7 @@ const Pricing = () => {
                 <Divider style={{marginTop: '4rem'}}/>
                 
 
-                <Section image={pricing_first} imageClass="second-image" titleTextFirst={t('quality')} titleTextSecond={t('satisfaction')} text="qualityAndHappiness" order={true}/>
+                <Section image={qualityIcon} imageClass="second-image" titleTextFirst={t('quality')} titleTextSecond={t('satisfaction')} text="qualityAndHappiness" order={true}/>
 
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>

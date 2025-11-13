@@ -12,7 +12,10 @@ import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { useTranslation } from "react-i18next";
-
+import teamIcon from "../assets/team_icon.png"
+import goalIcon from "../assets/goal_icon.png"
+import questionIcon from "../assets/question_icon.png"
+import planeIcon from "../assets/planet_icon.jpg"
 
 const AboutUs = () => {
 
@@ -33,9 +36,8 @@ const AboutUs = () => {
 
             <div className="about-main-container">
                 
-
                 <div className="about-container">
-                    <img src={connect} alt="" />
+                    <img src={planeIcon} alt="" />
                     <div className="about-text">
                         <div className="about-header">
                             <h1>{t('aboutUsFirst')}</h1>
@@ -55,13 +57,13 @@ const AboutUs = () => {
                         </div>
                         <p>{t('teamText')}</p>
                     </div>
-                    <img src={team} alt=""/>
+                    <img src={teamIcon} alt=""/>
                 </div>
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
                 <div className="about-container about-container-gap">
-                    <img src={mission} alt=""/>
+                    <img src={goalIcon} alt=""/>
                     <div className="about-text">
                         <div className="about-header">
                             <h1>{t('missionFirst')}</h1>
@@ -81,7 +83,7 @@ const AboutUs = () => {
                         </div>
                         <p>{t('whyUsText')}</p>
                     </div>
-                    <img src={quality} alt=""/>
+                    <img src={questionIcon} alt=""/>
                 </div>
 
                 <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>

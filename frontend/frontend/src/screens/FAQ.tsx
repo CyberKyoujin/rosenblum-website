@@ -18,7 +18,7 @@ import { MdLocalOffer } from "react-icons/md";
 import { RiMoneyEuroCircleFill } from "react-icons/ri";
 import { SiGoogletranslate } from "react-icons/si";
 import { RiContactsFill } from "react-icons/ri";
-
+import questionsIcon from "../assets/question_icon.png"
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
     backgroundColor: 'rgb(234,241,253)',
@@ -209,7 +209,7 @@ const Faq = () => {
                         <p>{t('faqText')}</p>
                         <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>
                     </div>
-                    <img src={quality} alt="" className="faq-section-image"/>
+                    <img src={questionsIcon} alt="" className="faq-section-image"/>
                 </div>
 
 

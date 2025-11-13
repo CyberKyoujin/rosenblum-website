@@ -14,6 +14,9 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
+import apoIcon from "../assets/apo_icon.png"
+import timeIcon from "../assets/time_icon.png"
+import questionIcon from "../assets/question_icon.png"
 
 const Apostille = () => {
 
@@ -36,17 +39,17 @@ const Apostille = () => {
 
             <div className="main-translations-container">
 
-            <Section image={apostille_first} imageClass="first-image verbal-first-image" titleTextFirst="" titleTextSecond={t('appostile')} text="apostille" order={true}/>
+            <Section image={apoIcon} imageClass="first-image" titleTextFirst="" titleTextSecond={t('appostile')} text="apostille" order={true}/>
 
             <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-            <Section image={translations_second} imageClass="second-image" titleTextFirst={t('whatIs')} titleTextSecond={t('oneApostille') + " ?"} text="wasIstApostille" order={false}/>
+            <Section image={questionIcon} imageClass="second-image" titleTextFirst={t('whatIs')} titleTextSecond={t('oneApostille') + " ?"} text="wasIstApostille" order={false}/>
 
             <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
             <div className="translations-section" style={{gap: '4rem'}}>
 
-                <img src={apostille_second} alt="" className="third-image"/>
+                <img src={timeIcon} alt="" className="third-image"/>
 
                 <div className="translations-section-text">
                         <div className="translations-section-title">

@@ -1,4 +1,3 @@
-import React from "react";
 import ua from "../assets/ua.svg"
 import ru from "../assets/ru.svg"
 import de from "../assets/de.svg"
@@ -7,15 +6,15 @@ import languages_first from "../assets/languages_first.jpg"
 import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
 import languages_second from "../assets/languages_second.jpg"
-import contact from "../assets/contact.jpg"
 import { useNavigate } from "react-router-dom";
-import { GrContactInfo } from "react-icons/gr";
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-
+import planetIcon from "../assets/planet_icon.jpg"
+import qualityIcon from "../assets/quality_image.png"
+import questionIcon from "../assets/question_icon.png"
 const Languages = () => {
 
     const { t } = useTranslation();
@@ -97,14 +96,14 @@ const Languages = () => {
 
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
-                <Section image={languages_first} imageClass="second-image" titleTextFirst={t('whyDiversity')} titleTextSecond={t('importantIs')} text="vielfalt" order={false}/>
+                <Section image={questionIcon} imageClass="second-image" titleTextFirst={t('whyDiversity')} titleTextSecond={t('importantIs')} text="vielfalt" order={false}/>
 
 
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
                 <div className="translations-section" style={{gap: '2rem'}}>
 
-                    <img src={languages_second} alt="" className="third-image"/>
+                    <img src={qualityIcon} alt="" className="third-image"/>
 
                     <div className="translations-section-text">
                             <div className="translations-section-title">

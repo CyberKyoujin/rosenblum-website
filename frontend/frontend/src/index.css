@@ -2106,21 +2106,19 @@ html, body {
 
 .about-container{
   display: flex;
-  gap: 2rem;
+  gap: 5rem;
   align-items: center;
 }
 
 .about-container img{
-  width: 600px;
+  width: 530px;
 }
 
 .about-container-gap{
-  gap: 12rem;
+  gap: 5rem;
 }
 
-.about-container-gap img{
-  width: 450px
-}
+
 
 
 .about-container h1{
@@ -2377,19 +2375,19 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 4rem;
 }
 
 .first-image{
-  width: 330px;
-  margin-right: 10rem;
+  width: 530px;
 }
 
 .second-image{
-  width: 600px;
+  width: 530px;
 }
 
 .contact-image{
-  width: 450px;
+  width: 530px;
 }
 
 .languages-second{
@@ -2427,7 +2425,7 @@ html, body {
 }
 
 .third-image{
-  width: 500px;
+  width: 530px;
 }
 
 .services-list{

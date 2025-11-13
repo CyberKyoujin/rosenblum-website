@@ -1,5 +1,3 @@
-import React from "react";
-import verbal_first from '../assets/verbal_first.jpg'
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
 import translations_second from "../assets/translations_second.jpg"
@@ -8,17 +6,14 @@ import translations_third from "../assets/translations_third.jpg"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import gears from "../assets/gears.gif"
-import { GrContactInfo } from "react-icons/gr";
-import phone from "../assets/phone.gif"
-import contact from "../assets/contact.jpg"
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
-import planetIcon from "../assets/smartphone_icon.jpg"
+import planetIcon from "../assets/planet_icon.jpg"
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-
-
+import questionIcon from "../assets/question_icon.png"
+import processIcon from "../assets/process_image.png"
 const VerbalTranslations = () => {
     const { t } = useTranslation();
 
@@ -39,11 +34,11 @@ const VerbalTranslations = () => {
 
             <div className="main-translations-container">
 
-                <Section image={planetIcon} imageClass="first-image verbal-first-image" titleTextFirst="" titleTextSecond={t('verbalTranslations')} text="dolmetschen" order={true}/>
+                <Section image={planetIcon} imageClass="first-image" titleTextFirst="" titleTextSecond={t('verbalTranslations')} text="dolmetschen" order={true}/>
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-                <Section image={translations_second} imageClass="second-image" titleTextFirst={t('whatIs')} titleTextSecond={t('verbalTranslations') + " ?"} text="whatAreVerbalTranslations" order={false}/>
+                <Section image={questionIcon} imageClass="second-image" titleTextFirst={t('whatIs')} titleTextSecond={t('verbalTranslations') + " ?"} text="whatAreVerbalTranslations" order={false}/>
 
                 <Divider style={{marginTop: '2rem', marginBottom: '3rem'}}/>
 
@@ -67,7 +62,7 @@ const VerbalTranslations = () => {
 
                 <div className="translations-section">
 
-                    <img src={translations_third} alt=""  className="third-image"/>
+                    <img src={processIcon} alt=""  className="third-image"/>
 
                     <div className="translations-section-list">
                         <div className="translations-process-title">
