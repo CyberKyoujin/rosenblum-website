@@ -16,7 +16,9 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-
+import planetIcon from "../assets/planet_icon.jpg"
+import questionIcon from "../assets/question_icon.png"
+import processIcon from "../assets/process_image.png"
 const Translations = () => {
 
     const { t } = useTranslation();
@@ -38,11 +40,11 @@ const Translations = () => {
 
             <div className="main-translations-container">
 
-                <Section image={translations_first} imageClass="first-image" titleTextFirst={t('sworn')} titleTextSecond={t('translations')} text="translationsFirstSection" order={true}/>
+                <Section image={planetIcon} imageClass="first-image" titleTextFirst={t('sworn')} titleTextSecond={t('translations')} text="translationsFirstSection" order={true}/>
 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-                <Section image={translations_second} imageClass="second-image" titleTextFirst={t('whatAre')} titleTextSecond={t('swornTranslations') + '?'} text="whatAreTranslations" order={false}/>
+                <Section image={questionIcon} imageClass="second-image" titleTextFirst={t('whatAre')} titleTextSecond={t('swornTranslations') + '?'} text="whatAreTranslations" order={false}/>
 
                 <Divider style={{marginTop: '2rem', marginBottom: '3rem'}}/>
 
@@ -69,7 +71,7 @@ const Translations = () => {
 
                 <div className="translations-section">
 
-                    <img src={translations_third} alt=""  className="third-image"/>
+                    <img src={processIcon} alt=""  className="third-image"/>
 
                     <div className="translations-section-list">
                         <div className="translations-process-title">

@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import contact from "../assets/contact.jpg"
+import contactIcon from "../assets/contact_image.png"
 import { GrContactInfo } from "react-icons/gr";
 
 interface ContactSectionProps {
@@ -27,7 +27,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({text}) => {
 
                     </div>
 
-                    <img src={contact} alt="" className="contact-image"/>
+                    <img src={contactIcon} alt="" className="contact-image"/>
                    
         </div>
     )

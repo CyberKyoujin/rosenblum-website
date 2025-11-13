@@ -10,7 +10,9 @@ import Footer from "../components/Footer";
 import { RiMedicineBottleFill } from "react-icons/ri";
 import areas_third from "../assets/areas_third.jpg"
 import { FaBook } from "react-icons/fa6";
-
+import medicineIcon from "../assets/medicine_icon.png"
+import lawIcon from "../assets/law_icon.png"
+import educationIcon from "../assets/education_icon.png"
 
 const Areas = () => {
     
@@ -34,7 +36,7 @@ const Areas = () => {
                 <Divider style={{marginTop: '3rem', marginBottom: '3rem'}}/>
 
                 <div className="areas-main-section">
-                    <img src={areas_second} alt="" />
+                    <img src={lawIcon} alt="" />
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">
@@ -71,7 +73,7 @@ const Areas = () => {
                         </div>
                     </div>
 
-                    <img src={areas_first} alt="" />
+                    <img src={medicineIcon} alt="" />
 
                 </div>
 
@@ -79,7 +81,7 @@ const Areas = () => {
 
                 <div className="areas-main-section">
 
-                    <img src={areas_third} alt="" />
+                    <img src={educationIcon} alt="" />
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">
