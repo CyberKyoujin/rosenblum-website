@@ -1,16 +1,9 @@
-import React from "react";
-import translations_first from '../assets/register_icon.jpg'
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
-import translations_second from "../assets/translations_second.jpg"
 import Footer from "../components/Footer";
-import translations_third from "../assets/translations_third.jpg"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import gears from "../assets/gears.gif"
-import { GrContactInfo } from "react-icons/gr";
-import phone from "../assets/phone.gif"
-import contact from "../assets/contact.jpg"
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
@@ -19,6 +12,8 @@ import ContactSection from "../components/ContactSection";
 import planetIcon from "../assets/planet_icon.jpg"
 import questionIcon from "../assets/question_icon.png"
 import processIcon from "../assets/process_image.png"
+
+
 const Translations = () => {
 
     const { t } = useTranslation();

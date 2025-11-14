@@ -1,11 +1,5 @@
-import React from "react";
 import { Divider } from "@mui/material";
-import { IoGlobeSharp } from "react-icons/io5";
-import connect from '../assets/connect.jpg'
-import team from "../assets/about_second.jpg"
-import mission from "../assets/about_third.jpg"
 import Footer from "../components/Footer";
-import quality from "../assets/about_fourth.jpg"
 import { GrContactInfo } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import Typography from '@mui/material/Typography';

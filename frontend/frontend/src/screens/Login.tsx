@@ -14,17 +14,14 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
 import { IoWarningOutline } from "react-icons/io5";
-import { Link as RouterLink } from 'react-router-dom';
-import useEmailVerification from '../hooks/useEmailVerification';
-
+import { CircularProgress } from '@mui/material';
 
 const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
 
 const Login = () => {
 
     const { t } =useTranslation(); 
-    const { loginUser, googleLogin } = useAuthStore.getState();
-    const {verifyEmail} = useEmailVerification();
+    const { loginUser, googleLogin, loading } = useAuthStore();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -161,7 +158,9 @@ const Login = () => {
                         />
                     </FormControl>
 
-                    <button className="confirm-btn" type='submit'>{t('next')}</button>
+                    <button className="confirm-btn" type='submit'>
+                        {loading ? (<CircularProgress  sx={{ color: '#ffffff' }}/>) : (t('next'))}
+                    </button>
 
                 </div>
                 

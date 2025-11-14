@@ -13,12 +13,8 @@ interface Props {
 }
 
 const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
-    const { fetchUserMessages, userMessages, toggleMessages, user } = useAuthStore.getState();
+    const { userMessages, toggleMessages, user } = useAuthStore.getState();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        fetchUserMessages();
-    }, []);
 
     const {t} = useTranslation();
 

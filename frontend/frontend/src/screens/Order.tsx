@@ -19,7 +19,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Typography from '@mui/material/Typography';
 import ukrPass from '../assets/ukr_pass.jpg'
 import dePass from '../assets/pass_de.jpg'
-import orderStore from "../zustand/orderStore";
+import orderStore from "../zustand/useOrderStore";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { useNavigate } from "react-router-dom";

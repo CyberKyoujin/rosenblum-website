@@ -1,15 +1,13 @@
 import React, { useEffect } from "react";
-import useAuthStore from "../zustand/useAuthStore";
-import orderStore from "../zustand/orderStore";
+import orderStore from "../zustand/useOrderStore";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from '@mui/material/CircularProgress';
-import translateIcon from '../assets/translate_icon.png'
 
 const OrderWait = () => {
 
 
     const navigate = useNavigate();
-    const { successfullyCreated } = orderStore.getState();
+    const { successfullyCreated } = orderStore();
 
     useEffect(() => {
         let timer: any;

@@ -1,14 +1,9 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
-import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-import areas_second from "../assets/areas_second.jpg"
 import { VscLaw } from "react-icons/vsc";
-import areas_first from "../assets/areas_first.jpg"
 import Footer from "../components/Footer";
 import { RiMedicineBottleFill } from "react-icons/ri";
-import areas_third from "../assets/areas_third.jpg"
 import { FaBook } from "react-icons/fa6";
 import medicineIcon from "../assets/medicine_icon.png"
 import lawIcon from "../assets/law_icon.png"

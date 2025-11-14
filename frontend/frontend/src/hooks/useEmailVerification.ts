@@ -11,17 +11,19 @@ interface VerificationState {
     detail?: string;
 }
 
-
 export default function useEmailVerification () {
 
     const [attempts, setAttempts] = useState(3);
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState<boolean>();
 
     const navigate = useNavigate();
 
     async function verifyEmail(code: string ,email: string | undefined) {
     
         try {
+
+            setLoading(true);
 
             const response = await axiosInstance.post('/user/email-verification/', {code, email});
 
@@ -45,9 +47,12 @@ export default function useEmailVerification () {
 
 
             } else {
-                setError("Netzwerkfehler. Bitte versuchen Sie es später erneut."); 
+                setError("Netzwerkfehler. Bitte versuchen Sie es später erneut.");
+                setLoading(false);
             }
 
+        } finally {
+            setLoading(false);
         }
         
     }
@@ -65,6 +70,6 @@ export default function useEmailVerification () {
     }
 
 
-    return {attempts, error, verifyEmail, resendVerification};
+    return {attempts, error, loading, verifyEmail, resendVerification};
 
 }

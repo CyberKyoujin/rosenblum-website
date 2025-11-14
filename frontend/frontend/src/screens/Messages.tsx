@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 
 const Messages = () => {
 
-    const { fetchUserMessages, userMessages, fetchUserData, userData, user, toggleMessages, sendMessage } = useAuthStore.getState();
+    const { fetchUserMessages, userMessages, userData, user, toggleMessages, sendMessage } = useAuthStore.getState();
     const [message, setMessage] = useState('');
     const messagesEndRef = useRef(null);
     const navigate = useNavigate();
@@ -33,8 +33,6 @@ const Messages = () => {
     const { t } = useTranslation();
 
     useEffect(() => {
-        fetchUserData();
-        fetchUserMessages();
         toggleMessages();
     }, []);
 

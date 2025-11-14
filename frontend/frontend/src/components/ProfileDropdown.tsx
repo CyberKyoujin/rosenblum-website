@@ -29,11 +29,6 @@ export default function AccountMenu() {
     setAnchorEl(null);
   };
 
-  React.useEffect(() => {
-    fetchUserData();
-    
-  }, [])
-
   const handleImageError = (e: any) => {
     e.target.src = defaultAvatar; 
     console.error("Failed to load user image from URL:", e.target.src);

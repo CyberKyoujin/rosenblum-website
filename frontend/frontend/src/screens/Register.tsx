@@ -19,12 +19,13 @@ import Footer from "../components/Footer";
 import useAuthStore from '../zustand/useAuthStore';
 import { IoWarningOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
 
 const Register = () => {
 
     const { t } = useTranslation();
-    const { registerUser, googleLogin } = useAuthStore.getState();
+    const { registerUser, googleLogin, loading } = useAuthStore.getState();
 
     const navigate = useNavigate();
 
@@ -167,7 +168,9 @@ const Register = () => {
                         <p><img src={containsUppercase ? tick : cross} alt="" style={{width: '25px'}}/>{t('uppercase')}</p>
                     </div>
 
-                    <button className="confirm-btn" type='submit'>{t('next')}</button>
+                    <button className="confirm-btn" type='submit'>
+                        {loading ? (<CircularProgress  sx={{ color: '#ffffff' }}/>) : (t('next'))}
+                    </button>
                     
                 </form>
                 </div>
