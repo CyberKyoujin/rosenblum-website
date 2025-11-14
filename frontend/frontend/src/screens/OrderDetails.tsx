@@ -38,8 +38,6 @@ interface OrderData {
 }
 
 
-
-
 const OrderDetails = () => {
 
     const { orderId } = useParams();
@@ -66,6 +64,7 @@ const OrderDetails = () => {
 
     return (
         <>
+        <div className="main-app-container">
         <div className="order-details">
             <div className="order-details-container">
 
@@ -144,7 +143,8 @@ const OrderDetails = () => {
 
             
         </div>
-        <Footer></Footer>
+        </div>
+        <Footer/>
         </>
     )
 

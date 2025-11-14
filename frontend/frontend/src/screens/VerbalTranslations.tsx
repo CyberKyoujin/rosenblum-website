@@ -1,8 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
-import translations_second from "../assets/translations_second.jpg"
 import Footer from "../components/Footer";
-import translations_third from "../assets/translations_third.jpg"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import gears from "../assets/gears.gif"
@@ -14,6 +12,8 @@ import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
 import questionIcon from "../assets/question_icon.png"
 import processIcon from "../assets/process_image.png"
+
+
 const VerbalTranslations = () => {
     const { t } = useTranslation();
 

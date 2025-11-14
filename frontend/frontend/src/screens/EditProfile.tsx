@@ -11,16 +11,10 @@ import defaultAvatar from '../assets/default_avatar.png'
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
 
-interface UserData {
-  phone_number?: string;
-  city?: string;
-  street?: string;
-  zip?: string;
-  profile_img_url?: string;
-}
+
 
 const EditProfile = () => {
-  const { userData, user, fetchUserData, updateUserProfile } = useAuthStore.getState();
+  const { userData, user, updateUserProfile } = useAuthStore.getState();
 
   const [phoneNumber, setPhoneNumber] = useState<string>(userData?.phone_number || '');
   const [city, setCity] = useState<string>(userData?.city || '');
@@ -56,10 +50,6 @@ const EditProfile = () => {
 
     await updateUserProfile(formData);
   }
-
-  useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
 
   return (
 

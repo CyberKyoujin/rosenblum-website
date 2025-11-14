@@ -4,12 +4,13 @@ import Footer from '../components/Footer'
 import { useLocation, useNavigate } from 'react-router-dom';
 import useEmailVerification from '../hooks/useEmailVerification';
 import Alert from '@mui/material/Alert';
+import { CircularProgress } from '@mui/material';
 
 const EmailVerification = () => {
 
   const [code, setCode] = useState("");
   
-  const { attempts, error, verifyEmail, resendVerification } = useEmailVerification();
+  const { attempts, error, loading, verifyEmail, resendVerification } = useEmailVerification();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,6 +39,10 @@ const EmailVerification = () => {
   return (
     <>
     <div className="page">
+
+      {!loading ? (
+
+        <div className="page">
 
         <form className="otp-form__container" onSubmit={handleSubmit}>
 
@@ -69,6 +74,17 @@ const EmailVerification = () => {
             <button type="submit" className='order-btn otp_btn'>Code Senden</button>
 
         </form>
+
+        </div>
+
+      ) : (
+        <div className='loading-container page'>
+          <CircularProgress/>
+        </div>
+      )
+      }
+
+      
 
         <Footer />
 

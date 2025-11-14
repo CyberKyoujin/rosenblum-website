@@ -4,7 +4,6 @@ import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import axiosInstance from "./axiosInstance";
 
-
 interface User {
     id: string | null;
     email: string | null;
@@ -58,9 +57,9 @@ interface AuthState {
     user: User | null;
     userData: UserData | null;
     userMessages: Message[] | null;
-    reviews: Review[] | null;
     isAuthenticated: boolean;
     emailAlreadyExists: boolean;
+    loading: boolean;
     setTokens: (authTokens: AuthTokens | null) => void; 
     setUser: (user: User | null) => void;
     registerUser: (email: string, first_name: string, last_name: string, password: string) => Promise<void>;
@@ -68,28 +67,25 @@ interface AuthState {
     googleLogin: (accessToken: string) => Promise<void>;
     updateToken: () => void;
     logoutUser: () => void;
+    setLoading: (loading: boolean) => void;
     fetchUserData: () => Promise<void>;
     setUserData: (data: UserData | null) => void;
     fetchUserMessages: () => Promise<void>;
     setMessages: (messages: []) => void;
-    setReviews: (reviews: Review[]) => void;
     updateUserProfile: (formData: FormData) => Promise<void>;
     toggleMessages: () => Promise<void>;
     sendMessage: (formData: FormData) => Promise<void>;
     sendRequest: (name: string, email: string, phone_number: string, message: string) => Promise<void>;
-    fetchReviews: () => Promise<void>;
 }
-
-
 
 const useAuthStore = create<AuthState>((set,get) =>({
     authTokens: null,
     user: null,
+    loading: false,
     isAuthenticated: false,
     emailAlreadyExists: false,
     userData: null,
     userMessages: null,
-    reviews: null,
 
     setTokens: (tokens: AuthTokens | null) => {
         if (tokens) {
@@ -107,10 +103,13 @@ const useAuthStore = create<AuthState>((set,get) =>({
         }
     },
 
+    setLoading: (loading) => set({loading}),
+
     setUser: (user) => set({ user }),
 
     registerUser: async (email, firstName, lastName, password) => {
         try{
+            get().setLoading(true);
             const response = await axiosInstance.post('/user/register/', {email: email, first_name: firstName, last_name: lastName, password: password});
             console.log("Registered successfully:", response.data);
             if (response.status === 200){
@@ -119,11 +118,14 @@ const useAuthStore = create<AuthState>((set,get) =>({
         } catch(error: any){
             console.error("Error while registering: " + error.response.status);
             throw error;
+        } finally {
+            get().setLoading(false);
         }
     },
 
     loginUser: async (email, password) => {
         try{
+            get().setLoading(true);
             const response = await axiosInstance.post('/user/login/', {email, password});
             console.log(response);
             const { access, refresh } = response.data;
@@ -137,6 +139,8 @@ const useAuthStore = create<AuthState>((set,get) =>({
         } catch (error: any) {
             console.error("Error while logging in: " + error.message);
             throw error;
+        } finally {
+            get().setLoading(false);
         }
     },
 
@@ -189,6 +193,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     fetchUserData: async() => {
             try{
+                get().setLoading(true);
                 const response = await axiosInstance.get('/user/user-data/')
                 if (response.status === 200){
                     get().setUserData(response.data)
@@ -197,18 +202,23 @@ const useAuthStore = create<AuthState>((set,get) =>({
                 }
             } catch(error) {
                 console.error(error);
+            } finally {
+                get().setLoading(false);
             }
         
     },
 
     updateUserProfile: async (formData: FormData) => {  
             try{
+                get().setLoading(true);
                 const response = await axiosInstance.put('/user/update/', formData)
                 if (response.status === 200){
                     window.location.href = '/profile';
                 }
             } catch (error){
                 console.error('Error updating profile:', error);
+            } finally {
+                get().setLoading(false);
             }
     },
 
@@ -216,12 +226,15 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     fetchUserMessages: async () => {
             try{
+                get().setLoading(true);
                 const response = await axiosInstance.get('/user/messages/')
                 if (response.status === 200){
                     get().setMessages(response.data)
                 }
             } catch(error: any) {
                 console.log('Error while fetching messages...' + error.message)
+            } finally {
+                get().setLoading(false);
             }
     },
 
@@ -238,37 +251,33 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     sendMessage: async(formData: FormData) => {
             try{
+                get().setLoading(true);
                 const response = await axiosInstance.post('/user/send-message/', formData)
                 if (response.status === 200){
                     console.log('Successfully sent a message!')
                 }
             } catch (error){
                 console.error(error);
+            } finally {
+                get().setLoading(false);
             }
     },
 
     sendRequest: async(name: string, email: string, phone_number: string, message: string) => {
             try{
+                get().setLoading(true);
                 const response = await axiosInstance.post('/user/new-request/', {name, email, phone_number, message});
 
             } catch (error) {
                 console.error(error);
+            } finally {
+               get().setLoading(false); 
             }
         
     },
 
     setReviews: (reviews) => set({reviews: reviews}), 
 
-    fetchReviews: async() => {
-        try{
-            const response = await axiosInstance.get('/user/reviews');
-            if (response.status === 200){
-                get().setReviews(response.data);  
-            }
-        } catch(error){
-            console.error(error);
-        }
-    }
 
 }))
 

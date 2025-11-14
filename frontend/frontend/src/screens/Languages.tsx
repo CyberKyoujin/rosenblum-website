@@ -2,23 +2,20 @@ import ua from "../assets/ua.svg"
 import ru from "../assets/ru.svg"
 import de from "../assets/de.svg"
 import Divider from '@mui/material/Divider';
-import languages_first from "../assets/languages_first.jpg"
 import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
-import languages_second from "../assets/languages_second.jpg"
 import { useNavigate } from "react-router-dom";
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-import planetIcon from "../assets/planet_icon.jpg"
 import qualityIcon from "../assets/quality_image.png"
 import questionIcon from "../assets/question_icon.png"
+
 const Languages = () => {
 
     const { t } = useTranslation();
-    const navigate = useNavigate();
 
     return (
         <>

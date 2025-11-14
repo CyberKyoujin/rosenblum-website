@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
 import ContactSection from "../components/ContactSection";
 import Section from "../components/Section"
-import pricing_first from "../assets/pricing_first.jpg"
 import PricingCard from "../components/PricingCard";
 import qualityIcon from "../assets/quality_image.png"
 
