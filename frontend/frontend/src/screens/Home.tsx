@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
 import { useReviews } from "../hooks/useReviews";
 import CircularProgress from '@mui/material/CircularProgress';
+import ReviewsSliderSkeleton from "../components/ReviewsSliderSkeleton";
 
 interface Review{
     id: number;
@@ -35,7 +36,9 @@ const Home = () => {
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
 
-  const { reviews, loading, error } = useReviews();
+  const { reviews } = useReviews();
+
+  const { isAuthLoading } = useAuthStore();
 
   const navigate = useNavigate();
 
@@ -135,8 +138,12 @@ const Home = () => {
         </div>
 
         <div className="slider-container">
-            { !loading ?
-            (<CustomSlider>
+            {!isAuthLoading ?
+            (
+                <div> <ReviewsSliderSkeleton/></div>
+            ) :(
+            
+            <CustomSlider>
                 { reviews.map((review, index) => (
                     <div className="review-container" key={index}>
                         <div className="review-header">
@@ -150,8 +157,6 @@ const Home = () => {
                     </div>
                 ))}
             </CustomSlider>
-            ) :(
-            <div> <CircularProgress/></div>
             ) 
             }   
             

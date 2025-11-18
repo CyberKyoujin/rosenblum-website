@@ -14,6 +14,7 @@ def fetch_google_reviews():
         "place_id": GOOGLE_PLACE_ID,
         "fields": "reviews",
         "key": GOOGLE_PLACES_API_KEY,
+        "reviews_sort": "newest"
     }
     
     response = requests.get(url, params=params)

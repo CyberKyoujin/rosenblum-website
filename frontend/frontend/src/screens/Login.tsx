@@ -40,6 +40,7 @@ const Login = () => {
         e.preventDefault();
         try{
             await loginUser(email, password);
+            navigate("/profile")
         } catch (error: any){
             if(error.response.status === 401){
                 setError(t('userNotExists'));
