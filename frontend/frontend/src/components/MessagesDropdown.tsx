@@ -6,6 +6,7 @@ import Divider from '@mui/material/Divider';
 import { useNavigate } from "react-router-dom";
 import { SiGooglemessages } from "react-icons/si";
 import { useTranslation } from "react-i18next";
+import useMessageStore from "../zustand/useMessageStore";
 
 
 interface Props {
@@ -13,7 +14,10 @@ interface Props {
 }
 
 const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
-    const { userMessages, toggleMessages, user } = useAuthStore.getState();
+    const { userMessages, user } = useAuthStore();
+    
+    const { toggleMessages } = useMessageStore();
+    
     const navigate = useNavigate();
 
     const {t} = useTranslation();

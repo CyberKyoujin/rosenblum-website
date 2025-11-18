@@ -1469,6 +1469,30 @@ html, body {
 
 }
 
+/* PROFILE SKELETON */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #e0e0e0 0%,
+    #f0f0f0 50%,
+    #e0e0e0 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  width: 100%;
+  border-radius: 5px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 
 /* PROFILE */
 
@@ -1480,7 +1504,6 @@ html, body {
   flex-direction: column;
   gap: 3rem;
 }
-
 
 
 .profile__user-data-section{
@@ -1893,6 +1916,10 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+.image-container img{
+  width: 150px;
 }
 
 .edit-avatar-container{

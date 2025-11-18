@@ -13,6 +13,8 @@ import { FaFile } from "react-icons/fa";
 import { MdInfoOutline } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
+import useAuthStore from "../zustand/useAuthStore";
+import OrderDetailsSkeleton from "../components/OrderDetailsSkeleton";
 
 interface File{
     id: string;
@@ -42,6 +44,7 @@ const OrderDetails = () => {
 
     const { orderId } = useParams();
     const [orderData, setOrderData] = useState<OrderData | null>(null);
+    const {isAuthLoading} = useAuthStore();
 
     const { t } = useTranslation();
 
@@ -60,7 +63,9 @@ const OrderDetails = () => {
 
     }, [orderId]);
 
-    console.log(orderData)
+    if (!isAuthLoading) {
+        return <OrderDetailsSkeleton/>
+    }
 
     return (
         <>

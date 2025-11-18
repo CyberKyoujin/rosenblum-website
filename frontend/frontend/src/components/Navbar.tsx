@@ -13,17 +13,24 @@ import { BiSolidMessageDetail } from "react-icons/bi";
 import useAuthStore from "../zustand/useAuthStore";
 import MessagesDropdown from "./MessagesDropdown";
 import ServicesMenu from "./ServicesMenu";
+import useOrderStore from "../zustand/useOrderStore";
+import { Message } from "../types/messages";
+import useMessageStore from "../zustand/useMessageStore";
+
+type OpenedComponent = "services" | "messages" | "slider" | null;
 
 const Navbar: React.FC = () => {
     
-  const [openedComponent, setOpenedComponent] = useState<string | null>(null);
+  const [openedComponent, setOpenedComponent] = useState<OpenedComponent>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { userMessages, isAuthenticated, user } = useAuthStore.getState();
+  const { isAuthenticated, user } = useAuthStore();
 
-  const messages = userMessages?.filter(message => message.receiver === user?.id)
+  const {messages} = useMessageStore();
 
-  const messagesCount = messages?.filter(message => !message.viewed).length || 0;
+  const userMessages : Message[] = messages?.filter(msg => msg.receiver === user?.id) ?? [];
+
+  const messagesCount = messages?.filter(m => m.receiver === user?.id && !m.viewed).length ?? 0;
 
   const handleOverlayClick = () => {
     if (openedComponent) {
@@ -31,18 +38,9 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const toggleServices = () => {
-    setOpenedComponent(openedComponent === 'services' ? null : 'services');
-  };
-
-  const toggleMessages = () => {
-    setOpenedComponent(openedComponent === 'messages' ? null : 'messages');
-  };
-
-  const toggleSlider = () => {
-    setOpenedComponent(openedComponent === 'slider' ? null : 'slider');
-  };
-
+  const toggle = (name: OpenedComponent) => {
+  setOpenedComponent(openedComponent === name ? null : name);
+};
 
   return (
       <div className='navbar'>
@@ -55,20 +53,20 @@ const Navbar: React.FC = () => {
               <div className={openedComponent ? "overlay overlay-show" : "overlay"} onClick={handleOverlayClick}></div>
 
               <div className='nav-center'>
-                  <button className='services-btn' onClick={(e) => {e.stopPropagation(); toggleServices();}}>
+                  <button className='services-btn' onClick={(e) => {e.stopPropagation();  toggle("services");}}>
                       {t('services')} {openedComponent === 'services' ? <MdKeyboardArrowUp/> : <MdKeyboardArrowDown/>}
                   </button>
 
-                  <ServicesMenu isOpened={openedComponent === 'services'} setOpened={toggleServices}/>
+                  <ServicesMenu isOpened={openedComponent === 'services'} setOpened={() => toggle("services")}/>
 
-                  <AiOutlineMenu className="services-menu"  onClick={(event) => {event.stopPropagation(); toggleSlider();}}/>
+                  <AiOutlineMenu className="services-menu"  onClick={(event) => {event.stopPropagation();  toggle("slider");}}/>
                   
                   <p className="nav-link" onClick={() => navigate('/about-us')}>{t('aboutUs')}</p>
                   <p className="nav-link" onClick={() => navigate('/contact-us')}>{t('contact')}</p>
                   <button className='order-btn' onClick={() => navigate('/order')}>{t('offer')}</button>
                   <p>|</p>
 
-                  <button className="nav-message-container" style={{ display: isAuthenticated ? 'block' : 'none' }} onClick={(e) => {e.stopPropagation(); toggleMessages();}}>
+                  <button className="nav-message-container" style={{ display: isAuthenticated ? 'block' : 'none' }} onClick={(e) => { e.stopPropagation(); toggle("messages"); }}>
                       <BiSolidMessageDetail style={{fontSize: '45px', color: 'rgb(68 113 203)'}}/>
                       <div className="messages-counter" style={{display: messagesCount > 0 ? 'block': 'none'}}>
                           <p style={{marginTop: '2px'}}>{messagesCount}</p>
@@ -85,7 +83,7 @@ const Navbar: React.FC = () => {
               </div>
           </div>
 
-          <MenuSlider sliderOpened={openedComponent === 'slider'} setSliderOpened={toggleSlider}/>
+          <MenuSlider sliderOpened={openedComponent === 'slider'} setSliderOpened={() => toggle("slider")}/>
       </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUserEdit, FaInfoCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -12,12 +12,17 @@ const UserProfileSection = () => {
     const {user, userData} = useAuthStore();
     const {orders} = useOrderStore();
 
-    const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
+    const profileImg = user?.profile_img_url || userData?.image_url;
 
      const handleImageError = (e: any) => {
         e.target.src = defaultAvatar; 
         console.error("Failed to load user image from URL:", e.target.src);
     };
+
+    useEffect(() => {
+        console.log(user);
+        console.log(userData);
+    }, [])
 
     return (
         <section className="profile__user-data-section">

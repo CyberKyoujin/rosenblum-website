@@ -26,15 +26,28 @@ import Faq from "./screens/FAQ";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EmailVerification from "./screens/EmailVerification";
 import EmailVerificationSuccess from "./screens/EmailVerificationSuccess";
+import useMessageStore from "./zustand/useMessageStore";
 
 function App() {
   
   const updateToken = useAuthStore(s => s.updateToken);
-  const fetchUserData = useAuthStore(s => s.fetchUserData);
-  const fetchUserMessages = useAuthStore(s => s.fetchUserMessages);
+  const initAuth = useAuthStore(s => s.initAuth);
+  const isAuthLoading = useAuthStore(s => s.isAuthLoading);
+  const fetchUserMessages = useMessageStore(s => s.fetchUserMessages);
   const fetchOrders = useOrderStore(s => s.fetchOrders);
 
   useEffect(() => {
+
+  const init = async () => {
+    await initAuth();   
+    await Promise.all([                       
+        fetchUserMessages(),
+        fetchOrders(),
+    ]);
+  };
+
+  init();
+
   const refreshTokenInterval = setInterval(async () => {
     try {
       await updateToken();
@@ -43,17 +56,15 @@ function App() {
     }
   }, 240000);
 
-  const fetchAll = async () => {
-    fetchUserData();
-    fetchUserMessages();
-    fetchOrders();
-  };
-
-  fetchAll();
-
   return () => clearInterval(refreshTokenInterval);
-  }, [updateToken, fetchUserData, fetchUserMessages, fetchOrders]);
 
+  }, [updateToken, fetchUserMessages, fetchOrders, initAuth]);
+
+
+   if (isAuthLoading) {
+  
+    return <div>App loading...</div>; 
+  }
 
   return (
     <main>

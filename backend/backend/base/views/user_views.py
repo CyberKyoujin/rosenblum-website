@@ -23,6 +23,8 @@ import requests
 from rest_framework import generics
 from base.services.email_verification import verify_email, send_verification_code
 from django.shortcuts import get_object_or_404
+from base.services.google_reviews import sync_google_reviews
+
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -198,7 +200,7 @@ class RequestView(CreateAPIView):
 
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewSerializer
-    
+        
     def get_queryset(self):
         return (
             Review.objects

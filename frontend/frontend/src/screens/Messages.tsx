@@ -3,7 +3,6 @@ import Divider from '@mui/material/Divider';
 import { SiGooglemessages } from "react-icons/si";
 import { useEffect } from "react";
 import useAuthStore from "../zustand/useAuthStore";
-import { useNavigate } from "react-router-dom";
 import smallLogo from '../assets/logo2.png'
 import { RiMailSendLine } from "react-icons/ri";
 import Typography from '@mui/material/Typography';
@@ -15,20 +14,26 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import { useTranslation } from "react-i18next";
+import useMessageStore from "../zustand/useMessageStore"
+import MessagesSkeleton from "../components/MessagesSkeleton";
+import MessageInput from "../components/MessageInput";
 
 
 const Messages = () => {
 
-    const { fetchUserMessages, userMessages, userData, user, toggleMessages, sendMessage } = useAuthStore.getState();
-    const [message, setMessage] = useState('');
-    const messagesEndRef = useRef(null);
-    const navigate = useNavigate();
-    
-    const [uploadLimit, setUploadLimit] = useState(false);
-    const [uploadedFiles, setUploadedFiles] = useState([]);
-    const fileInputRef = useRef(null);
+    const { userData, user } = useAuthStore();
+    const { messages } = useMessageStore();
+    const { isAuthLoading } = useAuthStore();
 
     const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState('');
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [uploadLimit, setUploadLimit] = useState(false);
+ 
+    const { toggleMessages, fetchUserMessages, sendMessage } = useMessageStore();
+    const messagesEndRef = useRef(null);
+    
+    const fileInputRef = useRef(null);
 
     const { t } = useTranslation();
 
@@ -40,58 +45,17 @@ const Messages = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
         }
-    }, [userMessages]);
+    }, [messages]);
 
     const sortMessagesAscending = () => {
-        return userMessages?.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+        return messages?.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true); 
-        const formData = new FormData();
-        if (message.length > 0) {
-            if (uploadedFiles.length > 0) {
-                uploadedFiles.forEach(file => {
-                    formData.append('files', file);
-                });
-            }
-            formData.append('message', message);
-
-            try {
-                await sendMessage(formData);
-                setMessage('');
-                setUploadedFiles([]);
-                fetchUserMessages();
-            } catch (error) {
-                console.error('Failed to send message:', error);
-            }
-            setIsLoading(false); 
-        } else {
-            setMessage('');
-            setIsLoading(false);
-        }
-    };
-
-    const handleFiles = (newFiles: File[]) => {
-        const totalFiles = uploadedFiles.length + newFiles.length;
-        if (totalFiles > 3) {
-            setUploadLimit(true);
-            return; 
-        }
-        setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
-    };
 
     const handleClick = () => {
         fileInputRef.current?.click();
     };
 
-    const handleFileInputChange = (e: any) => {
-        if (e.target.files) {
-            const filesArray = Array.from(e.target.files);
-            handleFiles(filesArray);
-        }
-    };
 
     const removeFile = (index: number) => {
         setUploadedFiles(currentFiles => {
@@ -103,15 +67,62 @@ const Messages = () => {
         });
     };
 
-    const autoExpand = (e) => {
-        const element = e.target;
-        element.style.height = 'auto';
-        const computed = window.getComputedStyle(element);
-        let height = element.scrollHeight;
-        height += parseInt(computed.getPropertyValue('border-top-width'), 10)
-                 + parseInt(computed.getPropertyValue('border-bottom-width'), 10);
-        element.style.height = `${height}px`;
-    };
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            setIsLoading(true); 
+            const formData = new FormData();
+            if (message.length > 0) {
+                if (uploadedFiles.length > 0) {
+                    uploadedFiles.forEach(file => {
+                        formData.append('files', file);
+                    });
+                }
+                formData.append('message', message);
+    
+                try {
+                    await sendMessage(formData);
+                    setMessage('');
+                    setUploadedFiles([]);
+                    fetchUserMessages();
+                } catch (error) {
+                    console.error('Failed to send message:', error);
+                }
+                setIsLoading(false); 
+            } else {
+                setMessage('');
+                setIsLoading(false);
+            }
+        }
+    
+        const handleFiles = (newFiles: File[]) => {
+            const totalFiles = uploadedFiles.length + newFiles.length;
+            if (totalFiles > 3) {
+                setUploadLimit(true);
+                return; 
+            }
+            setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
+        };
+    
+        const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+            if (e.target.files) {
+                const filesArray = Array.from(e.target.files);
+                handleFiles(filesArray);
+            }
+        };
+    
+        const autoExpand = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            const element = e.target;
+            element.style.height = 'auto';
+            const computed = window.getComputedStyle(element);
+            let height = element.scrollHeight;
+            height += parseInt(computed.getPropertyValue('border-top-width'), 10)
+                     + parseInt(computed.getPropertyValue('border-bottom-width'), 10);
+            element.style.height = `${height}px`;
+        };
+
+    if (!isAuthLoading) {
+        return <MessagesSkeleton/>
+    }
 
     return(
 
@@ -135,7 +146,7 @@ const Messages = () => {
             <Divider sx={{marginTop: '1rem'}}/>
 
             <div className="messages-main-container" id="scroll-div" ref={messagesEndRef}>
-                {userMessages && userMessages?.length > 0 ? (
+                {messages && messages?.length > 0 ? (
 
                     sortMessagesAscending()?.map((message) => (
                         <div key={message.id} className={`message ${message.sender === user?.id ? 'message-user' : ''}`}>
@@ -192,40 +203,7 @@ const Messages = () => {
 
             
 
-            <form className="message-input-container" onSubmit={handleSubmit}>
-                <textarea
-                    type="text"
-                    className="message-input"
-                    value={message}
-                    onChange={(e) => {
-                        setMessage(e.target.value);
-                        autoExpand(e);
-                    }}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            handleSubmit(e);
-                        }
-                    }}
-                />
-
-                <button type="button" className="send-message-container hover-btn" style={{ right: '4.5rem' }} onClick={handleClick}>
-                    <FaPaperclip/>
-                </button>
-
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileInputChange}
-                    style={{ display: 'none' }} 
-                    multiple 
-                    accept=".jpg, .png, .jpeg, .pdf, .doc, .docx, .xlsx"
-                />
-
-                <button className="send-message-container hover-btn" type="submit">
-                    {isLoading ? <CircularProgress style={{color: 'white', width: '24px', height: '24px'}}/> : <RiMailSendLine/>}
-                </button>
-            </form>
+            <MessageInput handleSubmit={handleSubmit} handleClick={handleClick} message={message} setMessage={setMessage} autoExpand={autoExpand} fileInputRef={fileInputRef} handleFileInputChange={handleFileInputChange} isLoading={isLoading}/>
 
 
         </div>
