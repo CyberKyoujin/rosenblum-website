@@ -10,9 +10,9 @@ import ProfileSkeleton from '../components/ProfileSkeleton';
 
 const Profile = () => {
 
-    const { isAuthLoading } = useAuthStore();
+    const { userDataLoading } = useAuthStore();
 
-    if (isAuthLoading) {
+    if (userDataLoading) {
         return <ProfileSkeleton/>
     }
     

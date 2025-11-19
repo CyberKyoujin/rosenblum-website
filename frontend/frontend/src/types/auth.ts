@@ -10,7 +10,11 @@ export interface AuthTokens {
 export interface AuthState {
     authTokens: AuthTokens | null;
     user: User | null;
+    userRegisterError: string | null;
+    userLoginError: string | null;
     userData: UserData | null;
+    userDataLoading: boolean;
+    userDataError: string | null;
     userMessages: Message[] | null;
     isAuthenticated: boolean;
     isAuthLoading: boolean;

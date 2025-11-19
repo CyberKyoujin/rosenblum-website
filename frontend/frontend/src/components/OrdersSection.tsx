@@ -13,7 +13,7 @@ const OrdersSection = () => {
     const navigate = useNavigate();
  
     return (
-        <section className="profile__user-orders-section profile-section-container">
+        <section className="profile__user-orders-section profile-section-container" style={{gap: "1.5rem"}}>
 
                     {orders?.length > 0 ? (
                         <>

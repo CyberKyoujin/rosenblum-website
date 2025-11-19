@@ -1,8 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
-
-
 * {
   margin: 0;
   padding: 0;
@@ -1515,7 +1513,7 @@ html, body {
   border: 3px solid var(--blue);
   border-radius: 15px;
   padding: 2rem;
-  height: 24rem;
+  min-height: 24rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
@@ -3295,4 +3293,34 @@ html, body {
   .verification_success__container h1{
     font-size: 1.7rem;
   }
+}
+
+/* APP SKELETON */
+
+.app-skeleton-container{
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-skeleton-progress{
+  color: var(--blue);
+  font-size: 200px;
+}
+
+/* ERROR VIEW */
+
+.error-view-container{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-view-container p{
+  font-size: 20px;
 }

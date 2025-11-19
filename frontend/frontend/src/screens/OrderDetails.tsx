@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
 import useAuthStore from "../zustand/useAuthStore";
 import OrderDetailsSkeleton from "../components/OrderDetailsSkeleton";
+import useOrderStore from "../zustand/useOrderStore";
 
 interface File{
     id: string;
@@ -44,7 +45,7 @@ const OrderDetails = () => {
 
     const { orderId } = useParams();
     const [orderData, setOrderData] = useState<OrderData | null>(null);
-    const {isAuthLoading} = useAuthStore();
+    const ordersLoading = useOrderStore(s => s.ordersLoading)
 
     const { t } = useTranslation();
 
@@ -63,7 +64,7 @@ const OrderDetails = () => {
 
     }, [orderId]);
 
-    if (!isAuthLoading) {
+    if (ordersLoading) {
         return <OrderDetailsSkeleton/>
     }
 

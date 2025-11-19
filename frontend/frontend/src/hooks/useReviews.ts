@@ -16,8 +16,8 @@ interface Review{
 export function useReviews() {
   const { i18n } = useTranslation();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [reviewsError, setReviewsError] = useState<string | null>(null);
+  const [reviewsLoading, setReviewsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -26,8 +26,8 @@ export function useReviews() {
     if (lang === "ua") lang = "uk";
 
     async function fetchReviews() {
-      setLoading(true);
-      setError(null);
+      setReviewsLoading(true);
+      setReviewsError(null);
 
       try {
         const response = await axios.get<Review[]>(`http://localhost:8000/user/reviews/`, {
@@ -39,9 +39,9 @@ export function useReviews() {
       } catch (err: any) {
         if (axios.isCancel(err) || err.code === "ERR_CANCELED") return; 
         console.error("Failed to fetch reviews:", err);
-        setError("Failed to load reviews");
+        setReviewsError("Failed to load reviews");
       } finally {
-        setLoading(false);
+        setReviewsLoading(false);
       }
     }
 
@@ -53,5 +53,5 @@ export function useReviews() {
 
   }, [i18n.language]);
 
-  return { reviews, loading, error };
+  return { reviews, reviewsLoading, reviewsError };
 }

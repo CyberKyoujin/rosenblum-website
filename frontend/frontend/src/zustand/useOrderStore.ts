@@ -5,13 +5,15 @@ import type { OrderState } from '../types/orders';
 
 const useOrderStore = create<OrderState>((set, get) => ({
     orders: null,
+    ordersLoading: false,
+    createOrderLoading: false,
     successfullyCreated: false,
     loading: true,
 
     setOrders: (orders) => set({orders}),
 
     createOrder: async (formData: FormData) => {
-        set({loading: true});
+        set({createOrderLoading: true});
         try{
         
             const response = await axiosInstance.post('/order/create/', formData, {
@@ -19,20 +21,18 @@ const useOrderStore = create<OrderState>((set, get) => ({
                     'Content-Type': 'multipart/form-data', 
                 }
             });
-            if (response.status === 200){
-                set({successfullyCreated: true})
-            }
 
         } catch (error) {
             console.log("Error creating order", error)
         } finally {
-            set({loading: false})
+            set({createOrderLoading: false})
         }
         
     },
 
     fetchOrders: async () => {
         try{
+            set({ordersLoading: true})
             const response = await axiosInstance.get('/order/orders/', {
     
             });
@@ -41,6 +41,8 @@ const useOrderStore = create<OrderState>((set, get) => ({
             }
         } catch (error){
             console.log(error);
+        } finally {
+            set({ordersLoading: false})
         }
     }
 }))

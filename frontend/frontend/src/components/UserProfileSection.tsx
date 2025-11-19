@@ -19,11 +19,6 @@ const UserProfileSection = () => {
         console.error("Failed to load user image from URL:", e.target.src);
     };
 
-    useEffect(() => {
-        console.log(user);
-        console.log(userData);
-    }, [])
-
     return (
         <section className="profile__user-data-section">
 

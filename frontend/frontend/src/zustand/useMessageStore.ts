@@ -5,7 +5,11 @@ import { create } from "zustand";
 
 interface MessageState {
     messages: Message[] | null;
-    loading: boolean;
+    messagesLoading: boolean;
+    sendMessagesLoading: boolean;
+    error: string | null | unknown;
+    requestLoading: boolean;
+    requestError: string | null | unknown;
     fetchUserMessages: () => Promise<void>;
     toggleMessages: () => Promise<void>;
     sendMessage: (formData: FormData) => Promise<void>;
@@ -14,56 +18,55 @@ interface MessageState {
 
 const useMessageStore = create<MessageState>((set, get) => ({
     messages: null,
-    loading: false,
+    messagesLoading: false,
+    sendMessagesLoading: false,
+    error: null,
+    requestLoading: false,
+    requestError: null,
 
     fetchUserMessages: async () => {
             try{
-                set({loading: true});
+                set({messagesLoading: true});
                 const response = await axiosInstance.get('/user/messages/')
                 if (response.status === 200){
                     set({messages: response.data})
                 }
-            } catch(error: any) {
-                console.log('Error while fetching messages...' + error.message)
+            } catch(err: any) {
+                set({error: err})
             } finally {
-                set({loading: false});
+                set({messagesLoading: false});
             }
     },
 
     toggleMessages: async () => {
                 try{
                     const response = await axiosInstance.get('/user/toggle-messages')
-                    if (response.status === 200){
-                        console.log('Successfully toggled messages!')
-                    }
-                } catch(error){
-                    console.error(error);
+                } catch(err){
+                    set({error: err});
                 } 
     },
     
     sendMessage: async(formData: FormData) => {
                 try{
-                    set({loading: true});
+                    set({sendMessagesLoading: true});
                     const response = await axiosInstance.post('/user/send-message/', formData)
-                    if (response.status === 200){
-                        console.log('Successfully sent a message!')
-                    }
-                } catch (error){
-                    console.error(error);
+                    
+                } catch (err){
+                    set({error: err})
                 } finally {
-                    set({loading: false});
+                    set({sendMessagesLoading: false});
                 }
     },
     
     sendRequest: async(name: string, email: string, phone_number: string, message: string) => {
                 try{
-                    set({loading: true});
+                    set({requestLoading: true});
                     const response = await axiosInstance.post('/user/new-request/', {name, email, phone_number, message});
     
-                } catch (error) {
-                    console.error(error);
+                } catch (err) {
+                   set({requestError: err})
                 } finally {
-                   set({loading: false}); 
+                   set({requestLoading: false}); 
                 }
             
     }
