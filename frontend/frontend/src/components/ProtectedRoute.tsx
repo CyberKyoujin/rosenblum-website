@@ -4,17 +4,10 @@ import useAuthStore from "../zustand/useAuthStore";
 
 
 const ProtectedRoute = ({ children }: {children: JSX.Element}) => {
-    const { isAuthenticated, isAuthLoading } = useAuthStore();
+    const { isAuthenticated } = useAuthStore();
 
-    if (isAuthLoading) {
-        return (
-            <div>
-                Loading...
-            </div>
-        )
-    }
     
-    return isAuthenticated ? children : <Navigate to="/login"/>
+    return isAuthenticated ? children : <Navigate to="/login" replace/>
 }
 
 export default ProtectedRoute;

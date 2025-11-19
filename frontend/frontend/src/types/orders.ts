@@ -13,7 +13,8 @@ export interface Order {
 export interface OrderState {
     orders: Order[] | null;
     successfullyCreated: boolean;
-    loading: boolean;
+    ordersLoading: boolean;
+    createOrderLoading: boolean;
     setOrders: (orders: []) => void;
     createOrder: (formData: FormData) => Promise<void>;
     fetchOrders: () => Promise<void>;

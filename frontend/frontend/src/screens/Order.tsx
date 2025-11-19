@@ -22,16 +22,22 @@ import dePass from '../assets/pass_de.jpg'
 import orderStore from "../zustand/useOrderStore";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import useOrderStore from "../zustand/useOrderStore";
+import { CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 const Order = () => {
 
-    const { user, userData } = useAuthStore.getState();
+    const { user, userData } = useAuthStore();
+
+    const createOrderLoading  = useOrderStore(s=> s.createOrderLoading);
+    const createOrder = useOrderStore(s => s.createOrder);
+
     const [name, setName] = useState(user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : '')
     const [email, setEmail] = useState(user?.email || '');
     const [number, setNumber] = useState(userData?.phone_number || '')
@@ -40,16 +46,15 @@ const Order = () => {
     const [street, setStreet] = useState(userData?.street || '')
     const [plz, setPlz] = useState(userData?.zip || '')
     const [message, setMessage] = useState('')
-    const [buttonDisabled, setButtonDisabled] = useState(false);
 
-    const navigate = useNavigate();
     const {t} = useTranslation();
+    const navigate = useNavigate();
 
     const [dragging, setDragging] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { createOrder } = orderStore.getState();
+    
 
     const handleFiles = (newFiles: File[]) => {
         setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
@@ -105,7 +110,6 @@ const Order = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setButtonDisabled(true);
         const formData = new FormData();
         uploadedFiles.forEach(file => {
             formData.append('files', file); 
@@ -117,10 +121,8 @@ const Order = () => {
         formData.append('street', street);
         formData.append('zip', plz);
         formData.append('message', message);
-       
-        createOrder(formData).then(() => {
-                navigate('/send-order');
-        })
+        
+        await createOrder(formData).then(() => navigate("/profile"));
     }
 
     useEffect(() => {
@@ -275,7 +277,9 @@ const Order = () => {
                     </div>
 
         
-                    <button type="submit" className="send-btn hover-btn" disabled={buttonDisabled}>{t('send')}<IoSendSharp/></button>
+                    <button type="submit" className="send-btn hover-btn">
+                        {createOrderLoading ? (<CircularProgress style={{color: "white"}}/>): <>{t('send')} <IoSendSharp/></>}
+                    </button>
 
                 </div>
 

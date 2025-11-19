@@ -5,11 +5,20 @@ import Cookies from "js-cookie";
 import axiosInstance from "./axiosInstance";
 import type { AuthState, AuthTokens } from "../types/auth";
 import type { User, UserData } from "../types/user";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+
+const {t} = useTranslation();
 
 const useAuthStore = create<AuthState>((set,get) =>({
+
     authTokens: null,
     user: null,
     loading: false,
+    userRegisterError: null,
+    userLoginError: null,
+    userDataError: null,
+    userDataLoading: false,
     isAuthenticated: false,
     emailAlreadyExists: false,
     userData: null,
@@ -72,9 +81,17 @@ const useAuthStore = create<AuthState>((set,get) =>({
             set({loading: true});
             const response = await axiosInstance.post('/user/register/', {email: email, first_name: firstName, last_name: lastName, password: password});
             console.log("Registered successfully:", response.data);
+            
         } catch(error: any){
-            console.error("Error while registering: " + error.response.status);
-            throw error;
+
+            if (error.response.status === 306){
+                set({ userRegisterError: t('emailAlreadyExists')});
+                return;
+            }
+
+            const status = error.response?.status;
+            const errors = error.response?.data?.errors;
+            set({userRegisterError: `Error ${status}: ${errors}`})
         } finally {
             set({loading: false});
         }
@@ -91,8 +108,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
             get().setTokens(tokens);
             get().setUser(jwtDecode(access) as User);
         } catch (error: any) {
-            console.error("Error while logging in: " + error.message);
-            throw error;
+            const status = error.response?.status;
+            const errors = error.response?.data?.errors;
+            set({userLoginError: `Error ${status}: ${errors}`})
         } finally {
             set({loading: false});
         }
@@ -112,8 +130,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
                 window.location.href = '/profile';
             }
         } catch (error: any) {
-            console.error("Error while logging in with Google: " + error.message);
-            throw error;
+            const status = error.response?.status;
+            const errors = error.response?.data?.errors;
+            set({userLoginError: `Error ${status}: ${errors}`})
         }
     },
 
@@ -144,17 +163,19 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     fetchUserData: async() => {
             try{
-                set({loading: true});
+                set({userDataLoading: true});
                 const response = await axiosInstance.get('/user/user-data/')
                 if (response.status === 200){
                     set({userData: response.data})
                 } else {
                     get().logoutUser();
                 }
-            } catch(error) {
-                console.error(error);
+            } catch(error: any) {
+                const status = error.response?.status;
+                const errors = error.response?.data?.errors;
+                set({userDataError: `Error ${status}: ${errors}`})
             } finally {
-                set({loading: false});
+                set({userDataLoading: false});
             }
         
     },

@@ -45,11 +45,9 @@ export default function AccountMenu() {
           aria-expanded={open ? 'true' : undefined}
         >
           {avatar != '' ? (
-            <img className='profile-img-sm' src={avatar} alt="Profile" style={{ width: 46, height: 46 }} />
+            <img className='profile-img-sm' src={avatar} alt="Profile" style={{ width: 46, height: 46 }} onError={handleImageError}/>
           ) : (
-            <Avatar sx={{ width: 46, height: 46, background: 'rgb(76, 121, 212)' }}>
-              {user?.first_name?.[0]}
-            </Avatar>
+            <img src={defaultAvatar} alt="" />
           )}
 
         </IconButton>
@@ -95,7 +93,7 @@ export default function AccountMenu() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {avatar ? (
-              <img className='profile-img-sm' src={avatar} style={{ width: '35px', marginRight: "0.5rem" }} alt="Profile" />
+              <img className='profile-img-sm' src={avatar} style={{ width: '35px', marginRight: "0.5rem" }} alt="Profile" onError={handleImageError}/>
             ) : (
               <Avatar sx={{ background: 'rgb(76, 121, 212)' }}>{user?.first_name?.[0]}</Avatar>
             )}

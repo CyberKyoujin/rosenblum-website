@@ -17,6 +17,9 @@ import useAuthStore from "../zustand/useAuthStore";
 import { useReviews } from "../hooks/useReviews";
 import CircularProgress from '@mui/material/CircularProgress';
 import ReviewsSliderSkeleton from "../components/ReviewsSliderSkeleton";
+import defaultAvatar from "../assets/default_avatar.png"
+import ErrorView from "../components/ErrorView";
+
 
 interface Review{
     id: number;
@@ -36,9 +39,7 @@ const Home = () => {
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
 
-  const { reviews } = useReviews();
-
-  const { isAuthLoading } = useAuthStore();
+  const { reviews, reviewsLoading, reviewsError } = useReviews();
 
   const navigate = useNavigate();
 
@@ -58,6 +59,11 @@ const Home = () => {
     }, 10);
 
   };
+
+  const handleImageError = (e: any) => {
+      e.target.src = defaultAvatar; 
+      console.error("Failed to load user image from URL:", e.target.src);
+}; 
 
   useEffect(() => {
     animateCounter(0, 8, 3000, setYears); 
@@ -138,16 +144,20 @@ const Home = () => {
         </div>
 
         <div className="slider-container">
-            {!isAuthLoading ?
+            {reviewsLoading ?
             (
-                <div> <ReviewsSliderSkeleton/></div>
-            ) :(
+                <ReviewsSliderSkeleton/>
+            ) : reviewsError ? (
+                <ErrorView errorMessage={reviewsError}/>
+            ):
+            
+            (
             
             <CustomSlider>
                 { reviews.map((review, index) => (
                     <div className="review-container" key={index}>
                         <div className="review-header">
-                            <img src={review.profile_photo_url} alt="" />
+                            <img src={review.profile_photo_url} alt="" onError={handleImageError}/>
                             <h3>{review.author_name}</h3>
                             <Rating name="read-only" value={review.rating} readOnly />
                         </div>

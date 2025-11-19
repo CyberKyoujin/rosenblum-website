@@ -4,34 +4,28 @@ import { SiGooglemessages } from "react-icons/si";
 import { useEffect } from "react";
 import useAuthStore from "../zustand/useAuthStore";
 import smallLogo from '../assets/logo2.png'
-import { RiMailSendLine } from "react-icons/ri";
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
-import { FaPaperclip } from "react-icons/fa6";
 import { FaFile } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import { useTranslation } from "react-i18next";
 import useMessageStore from "../zustand/useMessageStore"
 import MessagesSkeleton from "../components/MessagesSkeleton";
 import MessageInput from "../components/MessageInput";
-
+import defaultAvatar from "../assets/default_avatar.png"
 
 const Messages = () => {
 
     const { userData, user } = useAuthStore();
-    const { messages } = useMessageStore();
-    const { isAuthLoading } = useAuthStore();
+    const { messages, messagesLoading, sendMessagesLoading, toggleMessages, fetchUserMessages, sendMessage } = useMessageStore();
 
-    const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [uploadLimit, setUploadLimit] = useState(false);
- 
-    const { toggleMessages, fetchUserMessages, sendMessage } = useMessageStore();
-    const messagesEndRef = useRef(null);
+
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
     
     const fileInputRef = useRef(null);
 
@@ -48,8 +42,16 @@ const Messages = () => {
     }, [messages]);
 
     const sortMessagesAscending = () => {
-        return messages?.sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+        if (!messages) return [];
+        return [...messages].sort(
+            (a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp)
+        );
     };
+
+    const handleImageError = (e: any) => {
+    e.target.src = defaultAvatar; 
+    console.error("Failed to load user image from URL:", e.target.src);
+    };  
 
 
     const handleClick = () => {
@@ -69,7 +71,6 @@ const Messages = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            setIsLoading(true); 
             const formData = new FormData();
             if (message.length > 0) {
                 if (uploadedFiles.length > 0) {
@@ -87,10 +88,9 @@ const Messages = () => {
                 } catch (error) {
                     console.error('Failed to send message:', error);
                 }
-                setIsLoading(false); 
+             
             } else {
                 setMessage('');
-                setIsLoading(false);
             }
         }
     
@@ -120,7 +120,7 @@ const Messages = () => {
             element.style.height = `${height}px`;
         };
 
-    if (!isAuthLoading) {
+    if (messagesLoading) {
         return <MessagesSkeleton/>
     }
 
@@ -150,7 +150,7 @@ const Messages = () => {
 
                     sortMessagesAscending()?.map((message) => (
                         <div key={message.id} className={`message ${message.sender === user?.id ? 'message-user' : ''}`}>
-                            <img src={message.sender === user?.id ? user.profile_img_url || userData?.image_url : smallLogo} alt="" className="message-avatar"/>
+                            <img src={message.sender === user?.id ? user.profile_img_url || userData?.image_url : smallLogo} className="message-avatar" onError={handleImageError}/>
                             <div className="message-item">
                                 <div className="message-body" style={{background: message.sender === user?.id && 'rgb(177, 203, 248)'}}>
                                     <p>{message.message}</p>
@@ -203,7 +203,7 @@ const Messages = () => {
 
             
 
-            <MessageInput handleSubmit={handleSubmit} handleClick={handleClick} message={message} setMessage={setMessage} autoExpand={autoExpand} fileInputRef={fileInputRef} handleFileInputChange={handleFileInputChange} isLoading={isLoading}/>
+            <MessageInput handleSubmit={handleSubmit} handleClick={handleClick} message={message} setMessage={setMessage} autoExpand={autoExpand} fileInputRef={fileInputRef} handleFileInputChange={handleFileInputChange} isLoading={sendMessagesLoading}/>
 
 
         </div>

@@ -11,7 +11,6 @@ import useOrderStore from './zustand/useOrderStore'
 import Profile from './screens/Profile';
 import Order from './screens/Order';
 import OrderDetails from './screens/OrderDetails';
-import OrderWait from './screens/OrderWait';
 import EditProfile from './screens/EditProfile';
 import AboutUs from './screens/AboutUs';
 import Messages from './screens/Messages';
@@ -27,6 +26,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import EmailVerification from "./screens/EmailVerification";
 import EmailVerificationSuccess from "./screens/EmailVerificationSuccess";
 import useMessageStore from "./zustand/useMessageStore";
+import AppSkeleton from "./components/AppSkeleton";
 
 function App() {
   
@@ -35,6 +35,7 @@ function App() {
   const isAuthLoading = useAuthStore(s => s.isAuthLoading);
   const fetchUserMessages = useMessageStore(s => s.fetchUserMessages);
   const fetchOrders = useOrderStore(s => s.fetchOrders);
+  const createOrder =  useOrderStore(s => s.createOrder);
 
   useEffect(() => {
 
@@ -58,12 +59,13 @@ function App() {
 
   return () => clearInterval(refreshTokenInterval);
 
-  }, [updateToken, fetchUserMessages, fetchOrders, initAuth]);
+  }, [updateToken, fetchUserMessages, fetchOrders, initAuth, createOrder]);
 
 
    if (isAuthLoading) {
   
-    return <div>App loading...</div>; 
+    return <AppSkeleton/>; 
+
   }
 
   return (
@@ -86,7 +88,6 @@ function App() {
             <OrderDetails/>
           </ProtectedRoute>
         }/>
-        <Route path='/send-order' element={<OrderWait/>}/>
         <Route path="/edit-profile" element={
           <ProtectedRoute>
             <EditProfile/>

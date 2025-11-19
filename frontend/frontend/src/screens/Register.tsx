@@ -24,9 +24,12 @@ const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleuserc
 
 const Register = () => {
 
-    const { t } = useTranslation();
-    const { registerUser, googleLogin, loading } = useAuthStore.getState();
+    const registerUser = useAuthStore(s => s.registerUser);
+    const googleLogin = useAuthStore(s => s.googleLogin);
+    const loading = useAuthStore(s => s.loading);
+    const registerError = useAuthStore(s => s.userRegisterError);
 
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     const [popupVisible, setPopupVisible] = useState<boolean>(false);
@@ -35,7 +38,6 @@ const Register = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState<null | any>(null);
 
     const [containsCharacters, setContainsCharacters] = useState(false);
     const [containsNumbers, setContainsNumbers] = useState(false);
@@ -56,19 +58,11 @@ const Register = () => {
 
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            if (containsCharacters && containsNumbers && containsUppercase) {
-                await registerUser(email, firstName, lastName, password);
-                navigate('/email-verification', {state: {email}});
-            }
-            setError(null);
-        } catch (error: any) {
-
-            if (error.response.status === 306){
-                setError(t('emailAlreadyExists'));
-                setPopupVisible(!popupVisible);
-            }
-        }
+    
+        await registerUser(email, firstName, lastName, password).then(() => {
+            navigate('/email-verification', {state: {email}});
+        })
+               
     }
 
 
@@ -119,9 +113,9 @@ const Register = () => {
                     <h1 className="register-title-span">{t('join')}</h1>
                 </div>
 
-                <div className={popupVisible ? 'register-error-popup show-error' : 'register-error-popup'}> 
+                <div className={registerError ? 'register-error-popup show-error' : 'register-error-popup'}> 
                     <IoWarningOutline className='error-icon'/>
-                    <p>{error}.</p> 
+                    <p>{registerError}.</p> 
                     <RouterLink to="/login" className='login-link'>Anmelden</RouterLink>
                 </div>
 
