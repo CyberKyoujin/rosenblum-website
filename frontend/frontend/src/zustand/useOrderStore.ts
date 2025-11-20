@@ -23,6 +23,8 @@ const useOrderStore = create<OrderState>((set, get) => ({
                 }
             });
 
+            await get().fetchOrders();
+
         } catch (err: any) {
             const error = err as ApiError;
             set({createOrderError: err});
