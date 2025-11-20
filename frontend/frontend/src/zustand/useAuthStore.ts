@@ -3,12 +3,9 @@ import { create } from 'zustand';
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import axiosInstance from "./axiosInstance";
-import type { AuthState, AuthTokens } from "../types/auth";
+import type { AuthState, AuthTokens, ApiError } from "../types/auth";
 import type { User, UserData } from "../types/user";
-import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 
-const {t} = useTranslation();
 
 const useAuthStore = create<AuthState>((set,get) =>({
 
@@ -18,6 +15,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
     userRegisterError: null,
     userLoginError: null,
     userDataError: null,
+    userUpdateError: null,
     userDataLoading: false,
     isAuthenticated: false,
     emailAlreadyExists: false,
@@ -65,9 +63,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
                 isAuthenticated: true,
             })
 
-        } catch (err) {
+        } catch (err: unknown) {
 
-            set({user: null, userData: null, isAuthenticated: false});
+            set({ user: null, userData: null, isAuthenticated: false, authTokens: null });
             get().logoutUser();
 
         } finally {
@@ -78,20 +76,16 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     registerUser: async (email, firstName, lastName, password) => {
         try{
-            set({loading: true});
+
+            set({loading: true, userRegisterError: null});
             const response = await axiosInstance.post('/user/register/', {email: email, first_name: firstName, last_name: lastName, password: password});
-            console.log("Registered successfully:", response.data);
             
-        } catch(error: any){
+        } catch(err: unknown){
 
-            if (error.response.status === 306){
-                set({ userRegisterError: t('emailAlreadyExists')});
-                return;
-            }
+            const error = err as ApiError;
+            set({userRegisterError: error})
+            throw error;
 
-            const status = error.response?.status;
-            const errors = error.response?.data?.errors;
-            set({userRegisterError: `Error ${status}: ${errors}`})
         } finally {
             set({loading: false});
         }
@@ -99,18 +93,23 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     loginUser: async (email, password) => {
         try{
-            set({loading: true});
+
+            set({loading: true, userLoginError: null});
+
             const response = await axiosInstance.post('/user/login/', {email, password});
             const { access, refresh } = response.data;
-            const tokens: AuthTokens = { access, refresh };
+
             Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' }); 
             Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
-            get().setTokens(tokens);
-            get().setUser(jwtDecode(access) as User);
-        } catch (error: any) {
-            const status = error.response?.status;
-            const errors = error.response?.data?.errors;
-            set({userLoginError: `Error ${status}: ${errors}`})
+
+            get().setTokens({access, refresh});
+
+        } catch (err: unknown) {
+
+            const error = err as ApiError;
+            set({ userLoginError: error });
+            throw error;
+
         } finally {
             set({loading: false});
         }
@@ -118,62 +117,80 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     googleLogin: async (accessToken) => {
         try{
+            set({ loading: true, userLoginError: null });
             const response = await axiosInstance.post('/user/login/google/', { access_token: accessToken });
-            console.log("Successfully logged in with Google", response.data);
-            const userData = jwtDecode(response.data.access) as User;
-            Cookies.set('access', response.data.access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' }); 
-            Cookies.set('refresh', response.data.refresh, { expires: 7, secure: true, sameSite: 'Strict' });
+
+            const { access, refresh } = response.data;
+            const userData = jwtDecode(access) as User;
+
+            Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' }); 
+            Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
+
             get().setUser(userData);
-            get().setTokens(response.data);
-            console.log(response.status)
+            get().setTokens({access, refresh});
+
+            // TODO: Remove
             if (response.status === 200){
                 window.location.href = '/profile';
             }
-        } catch (error: any) {
-            const status = error.response?.status;
-            const errors = error.response?.data?.errors;
-            set({userLoginError: `Error ${status}: ${errors}`})
+
+        } catch (err: unknown) {
+
+            const error = err as ApiError;
+            set({userLoginError: error});
+            throw error;
+
+        } finally {
+            set({loading: false});
         }
     },
 
     updateToken: async () => {
         try{
             const refreshToken = Cookies.get('refresh');
-            if (refreshToken) {
-                const response = await axiosInstance.post('/user/token-refresh/', { refresh: refreshToken });
-                const { access, refresh } = response.data;
-                Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' }); 
-                Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
-                get().setTokens(response.data);
-            } else {
+
+            if (!refreshToken) {
                 get().logoutUser();
                 throw new Error('Refresh token not found');
             }
-        } catch (error) {
-            console.error(error);
-            throw error;
+
+            const response = await axiosInstance.post('/user/token-refresh/', { refresh: refreshToken });
+            const { access, refresh } = response.data;
+
+            Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' }); 
+            Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
+
+            get().setTokens({ access, refresh });
+
+        } catch (err: unknown) {
+            get().logoutUser();
+            throw err;
         }
     },
 
     logoutUser: () => {
         Cookies.remove('access', { secure: true, sameSite: 'Strict' });
         Cookies.remove('refresh', { secure: true, sameSite: 'Strict' });
-        set({authTokens: null, user: null, isAuthenticated: false});
+        set({authTokens: null, user: null, isAuthenticated: false, userLoginError: null, userRegisterError: null, userDataError: null});
     },
 
     fetchUserData: async() => {
             try{
+
                 set({userDataLoading: true});
                 const response = await axiosInstance.get('/user/user-data/')
-                if (response.status === 200){
-                    set({userData: response.data})
-                } else {
+                set({userData: response.data})     
+                
+            } catch(err: unknown) {
+                const error = err as ApiError;
+                set({ userDataError: error });
+
+                if (error.status === 401) {
                     get().logoutUser();
                 }
-            } catch(error: any) {
-                const status = error.response?.status;
-                const errors = error.response?.data?.errors;
-                set({userDataError: `Error ${status}: ${errors}`})
+
+                throw error;
+
             } finally {
                 set({userDataLoading: false});
             }
@@ -182,18 +199,22 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
     updateUserProfile: async (formData: FormData) => {  
             try{
-                set({loading: true});
+                set({loading: true, userUpdateError: null});
                 const response = await axiosInstance.put('/user/update/', formData)
+
+                // TODO: Remove
+
                 if (response.status === 200){
                     window.location.href = '/profile';
                 }
-            } catch (error){
-                console.error('Error updating profile:', error);
+            } catch (err: unknown){
+                const error = err as ApiError;
+                set({userUpdateError: error})
+                throw error;
             } finally {
                 set({loading: false});
             }
     }
-
 
 }))
 

@@ -1,6 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie"
 import useAuthStore from "./useAuthStore";
+import { ApiError } from "../types/auth";
+
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -23,27 +25,70 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     response => response,
     async error => {
+
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
+
+        if (!error.response) {
+
+            const apiError: ApiError = {
+                status: null,
+                message: "NETWORK_ERROR",
+                errors: null,
+            };
+
+            return Promise.reject(apiError);
+        }
+
+        const status = error.response.status;
+
+        if (status === 401 && !originalRequest._retry) {
+
             originalRequest._retry = true;
-            const refreshToken = Cookies.get('refresh');
+            const refreshToken = Cookies.get("refresh");
+
             if (refreshToken) {
                 try {
-                    const response = await axios.post(`${BASE_URL}/user/token-refresh/`, { refresh: refreshToken });
+
+                    const response = await axios.post(`${BASE_URL}/user/token-refresh/`, {refresh: refreshToken});
+
                     const { access, refresh } = response.data;
-                    Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' }); // 5 minutes
-                    Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
+                    Cookies.set("access", access, {expires: 7 / 24 / 60, secure: true, sameSite: "Strict"});
+                    Cookies.set("refresh", refresh, {expires: 7, secure: true, sameSite: "Strict"});
+
                     axiosInstance.defaults.headers.Authorization = `Bearer ${access}`;
                     originalRequest.headers.Authorization = `Bearer ${access}`;
-                    useAuthStore.getState().setTokens({ access, refresh });
+
+                    useAuthStore.getState().setTokens({access, refresh});
+
                     return axiosInstance(originalRequest);
-                } catch (err) {
-                    console.error('Token refresh failed:', err);
-                    useAuthStore.getState().logoutUser();  
+
+                } catch (refreshError) {
+
+                    console.error("Token refresh failed:", refreshError);
+                    useAuthStore.getState().logoutUser();
+
+                    const apiError: ApiError = {
+                        status: 401,
+                        message: "TOKEN_REFRESH_FAILED",
+                        errors: null,
+                    };
+
+                    return Promise.reject(apiError);
+
                 }
+
             }
+
         }
-        return Promise.reject(error);
+
+        const apiError: ApiError = {
+            status,
+            message: error.response.data?.message ?? null,
+            errors: error.response.data ?? null,
+        };
+
+        return Promise.reject(apiError);
+
     }
 );
 
