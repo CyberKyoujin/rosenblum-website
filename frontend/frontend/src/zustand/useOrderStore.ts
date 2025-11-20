@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../axios/axiosInstance";
 import type { OrderState } from '../types/orders';
 import { ApiError } from '../types/auth';
 

@@ -2,9 +2,10 @@ import axios from "axios";
 import { create } from 'zustand';
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../axios/axiosInstance";
 import type { AuthState, AuthTokens, ApiError } from "../types/auth";
 import type { User, UserData } from "../types/user";
+import { toApiError } from "../axios/toApiError";
 
 
 const useAuthStore = create<AuthState>((set,get) =>({
@@ -82,7 +83,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
             
         } catch(err: unknown){
 
-            const error = err as ApiError;
+            const error = toApiError(err);
+            if (!error) return;
+
             set({userRegisterError: error})
             throw error;
 
@@ -106,7 +109,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
         } catch (err: unknown) {
 
-            const error = err as ApiError;
+            const error = toApiError(err);
+            if (!error) return;
+
             set({ userLoginError: error });
             throw error;
 
@@ -136,7 +141,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
         } catch (err: unknown) {
 
-            const error = err as ApiError;
+            const error = toApiError(err);
+            if (!error) return;
+
             set({userLoginError: error});
             throw error;
 
@@ -182,7 +189,10 @@ const useAuthStore = create<AuthState>((set,get) =>({
                 set({userData: response.data})     
                 
             } catch(err: unknown) {
-                const error = err as ApiError;
+
+                const error = toApiError(err);
+                if (!error) return;
+
                 set({ userDataError: error });
 
                 if (error.status === 401) {
@@ -208,7 +218,10 @@ const useAuthStore = create<AuthState>((set,get) =>({
                     window.location.href = '/profile';
                 }
             } catch (err: unknown){
-                const error = err as ApiError;
+
+                const error = toApiError(err);
+                if (!error) return;
+                
                 set({userUpdateError: error})
                 throw error;
             } finally {

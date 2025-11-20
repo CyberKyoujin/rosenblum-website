@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-
+import { ApiError } from "../types/auth";
+import { toApiError } from "../axios/toApiError";
 
 interface Review{
     id: number;
@@ -16,7 +17,7 @@ interface Review{
 export function useReviews() {
   const { i18n } = useTranslation();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [reviewsError, setReviewsError] = useState<string | null>(null);
+  const [reviewsError, setReviewsError] = useState<ApiError | null>(null);
   const [reviewsLoading, setReviewsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -36,10 +37,9 @@ export function useReviews() {
         });
         
         setReviews(response.data);
-      } catch (err: any) {
-        if (axios.isCancel(err) || err.code === "ERR_CANCELED") return; 
-        console.error("Failed to fetch reviews:", err);
-        setReviewsError("Failed to load reviews");
+      } catch (err: unknown) {
+        const error = toApiError(err);
+        setReviewsError(error);
       } finally {
         setReviewsLoading(false);
       }

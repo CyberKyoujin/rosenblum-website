@@ -6,19 +6,26 @@ import OrdersSection from "../components/OrdersSection";
 import UserProfileSection from "../components/UserProfileSection";
 import useAuthStore from '../zustand/useAuthStore';
 import ProfileSkeleton from '../components/ProfileSkeleton';
-
+import ApiErrorAlert from '../components/ApiErrorAlert';
+import { ApiError } from '../types/auth';
+import ApiErrorView from '../components/ApiErrorView';
+import { useIsAtTop } from '../hooks/useIsAtTop';
 
 const Profile = () => {
 
-    const { userDataLoading } = useAuthStore();
+    const { userDataLoading, userDataError } = useAuthStore();
+
+    const isAtTop = useIsAtTop(10);
 
     if (userDataLoading) {
         return <ProfileSkeleton/>
     }
     
+    const testError: ApiError = {status: 500, message: "TEST ERROR"};
 
     return (
         <>
+        {testError && <ApiErrorAlert error={testError} belowNavbar={isAtTop}/>}
             <main className="main-app-container">
 
 
@@ -30,12 +37,19 @@ const Profile = () => {
                 </section>
 
                 <article className="profile__main-section">
+                    {!testError ? (
+                        <ApiErrorView message='"Es ist ein technisches Fehler aufgetreten. Versuchen Sie es bitte später."'/>
+                    ) : (
+                        <>
+                            <UserProfileSection/>
 
-                    <UserProfileSection/>
+                            <h1 className="profile__orders-title">Aufträge</h1>
 
-                    <h1 className="profile__orders-title">Aufträge</h1>
+                            <OrdersSection/>  
+                        </>
+                    )}
 
-                    <OrdersSection/>  
+                    
 
                 </article>
         

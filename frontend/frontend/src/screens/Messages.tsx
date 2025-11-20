@@ -15,18 +15,26 @@ import useMessageStore from "../zustand/useMessageStore"
 import MessagesSkeleton from "../components/MessagesSkeleton";
 import MessageInput from "../components/MessageInput";
 import defaultAvatar from "../assets/default_avatar.png"
+import ApiErrorView from "../components/ApiErrorView";
+import ApiErrorAlert from "../components/ApiErrorAlert";
+import { useIsAtTop } from "../hooks/useIsAtTop";
+import { ApiError } from "../types/auth";
 
 const Messages = () => {
 
     const { userData, user } = useAuthStore();
-    const { messages, messagesLoading, sendMessagesLoading, toggleMessages, fetchUserMessages, sendMessage } = useMessageStore();
+    const { messages, messagesLoading, sendMessagesLoading, toggleMessages, fetchUserMessages, sendMessage, fetchMessagesError, sendMessagesError } = useMessageStore();
 
     const [message, setMessage] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [uploadLimit, setUploadLimit] = useState(false);
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
-    
+
+    const isAtTop = useIsAtTop(10);
+
+    const testError: ApiError = {status: 500, message: "TEST ERROR"}
+
     const fileInputRef = useRef(null);
 
     const { t } = useTranslation();
@@ -120,6 +128,8 @@ const Messages = () => {
             element.style.height = `${height}px`;
         };
 
+        const errorToShow = fetchMessagesError ?? sendMessagesError;
+
     if (messagesLoading) {
         return <MessagesSkeleton/>
     }
@@ -127,6 +137,10 @@ const Messages = () => {
     return(
 
         <div className="messages-container" style={{padding: '1rem'}}>
+
+        {testError && (
+            <ApiErrorAlert error={testError} belowNavbar={isAtTop} />
+        )}
 
         <div role="presentation" style={{marginBottom: '3rem'}}>
             <Breadcrumbs aria-label="breadcrumb">
@@ -145,43 +159,79 @@ const Messages = () => {
 
             <Divider sx={{marginTop: '1rem'}}/>
 
-            <div className="messages-main-container" id="scroll-div" ref={messagesEndRef}>
-                {messages && messages?.length > 0 ? (
+            {fetchMessagesError ? (
 
-                    sortMessagesAscending()?.map((message) => (
-                        <div key={message.id} className={`message ${message.sender === user?.id ? 'message-user' : ''}`}>
-                            <img src={message.sender === user?.id ? user.profile_img_url || userData?.image_url : smallLogo} className="message-avatar" onError={handleImageError}/>
-                            <div className="message-item">
-                                <div className="message-body" style={{background: message.sender === user?.id && 'rgb(177, 203, 248)'}}>
-                                    <p>{message.message}</p>
-                                </div>
-                                
-                                    {message.files && 
-                                    <div className="small-files-container" style={{display: message.files.length === 0 && 'none'}}>
-                                        {message.files.map((file) => (
-                                            <div className="small-file-container">
-                                                <FaFile style={{color: 'rgb(76,121,212)', fontSize: '30px'}}/>
-                                                <p>{file.file_name?.length > 8 ? file.file_name?.slice(0,7) + '...' : file.file_name}</p>
-                                                <p>{file.file_size} MB</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    }
-                                
-                                <p className="timestamp" style={{textAlign: message.sender === user?.id && 'right'}}>{message.formatted_timestamp}</p>
+                <div className="messages-main-container">
+                    <ApiErrorView message={fetchMessagesError.message || 'MESSAGES_ERROR'} />
+                </div>
+
+                ) : (
+
+                <div className="messages-main-container" id="scroll-div" ref={messagesEndRef}>
+                    {messages && messages.length > 0 ? (
+                    sortMessagesAscending().map((message) => (
+                        <div
+                        key={message.id}
+                        className={`message ${message.sender === user?.id ? 'message-user' : ''}`}
+                        >
+                        <img
+                            src={
+                            message.sender === user?.id
+                                ? user.profile_img_url || userData?.image_url
+                                : smallLogo
+                            }
+                            className="message-avatar"
+                            onError={handleImageError}
+                        />
+                        <div className="message-item">
+                            <div
+                            className="message-body"
+                            style={{
+                                background:
+                                message.sender === user?.id ? 'rgb(177, 203, 248)' : undefined,
+                            }}
+                            >
+                            <p>{message.message}</p>
                             </div>
+
+                            {message.files && message.files.length > 0 && (
+                            <div className="small-files-container">
+                                {message.files.map((file) => (
+                                <div className="small-file-container" key={file.id || file.file_name}>
+                                    <FaFile style={{ color: 'rgb(76,121,212)', fontSize: '30px' }} />
+                                    <p>
+                                    {file.file_name?.length > 8
+                                        ? file.file_name.slice(0, 7) + '...'
+                                        : file.file_name}
+                                    </p>
+                                    <p>{file.file_size} MB</p>
+                                </div>
+                                ))}
+                            </div>
+                            )}
+
+                            <p
+                            className="timestamp"
+                            style={{
+                                textAlign: message.sender === user?.id ? 'right' : 'left',
+                            }}
+                            >
+                            {message.formatted_timestamp}
+                            </p>
+                        </div>
                         </div>
                     ))
 
-                ) 
-                : 
-                (
+                    ) : (
+
                     <div className="no-messages-container">
-                        <SiGooglemessages style={{fontSize: '80px', color: 'rgb(76 121 212)'}}/>
+                        <SiGooglemessages style={{ fontSize: '80px', color: 'rgb(76 121 212)' }} />
                         <p>Sie haben noch keine Nachrichten</p>
                     </div>
-                )}
-            </div>
+                    )}
+
+                </div>
+            )}
 
             <div>
                 {uploadedFiles.length > 0 && (

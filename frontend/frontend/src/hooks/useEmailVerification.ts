@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../zustand/axiosInstance";
+import axiosInstance from "../axios/axiosInstance";
 import axios from "axios";
 
 interface VerificationState {
