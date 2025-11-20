@@ -1,7 +1,9 @@
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../axios/axiosInstance";
 import type { Message } from "../types/messages";
 import { create } from "zustand";
 import { ApiError } from "../types/auth";
+import { toApiError } from "../axios/toApiError";
+
 
 interface MessageState {
     messages: Message[] | null;
@@ -38,7 +40,9 @@ const useMessageStore = create<MessageState>((set, get) => ({
                 set({messages: response.data})
                 
             } catch(err: unknown) {
-                const error = err as ApiError;
+                const error = toApiError(err);
+                if (!error) return;
+
                 set({fetchMessagesError: error});
                 throw error;
             } finally {
@@ -51,7 +55,10 @@ const useMessageStore = create<MessageState>((set, get) => ({
                     set({toggleMessagesError: null});
                     const response = await axiosInstance.get('/user/toggle-messages')
                 } catch(err: unknown){
-                    const error = err as ApiError;
+
+                    const error = toApiError(err);
+                    if (!error) return;
+
                     set({toggleMessagesError: error});
                     throw error;
                 } 
@@ -63,7 +70,10 @@ const useMessageStore = create<MessageState>((set, get) => ({
                     const response = await axiosInstance.post('/user/send-message/', formData)
                     
                 } catch (err: unknown){
-                    const error = err as ApiError;
+
+                    const error = toApiError(err);
+                    if (!error) return;
+
                     set({sendMessagesError: error});
                     throw error;
                 } finally {
@@ -76,7 +86,11 @@ const useMessageStore = create<MessageState>((set, get) => ({
                     set({requestLoading: true, requestError: null});
                     const response = await axiosInstance.post('/user/new-request/', {name, email, phone_number, message});
     
-                } catch (err) {
+                } catch (err: unknown) {
+
+                   const error = toApiError(err);
+                   if (!error) return;
+
                    set({requestError: err})
                 } finally {
                    set({requestLoading: false}); 

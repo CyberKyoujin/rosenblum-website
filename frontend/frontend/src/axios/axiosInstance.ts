@@ -1,8 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie"
-import useAuthStore from "./useAuthStore";
+import useAuthStore from "../zustand/useAuthStore";
 import { ApiError } from "../types/auth";
-
 
 const BASE_URL = "http://127.0.0.1:8000";
 

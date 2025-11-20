@@ -18,18 +18,11 @@ import { useReviews } from "../hooks/useReviews";
 import CircularProgress from '@mui/material/CircularProgress';
 import ReviewsSliderSkeleton from "../components/ReviewsSliderSkeleton";
 import defaultAvatar from "../assets/default_avatar.png"
-import ErrorView from "../components/ErrorView";
+import ApiErrorAlert from "../components/ApiErrorAlert";
+import ApiErrorView from "../components/ApiErrorView";
+import { ApiError } from "../types/auth";
+import { useIsAtTop } from "../hooks/useIsAtTop";
 
-
-interface Review{
-    id: number;
-    author_name: string;
-    rating: number;
-    original_language: string;
-    text: string;
-    review_timestamp: string;
-    profile_photo_url: string;
-}
 
 const Home = () => {
 
@@ -38,6 +31,10 @@ const Home = () => {
   const [years, setYears] = useState<number>(0);
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
+
+  const isAtTop = useIsAtTop(10);
+
+  const testError: ApiError = {status: 500, message: "TEST ERROR"}
 
   const { reviews, reviewsLoading, reviewsError } = useReviews();
 
@@ -63,18 +60,22 @@ const Home = () => {
   const handleImageError = (e: any) => {
       e.target.src = defaultAvatar; 
       console.error("Failed to load user image from URL:", e.target.src);
-}; 
+  }; 
 
   useEffect(() => {
+
     animateCounter(0, 8, 3000, setYears); 
     animateCounter(0, 10000, 3000, setTranslations); 
     animateCounter(0, 5000, 3000, setLanguages);
+
   }, []);
 
   return(
     <>
 
     <div className="main-app-container">
+
+    {testError && <ApiErrorAlert error={testError} belowNavbar={isAtTop}/>}
 
     <div className="home-container">
         <div className="home-header">
@@ -147,8 +148,12 @@ const Home = () => {
             {reviewsLoading ?
             (
                 <ReviewsSliderSkeleton/>
+
             ) : reviewsError ? (
-                <ErrorView errorMessage={reviewsError}/>
+                <>
+                    <ApiErrorView message={"Es ist ein technisches Fehler aufgetreten. Versuchen Sie es bitte später."}/>
+                </>
+
             ):
             
             (
