@@ -1,3 +1,5 @@
+import { ApiError } from "./auth";
+
 export interface Order {
     id: string | null;
     files: [] | null;
@@ -13,9 +15,10 @@ export interface Order {
 export interface OrderState {
     orders: Order[] | null;
     successfullyCreated: boolean;
+    fetchOrdersError: ApiError | null;
     ordersLoading: boolean;
     createOrderLoading: boolean;
-    setOrders: (orders: []) => void;
+    createOrderError: ApiError | null;
     createOrder: (formData: FormData) => Promise<void>;
     fetchOrders: () => Promise<void>;
 }
