@@ -1,25 +1,30 @@
 import type { User, UserData } from "./user"
 import type { Message } from "./messages";
 
-
 export interface AuthTokens {
     access: string;
     refresh: string;
 }
 
+export interface ApiError{
+    status: number | null;
+    message: string | null;
+    errors?: any;
+}
+
 export interface AuthState {
     authTokens: AuthTokens | null;
     user: User | null;
-    userRegisterError: string | null;
-    userLoginError: string | null;
+    userRegisterError: ApiError | null;
+    userLoginError: ApiError | null;
+    loading: boolean;
     userData: UserData | null;
     userDataLoading: boolean;
-    userDataError: string | null;
+    userDataError: ApiError | null;
     userMessages: Message[] | null;
+    userUpdateError: ApiError | null;
     isAuthenticated: boolean;
     isAuthLoading: boolean;
-    emailAlreadyExists: boolean;
-    loading: boolean;
     setTokens: (authTokens: AuthTokens | null) => void;
     setUser: (user: User | null) => void; 
     initAuth: () => Promise<void>;
