@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import axiosInstance from "./axiosInstance";
 import type { OrderState } from '../types/orders';
+import { ApiError } from '../types/auth';
 
 
 const useOrderStore = create<OrderState>((set, get) => ({
@@ -8,12 +9,12 @@ const useOrderStore = create<OrderState>((set, get) => ({
     ordersLoading: false,
     createOrderLoading: false,
     successfullyCreated: false,
+    fetchOrdersError: null,
+    createOrderError: null,
     loading: true,
 
-    setOrders: (orders) => set({orders}),
-
     createOrder: async (formData: FormData) => {
-        set({createOrderLoading: true});
+        set({createOrderLoading: true, createOrderError: null});
         try{
         
             const response = await axiosInstance.post('/order/create/', formData, {
@@ -22,8 +23,10 @@ const useOrderStore = create<OrderState>((set, get) => ({
                 }
             });
 
-        } catch (error) {
-            console.log("Error creating order", error)
+        } catch (err: any) {
+            const error = err as ApiError;
+            set({createOrderError: err});
+            throw error;
         } finally {
             set({createOrderLoading: false})
         }
@@ -32,15 +35,14 @@ const useOrderStore = create<OrderState>((set, get) => ({
 
     fetchOrders: async () => {
         try{
-            set({ordersLoading: true})
-            const response = await axiosInstance.get('/order/orders/', {
-    
-            });
-            if(response.status === 200){
-                get().setOrders(response.data)
-            }
-        } catch (error){
-            console.log(error);
+            set({ordersLoading: true, fetchOrdersError: null})
+            const response = await axiosInstance.get('/order/orders/');
+            set({orders: response.data});
+           
+        } catch (err: any){
+            const error = err as ApiError;
+            set({createOrderError: err});
+            throw error;
         } finally {
             set({ordersLoading: false})
         }
