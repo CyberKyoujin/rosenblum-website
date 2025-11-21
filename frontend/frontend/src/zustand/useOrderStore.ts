@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import axiosInstance from "../axios/axiosInstance";
 import type { OrderState } from '../types/orders';
-import { ApiError } from '../types/auth';
-
+import { toApiError } from '../axios/toApiError';
 
 const useOrderStore = create<OrderState>((set, get) => ({
     orders: null,
@@ -14,8 +13,9 @@ const useOrderStore = create<OrderState>((set, get) => ({
     loading: true,
 
     createOrder: async (formData: FormData) => {
-        set({createOrderLoading: true, createOrderError: null});
         try{
+
+            set({createOrderLoading: true, createOrderError: null, successfullyCreated: false});
         
             const response = await axiosInstance.post('/order/create/', formData, {
                 headers: {
@@ -23,11 +23,14 @@ const useOrderStore = create<OrderState>((set, get) => ({
                 }
             });
 
+            set({successfullyCreated: true})
+
             await get().fetchOrders();
 
         } catch (err: any) {
-            const error = err as ApiError;
-            set({createOrderError: err});
+            const error = toApiError(err);
+            if (!error) return;
+            set({createOrderError: error, successfullyCreated: false});
             throw error;
         } finally {
             set({createOrderLoading: false})
@@ -42,7 +45,9 @@ const useOrderStore = create<OrderState>((set, get) => ({
             set({orders: response.data});
            
         } catch (err: any){
-            const error = err as ApiError;
+            const error = toApiError(err);
+            if (!error) return;
+
             set({createOrderError: err});
             throw error;
         } finally {

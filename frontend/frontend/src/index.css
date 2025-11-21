@@ -3342,6 +3342,11 @@ html, body {
   top: 1rem;
 }
 
+.error-alert-container-relative{
+  position: relative;
+  margin-bottom: 2rem;
+}
+
 .error-alert-container.below-navbar {
   top: calc(var(--navbar-height) + 8px);
 }
