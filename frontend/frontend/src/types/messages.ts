@@ -1,3 +1,19 @@
+
+export interface MessageState {
+    messages: Message[] | null;
+    messagesLoading: boolean;
+    sendMessagesLoading: boolean;
+
+    fetchUserMessages: () => Promise<void>;
+    toggleMessages: () => Promise<void>;
+    sendMessage: (formData: FormData) => Promise<void>;
+
+    sendRequest: (name: string, email: string, phone_number: string, message: string) => Promise<void>;
+    sendRequestSuccess: boolean;
+    requestLoading: boolean;
+}
+
+
 export interface Message {
     id: string;
     sender: string;

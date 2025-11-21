@@ -8,16 +8,14 @@ const useOrderStore = create<OrderState>((set, get) => ({
     ordersLoading: false,
     createOrderLoading: false,
     successfullyCreated: false,
-    fetchOrdersError: null,
-    createOrderError: null,
-    loading: true,
 
     createOrder: async (formData: FormData) => {
-        try{
 
-            set({createOrderLoading: true, createOrderError: null, successfullyCreated: false});
+        set({createOrderLoading: true, successfullyCreated: false});
+
+        try{
         
-            const response = await axiosInstance.post('/order/create/', formData, {
+            await axiosInstance.post('/order/create/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', 
                 }
@@ -28,10 +26,8 @@ const useOrderStore = create<OrderState>((set, get) => ({
             await get().fetchOrders();
 
         } catch (err: any) {
-            const error = toApiError(err);
-            if (!error) return;
-            set({createOrderError: error, successfullyCreated: false});
-            throw error;
+            set({successfullyCreated: false});
+            throw toApiError(err);
         } finally {
             set({createOrderLoading: false})
         }
@@ -39,17 +35,16 @@ const useOrderStore = create<OrderState>((set, get) => ({
     },
 
     fetchOrders: async () => {
+
+        set({ ordersLoading: true });
+
         try{
-            set({ordersLoading: true, fetchOrdersError: null})
+            
             const response = await axiosInstance.get('/order/orders/');
             set({orders: response.data});
            
-        } catch (err: any){
-            const error = toApiError(err);
-            if (!error) return;
-
-            set({createOrderError: err});
-            throw error;
+        } catch (err: unknown){
+            throw toApiError(err);
         } finally {
             set({ordersLoading: false})
         }

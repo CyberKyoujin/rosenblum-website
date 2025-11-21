@@ -13,7 +13,7 @@ import { useIsAtTop } from '../hooks/useIsAtTop';
 
 const Profile = () => {
 
-    const { userDataLoading, userDataError } = useAuthStore();
+    const { userDataLoading } = useAuthStore();
 
     const isAtTop = useIsAtTop(10);
 
@@ -25,7 +25,7 @@ const Profile = () => {
 
     return (
         <>
-        {testError && <ApiErrorAlert error={testError} belowNavbar={isAtTop}/>}
+        {testError && <ApiErrorAlert error={testError} belowNavbar={isAtTop} fixed={true}/>}
             <main className="main-app-container">
 
 

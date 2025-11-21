@@ -15,14 +15,10 @@ export interface ApiError{
 export interface AuthState {
     authTokens: AuthTokens | null;
     user: User | null;
-    userRegisterError: ApiError | null;
-    userLoginError: ApiError | null;
     loading: boolean;
     userData: UserData | null;
     userDataLoading: boolean;
-    userDataError: ApiError | null;
     userMessages: Message[] | null;
-    userUpdateError: ApiError | null;
     isAuthenticated: boolean;
     isAuthLoading: boolean;
     setTokens: (authTokens: AuthTokens | null) => void;

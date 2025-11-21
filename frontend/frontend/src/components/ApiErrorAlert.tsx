@@ -2,58 +2,101 @@ import React, { useState, useEffect } from "react";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { ApiError } from "../types/auth";
 import Alert from '@mui/material/Alert';
+import { ApiErrorResponse } from "../types/error";
 
 interface ApiErrorAlertProps {
-    error?: ApiError | null;
+    error?: ApiErrorResponse | null;
     successMessage?: string | null;
-    success?: boolean;
     belowNavbar?: boolean;
+    onClose?: () => void;
+    fixed?: boolean;
 }
 
-const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, success, belowNavbar }) => {
+const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, belowNavbar, onClose, fixed = false }) => {
   const [alertVisible, setAlertVisible] = useState(true);
-
-  const toggleAlert = () => setAlertVisible(false);
 
   useEffect(() => {
     if (error || successMessage) {
       setAlertVisible(true);
+    } else {
+      setAlertVisible(false);
     }
   }, [error, successMessage]);
 
-  const hasContent = !!error || !!successMessage;
-  if (!hasContent || !alertVisible) return null;
+  const handleComplete = () => {
+      setAlertVisible(false);
+      if (onClose) onClose(); 
+      return { shouldRepeat: false };
+  };
 
-  const isSuccess = !!successMessage && !error;
+  if (!alertVisible) return null;
+
+  const positionClass = fixed ? "error-alert-fixed" : "error-alert-relative";
+
+  const offsetClass = belowNavbar ? "below-navbar" : "";
+
+  const containerClasses = `
+    error-alert-container 
+    ${positionClass} 
+    ${offsetClass}
+    show-alert
+  `;
+
+  // 1. Determine content based on what exists
+  let content = null;
+
+  if (successMessage) {
+      content = (
+        <Alert severity="success" sx={{ width: "100%", alignItems: "center" }}
+            action={
+              <CountdownCircleTimer
+                isPlaying
+                duration={5}
+                colors={["#448A47"]}
+                size={30}
+                strokeWidth={3}
+                onComplete={handleComplete}
+              >
+                {({ remainingTime }) => remainingTime}
+              </CountdownCircleTimer>
+            }
+        >
+          {successMessage}
+        </Alert>
+      );
+  } else if (error) {
+      // 2. Calculate message ONLY if error exists
+      const displayMessage = error.code === 'validation_error' 
+          ? `${error.message} (Check fields)` 
+          : `Error ${error.status || '!'}: ${error.message}`;
+
+      content = (
+        <Alert severity="error" sx={{ width: "100%", alignItems: "center" }}
+            action={
+              <CountdownCircleTimer
+                isPlaying
+                duration={5}
+                colors={["#D74141"]}
+                size={30}
+                strokeWidth={3}
+                onComplete={handleComplete}
+              >
+                {({ remainingTime }) => remainingTime}
+              </CountdownCircleTimer>
+            }
+        >
+          {displayMessage}
+        </Alert>
+      );
+  }
+
+  if (!content) return null;
 
   return (
-    <div className={`error-alert-container ${belowNavbar ? "below-navbar" : " "} show-alert`}>
-      <Alert
-        severity={successMessage ? "success" : "error"}
-        sx={{ width: "100%", alignItems: "center" }}
-        action={
-          <CountdownCircleTimer
-            isPlaying
-            duration={5}               
-            colors={successMessage ? ["#448A47"] : ["#D74141"]}
-            size={30}
-            strokeWidth={3}
-            onComplete={() => {
-              toggleAlert();
-              return { shouldRepeat: false };
-            }}
-          >
-
-            {({ remainingTime }) => remainingTime}
-
-          </CountdownCircleTimer>
-        }
-      >
-        {isSuccess ? successMessage: `Error ${error?.status}: ${error?.message}`}
-
-      </Alert>
+    <div className={containerClasses}>
+      {content}
     </div>
   );
-};
+}
 
 export default ApiErrorAlert;

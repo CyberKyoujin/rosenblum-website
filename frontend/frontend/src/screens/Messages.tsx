@@ -139,7 +139,7 @@ const Messages = () => {
         <div className="messages-container" style={{padding: '1rem'}}>
 
         {testError && (
-            <ApiErrorAlert error={testError} belowNavbar={isAtTop} />
+            <ApiErrorAlert error={testError} belowNavbar={isAtTop} fixed={true} />
         )}
 
         <div role="presentation" style={{marginBottom: '3rem'}}>

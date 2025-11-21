@@ -13,15 +13,14 @@ import { FaInfo } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { HiPhone } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../zustand/useAuthStore";
 import { useReviews } from "../hooks/useReviews";
-import CircularProgress from '@mui/material/CircularProgress';
 import ReviewsSliderSkeleton from "../components/ReviewsSliderSkeleton";
 import defaultAvatar from "../assets/default_avatar.png"
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import ApiErrorView from "../components/ApiErrorView";
 import { ApiError } from "../types/auth";
 import { useIsAtTop } from "../hooks/useIsAtTop";
+import { ApiErrorResponse } from "../types/error";
 
 
 const Home = () => {
@@ -34,7 +33,11 @@ const Home = () => {
 
   const isAtTop = useIsAtTop(10);
 
-  const testError: ApiError = {status: 500, message: "TEST ERROR"}
+  const testError: ApiErrorResponse = {
+      status: 500, 
+      code: 'test_error', 
+      message: "TEST ERROR MESSAGE"
+  };
 
   const { reviews, reviewsLoading, reviewsError } = useReviews();
 
@@ -75,7 +78,7 @@ const Home = () => {
 
     <div className="main-app-container">
 
-    <ApiErrorAlert error={testError} belowNavbar={isAtTop} />
+    <ApiErrorAlert error={testError} belowNavbar={isAtTop} fixed={true} />
 
     <div className="home-container">
         <div className="home-header">
