@@ -75,7 +75,7 @@ const Home = () => {
 
     <div className="main-app-container">
 
-    {testError && <ApiErrorAlert error={testError} belowNavbar={isAtTop}/>}
+    <ApiErrorAlert error={testError} belowNavbar={isAtTop} />
 
     <div className="home-container">
         <div className="home-header">

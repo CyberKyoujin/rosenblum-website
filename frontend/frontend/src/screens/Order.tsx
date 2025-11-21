@@ -29,6 +29,8 @@ import Checkbox from '@mui/material/Checkbox';
 import useOrderStore from "../zustand/useOrderStore";
 import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ApiErrorAlert from "../components/ApiErrorAlert";
+import { useIsAtTop } from "../hooks/useIsAtTop";
 
 
 const Order = () => {
@@ -37,6 +39,8 @@ const Order = () => {
 
     const createOrderLoading  = useOrderStore(s=> s.createOrderLoading);
     const createOrder = useOrderStore(s => s.createOrder);
+
+    const createOrderError = useOrderStore(s => s.createOrderError);
 
     const [name, setName] = useState(user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : '')
     const [email, setEmail] = useState(user?.email || '');
@@ -54,7 +58,7 @@ const Order = () => {
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    
+    const isAtTop = useIsAtTop(10);
 
     const handleFiles = (newFiles: File[]) => {
         setUploadedFiles(prevFiles => [...prevFiles, ...newFiles]);
@@ -134,6 +138,8 @@ const Order = () => {
         <>
         <div className="main-app-container">
 
+            <ApiErrorAlert error={createOrderError} belowNavbar={isAtTop}/>
+
             <div role="presentation" className="profile-navigation">
                 <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/">Home</Link>
@@ -143,7 +149,6 @@ const Order = () => {
 
             <form className="order-container" onSubmit={handleSubmit} style={{marginTop: '2rem'}}>
 
-                
 
                 <div className="order-title">
                     <div className="order-title-text">

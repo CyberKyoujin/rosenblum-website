@@ -18,6 +18,7 @@ interface MessageState {
     sendMessage: (formData: FormData) => Promise<void>;
 
     sendRequest: (name: string, email: string, phone_number: string, message: string) => Promise<void>;
+    sendRequestSuccess: boolean;
     requestLoading: boolean;
     requestError: string | null | unknown;
 }
@@ -30,6 +31,7 @@ const useMessageStore = create<MessageState>((set, get) => ({
     sendMessagesError: null,
     toggleMessagesError: null,
     requestLoading: false,
+    sendRequestSuccess: false,
     requestError: null,
 
     fetchUserMessages: async () => {
@@ -83,15 +85,16 @@ const useMessageStore = create<MessageState>((set, get) => ({
     
     sendRequest: async(name: string, email: string, phone_number: string, message: string) => {
                 try{
-                    set({requestLoading: true, requestError: null});
+                    set({requestLoading: true, requestError: null, sendRequestSuccess: false});
                     const response = await axiosInstance.post('/user/new-request/', {name, email, phone_number, message});
-    
+                    set({sendRequestSuccess: true})
                 } catch (err: unknown) {
 
                    const error = toApiError(err);
                    if (!error) return;
 
-                   set({requestError: err})
+                   set({requestError: error, sendRequestSuccess: false})
+                   throw error;
                 } finally {
                    set({requestLoading: false}); 
                 }

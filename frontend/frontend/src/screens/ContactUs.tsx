@@ -12,10 +12,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { IoWarningOutline } from "react-icons/io5";
 import useAuthStore from "../zustand/useAuthStore";
-import { Alert } from "@mui/material";
+import { Alert, CircularProgress } from "@mui/material";
 import { t } from "i18next";
 import sutthausen1 from "../assets/sutthausen1.jpg"
-
+import useMessageStore from "../zustand/useMessageStore";
+import ApiErrorAlert from "../components/ApiErrorAlert";
 
 const ContactUs = () => {
 
@@ -24,30 +25,26 @@ const ContactUs = () => {
     const [number, setNumber] = useState<string>('');
     const [message, setMessage] = useState<string>('');
 
-    const [successfullySent, setSuccessfullySent] = useState<boolean>(false);
+    const sendRequest = useMessageStore((s) => s.sendRequest);
+    const sendRequestSuccess = useMessageStore((s) => s.sendRequestSuccess);
+    const requestError = useMessageStore((s) => s.requestError);
+    const requestLoading = useMessageStore((s) => s.requestLoading);
 
-    const {sendRequest} = useAuthStore.getState();
+    const testRequestSuccess = true;
 
-    useEffect(() => {
-        if(successfullySent){
-            const timeout = setTimeout(() =>{
-                setSuccessfullySent(false);
-            }, 5000);
-
-            return () => clearTimeout(timeout)
-        }
-    }, [successfullySent])
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try{
 
             await sendRequest(name, email, number, message);
-            setSuccessfullySent(true);
+            setName('');
+            setEmail('');
+            setNumber('');
+            setMessage('');
 
-        } catch(error: any) {
+        } catch(error: unknown) {
 
-            console.error(error.mesage);
 
         }
     }
@@ -135,7 +132,7 @@ const ContactUs = () => {
                 </div>
 
                 <form className="contact-form" onSubmit={handleSubmit}>
-                    <Alert severity="success" style={{border: '1px solid green', borderRadius: '0', padding: '0.6rem', display: !successfullySent && 'none'}}>Ihre Anfrage wurde erfolgreich versandt!</Alert>
+                    <ApiErrorAlert error={requestError} successMessage={sendRequestSuccess ? "Erfolgreich gesendet!" : null} belowNavbar={false}/>
                     <TextField required id="outlined-basic" label={name ? "" : t('name')} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
                     <TextField required id="outlined-basic" label={email ? "" : t('email')} variant="outlined" style={{width: '100%'}} value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <div className={"phone-notification show-notification"}>
@@ -144,7 +141,9 @@ const ContactUs = () => {
                     </div>
                     <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : t('phoneNumber')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
                     <TextField required multiline label={t('yourMessage')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
-                    <button className="contact-btn hover-btn" type="submit">{t('send')}</button>
+                    <button className="contact-btn hover-btn" type="submit">
+                        {requestLoading ? <CircularProgress style={{color: "white"}}/> : t('send')}
+                    </button>
                 </form>
 
 

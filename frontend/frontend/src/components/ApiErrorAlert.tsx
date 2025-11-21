@@ -2,35 +2,40 @@ import React, { useState, useEffect } from "react";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { ApiError } from "../types/auth";
 import Alert from '@mui/material/Alert';
-import { IoMdClose } from "react-icons/io";
 
 interface ApiErrorAlertProps {
-    error: ApiError | null;
+    error?: ApiError | null;
+    successMessage?: string | null;
+    success?: boolean;
     belowNavbar?: boolean;
 }
 
-const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, belowNavbar }) => {
+const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, success, belowNavbar }) => {
   const [alertVisible, setAlertVisible] = useState(true);
 
   const toggleAlert = () => setAlertVisible(false);
 
   useEffect(() => {
-    if (!error) return;
-    setAlertVisible(true); 
-  }, [error]);
+    if (error || successMessage) {
+      setAlertVisible(true);
+    }
+  }, [error, successMessage]);
 
-  if (!error || !alertVisible) return null;
+  const hasContent = !!error || !!successMessage;
+  if (!hasContent || !alertVisible) return null;
+
+  const isSuccess = !!successMessage && !error;
 
   return (
-    <div className={`error-alert-container ${belowNavbar ? "below-navbar" : ""} show-alert`}>
+    <div className={`error-alert-container ${belowNavbar ? "below-navbar" : " "} show-alert`}>
       <Alert
-        severity="error"
+        severity={successMessage ? "success" : "error"}
         sx={{ width: "100%", alignItems: "center" }}
         action={
           <CountdownCircleTimer
             isPlaying
             duration={5}               
-            colors={["#D74141"]}
+            colors={successMessage ? ["#448A47"] : ["#D74141"]}
             size={30}
             strokeWidth={3}
             onComplete={() => {
@@ -38,11 +43,14 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, belowNavbar }) => 
               return { shouldRepeat: false };
             }}
           >
+
             {({ remainingTime }) => remainingTime}
+
           </CountdownCircleTimer>
         }
       >
-        {`Error ${error.status}: ${error.message}`}
+        {isSuccess ? successMessage: `Error ${error?.status}: ${error?.message}`}
+
       </Alert>
     </div>
   );
