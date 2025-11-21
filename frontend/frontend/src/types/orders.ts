@@ -15,10 +15,8 @@ export interface Order {
 export interface OrderState {
     orders: Order[] | null;
     successfullyCreated: boolean;
-    fetchOrdersError: ApiError | null;
     ordersLoading: boolean;
     createOrderLoading: boolean;
-    createOrderError: ApiError | null;
     createOrder: (formData: FormData) => Promise<void>;
     fetchOrders: () => Promise<void>;
 }

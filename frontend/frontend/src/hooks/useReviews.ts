@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ApiError } from "../types/auth";
 import { toApiError } from "../axios/toApiError";
+import axiosInstance from "../axios/axiosInstance";
+import { ApiErrorResponse } from "../types/error";
 
 interface Review{
     id: number;
@@ -17,7 +19,8 @@ interface Review{
 export function useReviews() {
   const { i18n } = useTranslation();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [reviewsError, setReviewsError] = useState<ApiError | null>(null);
+
+  const [reviewsError, setReviewsError] = useState<ApiErrorResponse | null>(null);
   const [reviewsLoading, setReviewsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -28,10 +31,9 @@ export function useReviews() {
 
     async function fetchReviews() {
       setReviewsLoading(true);
-      setReviewsError(null);
 
       try {
-        const response = await axios.get<Review[]>(`http://localhost:8000/user/reviews/`, {
+        const response = await axiosInstance.get<Review[]>(`/user/reviews/`, {
           params: { lang },
           signal: controller.signal, 
         });
@@ -39,9 +41,15 @@ export function useReviews() {
         setReviews(response.data);
       } catch (err: unknown) {
         const error = toApiError(err);
-        setReviewsError(error);
+        
+        if (error.code !== 'canceled') {
+             setReviewsError(error);
+        }
+
       } finally {
-        setReviewsLoading(false);
+        if (!controller.signal.aborted) {
+            setReviewsLoading(false);
+        }
       }
     }
 

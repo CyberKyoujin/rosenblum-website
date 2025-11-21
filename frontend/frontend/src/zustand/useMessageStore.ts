@@ -1,52 +1,28 @@
 import axiosInstance from "../axios/axiosInstance";
-import type { Message } from "../types/messages";
 import { create } from "zustand";
-import { ApiError } from "../types/auth";
+import { MessageState } from "../types/messages";
 import { toApiError } from "../axios/toApiError";
-
-
-interface MessageState {
-    messages: Message[] | null;
-    messagesLoading: boolean;
-    sendMessagesLoading: boolean;
-    fetchMessagesError: ApiError | null;
-    sendMessagesError: ApiError | null;
-    toggleMessagesError: ApiError | null;
-
-    fetchUserMessages: () => Promise<void>;
-    toggleMessages: () => Promise<void>;
-    sendMessage: (formData: FormData) => Promise<void>;
-
-    sendRequest: (name: string, email: string, phone_number: string, message: string) => Promise<void>;
-    sendRequestSuccess: boolean;
-    requestLoading: boolean;
-    requestError: string | null | unknown;
-}
 
 const useMessageStore = create<MessageState>((set, get) => ({
     messages: null,
     messagesLoading: false,
     sendMessagesLoading: false,
-    fetchMessagesError: null, 
-    sendMessagesError: null,
-    toggleMessagesError: null,
     requestLoading: false,
     sendRequestSuccess: false,
-    requestError: null,
 
     fetchUserMessages: async () => {
+
+            set({messagesLoading: true});
+
             try{
-                set({messagesLoading: true, fetchMessagesError: null});
+                
                 const response = await axiosInstance.get('/user/messages/')
                 
                 set({messages: response.data})
                 
             } catch(err: unknown) {
-                const error = toApiError(err);
-                if (!error) return;
-
-                set({fetchMessagesError: error});
-                throw error;
+                
+                throw toApiError(err);
             } finally {
                 set({messagesLoading: false});
             }
@@ -54,47 +30,46 @@ const useMessageStore = create<MessageState>((set, get) => ({
 
     toggleMessages: async () => {
                 try{
-                    set({toggleMessagesError: null});
-                    const response = await axiosInstance.get('/user/toggle-messages')
+    
+                    await axiosInstance.get('/user/toggle-messages');
+
                 } catch(err: unknown){
 
-                    const error = toApiError(err);
-                    if (!error) return;
-
-                    set({toggleMessagesError: error});
-                    throw error;
+                    throw toApiError(err);
                 } 
     },
     
     sendMessage: async(formData: FormData) => {
+
+                set({sendMessagesLoading: true});
+
                 try{
-                    set({sendMessagesLoading: true, sendMessagesError: null});
-                    const response = await axiosInstance.post('/user/send-message/', formData)
+                    
+                    await axiosInstance.post('/user/send-message/', formData)
                     
                 } catch (err: unknown){
 
-                    const error = toApiError(err);
-                    if (!error) return;
+                    throw toApiError(err);
 
-                    set({sendMessagesError: error});
-                    throw error;
                 } finally {
                     set({sendMessagesLoading: false});
                 }
     },
     
     sendRequest: async(name: string, email: string, phone_number: string, message: string) => {
+
+                set({requestLoading: true, sendRequestSuccess: false});
+
                 try{
-                    set({requestLoading: true, requestError: null, sendRequestSuccess: false});
-                    const response = await axiosInstance.post('/user/new-request/', {name, email, phone_number, message});
-                    set({sendRequestSuccess: true})
+                    
+                    await axiosInstance.post('/user/new-request/', {name, email, phone_number, message});
+                    set({sendRequestSuccess: true});
+
                 } catch (err: unknown) {
 
-                   const error = toApiError(err);
-                   if (!error) return;
+                   set({sendRequestSuccess: false});
+                   throw toApiError(err);
 
-                   set({requestError: error, sendRequestSuccess: false})
-                   throw error;
                 } finally {
                    set({requestLoading: false}); 
                 }
