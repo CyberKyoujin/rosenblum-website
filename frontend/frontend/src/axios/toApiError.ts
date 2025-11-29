@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { ApiErrorResponse } from '../types/error';
 
+
 function isAlreadyApiError(data: any): data is ApiErrorResponse {
   return (
     data &&
@@ -10,51 +11,49 @@ function isAlreadyApiError(data: any): data is ApiErrorResponse {
   );
 }
 
+function extractErrorData(data: any) {
+  let serverMessage = data?.detail || data?.message;
+  let customCode = data?.code;
+
+  if (data?.errors && typeof data.errors === 'object') {
+    const errors = data.errors as any;
+
+    if (!serverMessage) {
+      serverMessage = errors.detail || errors.message;
+    }
+
+    if (!customCode) {
+      customCode = errors.code;
+    }
+
+    if (!serverMessage && Object.keys(errors).length > 0) {
+      const firstKey = Object.keys(errors)[0];
+      const firstError = errors[firstKey];
+      if (Array.isArray(firstError) && typeof firstError[0] === 'string') {
+        serverMessage = firstError[0];
+      } else if (typeof firstError === 'string') {
+        serverMessage = firstError;
+      }
+    }
+  }
+
+  return { serverMessage, customCode };
+}
+
 export function toApiError(error: unknown): ApiErrorResponse {
-  
   if (isAlreadyApiError(error)) {
     return error;
   }
 
   if (axios.isCancel(error)) {
-    return {
-      status: null,
-      code: 'canceled',
-      message: 'Request Canceled',
-    };
+    return { status: null, code: 'canceled', message: 'Request Canceled' };
   }
 
   if (axios.isAxiosError(error)) {
     const response = error.response;
-
     if (response) {
-      const data = response.data as any;
+      const { serverMessage, customCode } = extractErrorData(response.data);
       const status = response.status;
-
-      let serverMessage = data?.detail || data?.message;
-      let customCode = data?.code;
-
-      if (data?.errors && typeof data.errors === 'object') {
-        const errors = data.errors as any;
-        
-        if (!serverMessage) {
-            serverMessage = errors.detail || errors.message;
-        }
-
-        if (!customCode) {
-            customCode = errors.code;
-        }
-        
-        if (!serverMessage && Object.keys(errors).length > 0) {
-             const firstKey = Object.keys(errors)[0];
-             const firstError = errors[firstKey];
-             if (Array.isArray(firstError) && typeof firstError[0] === 'string') {
-                 serverMessage = firstError[0]; 
-             } else if (typeof firstError === 'string') {
-                 serverMessage = firstError;
-             }
-        }
-      }
 
       if (serverMessage || customCode) {
         return {
@@ -63,55 +62,44 @@ export function toApiError(error: unknown): ApiErrorResponse {
           message: typeof serverMessage === 'string' && serverMessage.length > 0
             ? serverMessage
             : `Error ${status}: Ambiguous server response.`,
-          errors: data.errors || undefined,
+          errors: response.data.errors || undefined,
         };
       }
-
+      
       return {
         status: status,
         code: 'server_error',
-        message: `Server error (${status}). Please try again later.`,
+        message: `Server error (${status}).`,
       };
     }
-
-    return {
-      status: null,
-      code: 'network_error',
-      message: 'Network error. Could not connect to the server.',
-    };
+    return { status: null, code: 'network_error', message: 'Network error.' };
   }
+
 
   if (typeof error === 'object' && error !== null) {
     const err = error as any;
 
+  
     if ('status' in err) {
-      const candidates = [err.detail, err.message, err.error];
-      const foundMessage = candidates.find(m => typeof m === 'string' && m.length > 0);
-
+    
+      const { serverMessage, customCode } = extractErrorData(err);
+      
       return {
         status: err.status,
-        code: err.code || 'api_error',
-        message: foundMessage || `Error ${err.status} (Conflict/Error)`,
+        code: customCode || err.code || 'api_error',
+        
+        message: serverMessage || err.message || `Error ${err.status}`,
         errors: err.errors || undefined,
       };
     }
 
-    const isNetworkMarker = 
-        (err.isAxiosError === true && !err.response) || 
-        err.message === 'NETWORK_ERROR' ||
-        err.code === 'ECONNREFUSED';
-
-    if (isNetworkMarker) {
-      return {
-        status: null,
-        code: 'network_error',
-        message: 'Network error. Could not connect to the server.',
-      };
+  
+    if ((err.isAxiosError && !err.response) || err.code === 'ECONNREFUSED') {
+       return { status: null, code: 'network_error', message: 'Network connection failed.' };
     }
   }
 
-  console.error('Unknown error caught in toApiError:', error);
-  
+  console.error('Unknown error caught:', error);
   return {
     status: null,
     code: 'unknown_error',

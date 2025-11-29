@@ -70,14 +70,16 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, be
 
   } else if (error) {
 
-    const displayMessage = error.code === 'validation_error' ? `${error.message} (Check fields)` : error.message;
-
-    const finalMessage = displayMessage || `Error ${error.status || ''}: Unknown Error`;
+    let displayMessage = error.message;
+    
+    if (error.code === 'validation_error') {
+        displayMessage = `${error.message} (Check fields)`;
+    }
 
     content = (
 
       <Alert severity="error" sx={{ width: "100%", alignItems: "center" }} action={renderActionElement("#D74141")}>
-        {finalMessage}
+        {displayMessage}
       </Alert>
 
     );

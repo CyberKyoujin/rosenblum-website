@@ -3229,6 +3229,7 @@ html, body {
 .otp-form__resend-code{
   background-color: transparent;
   border: none;
+  cursor: pointer;
   color: RGB(76 121 212);
   text-decoration: underline;
   font-weight: 700;
