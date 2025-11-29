@@ -19,21 +19,34 @@ import ApiErrorView from "../components/ApiErrorView";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import { ApiError } from "../types/auth";
+import { ApiErrorResponse } from "../types/error";
+import { toApiError } from "../axios/toApiError";
 
 const Messages = () => {
 
-    const { userData, user } = useAuthStore();
-    const { messages, messagesLoading, sendMessagesLoading, toggleMessages, fetchUserMessages, sendMessage, fetchMessagesError, sendMessagesError } = useMessageStore();
+    const user = useAuthStore(s => s.user);
+    const userData = useAuthStore(s => s.userData);
 
+    const messages = useMessageStore(s => s.messages);
+    const messagesLoading = useMessageStore(s => s.messagesLoading);
+    const sendMessagesLoading = useMessageStore(s => s.sendMessagesLoading);
+    const toggleMessages = useMessageStore(s => s.toggleMessages);
+    const fetchUserMessages = useMessageStore(s => s.fetchUserMessages);
+    const sendMessage = useMessageStore(s => s.sendMessage);
+    const fetchMessagesError = useMessageStore(s => s.fetchMessagesError);
+
+    
     const [message, setMessage] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [uploadLimit, setUploadLimit] = useState(false);
+
+    const [error, setError] = useState<ApiErrorResponse | null> (null);
 
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     const isAtTop = useIsAtTop(10);
 
-    const testError: ApiError = {status: 500, message: "TEST ERROR"}
+    const testError: ApiErrorResponse = {status: 500, code: "Failed", message: "TEST ERROR"}
 
     const fileInputRef = useRef(null);
 
@@ -78,8 +91,10 @@ const Messages = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
             e.preventDefault();
             const formData = new FormData();
+
             if (message.length > 0) {
                 if (uploadedFiles.length > 0) {
                     uploadedFiles.forEach(file => {
@@ -93,14 +108,17 @@ const Messages = () => {
                     setMessage('');
                     setUploadedFiles([]);
                     fetchUserMessages();
-                } catch (error) {
-                    console.error('Failed to send message:', error);
+                } catch (err: unknown) {
+
+                    setError(err as ApiErrorResponse);
+
+                    console.error(err)
                 }
              
             } else {
                 setMessage('');
             }
-        }
+    }
     
         const handleFiles = (newFiles: File[]) => {
             const totalFiles = uploadedFiles.length + newFiles.length;
@@ -128,7 +146,6 @@ const Messages = () => {
             element.style.height = `${height}px`;
         };
 
-        const errorToShow = fetchMessagesError ?? sendMessagesError;
 
     if (messagesLoading) {
         return <MessagesSkeleton/>
@@ -138,9 +155,14 @@ const Messages = () => {
 
         <div className="messages-container" style={{padding: '1rem'}}>
 
-        {testError && (
-            <ApiErrorAlert error={testError} belowNavbar={isAtTop} fixed={true} />
+        {fetchMessagesError && (
+            <ApiErrorAlert error={fetchMessagesError} belowNavbar={isAtTop} fixed={true} />
         )}
+
+        {error && (
+            <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed={true} />
+        )}
+
 
         <div role="presentation" style={{marginBottom: '3rem'}}>
             <Breadcrumbs aria-label="breadcrumb">

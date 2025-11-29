@@ -33,12 +33,6 @@ const Home = () => {
 
   const isAtTop = useIsAtTop(10);
 
-  const testError: ApiErrorResponse = {
-      status: 500, 
-      code: 'test_error', 
-      message: "TEST ERROR MESSAGE"
-  };
-
   const { reviews, reviewsLoading, reviewsError } = useReviews();
 
   const navigate = useNavigate();
@@ -73,12 +67,13 @@ const Home = () => {
 
   }, []);
 
+
   return(
     <>
 
     <div className="main-app-container">
 
-    <ApiErrorAlert error={testError} belowNavbar={isAtTop} fixed={true} />
+    <ApiErrorAlert error={reviewsError} belowNavbar={isAtTop} fixed={true} />
 
     <div className="home-container">
         <div className="home-header">

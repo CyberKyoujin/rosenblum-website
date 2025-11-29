@@ -17,6 +17,7 @@ interface Review{
 }
 
 export function useReviews() {
+
   const { i18n } = useTranslation();
   const [reviews, setReviews] = useState<Review[]>([]);
 
@@ -30,16 +31,25 @@ export function useReviews() {
     if (lang === "ua") lang = "uk";
 
     async function fetchReviews() {
+
       setReviewsLoading(true);
+      setReviewsError(null);
 
       try {
+
         const response = await axiosInstance.get<Review[]>(`/user/reviews/`, {
           params: { lang },
           signal: controller.signal, 
         });
         
         setReviews(response.data);
+
       } catch (err: unknown) {
+
+        if (controller.signal.aborted) {
+            return; 
+        }
+        
         const error = toApiError(err);
         
         if (error.code !== 'canceled') {

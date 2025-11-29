@@ -35,19 +35,13 @@ function App() {
   const isAuthLoading = useAuthStore(s => s.isAuthLoading);
   const fetchUserMessages = useMessageStore(s => s.fetchUserMessages);
   const fetchOrders = useOrderStore(s => s.fetchOrders);
-  const createOrder =  useOrderStore(s => s.createOrder);
+  const isAuthenticated = useAuthStore(s => s.isAuthenticated);
+
+  // Auth initialization
 
   useEffect(() => {
 
-  const init = async () => {
-    await initAuth();   
-    await Promise.all([                       
-        fetchUserMessages(),
-        fetchOrders(),
-    ]);
-  };
-
-  init();
+  initAuth();
 
   const refreshTokenInterval = setInterval(async () => {
     try {
@@ -59,7 +53,20 @@ function App() {
 
   return () => clearInterval(refreshTokenInterval);
 
-  }, [updateToken, fetchUserMessages, fetchOrders, initAuth, createOrder]);
+  }, [updateToken, initAuth]);
+
+  // Conditional user data fetch
+
+  useEffect(() => {
+    
+    if (isAuthenticated) { 
+        Promise.all([
+            fetchUserMessages(),
+            fetchOrders(),
+        ]);
+    }
+
+  }, [isAuthenticated, fetchUserMessages, fetchOrders]);
 
 
    if (isAuthLoading) {

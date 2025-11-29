@@ -7,15 +7,15 @@ import { MdOutlineStickyNote2 } from "react-icons/md";
 
 const OrdersSection = () => {
 
-    const {orders} = useOrderStore();
+    const orders = useOrderStore(s => s.orders);
 
     const { t } = useTranslation();
     const navigate = useNavigate();
  
     return (
-        <section className="profile__user-orders-section profile-section-container" style={{gap: "1.5rem"}}>
+        <section className="profile-section-container profile__user-orders-section">
 
-                    {orders?.length > 0 ? (
+                    {orders && orders.length > 0 ? (
                         <>
                         {orders.map((order) => (
                             <div

@@ -14,6 +14,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
     user: null,
     loading: false,
     userDataLoading: false,
+    userDataError: null,
     isAuthenticated: false,
     emailAlreadyExists: false,
     userData: null,
@@ -57,12 +58,20 @@ const useAuthStore = create<AuthState>((set,get) =>({
             set({ 
                 userData: response.data,
                 isAuthenticated: true,
+                userDataError: null
             })
 
         } catch (err: unknown) {
 
-            set({ user: null, userData: null, isAuthenticated: false, authTokens: null });
-            get().logoutUser();
+            const error = toApiError(err);
+
+            if (error.status === 401) {
+                 set({ user: null, userData: null, isAuthenticated: false, authTokens: null });
+                 get().logoutUser();
+            } else {
+                 set({ userDataError: error, isAuthLoading: false });
+                 
+            }
 
         } finally {
             set({isAuthLoading: false})
@@ -98,6 +107,8 @@ const useAuthStore = create<AuthState>((set,get) =>({
             get().setTokens({access, refresh});
 
         } catch (err: unknown) {
+
+            console.log(err);
 
             throw toApiError(err);
 
@@ -160,7 +171,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
     },
 
     fetchUserData: async() => {
-            set({userDataLoading: true});
+            set({userDataLoading: true, userDataError: null});
             try{
 
                 const response = await axiosInstance.get('/user/user-data/')
@@ -169,6 +180,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
             } catch(err: unknown) {
 
                 const error = toApiError(err);
+
+                set({ userDataError: error });
+
                 if (error.status === 401) {
                     get().logoutUser();
                 }

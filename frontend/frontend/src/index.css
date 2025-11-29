@@ -1515,6 +1515,7 @@ html, body {
   border: 3px solid var(--blue);
   border-radius: 15px;
   padding: 2rem;
+  
   min-height: 24rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -1638,8 +1639,8 @@ html, body {
 }
 
 .profile__user-orders-section{
-  display: flex;
-  flex-direction: column;
+  
+  
 }
 
 .profile-navigation{
@@ -1722,6 +1723,7 @@ html, body {
 .profile-order-container{
   width: 100%;
   margin: auto;
+  margin-bottom: 2rem;
   display: flex;
   gap: 2rem;
   background-color: rgb(234, 241, 253);

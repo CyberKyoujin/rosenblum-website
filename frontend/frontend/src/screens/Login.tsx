@@ -15,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
 import { IoWarningOutline } from "react-icons/io5";
 import { CircularProgress } from '@mui/material';
+import { ApiErrorResponse } from '../types/error';
+import ApiErrorAlert from '../components/ApiErrorAlert';
 
 const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
 
@@ -26,7 +28,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState<null | string>(null);
+    const [error, setError] = useState<ApiErrorResponse | null>(null);
     const [popupVisible, setPopupVisible] = useState(false);
     const navigate = useNavigate();
 
@@ -37,18 +39,45 @@ const Login = () => {
     };
 
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+
         e.preventDefault();
+
+        setError(null);
+
         try{
             await loginUser(email, password);
             navigate("/profile")
-        } catch (error: any){
-            if(error.response.status === 401){
-                setError(t('userNotExists'));
-                setPopupVisible(true);
-            }
+        } catch (err: any){
 
-            if (error.response.status === 403){
-                setError("Account not virified.")
+            const error = err as ApiErrorResponse;
+
+            switch (error.code) {
+                
+                // 1. Неверный Email или пароль (Безопасный режим)
+                case 'authentication_failed':
+                    setError({
+                        ...error,
+                        // Отображаем безопасное, дружественное сообщение
+                        message: "Неверный Email или пароль. Попробуйте снова." 
+                    });
+                    break;
+                
+                // 2. Аккаунт не верифицирован
+                case 'account_disabled':
+                    setError({
+                        ...error,
+                        // Отображаем сообщение с возможностью верификации
+                        message: "Аккаунт не верифицирован. Пожалуйста, проверьте почту или запросите повторную отправку кода."
+                    });
+                    // Здесь можно установить флаг, чтобы показать кнопку "Отправить код повторно"
+                    // setShowResendLink(true); 
+                    break;
+
+                // 3. Любые другие ошибки (Сетевые, серверные 500 и т.д.)
+                default:
+                    // Используем сообщение, которое вернул toApiError, или фолбэк
+                    setError(error); 
+                    break;
             }
         }
     }
@@ -120,11 +149,13 @@ const Login = () => {
                         <p className="login-span" onClick={() => {navigate('/register'); setPopupVisible(false);}}>{t('register')}</p>
                     </div>
 
-                    <div className={error ? 'register-error-popup show-error' : 'register-error-popup'}> 
+                    {/* <div className={error ? 'register-error-popup show-error' : 'register-error-popup'}> 
                         <IoWarningOutline className='error-icon'/>
                         <p>{error}</p>
                         <button className='otp-form__resend-code' onClick={handleVerificationClick}>Verfizieren</button>
-                    </div>
+                    </div> */}
+
+                    <ApiErrorAlert error={error}/>
 
                 </div>
 

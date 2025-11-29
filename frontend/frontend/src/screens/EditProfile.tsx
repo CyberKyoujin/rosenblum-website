@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextField, Divider } from '@mui/material';
+import { TextField, Divider, CircularProgress } from '@mui/material';
 import { RiEdit2Fill } from 'react-icons/ri';
 import { MdAddAPhoto } from 'react-icons/md';
 import useAuthStore from '../zustand/useAuthStore';
@@ -10,11 +10,20 @@ import { useNavigate } from 'react-router-dom';
 import defaultAvatar from '../assets/default_avatar.png'
 import { useTranslation } from 'react-i18next';
 import Footer from '../components/Footer';
+import { ApiErrorResponse } from '../types/error';
+import ApiErrorAlert from '../components/ApiErrorAlert';
+import { useIsAtTop } from '../hooks/useIsAtTop';
 
 
 
 const EditProfile = () => {
-  const { userData, user, updateUserProfile } = useAuthStore.getState();
+  const user = useAuthStore(s => s.user);
+  const userData = useAuthStore(s => s.userData);
+  const updateUserProfile = useAuthStore(s => s.updateUserProfile);
+
+  const loading = useAuthStore(s => s.loading);
+
+  const [profileUpdateError, setProfileUpdateError] = useState<ApiErrorResponse | null>(null);
 
   const [phoneNumber, setPhoneNumber] = useState<string>(userData?.phone_number || '');
   const [city, setCity] = useState<string>(userData?.city || '');
@@ -25,6 +34,8 @@ const EditProfile = () => {
   const [profileUrl, setProfileUrl] = useState<string>('');
 
   const profileImg = user?.profile_img_url || userData?.image_url || '';
+
+  const isAtTop = useIsAtTop(10);
 
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -48,14 +59,25 @@ const EditProfile = () => {
     formData.append('street', street);
     formData.append('zip', zip);
 
-    await updateUserProfile(formData);
+    setProfileUpdateError(null);
+
+    try{
+      await updateUserProfile(formData);
+      navigate("/profile", {state: {profileUpdateSuccess: true}})
+
+    } catch (err: unknown) {
+
+      setProfileUpdateError(err as ApiErrorResponse);
+
+    }
+
   }
 
   return (
-
-    <>
+    
     <div className='main-app-container'>
 
+    <ApiErrorAlert error={profileUpdateError} belowNavbar={isAtTop} fixed/>
 
     <div role="presentation" className="profile-navigation">
         <Breadcrumbs aria-label="breadcrumb">
@@ -102,13 +124,15 @@ const EditProfile = () => {
             </div>
           </div>
 
-          <button type="submit" className="confirm-btn hover-btn" style={{ width: '100%' }}>{t('save')}</button>
+          <button type="submit" className="confirm-btn hover-btn" style={{ width: '100%' }}>
+            {loading ? <CircularProgress style={{color: "white"}}/> : t('save')}
+          </button>
         </form>
       </div>
 
     </div>
     
-    </>
+    
   );
 };
 

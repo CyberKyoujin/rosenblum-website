@@ -16,6 +16,10 @@ import Footer from "../components/Footer";
 import useAuthStore from "../zustand/useAuthStore";
 import OrderDetailsSkeleton from "../components/OrderDetailsSkeleton";
 import useOrderStore from "../zustand/useOrderStore";
+import { ApiErrorResponse } from "../types/error";
+import ApiErrorAlert from "../components/ApiErrorAlert";
+import { useIsAtTop } from "../hooks/useIsAtTop";
+import ApiErrorView from "../components/ApiErrorView";
 
 interface File{
     id: string;
@@ -40,23 +44,33 @@ interface OrderData {
     user: string;
 }
 
-
 const OrderDetails = () => {
 
     const { orderId } = useParams();
     const [orderData, setOrderData] = useState<OrderData | null>(null);
-    const ordersLoading = useOrderStore(s => s.ordersLoading)
+    const [loading, setLoading] = useState(false);
+    const [orderDetailsError, setOrderDetailsError] = useState<ApiErrorResponse | null>(null);
 
     const { t } = useTranslation();
+
+    const isAtTop = useIsAtTop(10);
 
     useEffect(() => {
 
         const fetchOrderDetails = async () => {
+
+            setLoading(true);
+            setOrderDetailsError(null);
+
             try{
                 const response = await axios.get(`http://127.0.0.1:8000/order/${orderId}`);
                 setOrderData(response.data);
-            } catch (error) {
-                console.log(error);
+            } catch (err: unknown) {
+                
+                setOrderDetailsError(err as ApiErrorResponse);
+
+            } finally{
+                setLoading(false);
             }
         }
 
@@ -64,13 +78,16 @@ const OrderDetails = () => {
 
     }, [orderId]);
 
-    if (ordersLoading) {
+    if (loading) {
         return <OrderDetailsSkeleton/>
     }
 
     return (
-        <>
+        
         <div className="main-app-container">
+
+        <ApiErrorAlert error={orderDetailsError} belowNavbar={isAtTop} fixed/>
+
         <div className="order-details">
             <div className="order-details-container">
 
@@ -84,7 +101,10 @@ const OrderDetails = () => {
 
                 <Divider orientation="horizontal" style={{marginTop: '1.5rem'}}/>
 
-                <div className="order-details-content">
+                { orderDetailsError ? (
+                    <ApiErrorView message={orderDetailsError?.message}/>
+                ) : (
+                    <div className="order-details-content">
 
                     <div className="order-details-top">
 
@@ -143,6 +163,7 @@ const OrderDetails = () => {
 
 
                 </div>
+                )}
 
 
             </div>
@@ -150,8 +171,7 @@ const OrderDetails = () => {
             
         </div>
         </div>
-        <Footer/>
-        </>
+        
     )
 
 }
