@@ -24,7 +24,10 @@ from rest_framework import generics
 from base.services.email_verification import verify_email, send_verification_code
 from django.shortcuts import get_object_or_404
 from base.services.google_reviews import sync_google_reviews
-
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes, force_str
+from base.services.email_notifications import send_reset_link_email
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -33,7 +36,7 @@ class UserRegisterView(APIView):
         email = raw_email.strip()
         
         if CustomUser.objects.filter(email=email).exists():
-            return Response(status=status.HTTP_306_RESERVED)
+            return Response(status=status.HTTP_409_CONFLICT)
         
         data = request.data.copy()
         data['email'] = email
@@ -72,7 +75,6 @@ class EmailVerificationView(APIView):
         
         return Response({"detail": "Email verified!"}, status=status.HTTP_200_OK)
     
-    
 class ResendVerificationCode(APIView):
     def post(self, request):
         email = request.data.get("email", "").strip()
@@ -86,8 +88,65 @@ class ResendVerificationCode(APIView):
         
         return Response({"detail": "New verification code sent."}, status=status.HTTP_200_OK)
         
+class SendPasswordResetLink(APIView):
+    def post(self, request):
+        email = request.data.get("email", "").strip()
+        
+        try:
+            user = CustomUser.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            
+            frontend_url = "http://localhost:3000"
+            reset_link = f"{frontend_url}/password-reset/confirm/{uid}/{token}/"
+            
+            print(f"Link: {reset_link}")
+            
+            send_reset_link_email(email, user.first_name, user.last_name, reset_link)
+            
+            return Response({"detail": "Link to password change has been successfully sent."}, status=status.HTTP_200_OK)
+        
+        except CustomUser.DoesNotExist:
+            return Response({"detail": "Link to password change has been successfully sent."}, status=status.HTTP_200_OK)
+        
+class ResetPassword(APIView):
+    def post(self, request):
+        print(request.data)
+        uidb64 = request.data.get('uid')
+        token = request.data.get('token')
+        password = request.data.get('password')
 
+        if not uidb64 or not token or not password:
+            return Response(
+                {"detail": "Missing required fields (uid, token, password)."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = CustomUser.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+            return Response(
+                {"detail": "Invalid UID."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not default_token_generator.check_token(user, token):
+            return Response(
+                {"detail": "Invalid or expired token."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(password)
+        user.save()
+
+        return Response(
+            {"detail": "Password has been reset successfully."}, 
+            status=status.HTTP_200_OK
+        )
+        
+            
+            
 class UserView(APIView):
     permission_classes = [IsAuthenticated,]
     def get(self, request):
@@ -98,24 +157,6 @@ class UserView(APIView):
 
 class UserTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
-
-    def post(self, request, *args, **kwargs):
-        email = request.data.get("email", "").strip()
-
-        try:
-            user = CustomUser.objects.get(email=email)
-        except CustomUser.DoesNotExist:
-            return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        if not user.is_active:
-            return Response(
-                {"detail": "Email not verified. Please verify your email first."},
-                status=status.HTTP_403_FORBIDDEN 
-            )
-
-        response = super().post(request, *args, **kwargs)
-        response.data["message"] = "Login successful"
-        return response
         
     
 class UserTokenRefreshView(TokenRefreshView):

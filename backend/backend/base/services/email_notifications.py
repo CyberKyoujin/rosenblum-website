@@ -11,10 +11,20 @@ def send_simple_email(subject: str, message: str, recipient_email: str):
         fail_silently=False
     )
     
+def send_reset_link_email(receiver_email: str, receiver_first_name: str, receiver_last_name: str, reset_link: str):
+    subject = "Passwort-Reset Link"
+    message = (
+        f"Hallo, {receiver_first_name} {receiver_last_name}\n"
+        f"Hier ist Ihr Link zum Passwort-Reset: {reset_link}\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+    
+    send_simple_email(subject, message, receiver_email)
+    
 def send_message_account_created(receiver_email: str, receiver_first_name: str, receiver_last_name: str):
     subject = "Willkommen bei Rosenblum Übersetzungsbüro!"
     message = (
-        f"Hallo {receiver_first_name} {receiver_last_name}\n"
+        f"Hallo, {receiver_first_name} {receiver_last_name}\n"
         "Ihr Konto wurde erfolgreich registriert.\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )

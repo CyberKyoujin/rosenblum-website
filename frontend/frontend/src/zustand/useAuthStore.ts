@@ -132,12 +132,43 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
             get().setUser(userData);
             get().setTokens({access, refresh});
+            await get().fetchUserData();
 
         } catch (err: unknown) {
 
             throw toApiError(err);
 
         } finally {
+            set({loading: false});
+        }
+    },
+
+    sendResetLink: async (email: string) => {
+
+        set({loading: true});
+
+        try {
+            await axiosInstance.post('/user/password-reset-link/', {email});
+        } catch (err: unknown) {
+
+            throw toApiError(err);
+
+        } finally{
+            set({loading: false});
+        }
+
+    },
+
+    resetPassword: async (uid: string, token: string, password: string) => {
+        set({loading: true});
+
+        try {
+            await axiosInstance.post('/user/password-reset-confirm/', {uid, token, password});
+        } catch (err: unknown) {
+
+            throw toApiError(err);
+
+        } finally{
             set({loading: false});
         }
     },

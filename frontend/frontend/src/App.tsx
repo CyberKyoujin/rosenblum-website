@@ -27,6 +27,8 @@ import EmailVerification from "./screens/EmailVerification";
 import EmailVerificationSuccess from "./screens/EmailVerificationSuccess";
 import useMessageStore from "./zustand/useMessageStore";
 import AppSkeleton from "./components/AppSkeleton";
+import SendPasswordReset from "./components/SendPasswordReset";
+import PasswordReset from "./components/PasswordReset";
 
 function App() {
   
@@ -83,6 +85,8 @@ function App() {
         <Route path='/register' element={<Register/>}/>
         <Route path='/email-verification' element={<EmailVerification/>}/>
         <Route path='/verification-success' element={<EmailVerificationSuccess/>}/>
+        <Route path='/send-reset-password' element={<SendPasswordReset/>}/>
+        <Route path="/password-reset/confirm/:uid/:token" element={<PasswordReset></PasswordReset>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path="/profile" element={
           <ProtectedRoute>
