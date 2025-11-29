@@ -53,29 +53,22 @@ const Login = () => {
 
             switch (error.code) {
                 
-                // 1. Неверный Email или пароль (Безопасный режим)
                 case 'authentication_failed':
                     setError({
                         ...error,
-                        // Отображаем безопасное, дружественное сообщение
                         message: "Неверный Email или пароль. Попробуйте снова." 
                     });
                     break;
-                
-                // 2. Аккаунт не верифицирован
+            
                 case 'account_disabled':
                     setError({
                         ...error,
-                        // Отображаем сообщение с возможностью верификации
                         message: "Аккаунт не верифицирован. Пожалуйста, проверьте почту или запросите повторную отправку кода."
                     });
-                    // Здесь можно установить флаг, чтобы показать кнопку "Отправить код повторно"
-                    // setShowResendLink(true); 
+                    
                     break;
 
-                // 3. Любые другие ошибки (Сетевые, серверные 500 и т.д.)
                 default:
-                    // Используем сообщение, которое вернул toApiError, или фолбэк
                     setError(error); 
                     break;
             }
@@ -106,10 +99,17 @@ const Login = () => {
         googleLogin(response.credential);
     };
 
+
     const handleVerificationClick = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         navigate('/email-verification', {state: {email}});
     }
+
+    const verificationButton = (
+        <button onClick={handleVerificationClick} className='otp-form__resend-code'>
+            {"Verifizieren"}
+        </button>
+    );
 
     return (
         <div className="register-container">
@@ -127,16 +127,12 @@ const Login = () => {
 
                     <div className="login-title-header">
 
-                   
-
                             <div style={{display: 'flex', gap: "0.5rem"}}>
                                 <h1>{t('already')}</h1>
                                 <h1 className="register-title-span">{t('client')}</h1>
                             </div>
 
                             <span></span>
-
-                            
 
                             <h1>{t('LoginNow')}.</h1>
 
@@ -149,13 +145,7 @@ const Login = () => {
                         <p className="login-span" onClick={() => {navigate('/register'); setPopupVisible(false);}}>{t('register')}</p>
                     </div>
 
-                    {/* <div className={error ? 'register-error-popup show-error' : 'register-error-popup'}> 
-                        <IoWarningOutline className='error-icon'/>
-                        <p>{error}</p>
-                        <button className='otp-form__resend-code' onClick={handleVerificationClick}>Verfizieren</button>
-                    </div> */}
-
-                    <ApiErrorAlert error={error}/>
+                    <ApiErrorAlert error={error} action={error?.code === 'account_disabled' ? verificationButton : null} duration={10}/>
 
                 </div>
 
@@ -195,21 +185,19 @@ const Login = () => {
                     </button>
 
                 </div>
-                
-
-                
 
             </form>
 
             <div className="login-img-container">
+
                     <div className="divider-container">
                         <div></div>
                         <p>{t('or')}</p>
                         <div></div>
                     </div>
-
             
                     <button id="google-signin-btn" className="custom-google-sign-in-button">Sign in with Google</button>
+                    
             </div>
 
 
