@@ -1,5 +1,6 @@
 import type { User, UserData } from "./user"
 import type { Message } from "./messages";
+import { ApiErrorResponse } from "./error";
 
 export interface AuthTokens {
     access: string;
@@ -18,6 +19,9 @@ export interface AuthState {
     loading: boolean;
     userData: UserData | null;
     userDataLoading: boolean;
+
+    userDataError: ApiErrorResponse | null;
+
     userMessages: Message[] | null;
     isAuthenticated: boolean;
     isAuthLoading: boolean;
@@ -30,4 +34,5 @@ export interface AuthState {
     updateToken: () => void;
     logoutUser: () => void;
     fetchUserData: () => Promise<void>;
+    updateUserProfile: (formData: FormData) =>  Promise<void>;
 }

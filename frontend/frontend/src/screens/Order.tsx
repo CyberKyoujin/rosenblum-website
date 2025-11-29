@@ -31,6 +31,7 @@ import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
+import { ApiErrorResponse } from "../types/error";
 
 
 const Order = () => {
@@ -40,7 +41,7 @@ const Order = () => {
     const createOrderLoading  = useOrderStore(s=> s.createOrderLoading);
     const createOrder = useOrderStore(s => s.createOrder);
 
-    const createOrderError = useOrderStore(s => s.createOrderError);
+    const [createOrderError, setCreateOrderError] = useState<ApiErrorResponse | null>(null);
 
     const [name, setName] = useState(user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : '')
     const [email, setEmail] = useState(user?.email || '');
@@ -113,7 +114,11 @@ const Order = () => {
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
         e.preventDefault();
+
+        setCreateOrderError(null);
+
         const formData = new FormData();
         uploadedFiles.forEach(file => {
             formData.append('files', file); 
@@ -125,8 +130,17 @@ const Order = () => {
         formData.append('street', street);
         formData.append('zip', plz);
         formData.append('message', message);
+
+        try {
+            await createOrder(formData);
+            navigate("/profile", {state: {orderCreateSuccess: true}});
+        } catch (err: unknown){ 
+
+            setCreateOrderError(err as ApiErrorResponse);
+
+        }
         
-        await createOrder(formData).then(() => navigate("/profile"));
+        
     }
 
     useEffect(() => {
@@ -138,7 +152,7 @@ const Order = () => {
         <>
         <div className="main-app-container">
 
-            <ApiErrorAlert error={createOrderError} belowNavbar={isAtTop}/>
+            <ApiErrorAlert error={createOrderError} belowNavbar={isAtTop} fixed/>
 
             <div role="presentation" className="profile-navigation">
                 <Breadcrumbs aria-label="breadcrumb">

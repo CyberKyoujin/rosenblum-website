@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link'
-import { Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -17,9 +16,11 @@ import tick from '../assets/tick.svg'
 import cross from '../assets/cross.svg'
 import Footer from "../components/Footer";
 import useAuthStore from '../zustand/useAuthStore';
-import { IoWarningOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
+import { ApiErrorResponse } from '../types/error';
+import ApiErrorAlert from '../components/ApiErrorAlert';
+import { useIsAtTop } from '../hooks/useIsAtTop';
 const clientId = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
 
 const Register = () => {
@@ -27,12 +28,11 @@ const Register = () => {
     const registerUser = useAuthStore(s => s.registerUser);
     const googleLogin = useAuthStore(s => s.googleLogin);
     const loading = useAuthStore(s => s.loading);
-    const registerError = useAuthStore(s => s.userRegisterError);
+
+    const [error, setError] = useState<ApiErrorResponse | null>(null);
 
     const { t } = useTranslation();
     const navigate = useNavigate();
-
-    const [popupVisible, setPopupVisible] = useState<boolean>(false);
 
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
@@ -46,6 +46,8 @@ const Register = () => {
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+    const isAtTop = useIsAtTop(10);
+
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
     };
@@ -58,10 +60,24 @@ const Register = () => {
 
     const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-    
-        await registerUser(email, firstName, lastName, password).then(() => {
+        setError(null);
+
+        try {
+            await registerUser(email, firstName, lastName, password);
             navigate('/email-verification', {state: {email}});
-        })
+        } catch (err: unknown) {
+            const error  = err as ApiErrorResponse;
+
+            if (error.status === 409) {
+                error.message = "User with this email exists";
+                setError({
+                ...error,    
+                message: t('userAlreadyExists') || "Пользователь с таким email уже зарегистрирован."
+            });
+            } else {
+                setError(error);
+            }
+        }
                
     }
 
@@ -89,10 +105,30 @@ const Register = () => {
         googleLogin(response.credential);
     };
 
+    const loginButton = (
+    <button 
+        onClick={() => navigate('/login')} 
+        style={{ 
+            background: 'transparent', 
+            border: '1px solid white', 
+            color: 'inherit', 
+            cursor: 'pointer',
+            padding: '2px 8px',
+            borderRadius: '4px',
+            fontSize: '0.8rem'
+        }}
+    >
+        {t('login') || "Anmelden"}
+    </button>
+);
+
     return (
         <>
             
         <div className='main-app-container'>
+
+        <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed duration={10} action={error?.status === 409 ? loginButton : null}/>
+
         <div className="register-container">
 
 
@@ -113,19 +149,13 @@ const Register = () => {
                     <h1 className="register-title-span">{t('join')}</h1>
                 </div>
 
-                <div className={registerError ? 'register-error-popup show-error' : 'register-error-popup'}> 
-                    <IoWarningOutline className='error-icon'/>
-                    <p>{registerError}.</p> 
-                    <RouterLink to="/login" className='login-link'>Anmelden</RouterLink>
-                </div>
-
                 <form className="form-container" onSubmit={handleSubmit}>
                     
-                    <TextField required id="outlined-basic1" label="Email" variant="outlined" onChange={(e) => {setEmail(e.target.value); setPopupVisible(false)}}/>
+                    <TextField required id="outlined-basic1" label="Email" variant="outlined" onChange={(e) => {setEmail(e.target.value)}}/>
 
-                    <TextField required id="outlined-basic2" label={t('firstName')} variant="outlined" onChange={(e) => {setFirstName(e.target.value); setPopupVisible(false)}}/>
+                    <TextField required id="outlined-basic2" label={t('firstName')} variant="outlined" onChange={(e) => {setFirstName(e.target.value)}}/>
 
-                    <TextField required id="outlined-basic3" label={t('lastName')} variant="outlined" onChange={(e) => {setLastName(e.target.value); setPopupVisible(false)}}/>
+                    <TextField required id="outlined-basic3" label={t('lastName')} variant="outlined" onChange={(e) => {setLastName(e.target.value)}}/>
 
                     <FormControl fullWidth variant="outlined" required>
                         <InputLabel htmlFor="outlined-adornment-password">{t('password')}</InputLabel>
@@ -136,7 +166,6 @@ const Register = () => {
                             const newPassword = e.target.value;
                             setPassword(newPassword); 
                             checkPassword(newPassword); 
-                            setPopupVisible(false);
                         }}
                         endAdornment={
                             <InputAdornment position="end">
@@ -146,7 +175,7 @@ const Register = () => {
                                 onMouseDown={handleMouseDownPassword}
                                 edge="end"
                                 >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                {showPassword ? <Visibility /> : <VisibilityOff />}
                                 </IconButton>
                             </InputAdornment>
                         }

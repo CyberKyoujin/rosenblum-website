@@ -1,8 +1,11 @@
+import { ApiErrorResponse } from "./error";
 
 export interface MessageState {
     messages: Message[] | null;
     messagesLoading: boolean;
     sendMessagesLoading: boolean;
+
+    fetchMessagesError : ApiErrorResponse | null;
 
     fetchUserMessages: () => Promise<void>;
     toggleMessages: () => Promise<void>;

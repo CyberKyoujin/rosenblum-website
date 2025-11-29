@@ -17,6 +17,8 @@ import { t } from "i18next";
 import sutthausen1 from "../assets/sutthausen1.jpg"
 import useMessageStore from "../zustand/useMessageStore";
 import ApiErrorAlert from "../components/ApiErrorAlert";
+import { ApiErrorResponse } from "../types/error";
+import { toApiError } from "../axios/toApiError";
 
 const ContactUs = () => {
 
@@ -25,16 +27,17 @@ const ContactUs = () => {
     const [number, setNumber] = useState<string>('');
     const [message, setMessage] = useState<string>('');
 
+    const [requestError, setRequestError] = useState<ApiErrorResponse | null>(null);
+
     const sendRequest = useMessageStore((s) => s.sendRequest);
     const sendRequestSuccess = useMessageStore((s) => s.sendRequestSuccess);
-    const requestError = useMessageStore((s) => s.requestError);
     const requestLoading = useMessageStore((s) => s.requestLoading);
 
     const testRequestSuccess = true;
 
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setRequestError(null);
         try{
 
             await sendRequest(name, email, number, message);
@@ -43,8 +46,9 @@ const ContactUs = () => {
             setNumber('');
             setMessage('');
 
-        } catch(error: unknown) {
+        } catch(err: unknown) {
 
+            setRequestError(err as ApiErrorResponse);
 
         }
     }
@@ -145,8 +149,6 @@ const ContactUs = () => {
                         {requestLoading ? <CircularProgress style={{color: "white"}}/> : t('send')}
                     </button>
                 </form>
-
-
 
             </div>
         </div>

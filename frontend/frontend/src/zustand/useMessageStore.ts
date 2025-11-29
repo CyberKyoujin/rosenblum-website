@@ -2,17 +2,19 @@ import axiosInstance from "../axios/axiosInstance";
 import { create } from "zustand";
 import { MessageState } from "../types/messages";
 import { toApiError } from "../axios/toApiError";
+import { ApiErrorResponse } from "../types/error";
 
 const useMessageStore = create<MessageState>((set, get) => ({
     messages: null,
     messagesLoading: false,
     sendMessagesLoading: false,
+    fetchMessagesError: null,
     requestLoading: false,
     sendRequestSuccess: false,
 
     fetchUserMessages: async () => {
 
-            set({messagesLoading: true});
+            set({messagesLoading: true, fetchMessagesError: null});
 
             try{
                 
@@ -21,8 +23,13 @@ const useMessageStore = create<MessageState>((set, get) => ({
                 set({messages: response.data})
                 
             } catch(err: unknown) {
+
+                const error = err as ApiErrorResponse;
+
+                set({fetchMessagesError: error})
                 
-                throw toApiError(err);
+                throw error;
+                
             } finally {
                 set({messagesLoading: false});
             }
