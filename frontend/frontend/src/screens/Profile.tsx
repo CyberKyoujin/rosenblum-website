@@ -34,7 +34,7 @@ const Profile = () => {
             navigate(location.pathname, { replace: true, state: {} });
         }
         if (location.state?.profileUpdateSuccess){
-            setShowOrderSuccessAlert(true);
+            setShowUpdateSuccessAlert(true);
             navigate(location.pathname, { replace: true, state: {} });
         }
     }, [location.state, navigate, location.pathname])
@@ -46,7 +46,7 @@ const Profile = () => {
 
         {showOrderSuccessAlert && <ApiErrorAlert successMessage={"Der Auftrag erfolgreich bearbeitet"} belowNavbar={isAtTop} fixed/>}
 
-        {showOrderSuccessAlert && <ApiErrorAlert successMessage={"Profil erfolgreich bearbeitet"} belowNavbar={isAtTop} fixed/>}
+        {showUpdateSuccessAlert && <ApiErrorAlert successMessage={"Profil erfolgreich bearbeitet"} belowNavbar={isAtTop} fixed/>}
 
 
             <main className="main-app-container">

@@ -84,6 +84,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
         try{
 
             await axiosInstance.post('/user/register/', {email: email, first_name: firstName, last_name: lastName, password: password});
+            get().fetchUserData();
             
         } catch(err: unknown){
 
@@ -95,7 +96,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
     },
 
     loginUser: async (email, password) => {
-        set({loading: true});
+        set({loading: true, userDataError: null});
         try{
 
             const response = await axiosInstance.post('/user/login/', {email, password});
@@ -106,9 +107,9 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
             get().setTokens({access, refresh});
 
-        } catch (err: unknown) {
+            await get().fetchUserData();
 
-            console.log(err);
+        } catch (err: unknown) {
 
             throw toApiError(err);
 
