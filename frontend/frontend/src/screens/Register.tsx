@@ -1,91 +1,78 @@
-import { useState, useEffect } from 'react';
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link'
+import { useState } from 'react';
+import { useForm } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+import { Typography, Breadcrumbs, Link, TextField, InputLabel, FormControl, IconButton, OutlinedInput, InputAdornment, FormHelperText, CircularProgress} from '@mui/material';
 import { useTranslation } from "react-i18next";
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
+
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import registerIcon from '../assets/registerIcon.png'
-import tick from '../assets/tick.svg'
-import cross from '../assets/cross.svg'
 import Footer from "../components/Footer";
 import useAuthStore from '../zustand/useAuthStore';
 import { useNavigate } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
 import { ApiErrorResponse } from '../types/error';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 import GoogleLoginBtn from '../components/GoogleLoginBtn';
+import RequirementItem from '../components/RequirementItem';
+
+const registerSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  password: z.string().min(1, "Password is required"), 
+});
+
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Register = () => {
+
+    const { t } = useTranslation();
+    const navigate = useNavigate();
+    const isAtTop = useIsAtTop(10);
 
     const registerUser = useAuthStore(s => s.registerUser);
     const loading = useAuthStore(s => s.loading);
 
     const [error, setError] = useState<ApiErrorResponse | null>(null);
-
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-
-    const [email, setEmail] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [password, setPassword] = useState('');
-
-    const [containsCharacters, setContainsCharacters] = useState(false);
-    const [containsNumbers, setContainsNumbers] = useState(false);
-    const [containsUppercase, setContainsUppercase] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    const isAtTop = useIsAtTop(10);
+    const {register, handleSubmit, watch, formState: {errors}} = useForm<RegisterFormValues>({resolver: zodResolver(registerSchema), mode: "onChange"});
 
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const watchedPassword = watch("password", "");
 
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
+    const passwordChecks = {
+        length: watchedPassword.length > 7,
+        number: /\d/.test(watchedPassword),
+        uppercase: /[A-Z]/.test(watchedPassword)
     };
 
-    const checkPassword = (currentPassword: string) => {
-        setContainsCharacters(currentPassword.length > 7);
-        setContainsNumbers(/\d/.test(currentPassword));
-        setContainsUppercase(/[A-Z]/.test(currentPassword));
-    }
+    const isPasswordValid = Object.values(passwordChecks).every(Boolean);
 
-    const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (data: RegisterFormValues) => {
 
-        e.preventDefault();
+        if (!isPasswordValid) return; 
+
         setError(null);
-
         try {
-
-            await registerUser(email, firstName, lastName, password);
-            navigate('/email-verification', {state: {email}});
-
+            await registerUser(data.email, data.firstName, data.lastName, data.password);
+            navigate('/email-verification', { state: { email: data.email } });
         } catch (err: unknown) {
-
-            const error  = err as ApiErrorResponse;
-
+            const error = err as ApiErrorResponse;
+            
             if (error.status === 409) {
-                
                 setError({
-                ...error,    
-                message: t('userAlreadyExists') || "Пользователь с таким email уже зарегистрирован."
-            });
-
+                    ...error,
+                    message: t('userAlreadyExists') || "Пользователь с таким email уже зарегистрирован."
+                });
             } else {
-
                 setError(error);
-
             }
+
         }
-               
-    }
+    };
 
     const loginButton = (
     <button onClick={() => navigate('/login')} className='otp-form__resend-code'>
@@ -119,48 +106,56 @@ const Register = () => {
                             <h1 className="register-title-span">{t('join')}</h1>
                         </div>
 
-                        <form className="form-container" onSubmit={handleSubmit}>
+                        <form className="form-container" onSubmit={handleSubmit(onSubmit)}>
                             
-                            <TextField required id="outlined-basic1" label="Email" variant="outlined" onChange={(e) => {setEmail(e.target.value)}}/>
+                            <TextField
+                                {...register('email')}
+                                label="Email"
+                                variant="outlined"
+                                error={!!errors.email}
+                                helperText={errors.email?.message} 
+                            />
 
-                            <TextField required id="outlined-basic2" label={t('firstName')} variant="outlined" onChange={(e) => {setFirstName(e.target.value)}}/>
+                            <TextField
+                                {...register('firstName')}
+                                label={t('firstName')}
+                                variant="outlined"
+                                error={!!errors.firstName}
+                            />
 
-                            <TextField required id="outlined-basic3" label={t('lastName')} variant="outlined" onChange={(e) => {setLastName(e.target.value)}}/>
+                            <TextField
+                                {...register('lastName')}
+                                label={t('lastName')}
+                                variant="outlined"
+                                error={!!errors.lastName}
+                            />
 
-                            <FormControl fullWidth variant="outlined" required>
+                            <FormControl fullWidth variant="outlined" error={!!errors.password}>
                                 <InputLabel htmlFor="outlined-adornment-password">{t('password')}</InputLabel>
                                 <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={showPassword ? 'text' : 'password'}
-                                onChange={(e) => {
-                                    const newPassword = e.target.value;
-                                    setPassword(newPassword); 
-                                    checkPassword(newPassword); 
-                                }}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        edge="end"
-                                        >
-                                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Password"
+                                    {...register('password')}
+                                    id="pass"
+                                    type={showPassword ? 'text' : 'password'}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    label={t('password')}
                                 />
+                                {errors.password && <FormHelperText>{errors.password.message}</FormHelperText>}
                             </FormControl>
 
                             <div className="requirements-container">
-                                <p><img src={containsCharacters ? tick : cross} alt="" style={{width: '25px'}}/>{t('letters')}</p>
-                                <p><img src={containsNumbers ? tick : cross} alt="" style={{width: '25px'}}/>{t('numbers')}</p>
-                                <p><img src={containsUppercase ? tick : cross} alt="" style={{width: '25px'}}/>{t('uppercase')}</p>
+                                <RequirementItem isValid={passwordChecks.length} text={t('letters')} />
+                                <RequirementItem isValid={passwordChecks.number} text={t('numbers')} />
+                                <RequirementItem isValid={passwordChecks.uppercase} text={t('uppercase')} />
                             </div>
 
-                            <button className="confirm-btn" type='submit'>
-                                {loading ? (<CircularProgress  sx={{ color: '#ffffff' }}/>) : (t('next'))}
+                            <button className="confirm-btn" type='submit' disabled={loading}>
+                                {loading ? (<CircularProgress size={24} sx={{ color: '#ffffff' }}/>) : (t('next'))}
                             </button>
                             
                         </form>

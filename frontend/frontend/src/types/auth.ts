@@ -26,7 +26,9 @@ export interface AuthState {
     isAuthenticated: boolean;
     isAuthLoading: boolean;
     setTokens: (authTokens: AuthTokens | null) => void;
-    setUser: (user: User | null) => void; 
+    setUser: (user: User | null) => void;
+    sendResetLink: (email: string) => Promise<void>;
+    resetPassword: (uid: string, token: string, password: string) => Promise<void>;
     initAuth: () => Promise<void>;
     registerUser: (email: string, first_name: string, last_name: string, password: string) => Promise<void>;
     loginUser: (email: string, password: string) => Promise<void>;

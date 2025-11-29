@@ -41,8 +41,10 @@ html, body {
 }
 
 .main-app-container{
-
-  padding: 0rem 1rem 7rem 1rem;
+  height: 70vh;
+  padding: 0rem 0rem 7rem 0rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .nav-container{
@@ -1025,7 +1027,8 @@ html, body {
 .footer{
   width: 100%;
   background-color: rgb(76, 121, 212);
-  height: 20rem;
+  min-height: 20rem;
+  margin-top: 8rem;
 }
 
 @media (max-width: 475px){
@@ -1244,6 +1247,11 @@ html, body {
 }
 
 .login-title-footer{
+  display: flex;
+  gap: 0.5rem;
+}
+
+.login-title-footer__item{
   display: flex;
   gap: 0.5rem;
 }
@@ -3359,4 +3367,37 @@ html, body {
 
 .show-alert{
   display: block;
+}
+
+/* SEND PASSWORD RESET */
+
+.password-reset-container{
+  max-width: 1280px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  justify-content: center;
+  height: 100%;
+  align-self: center;
+}
+
+.password-reset-form{
+  width: 80%;
+  padding: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: column;
+}
+
+.password-reset-info{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 1rem;
+}
+
+.password-reset-info p{
+  color: rgb(1, 177, 1);
 }

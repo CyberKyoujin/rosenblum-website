@@ -149,7 +149,7 @@ const Order = () => {
     
 
     return(
-        <>
+        
         <div className="main-app-container">
 
             <ApiErrorAlert error={createOrderError} belowNavbar={isAtTop} fixed/>
@@ -303,9 +303,12 @@ const Order = () => {
                 </div>
 
             </form>
+
+            <Footer/>
+            
         </div>
-        <Footer/>
-        </>
+        
+        
     )
 }
 

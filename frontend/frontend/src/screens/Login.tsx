@@ -1,22 +1,37 @@
 import { useState } from 'react';
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+import { 
+    Typography,
+    Breadcrumbs,
+    Link,
+    TextField,
+    InputLabel,
+    FormControl,
+    IconButton,
+    OutlinedInput,
+    InputAdornment,
+    CircularProgress,
+    FormHelperText
+} from '@mui/material';
+
 import { useTranslation } from "react-i18next";
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
-import { CircularProgress } from '@mui/material';
 import { ApiErrorResponse } from '../types/error';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import GoogleLoginBtn from '../components/GoogleLoginBtn';
+
+const loginSchema = z.object({
+  email: z.string().email("Invalid email format"),
+  password: z.string().min(1, "Password is required"), 
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
 
@@ -25,59 +40,45 @@ const Login = () => {
 
     const { loginUser, loading } = useAuthStore();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-
     const [error, setError] = useState<ApiErrorResponse | null>(null);
 
+    const { register, handleSubmit, getValues, formState: { errors } } = useForm<LoginFormValues>({resolver: zodResolver(loginSchema)});
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault();
 
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.preventDefault();
-    };
-
-    const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
-
-        e.preventDefault();
+    const onSubmit = async (data: LoginFormValues) => {
         setError(null);
-
-        try{
-
-            await loginUser(email, password);
+        try {
+            await loginUser(data.email, data.password);
             navigate("/profile");
-
-        } catch (err: any){
-
+        } catch (err: unknown) {
             const error = err as ApiErrorResponse;
-
             switch (error.code) {
-                
                 case 'authentication_failed':
                     setError({
                         ...error,
                         message: "Неверный Email или пароль. Попробуйте снова." 
                     });
                     break;
-            
                 case 'account_disabled':
                     setError({
                         ...error,
-                        message: "Аккаунт не верифицирован. Пожалуйста, проверьте почту или запросите повторную отправку кода."
+                        message: "Аккаунт не верифицирован. Пожалуйста, проверьте почту."
                     });
-                    
                     break;
-
                 default:
                     setError(error); 
                     break;
             }
         }
-    }
+    };
 
-    const handleVerificationClick = async (e: React.FormEvent<HTMLButtonElement>) => {
+    const handleVerificationClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        navigate('/email-verification', {state: {email}});
+        const currentEmail = getValues("email");
+        navigate('/email-verification', { state: { email: currentEmail } });
     }
 
     const verificationButton = (
@@ -96,7 +97,7 @@ const Login = () => {
                 </Breadcrumbs>
             </div>
 
-            <form className="login-form" onSubmit={handleSubmit}>
+            <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
 
                 <div className="login-title-container">
 
@@ -113,11 +114,12 @@ const Login = () => {
 
                     </div>
 
-                    
-
+        
                     <div className="login-title-footer">
-                        <p>{t('newClient')}</p>
-                        <p className="login-span" onClick={() => navigate('/register')}>{t('register')}</p>
+                        <div className='login-title-footer__item'>
+                            <p>{t('newClient')}</p>
+                            <p className="login-span" onClick={() => navigate('/register')}>{t('register')}</p>
+                        </div>
                     </div>
 
                     <ApiErrorAlert error={error} action={error?.code === 'account_disabled' ? verificationButton : null} duration={10}/>
@@ -126,37 +128,45 @@ const Login = () => {
 
                 <div className="login-form-container">
                     
-                    <TextField required id="outlined-basic" label="Email" variant="outlined" onChange={(e) => setEmail(e.target.value)}/>
+                    <TextField 
+                        {...register('email')}
+                        required 
+                        id="email" 
+                        label="Email" 
+                        variant="outlined" 
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                    />
 
-                    <FormControl fullWidth variant="outlined" required>
-
+                    <FormControl fullWidth variant="outlined" required error={!!errors.password}>
                         <InputLabel htmlFor="outlined-adornment-password">{t('password')}</InputLabel>
-
                         <OutlinedInput
-                        id="outlined-adornment-password"
-                        type={showPassword ? 'text' : 'password'}
-                        onChange={(e) => {
-                            const newPassword = e.target.value;
-                            setPassword(newPassword); 
-                        }}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                                >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                        label="Password"
+                            {...register('password')}
+                            id="outlined-adornment-password"
+                            type={showPassword ? 'text' : 'password'}
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label={t('password')}
                         />
-
+                        {errors.password && <FormHelperText>{errors.password.message}</FormHelperText>}
                     </FormControl>
 
-                    <button className="confirm-btn" type='submit'>
+                    <div className='login-title-footer__item'>
+                            <p>Passwort vergessen?</p>
+                            <p className="login-span" onClick={() => navigate('/send-reset-password')}>Reset</p>
+                    </div>
+
+                    <button className="confirm-btn" type='submit' disabled={loading}>
                         {loading ? (<CircularProgress  sx={{ color: 'white' }}/>) : (t('next'))}
                     </button>
 

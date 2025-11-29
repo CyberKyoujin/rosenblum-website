@@ -9,6 +9,8 @@ from django.utils import timezone
 from .models import Order
 from base.services.email_verification import send_verification_code
 from django.db import transaction
+from rest_framework import exceptions
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     
@@ -98,6 +100,45 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['profile_img_url'] = user.profile_img_url
 
         return token
+    
+    def validate(self, attrs):
+        
+        email = attrs.get("email")
+        password = attrs.get("password")
+        
+        user = None
+        
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            pass 
+
+        if user is None or not user.check_password(password):
+            
+            raise exceptions.AuthenticationFailed(
+                detail={
+                    "detail": "Invalid email or password.",
+                    "code": "authentication_failed"
+                }
+            )
+            
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed(
+                detail={
+                    "detail": "Account unverified. Please verify your email.",
+                    "code": "account_disabled"
+                }
+            )
+            
+        refresh = self.get_token(user)
+
+        data = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "message": "Login successful"
+        }
+
+        return data
 
 
 class FileSerializer(serializers.ModelSerializer):
