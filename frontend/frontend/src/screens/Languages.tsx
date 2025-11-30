@@ -122,9 +122,9 @@ const Languages = () => {
                 <ContactSection text="translationsContact"/>
 
             </div>
-            
+        <Footer/>    
         </div>
-        <Footer/>
+        
         </>
 
     );

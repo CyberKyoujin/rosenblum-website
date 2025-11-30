@@ -66,9 +66,9 @@ const Pricing = () => {
                 <ContactSection text="pricingContact"/>
 
             </div>
-            
+        <Footer/>    
         </div>
-        <Footer/>
+        
         </>
     )
 }
