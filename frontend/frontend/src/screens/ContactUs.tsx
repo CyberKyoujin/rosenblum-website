@@ -54,7 +54,7 @@ const ContactUs = () => {
     }
 
     return (
-        <>
+        
         <div className="main-app-container">
             <div className="contact-main-container">
                 <div className="contact-title">
@@ -151,9 +151,12 @@ const ContactUs = () => {
                 </form>
 
             </div>
+
+            <Footer/>
+
         </div>
-        <Footer/>
-        </>
+        
+        
     )
 }
 

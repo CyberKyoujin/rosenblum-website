@@ -76,6 +76,7 @@ const Home = () => {
     <ApiErrorAlert error={reviewsError} belowNavbar={isAtTop} fixed={true} />
 
     <div className="home-container">
+        
         <div className="home-header">
         <img src={planetIcon} alt="" />
             <div className="home-header-text">

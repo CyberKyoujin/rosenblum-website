@@ -1,34 +1,38 @@
-import React from "react";
-import { useState, useEffect } from 'react';
-import './App.css';
-import Navbar from './components/Navbar';
-import Home from './screens/Home';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Login from './screens/Login';
-import Register from './screens/Register';
-import useAuthStore from './zustand/useAuthStore';
-import useOrderStore from './zustand/useOrderStore'
-import Profile from './screens/Profile';
-import Order from './screens/Order';
-import OrderDetails from './screens/OrderDetails';
-import EditProfile from './screens/EditProfile';
-import AboutUs from './screens/AboutUs';
-import Messages from './screens/Messages';
-import ContactUs from './screens/ContactUs';
-import Translations from "./screens/Translations";
-import VerbalTranslations from "./screens/VerbalTranslations";
-import Apostille from "./screens/Apostille";
-import Languages from "./screens/Languages";
-import Pricing from "./screens/Pricing";
-import Areas from "./screens/Areas";
-import Faq from "./screens/FAQ";
-import ProtectedRoute from "./components/ProtectedRoute";
-import EmailVerification from "./screens/EmailVerification";
-import EmailVerificationSuccess from "./screens/EmailVerificationSuccess";
-import useMessageStore from "./zustand/useMessageStore";
+import './App.css';
+
+import Navbar from './components/Navbar';
 import AppSkeleton from "./components/AppSkeleton";
-import SendPasswordReset from "./components/SendPasswordReset";
-import PasswordReset from "./components/PasswordReset";
+import useAuthStore from './zustand/useAuthStore';
+import useOrderStore from './zustand/useOrderStore';
+import useMessageStore from "./zustand/useMessageStore";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ProfileSkeleton from './components/ProfileSkeleton';
+import MessagesSkeleton from './components/MessagesSkeleton';
+import OrderDetailsSkeleton from './components/OrderDetailsSkeleton';
+
+const Home = lazy(() => import('./screens/Home'));
+const Login = lazy(() => import('./screens/Login'));
+const Register = lazy(() => import('./screens/Register'));
+const Profile = lazy(() => import('./screens/Profile'));
+const Order = lazy(() => import('./screens/Order'));
+const OrderDetails = lazy(() => import('./screens/OrderDetails'));
+const EditProfile = lazy(() => import('./screens/EditProfile'));
+const AboutUs = lazy(() => import('./screens/AboutUs'));
+const Messages = lazy(() => import('./screens/Messages'));
+const ContactUs = lazy(() => import('./screens/ContactUs'));
+const Translations = lazy(() => import("./screens/Translations"));
+const VerbalTranslations = lazy(() => import("./screens/VerbalTranslations"));
+const Apostille = lazy(() => import("./screens/Apostille"));
+const Languages = lazy(() => import("./screens/Languages"));
+const Pricing = lazy(() => import("./screens/Pricing"));
+const Areas = lazy(() => import("./screens/Areas"));
+const Faq = lazy(() => import("./screens/FAQ"));
+const EmailVerification = lazy(() => import("./screens/EmailVerification"));
+const EmailVerificationSuccess = lazy(() => import("./screens/EmailVerificationSuccess"));
+const SendPasswordReset = lazy(() => import("./components/SendPasswordReset"));
+const PasswordReset = lazy(() => import("./components/PasswordReset"));
 
 function App() {
   
@@ -81,44 +85,142 @@ function App() {
     <main>
       <Navbar/>
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/register' element={<Register/>}/>
-        <Route path='/email-verification' element={<EmailVerification/>}/>
-        <Route path='/verification-success' element={<EmailVerificationSuccess/>}/>
-        <Route path='/send-reset-password' element={<SendPasswordReset/>}/>
-        <Route path="/password-reset/confirm/:uid/:token" element={<PasswordReset></PasswordReset>}/>
-        <Route path='/login' element={<Login/>}/>
+
+        <Route path='/' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <Home/>
+          </Suspense>
+        }/>
+
+        <Route path='/register' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <Register/>
+          </Suspense>
+        }/>
+
+        <Route path='/email-verification' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <EmailVerification/>
+          </Suspense>
+        }/>
+
+        <Route path='/verification-success' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <EmailVerificationSuccess/>
+          </Suspense>
+        }/>
+
+        <Route path='/send-reset-password' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <SendPasswordReset/>
+          </Suspense>
+        }/>
+
+        <Route path="/password-reset/confirm/:uid/:token" element={
+          <Suspense fallback={<AppSkeleton />}>
+            <PasswordReset/>
+          </Suspense>
+        }/>
+
+        <Route path='/login' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <Login/>
+          </Suspense>
+        }/>
+
+        <Route path='/order' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <Order/>
+          </Suspense>
+        }/>
+
+        <Route path='/about-us' element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <AboutUs/>
+          </Suspense>
+        }/>
+
+        <Route path='/contact-us' element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <ContactUs/>
+          </Suspense>
+        }/>
+
+        <Route path='/sworn-translations' element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Translations/>
+          </Suspense>
+        }/>
+
+        <Route path='/verbal-translations' element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <VerbalTranslations/>
+          </Suspense>
+        }/>
+
+        <Route path="/apostille" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Apostille/>
+          </Suspense>
+        }/>
+
+        <Route path="/languages" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Languages/>
+          </Suspense>
+        }/>
+
+        <Route path="/pricing" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Pricing/>
+          </Suspense>
+        }/>
+
+        <Route path="/areas" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Areas/>
+          </Suspense>
+        }/>
+
+        <Route path="/faq" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Faq/>
+          </Suspense>
+        }/>
+
         <Route path="/profile" element={
           <ProtectedRoute>
-            <Profile/>
+            <Suspense fallback={<ProfileSkeleton />}>
+              <Profile/>
+            </Suspense>
           </ProtectedRoute>
         }/>
-        <Route path='/order' element={<Order/>}/>
+
         <Route path="/order/:orderId" element={
           <ProtectedRoute>
-            <OrderDetails/>
+            <Suspense fallback={<OrderDetailsSkeleton/>}>
+              <OrderDetails/>
+            </Suspense>
           </ProtectedRoute>
         }/>
+
         <Route path="/edit-profile" element={
           <ProtectedRoute>
-            <EditProfile/>
+            <Suspense fallback={<AppSkeleton/>}>
+              <EditProfile/>
+            </Suspense>
           </ProtectedRoute>
         }/>
-        <Route path='/about-us' element={<AboutUs/>}/>
+  
         <Route path="/messages" element={
           <ProtectedRoute>
-            <Messages/>
+            <Suspense fallback={<MessagesSkeleton />}>
+              <Messages/>
+            </Suspense>
           </ProtectedRoute>
         }/>
-        <Route path='/contact-us' element={<ContactUs/>}/>
-        <Route path='/sworn-translations' element={<Translations/>}/>
-        <Route path='/verbal-translations' element={<VerbalTranslations/>}/>
-        <Route path="/apostille" element={<Apostille/>}/>
-        <Route path="/languages" element={<Languages/>}/>
-        <Route path="/pricing" element={<Pricing/>}/>
-        <Route path="/areas" element={<Areas/>}/>
-        <Route path="/faq" element={<Faq/>}/>
       </Routes>
+      
     </main>
   );
 }

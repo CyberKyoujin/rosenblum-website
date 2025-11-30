@@ -41,7 +41,7 @@ html, body {
 }
 
 .main-app-container{
-  height: 70vh;
+  height: 100vh;
   padding: 0rem 0rem 7rem 0rem;
   display: flex;
   flex-direction: column;
@@ -619,6 +619,7 @@ html, body {
 .home-container{
   max-width: 1280px;
   margin: auto;
+  width: 100%;
   margin-top: 4rem;
   font-family: "Rubik", sans-serif;
 }
@@ -1026,6 +1027,7 @@ html, body {
 
 .footer{
   width: 100%;
+  height: 100%;
   background-color: rgb(76, 121, 212);
   min-height: 20rem;
   margin-top: 8rem;
@@ -1292,7 +1294,8 @@ html, body {
 /* ORDER */
 
 .order-container{
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1280px;
   margin: auto;
   margin-top: 1rem;
 }
@@ -1505,7 +1508,9 @@ html, body {
 
 .profile__main-section{
   max-width: 1280px;
+  width: 100%;
   margin: 2rem auto;
+  
   padding: 1rem;
   display: flex;
   min-height: 650px;
@@ -1513,8 +1518,8 @@ html, body {
   gap: 3rem;
 }
 
-
 .profile__user-data-section{
+  width: 100%;
   display: flex;
   gap: 2rem;
 }
