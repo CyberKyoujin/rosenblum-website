@@ -32,25 +32,24 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
      
     def update(self, instance, validated_data):
-        profile_img = validated_data.get('profile_img')
-        if 'profile_img' in validated_data:
-            if profile_img is not None:
-                instance.profile_img = profile_img
-            else:
-                instance.profile_img.delete(save=False)
-        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
-        instance.city = validated_data.get('city', instance.city)
-        instance.street = validated_data.get('street', instance.street)
-        instance.zip = validated_data.get('zip', instance.zip)
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        
         instance.save()
         return instance
     
     def get_image_url(self, obj):
         request = self.context.get('request', None)
-        if request:
-            return request.build_absolute_uri(obj.profile_img.url)
-        else:
-            return obj.profile_img.url if obj.profile_img else None
+    
+        if obj.profile_img:
+            file_url = obj.profile_img.url
+            
+            if request:
+                return request.build_absolute_uri(file_url)
+            else:
+                return file_url
+            
+        return None
         
     def get_orders(self, obj):
         return Order.objects.filter(user=obj).count()

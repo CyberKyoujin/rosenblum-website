@@ -1,4 +1,5 @@
 import { ApiErrorResponse } from "./error";
+import { UploadedFileMetadata } from "./file";
 
 export interface MessageState {
     messages: Message[] | null;
@@ -25,5 +26,5 @@ export interface Message {
     viewed: boolean;
     timestamp: string;
     formatted_timestamp: string;
-    files: File[];
+    files: UploadedFileMetadata[];
 }

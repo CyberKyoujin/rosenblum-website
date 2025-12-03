@@ -18,7 +18,7 @@ const Section: React.FC<SectionProps> = ({image, imageClass, titleTextFirst, tit
 
     return(
         <div className="translations-section">
-                    {order && <img src={image} alt="" className={imageClass}/>}
+                    {order && <img src={image} alt="" fetchPriority="high" className={imageClass}/>}
 
                     <div className="translations-section-text">
                         <div className="translations-section-title">
@@ -28,7 +28,7 @@ const Section: React.FC<SectionProps> = ({image, imageClass, titleTextFirst, tit
                         <p>{t(text)}</p>
                     </div> 
 
-                    {!order && <img src={image} alt="" className={imageClass}/>}
+                    {!order && <img src={image} alt="" className={imageClass} loading="lazy"/>}
 
         </div>
     )

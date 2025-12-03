@@ -3,7 +3,7 @@ import Divider from '@mui/material/Divider';
 import { GrContactInfo } from "react-icons/gr";
 import TextField from '@mui/material/TextField';
 import useAuthStore from "../zustand/useAuthStore";
-import sendIcon from '../assets/send_icon.png'
+import sendIcon from '../assets/send_icon.webp'
 import { IoWarningOutline } from "react-icons/io5";
 import parsePhoneNumber from 'libphonenumber-js'
 import { BiSolidMessageDetail } from "react-icons/bi";
@@ -12,26 +12,17 @@ import Footer from "../components/Footer";
 import { FaFile } from "react-icons/fa";
 import { IoSendSharp } from "react-icons/io5";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import Typography from '@mui/material/Typography';
-import ukrPass from '../assets/ukr_pass.jpg'
-import dePass from '../assets/pass_de.jpg'
-import orderStore from "../zustand/useOrderStore";
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import { useTranslation } from "react-i18next";
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import useOrderStore from "../zustand/useOrderStore";
 import { CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import { ApiErrorResponse } from "../types/error";
+import NavigationSection from "../components/NavigationSection";
+import OrderSectionHeader from "../components/OrderSectionHeader";
+import OrderInfoAccordion from "../components/OrderInfoAccordion";
+import OrderFormGroup from "../components/OrderFormGroup";
 
 
 const Order = () => {
@@ -149,17 +140,14 @@ const Order = () => {
     
 
     return(
+
+        <>
         
         <div className="main-app-container">
 
             <ApiErrorAlert error={createOrderError} belowNavbar={isAtTop} fixed/>
 
-            <div role="presentation" className="profile-navigation">
-                <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">Home</Link>
-                <Typography color="text.primary">Auftrag</Typography>
-                </Breadcrumbs>
-            </div>
+            <NavigationSection first_link="Auftrag"/>
 
             <form className="order-container" onSubmit={handleSubmit} style={{marginTop: '2rem'}}>
 
@@ -170,18 +158,13 @@ const Order = () => {
                         <h1 className="header-span">{t('sendSmall')}</h1>
                     </div>
                     <div>
-                        <img src={sendIcon} alt="" className="send-icon"/>
+                        <img src={sendIcon} alt="" className="send-icon" loading="lazy"/>
                     </div>
                 </div>
 
                 <Divider flexItem orientation="horizontal" style={{height: '32px'}}/>
 
-                <div className="oreder-contacts-header">
-                    <div className="step-number">
-                        <GrContactInfo style={{fontSize: '30px'}}/>
-                    </div>
-                    <h1>{t('contactInformation')}</h1>
-                </div>
+                <OrderSectionHeader Icon={GrContactInfo} headerText={t('contactInformation')}/>
 
                 <div className="order-contacts-content">
                     <TextField required id="outlined-basic" label={name ? "" : t('name')} variant="outlined" style={{width: '100%'}} value={name} onChange={(e) => setName(e.target.value)}/>
@@ -198,59 +181,19 @@ const Order = () => {
 
                 <Divider flexItem orientation="horizontal" style={{height: '32px', marginTop: '1rem'}}/>
 
-                <div className="oreder-contacts-header">
+                <OrderSectionHeader Icon={BiSolidMessageDetail} headerText={t('yourMessageSecond')}/>
 
-                    <div className="step-number">
-                        <BiSolidMessageDetail style={{fontSize: '30px', marginTop: '3px'}}/>
-                    </div>
-                   
-                    <h1>{t('yourMessageSecond')}</h1>
-
-                </div>
-
-                <div className="info-container">
-                <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '0px', display: 'flex', flexDirection:'column', }}>
-                        <AccordionSummary
-                        expandIcon={<ArrowDownwardIcon style={{color: 'rgb(76, 121, 212)'}}/>}
-                        aria-controls="panel1-content"
-                        id="panel1-header"
-                        >
-                        <Typography style={{display: 'flex', color: 'rgb(49, 97, 192)', alignItems: 'center', gap: '1rem'}}>
-                            <IoWarningOutline className="warning-icon"/> 
-                            <p>{t('spelling')}</p>
-                        </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails style={{padding: '1rem 3rem 2rem 3rem'}}>
-                        <Typography className="pass-info">
-                            Die richtige Schreibwiesen können Sie in ihrem <span style={{color: 'rgb(49, 97, 192)', fontWeight: '600'}}>Reisepass</span> finden.
-                        </Typography>
-
-                        <div className="pass-container">
-                            <img src={dePass} alt="" />
-                            <img src={ukrPass} alt="" />
-                        </div>
-
-                        </AccordionDetails>
-                    </Accordion>
-                </div>
+                <OrderInfoAccordion/>
 
                 <div className="order-contacts-content">
                     <TextField type="number" multiline label={t('yourMessage')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
                 </div>
 
-                <FormGroup className="order-checkbox-container">
-                    <FormControlLabel required control={<Checkbox defaultChecked />} label="Ich brauche einen Kostenvorschlag" />
-                    <FormControlLabel required control={<Checkbox />} label="Ich bin sicher" />
-                </FormGroup>
+                <OrderFormGroup/>
 
                 <Divider flexItem orientation="horizontal" style={{height: '32px', marginTop: '1rem'}}/>
 
-                <div className="oreder-contacts-header">
-                    <div className="step-number">
-                        <PiUploadFill style={{fontSize: '30px'}}/>
-                    </div>
-                    <h1>{t('uploadDocuments')}</h1>
-                </div>
+                <OrderSectionHeader Icon={PiUploadFill} headerText={t('uploadDocuments')}/>
 
                 <div className="phone-notification show-notification" style={{marginTop: '2rem'}}>
                         <IoWarningOutline className="warning-icon"/>
@@ -294,7 +237,6 @@ const Order = () => {
                         )}
                         
                     </div>
-
         
                     <button type="submit" className="send-btn hover-btn">
                         {createOrderLoading ? (<CircularProgress style={{color: "white"}}/>): <>{t('send')} <IoSendSharp/></>}
@@ -303,10 +245,12 @@ const Order = () => {
                 </div>
 
             </form>
-
-            <Footer/>
             
         </div>
+
+        <Footer/>
+
+        </>
         
         
     )

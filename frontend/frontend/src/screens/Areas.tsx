@@ -5,9 +5,10 @@ import { VscLaw } from "react-icons/vsc";
 import Footer from "../components/Footer";
 import { RiMedicineBottleFill } from "react-icons/ri";
 import { FaBook } from "react-icons/fa6";
-import medicineIcon from "../assets/medicine_icon.png"
-import lawIcon from "../assets/law_icon.png"
-import educationIcon from "../assets/education_icon.png"
+import medicineIcon from "../assets/medicine_icon.webp"
+import lawIcon from "../assets/law_icon.webp"
+import educationIcon from "../assets/education_icon.webp"
+import NavigationSection from "../components/NavigationSection";
 
 const Areas = () => {
     
@@ -16,6 +17,9 @@ const Areas = () => {
     return (
         <>
         <div className="main-app-container">
+
+            <NavigationSection first_link="Fachgebiete"/>
+
             <div className="areas-main-container">
                 <div className="areas-title">
                     <h1>{t('our')}</h1>
@@ -31,7 +35,7 @@ const Areas = () => {
                 <Divider style={{marginTop: '3rem', marginBottom: '3rem'}}/>
 
                 <div className="areas-main-section">
-                    <img src={lawIcon} alt="" />
+                    <img src={lawIcon} alt="" loading="lazy"/>
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">
@@ -68,7 +72,7 @@ const Areas = () => {
                         </div>
                     </div>
 
-                    <img src={medicineIcon} alt="" />
+                    <img src={medicineIcon} alt="" loading="lazy"/>
 
                 </div>
 
@@ -76,7 +80,7 @@ const Areas = () => {
 
                 <div className="areas-main-section">
 
-                    <img src={educationIcon} alt="" />
+                    <img src={educationIcon} alt="" loading="lazy"/>
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">

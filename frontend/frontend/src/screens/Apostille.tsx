@@ -1,28 +1,19 @@
-import React from "react";
-import apostille_first from "../assets/apostille_first.jpg"
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
-import translations_second from "../assets/translations_second.jpg"
 import Footer from "../components/Footer";
-import apostille_second from "../assets/apostille_second.jpg"
-import apostille from "../assets/apostille.jpg"
-import apostille_ukr from "../assets/apostille_ukr.jpg"
+import apostille from "../assets/apostille.webp"
+import apostille_ukr from "../assets/apostille_ukr.webp"
 import { IoWarningOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-import apoIcon from "../assets/apo_icon.png"
-import timeIcon from "../assets/time_icon.png"
-import questionIcon from "../assets/question_icon.png"
+import apoIcon from "../assets/apo_icon.webp"
+import timeIcon from "../assets/time_icon.webp"
+import questionIcon from "../assets/question_icon.webp"
+import NavigationSection from "../components/NavigationSection";
 
 const Apostille = () => {
 
     const { t } = useTranslation();
-
-    const navigate = useNavigate();
 
     return (
         <>
@@ -30,12 +21,7 @@ const Apostille = () => {
         <div className="main-app-container">
 
 
-            <div role="presentation" className="profile-navigation">
-                <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">Home</Link>
-                <Typography color="text.primary">Apostille</Typography>
-                </Breadcrumbs>
-            </div>
+            <NavigationSection first_link="Apostille"/>
 
             <div className="main-translations-container">
 
@@ -49,7 +35,7 @@ const Apostille = () => {
 
             <div className="translations-section" style={{gap: '4rem'}}>
 
-                <img src={timeIcon} alt="" className="third-image"/>
+                <img src={timeIcon} alt="" className="third-image" loading="lazy"/>
 
                 <div className="translations-section-text">
                         <div className="translations-section-title">
@@ -75,8 +61,8 @@ const Apostille = () => {
                 </div>
 
                 <div className="apostille-images">
-                    <img src={apostille} alt="" className="apostille-first-img"/>
-                    <img src={apostille_ukr} alt="" className="apostille-second-img"/>
+                    <img src={apostille} alt="" className="apostille-first-img" loading="lazy"/>
+                    <img src={apostille_ukr} alt="" className="apostille-second-img" loading="lazy"/>
                 </div>
 
                 <div className="apostille-notification">

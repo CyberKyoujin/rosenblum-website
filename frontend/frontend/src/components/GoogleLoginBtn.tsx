@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import useAuthStore from "../zustand/useAuthStore";
 import { useNavigate } from "react-router-dom";
 
@@ -38,7 +38,7 @@ const GoogleLoginBtn = () => {
 
                 window.google.accounts.id.renderButton(
                     btnElement,
-                    { theme: "outline", size: "large", type: "standard", shape: "rectangular",width: "100%", logo_alignment: "left" }
+                    { theme: "outline", size: "large"}
                 );
             }
         };

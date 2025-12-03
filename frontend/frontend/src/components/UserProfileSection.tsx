@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUserEdit, FaInfoCircle } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import useAuthStore from "../zustand/useAuthStore";
-import defaultAvatar from "../assets/default_avatar.png"
+import defaultAvatar from "../assets/default_avatar.webp"
 import useOrderStore from "../zustand/useOrderStore";
 
 
@@ -12,7 +11,7 @@ const UserProfileSection = () => {
     const {user, userData} = useAuthStore();
     const {orders} = useOrderStore();
 
-    const profileImg = user?.profile_img_url || userData?.image_url;
+    const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
 
      const handleImageError = (e: any) => {
         e.target.src = defaultAvatar; 
@@ -25,7 +24,7 @@ const UserProfileSection = () => {
                     <div className="profile__img_container profile-section-container">
 
                         <div>
-                            <img src={profileImg} alt="" className="profile__user-avatar" onError={handleImageError}/>
+                            <img src={profileImg}  alt="" className="profile__user-avatar" onError={handleImageError}/>
                         </div>
 
                         <div className="profile__username">

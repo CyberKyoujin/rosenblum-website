@@ -1,6 +1,6 @@
 import { IoCloseOutline } from "react-icons/io5";
 import Divider from '@mui/material/Divider';
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.webp'
 import { FaLanguage } from "react-icons/fa6";
 import { TbTools } from "react-icons/tb";
 import { BsTranslate } from "react-icons/bs";
@@ -27,7 +27,7 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
     <aside className={sliderOpened ? "menu-slider show-slider": "menu-slider"}>
 
         <div className="slider-header">
-          <img src={logo} alt="" className="slider-logo"/>
+          <img src={logo} alt="" loading="lazy" className="slider-logo"/>
           <IoCloseOutline className="services-close" onClick={() => setSliderOpened(!sliderOpened)}/>
         </div>
 
@@ -74,17 +74,17 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
 
               <p
               onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
-              <img src={deFlag} alt="" />{t('german')}
+              <img src={deFlag} loading="lazy" alt="" />{t('german')}
               </p>
 
               <p
               onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
-              <img src={uaFlag} alt="" />{t('ukrainian')}
+              <img src={uaFlag} loading="lazy" alt="" />{t('ukrainian')}
               </p>
 
               <p
               onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
-              <img src={ruFlag} alt="" />{t('russian')}
+              <img src={ruFlag} loading="lazy" alt="" />{t('russian')}
               </p>
 
             </div>

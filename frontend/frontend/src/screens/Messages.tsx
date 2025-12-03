@@ -3,10 +3,7 @@ import Divider from '@mui/material/Divider';
 import { SiGooglemessages } from "react-icons/si";
 import { useEffect } from "react";
 import useAuthStore from "../zustand/useAuthStore";
-import smallLogo from '../assets/logo2.png'
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
+import smallLogo from '../assets/logo2.webp'
 import { FaFile } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import Alert from '@mui/material/Alert';
@@ -14,18 +11,16 @@ import { useTranslation } from "react-i18next";
 import useMessageStore from "../zustand/useMessageStore"
 import MessagesSkeleton from "../components/MessagesSkeleton";
 import MessageInput from "../components/MessageInput";
-import defaultAvatar from "../assets/default_avatar.png"
+import defaultAvatar from "../assets/default_avatar.webp"
 import ApiErrorView from "../components/ApiErrorView";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
-import { ApiError } from "../types/auth";
 import { ApiErrorResponse } from "../types/error";
-import { toApiError } from "../axios/toApiError";
+import NavigationSection from "../components/NavigationSection";
 
 const Messages = () => {
 
     const user = useAuthStore(s => s.user);
-    const userData = useAuthStore(s => s.userData);
 
     const messages = useMessageStore(s => s.messages);
     const messagesLoading = useMessageStore(s => s.messagesLoading);
@@ -37,7 +32,7 @@ const Messages = () => {
 
     
     const [message, setMessage] = useState('');
-    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
     const [uploadLimit, setUploadLimit] = useState(false);
 
     const [error, setError] = useState<ApiErrorResponse | null> (null);
@@ -46,9 +41,7 @@ const Messages = () => {
 
     const isAtTop = useIsAtTop(10);
 
-    const testError: ApiErrorResponse = {status: 500, code: "Failed", message: "TEST ERROR"}
-
-    const fileInputRef = useRef(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { t } = useTranslation();
 
@@ -69,14 +62,16 @@ const Messages = () => {
         );
     };
 
-    const handleImageError = (e: any) => {
-    e.target.src = defaultAvatar; 
-    console.error("Failed to load user image from URL:", e.target.src);
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = defaultAvatar; 
+    console.error("Failed to load user image from URL:", e.currentTarget.src);
     };  
 
 
     const handleClick = () => {
-        fileInputRef.current?.click();
+        if (fileInputRef.current) {
+        fileInputRef.current.click();
+    }
     };
 
 
@@ -93,9 +88,14 @@ const Messages = () => {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
             e.preventDefault();
+
+            if (sendMessagesLoading) return;
+
             const formData = new FormData();
 
-            if (message.length > 0) {
+            setUploadLimit(false);
+
+            if (message.length > 0 || uploadedFiles.length > 0) {
                 if (uploadedFiles.length > 0) {
                     uploadedFiles.forEach(file => {
                         formData.append('files', file);
@@ -133,6 +133,7 @@ const Messages = () => {
             if (e.target.files) {
                 const filesArray = Array.from(e.target.files);
                 handleFiles(filesArray);
+                e.target.value = '';
             }
         };
     
@@ -164,12 +165,7 @@ const Messages = () => {
         )}
 
 
-        <div role="presentation" style={{marginBottom: '3rem'}}>
-            <Breadcrumbs aria-label="breadcrumb">
-            <Link underline="hover" color="inherit" href="/">Home</Link>
-            <Typography color="text.primary">Nachrichten</Typography>
-            </Breadcrumbs>
-        </div>
+        <NavigationSection first_link="Nachrichten"/>
 
             <div className="messages-title-container">
                 <SiGooglemessages style={{fontSize: '45px', color: 'rgb(76, 121, 212)'}}/>
@@ -199,7 +195,7 @@ const Messages = () => {
                         <img
                             src={
                             message.sender === user?.id
-                                ? user.profile_img_url || userData?.image_url
+                                ? user.profile_img_url
                                 : smallLogo
                             }
                             className="message-avatar"

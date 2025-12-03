@@ -1,15 +1,10 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
-import Section from "../components/Section";
-import quality from "../assets/faq_first.jpg"
 import { GrContactInfo } from "react-icons/gr";
 import Divider from '@mui/material/Divider';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import { styled } from '@mui/system';
@@ -18,20 +13,21 @@ import { MdLocalOffer } from "react-icons/md";
 import { RiMoneyEuroCircleFill } from "react-icons/ri";
 import { SiGoogletranslate } from "react-icons/si";
 import { RiContactsFill } from "react-icons/ri";
-import questionsIcon from "../assets/question_icon.png"
+import questionsIcon from "../assets/question_icon.webp"
+import NavigationSection from "../components/NavigationSection";
 
-const StyledAccordion = styled(Accordion)(({ theme }) => ({
+const StyledAccordion = styled(Accordion)(( ) => ({
     backgroundColor: 'rgb(234,241,253)',
     padding: '0.75rem',
     color: 'RGB(45 101 213)',
 }));
 
-const StyledTypography = styled(Typography)(({ theme }) => ({
+const StyledTypography = styled(Typography)(( ) => ({
     fontWeight: 'bold',
     
 }))
 
-const StyledAccordionDetails = styled(Typography)(({ theme }) => ({
+const StyledAccordionDetails = styled(Typography)(( ) => ({
     paddingRight: '3rem',
     paddingLeft: '1rem',
     paddingBottom: '2rem'
@@ -45,6 +41,9 @@ const Faq = () => {
     return (
         <>
         <div className="main-app-container">
+
+            <NavigationSection first_link="FAQ"/>
+
             <div className="main-faq-container">
 
                
@@ -209,7 +208,7 @@ const Faq = () => {
                         <p>{t('faqText')}</p>
                         <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')} style={{padding: '0.75rem', marginTop: '0rem'}}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>
                     </div>
-                    <img src={questionsIcon} alt="" className="faq-section-image"/>
+                    <img src={questionsIcon} alt="" className="faq-section-image" loading="lazy"/>
                 </div>
 
 

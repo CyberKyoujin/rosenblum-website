@@ -1,7 +1,6 @@
 import React from "react";
-import { useEffect } from "react";
 import useAuthStore from "../zustand/useAuthStore";
-import smallLogo from '../assets/logo2.png'
+import smallLogo from '../assets/logo2.webp'
 import Divider from '@mui/material/Divider';
 import { useNavigate } from "react-router-dom";
 import { SiGooglemessages } from "react-icons/si";
@@ -30,7 +29,7 @@ const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
                 messages?.slice(0, 3).map((message) => (
                     <React.Fragment key={message.id}>
                         <div className="message-container" onClick={() => navigate('/messages')}>
-                            <img src={smallLogo} alt="" style={{width: '45px', height: '45px'}} />
+                            <img src={smallLogo} loading="lazy" alt="" style={{width: '45px', height: '45px'}} />
                             <div className="message-content">
                                 <div className="message-timestamp">
                                     <p style={{fontWeight: 'bold', fontSize: '14px', marginLeft: 'auto'}}>Rosenblum Übersetzungsbüro</p>

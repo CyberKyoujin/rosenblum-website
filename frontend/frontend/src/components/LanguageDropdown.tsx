@@ -41,7 +41,7 @@ const LanguageDropdown: React.FC = () => {
           <MenuItem sx={{ height: '40px', borderColor: 'rgb(76, 121, 212)' }} key={lang.code} value={lang.code}>
             <div style={{ display: 'flex', alignItems: 'center', fontWeight: '500' }}>
               <ListItemIcon style={{ minWidth: 'unset', marginRight: '8px' }}>
-                <img src={lang.image} alt={lang.code} style={{ width: 24, height: 16 }} />
+                <img src={lang.image} alt={lang.code} loading="lazy" style={{ width: 24, height: 16 }} />
               </ListItemIcon>
               <Typography variant="inherit" noWrap>{lang.short}</Typography>
             </div>

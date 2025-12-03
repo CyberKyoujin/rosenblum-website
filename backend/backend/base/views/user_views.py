@@ -194,7 +194,8 @@ class GoogleLogin(APIView):
         
         
 class UserUpdateView(APIView):
-    def put(self, request):
+    def patch(self, request):
+        print(request.data)
         serializer = CustomUserSerializer(request.user, data=request.data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()

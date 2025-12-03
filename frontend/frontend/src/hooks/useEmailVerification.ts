@@ -1,5 +1,3 @@
-import React from "react";
-import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
@@ -25,11 +23,11 @@ export default function useEmailVerification () {
 
             setLoading(true);
 
-            const response = await axiosInstance.post('/user/email-verification/', {code, email});
+            await axiosInstance.post('/user/email-verification/', {code, email});
 
             setError(""); 
             
-            navigate('/verification-success', {state: {email}});
+            navigate('/verification-success', {state: {successMessage: "Ihr Konto wurde erfolgreich verifiziert"}});
 
         } catch (err: any) {
 
@@ -60,7 +58,7 @@ export default function useEmailVerification () {
     async function resendVerification(email: string | undefined){
 
         try {
-            const response = await axiosInstance.post("/user/resend-verification/", {email});
+            await axiosInstance.post("/user/resend-verification/", {email});
             setAttempts(3);
             setError("");
         } catch (err: any){

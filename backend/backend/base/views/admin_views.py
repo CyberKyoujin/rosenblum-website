@@ -31,7 +31,7 @@ class AdminLoginView(TokenObtainPairView):
             return Response({"details": "Only admin users are allowed!"}, status=status.HTTP_403_FORBIDDEN)
 
 class UserListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
     def get(self, request):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)

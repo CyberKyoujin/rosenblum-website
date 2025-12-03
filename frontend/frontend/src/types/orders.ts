@@ -1,4 +1,3 @@
-import { ApiError } from "./auth";
 
 export interface Order {
     id: string | null;

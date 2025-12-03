@@ -1,8 +1,8 @@
 import React from "react";
-import planetIcon from '../assets/planet_icon.jpg'
-import smartphoneIcon from '../assets/smartphone_icon.jpg'
+import planetIcon from '../assets/planet_icon.webp'
+import smartphoneIcon from '../assets/smartphone_icon.webp'
 import { useTranslation } from "react-i18next";
-import Divider, { dividerClasses } from '@mui/material/Divider';
+import Divider from '@mui/material/Divider';
 import { useState, useEffect } from "react";
 import tick from '../assets/tick.gif'
 import { CustomSlider } from "../components/Slider";
@@ -15,12 +15,10 @@ import { HiPhone } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useReviews } from "../hooks/useReviews";
 import ReviewsSliderSkeleton from "../components/ReviewsSliderSkeleton";
-import defaultAvatar from "../assets/default_avatar.png"
+import defaultAvatar from "../assets/default_avatar.webp"
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import ApiErrorView from "../components/ApiErrorView";
-import { ApiError } from "../types/auth";
 import { useIsAtTop } from "../hooks/useIsAtTop";
-import { ApiErrorResponse } from "../types/error";
 
 
 const Home = () => {
@@ -78,7 +76,7 @@ const Home = () => {
     <div className="home-container">
         
         <div className="home-header">
-        <img src={planetIcon} alt="" />
+        <img src={planetIcon} alt="" fetchPriority="high"/>
             <div className="home-header-text">
                 <h1>{t('weTranslate')}</h1>
                 <h1 className="header-span">{t('professional')}.</h1>
@@ -126,14 +124,14 @@ const Home = () => {
                 <h1>{t('weAre')}</h1>
                 <h1 className="header-span">{t('reliable')}.</h1>
                 <div className="home-header-content">
-                    <p className="reliable-item-left"><img src={tick} alt="" style={{width: '35px'}}/>{t('certified')}</p>
-                    <p className="reliable-item"><img src={tick} alt="" style={{width: '35px'}}/>{t('swornTranslators')}</p>
-                    <p className="reliable-item-left"><img src={tick} alt="" style={{width: '35px'}}/>{t('orderTime')}</p>
-                    <p className="reliable-item"><img src={tick} alt="" style={{width: '35px'}}/>{t('fairPrices')}</p>
+                    <p className="reliable-item-left"><img src={tick} alt="" loading="lazy" style={{width: '35px'}}/>{t('certified')}</p>
+                    <p className="reliable-item"><img src={tick} alt="" loading="lazy" style={{width: '35px'}}/>{t('swornTranslators')}</p>
+                    <p className="reliable-item-left"><img src={tick} loading="lazy" alt="" style={{width: '35px'}}/>{t('orderTime')}</p>
+                    <p className="reliable-item"><img src={tick} alt="" loading="lazy" style={{width: '35px'}}/>{t('fairPrices')}</p>
                 </div>
                 <button className="home-header-btn hover-btn" onClick={() => navigate('/about-us')}>{t('learnMore')}<FaInfo/></button>
             </div>
-            <img src={smartphoneIcon} alt="" />
+            <img src={smartphoneIcon} loading="lazy" alt="" />
         </div>
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
@@ -161,7 +159,7 @@ const Home = () => {
                 { reviews.map((review, index) => (
                     <div className="review-container" key={index}>
                         <div className="review-header">
-                            <img src={review.profile_photo_url} alt="" onError={handleImageError}/>
+                            <img src={review.profile_photo_url} alt="" loading="lazy" onError={handleImageError}/>
                             <h3>{review.author_name}</h3>
                             <Rating name="read-only" value={review.rating} readOnly />
                         </div>
@@ -192,11 +190,11 @@ const Home = () => {
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map" width="1200" height="500" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
         </div>
 
-
+            
     </div>
-           <Footer/> 
+           
     </div>
-
+<Footer/> 
     
     </>              
     )

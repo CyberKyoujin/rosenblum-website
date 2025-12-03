@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-import { Typography, Breadcrumbs, Link, TextField, InputLabel, FormControl, IconButton, OutlinedInput, InputAdornment, FormHelperText, CircularProgress} from '@mui/material';
+import { TextField, InputLabel, FormControl, IconButton, OutlinedInput, InputAdornment, FormHelperText, CircularProgress} from '@mui/material';
 import { useTranslation } from "react-i18next";
 
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import registerIcon from '../assets/registerIcon.png'
+import registerIcon from '../assets/registerIcon.webp'
 import Footer from "../components/Footer";
 import useAuthStore from '../zustand/useAuthStore';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +17,7 @@ import ApiErrorAlert from '../components/ApiErrorAlert';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 import GoogleLoginBtn from '../components/GoogleLoginBtn';
 import RequirementItem from '../components/RequirementItem';
+import NavigationSection from '../components/NavigationSection';
 
 const registerSchema = z.object({
   email: z.string().email("Invalid email format"),
@@ -90,12 +91,7 @@ const Register = () => {
             <div className="register-container">
 
 
-                <div role="presentation">
-                    <Breadcrumbs aria-label="breadcrumb">
-                    <Link underline="hover" color="inherit" href="/">{t('home')}</Link>
-                    <Typography color="text.primary">{t('register')}</Typography>
-                    </Breadcrumbs>
-                </div>
+                <NavigationSection first_link='Register'/>
 
                 <div className="register-form">
 
@@ -164,7 +160,7 @@ const Register = () => {
 
                     <div className="register-img-container">
 
-                        <img src={registerIcon} alt="" className="register-img"/>
+                        <img src={registerIcon} alt="" loading="lazy" className="register-img"/>
 
                         <div className="divider-container">
                             <div></div>

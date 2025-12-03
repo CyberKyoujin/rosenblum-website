@@ -1,13 +1,7 @@
 import { create } from "zustand";
 import axiosInstance from "./axiosInstance";
-
-interface Order{
-    id: number;
-    name: string;
-    formatted_timestamp: string;
-    status: string;
-    new: boolean;
-}
+import {OrderResponseData} from "../types/order";
+import { RequestResponseData } from "../types/request";
 
 interface UserData {
     id: number;
@@ -40,23 +34,15 @@ interface Message{
     receiver: number;
 }
 
-interface Request {
-    id: number;
-    name: string;
-    email: string;
-    phone_number: string;
-    message: string;
-    formatted_timestamp: string
-}
 
 interface MainState {
-    orders: Order[] | [];
-    requests: Request[];
+    orders: OrderResponseData | null;
+    requests: RequestResponseData[];
     messages: Message[] | null;
     userData: UserData | null;
     isLoading: boolean;
-    fetchOrders: () => Promise<void>;
-    fetchRequests: () => Promise<void>;
+    fetchOrders: (page_number: number) => Promise<void>;
+    fetchRequests: (page_number: number) => Promise<void>;
     toggleOrder: (id: number) => Promise<void>;
     fetchUserData: (id: string) => Promise<void>;
     fetchUserMessages: (id: string) => Promise<void>;
@@ -66,17 +52,17 @@ interface MainState {
 }
 
 const useMainStore = create<MainState>((set, get) => ({
-    orders: [],
+    orders: null,
     requests: [],
     userData: null,
     messages: null,
     isLoading: false,
 
-    fetchOrders: async () => {
+    fetchOrders: async (page_number: number) => {
         set({ isLoading: true }); 
         try {
-            const response = await axiosInstance.get('/admin-user/orders/');
-            set({ orders: response.data });
+            const response = await axiosInstance.get('/admin-user/orders/', {params: {page: page_number}});
+            set({ orders: response.data as OrderResponseData});
         } catch (err) {
             console.error("Error while fetching orders:" + err);
         } finally {
@@ -86,7 +72,7 @@ const useMainStore = create<MainState>((set, get) => ({
 
     toggleOrder: async (id: number) => {
         try{
-            const response = await axiosInstance.get(`/admin-user/toggle-order/${id}`);
+            await axiosInstance.get(`/admin-user/toggle-order/${id}`);
 
         } catch (error){
             console.log("Error toggling order!" + error);
@@ -119,7 +105,7 @@ const useMainStore = create<MainState>((set, get) => ({
 
     toggleMessages: async (id: string) => {
         try{
-            const response = await axiosInstance.get(`/admin-user/user/${id}/messages`);
+            await axiosInstance.get(`/admin-user/user/${id}/messages`);
         }catch (error) {
             console.log('Error while toggling user messages:' + error);
         }
@@ -127,7 +113,7 @@ const useMainStore = create<MainState>((set, get) => ({
 
     sendMessage: async (formData: FormData, id: string) => {
         try{
-            const response = await axiosInstance.post(`/admin-user/user/${id}/send-message`, formData);
+            await axiosInstance.post(`/admin-user/user/${id}/send-message`, formData);
         } catch (error) {
             console.log('Error while sending message: ' + error);
         }
@@ -144,10 +130,10 @@ const useMainStore = create<MainState>((set, get) => ({
         }
     },
 
-    fetchRequests: async () => {
+    fetchRequests: async (page_number: number) => {
         set({ isLoading: true }); 
         try {
-            const response = await axiosInstance.get('/admin-user/requests/');
+            const response = await axiosInstance.get('/admin-user/requests/',  {params: {page: page_number}});
             set({ requests: response.data });
         } catch (err) {
             console.error("Error while fetching requests:" + err);

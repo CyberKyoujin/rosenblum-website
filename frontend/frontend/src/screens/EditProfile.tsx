@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { TextField, Divider, CircularProgress } from '@mui/material';
 import { RiEdit2Fill } from 'react-icons/ri';
 import { MdAddAPhoto } from 'react-icons/md';
 import useAuthStore from '../zustand/useAuthStore';
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
-import defaultAvatar from '../assets/default_avatar.png'
+import defaultAvatar from '../assets/default_avatar.webp'
 import { useTranslation } from 'react-i18next';
-import Footer from '../components/Footer';
 import { ApiErrorResponse } from '../types/error';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import { useIsAtTop } from '../hooks/useIsAtTop';
+import NavigationSection from '../components/NavigationSection';
 
 
 
@@ -79,14 +76,8 @@ const EditProfile = () => {
 
     <ApiErrorAlert error={profileUpdateError} belowNavbar={isAtTop} fixed/>
 
-    <div role="presentation" className="profile-navigation">
-        <Breadcrumbs aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" href="/">Home</Link>
-        <Link underline="hover" color="inherit" href="/profile">Profil</Link>
-        <Typography color="text.primary">Profil bearbeiten</Typography>
-        </Breadcrumbs>
-    </div>
-
+    <NavigationSection first_link='Profil' second_link='Profil bearbeiten'/>
+ 
       <div className="profile-edit-container">
         <div className="profile-title-container">
           <div style={{display: 'flex', gap: '0.5rem'}}>

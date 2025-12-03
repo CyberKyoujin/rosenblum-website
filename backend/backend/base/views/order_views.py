@@ -47,7 +47,7 @@ class OrdersView(generics.ListAPIView):
         return queryset
     
 class OrdersListView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
     serializer_class = OrderSerializer
     queryset = Order.objects.all().order_by('-timestamp')
     
