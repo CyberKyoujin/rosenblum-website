@@ -2,14 +2,12 @@ import { Divider } from "@mui/material";
 import Footer from "../components/Footer";
 import { GrContactInfo } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import { useTranslation } from "react-i18next";
-import teamIcon from "../assets/team_icon.png"
-import goalIcon from "../assets/goal_icon.png"
-import questionIcon from "../assets/question_icon.png"
-import planeIcon from "../assets/planet_icon.jpg"
+import teamIcon from "../assets/team_icon.webp"
+import goalIcon from "../assets/goal_icon.webp"
+import questionIcon from "../assets/question_icon.webp"
+import planeIcon from "../assets/planet_icon.webp"
+import NavigationSection from "../components/NavigationSection";
 
 const AboutUs = () => {
 
@@ -21,17 +19,12 @@ const AboutUs = () => {
         <>
         <div className="main-app-container">
 
-            <div role="presentation" className="profile-navigation">
-                <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">Home</Link>
-                <Typography color="text.primary">Über uns</Typography>
-                </Breadcrumbs>
-            </div>
+            <NavigationSection first_link="Über Uns"/>
 
             <div className="about-main-container">
                 
                 <div className="about-container">
-                    <img src={planeIcon} alt="" />
+                    <img src={planeIcon} alt="" loading="lazy" />
                     <div className="about-text">
                         <div className="about-header">
                             <h1>{t('aboutUsFirst')}</h1>
@@ -51,13 +44,13 @@ const AboutUs = () => {
                         </div>
                         <p>{t('teamText')}</p>
                     </div>
-                    <img src={teamIcon} alt=""/>
+                    <img src={teamIcon} alt="" loading="lazy"/>
                 </div>
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
                 <div className="about-container about-container-gap">
-                    <img src={goalIcon} alt=""/>
+                    <img src={goalIcon} alt="" loading="lazy"/>
                     <div className="about-text">
                         <div className="about-header">
                             <h1>{t('missionFirst')}</h1>
@@ -77,7 +70,7 @@ const AboutUs = () => {
                         </div>
                         <p>{t('whyUsText')}</p>
                     </div>
-                    <img src={questionIcon} alt=""/>
+                    <img src={questionIcon} alt="" loading="lazy"/>
                 </div>
 
                 <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>

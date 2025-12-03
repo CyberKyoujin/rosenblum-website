@@ -7,15 +7,15 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Login  from '@mui/icons-material/Login';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../zustand/useAuthStore';
-import defaultAvatar from '../assets/default_avatar.png'
+import defaultAvatar from '../assets/default_avatar.webp'
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const { isAuthenticated, user, logoutUser, userData, fetchUserData } = useAuthStore.getState();
+  const { isAuthenticated, user, logoutUser, userData } = useAuthStore.getState();
 
   const { t } = useTranslation();
   const navigate = useNavigate();

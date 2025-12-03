@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
@@ -12,10 +12,7 @@ import { FiPaperclip } from "react-icons/fi";
 import { FaFile } from "react-icons/fa";
 import { MdInfoOutline } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import Footer from "../components/Footer";
-import useAuthStore from "../zustand/useAuthStore";
 import OrderDetailsSkeleton from "../components/OrderDetailsSkeleton";
-import useOrderStore from "../zustand/useOrderStore";
 import { ApiErrorResponse } from "../types/error";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";

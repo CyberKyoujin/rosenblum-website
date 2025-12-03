@@ -2,6 +2,7 @@ from django.urls import path
 from base.views.admin_views import AdminLoginView, CustomerListView, RequestView
 from base.views.admin_views import UserListView, FileURLView, UserDataView, ToggleOrder, UserOrdersView, UserMessagesView, ToggleViewed, SendMessageView, SearchView
 from base.views.order_views import OrdersListView, OrderUpdateView, OrderDeleteView
+
 urlpatterns = [
     path('login/', AdminLoginView.as_view(), name='login'),
     path('users/', UserListView.as_view(), name='users'),

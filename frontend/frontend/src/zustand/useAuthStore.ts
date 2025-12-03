@@ -1,10 +1,9 @@
-import axios from "axios";
 import { create } from 'zustand';
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import axiosInstance from "../axios/axiosInstance";
-import type { AuthState, AuthTokens, ApiError } from "../types/auth";
-import type { User, UserData } from "../types/user";
+import type { AuthState, AuthTokens } from "../types/auth";
+import type { User } from "../types/user";
 import { toApiError } from "../axios/toApiError";
 
 
@@ -230,7 +229,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
             set({loading: true});
             try{
                 
-                await axiosInstance.put('/user/update/', formData)
+                await axiosInstance.patch('/user/update/', formData)
                 
                 await get().fetchUserData();
 

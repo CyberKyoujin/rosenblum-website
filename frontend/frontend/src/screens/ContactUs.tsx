@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { LuContact } from "react-icons/lu";
 import Divider from '@mui/material/Divider';
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -9,16 +9,14 @@ import { RiContactsFill } from "react-icons/ri";
 import { FaClock } from "react-icons/fa6";
 import Footer from "../components/Footer";
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import { IoWarningOutline } from "react-icons/io5";
-import useAuthStore from "../zustand/useAuthStore";
-import { Alert, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { t } from "i18next";
-import sutthausen1 from "../assets/sutthausen1.jpg"
+import sutthausen1 from "../assets/sutthausen1.webp"
 import useMessageStore from "../zustand/useMessageStore";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { ApiErrorResponse } from "../types/error";
-import { toApiError } from "../axios/toApiError";
+import NavigationSection from "../components/NavigationSection";
 
 const ContactUs = () => {
 
@@ -32,8 +30,6 @@ const ContactUs = () => {
     const sendRequest = useMessageStore((s) => s.sendRequest);
     const sendRequestSuccess = useMessageStore((s) => s.sendRequestSuccess);
     const requestLoading = useMessageStore((s) => s.requestLoading);
-
-    const testRequestSuccess = true;
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -54,8 +50,13 @@ const ContactUs = () => {
     }
 
     return (
+
+        <>
         
         <div className="main-app-container">
+
+            <NavigationSection first_link="Kontakt"/>
+
             <div className="contact-main-container">
                 <div className="contact-title">
                     <LuContact style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>
@@ -124,7 +125,7 @@ const ContactUs = () => {
                 </div>
 
                 <div className="map-container">
-                    <img src={sutthausen1} alt="" className="map-img"/>
+                    <img src={sutthausen1} alt="" className="map-img" loading="lazy"/>
                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map"  loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
                 </div>
 
@@ -152,9 +153,11 @@ const ContactUs = () => {
 
             </div>
 
-            <Footer/>
+            
 
         </div>
+        <Footer/>
+        </>
         
         
     )

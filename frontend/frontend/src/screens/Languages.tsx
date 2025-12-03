@@ -4,14 +4,11 @@ import de from "../assets/de.svg"
 import Divider from '@mui/material/Divider';
 import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-import qualityIcon from "../assets/quality_image.png"
-import questionIcon from "../assets/question_icon.png"
+import qualityIcon from "../assets/quality_image.webp"
+import questionIcon from "../assets/question_icon.webp"
+import NavigationSection from "../components/NavigationSection";
 
 const Languages = () => {
 
@@ -21,12 +18,7 @@ const Languages = () => {
         <>
         <div className="main-app-container">
 
-            <div role="presentation" className="profile-navigation">
-                <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">Home</Link>
-                <Typography color="text.primary">Sprachen</Typography>
-                </Breadcrumbs>
-            </div>
+            <NavigationSection first_link="Sprachen"/>
 
             <div className="languages-main-container">
 
@@ -43,7 +35,7 @@ const Languages = () => {
                             <div className="flip-card">
                                 <div className="flip-card-inner">
                                     <div className="flip-card-front">
-                                        <img src={de} alt="Deutsch" />
+                                        <img src={de} alt="Deutsch" loading="lazy"/>
                                     </div>
                                     <div className="flip-card-back">
                                         <p>{t('moreThan')}</p>
@@ -59,7 +51,7 @@ const Languages = () => {
                             <div className="flip-card">
                                 <div className="flip-card-inner">
                                     <div className="flip-card-front">
-                                        <img src={ua} alt="Ukrainisch" />
+                                        <img src={ua} alt="Ukrainisch" loading="lazy" />
                                     </div>
                                     <div className="flip-card-back">
                                         <p>{t('moreThan')}</p>
@@ -75,7 +67,7 @@ const Languages = () => {
                             <div className="flip-card">
                                 <div className="flip-card-inner">
                                     <div className="flip-card-front">
-                                        <img src={ru} alt="Russisch" />
+                                        <img src={ru} alt="Russisch" loading="lazy"/>
                                     </div>
                                     <div className="flip-card-back">
                                         <p>{t('moreThan')}</p>
@@ -100,7 +92,7 @@ const Languages = () => {
 
                 <div className="translations-section" style={{gap: '2rem'}}>
 
-                    <img src={qualityIcon} alt="" className="third-image"/>
+                    <img src={qualityIcon} alt="" className="third-image" loading="lazy"/>
 
                     <div className="translations-section-text">
                             <div className="translations-section-title">
@@ -122,9 +114,9 @@ const Languages = () => {
                 <ContactSection text="translationsContact"/>
 
             </div>
-        <Footer/>    
+          
         </div>
-        
+        <Footer/>  
         </>
 
     );

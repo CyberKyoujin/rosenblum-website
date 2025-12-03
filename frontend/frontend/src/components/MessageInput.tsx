@@ -14,25 +14,25 @@ interface MessageInputProps {
     isLoading?: boolean;
 }
 
-
-const MessageInput = ({handleSubmit, handleClick, message, setMessage, autoExpand, fileInputRef, handleFileInputChange, isLoading}: MessageInputProps) => {
+const MessageInput = ({handleSubmit = () => {}, handleClick, message, setMessage, autoExpand, fileInputRef, handleFileInputChange, isLoading}: MessageInputProps) => {
+ 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit({} as React.FormEvent<HTMLFormElement>); 
+        }
+    };
 
     return (
         <form className="message-input-container" onSubmit={handleSubmit}>
             <textarea
-            type="text"
             className="message-input"
             value={message}
             onChange={(e) => {
-                setMessage(e.target.value);
-                autoExpand(e);
+                setMessage && setMessage(e.target.value);
+                autoExpand && autoExpand(e);
             }}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSubmit(e);
-                                }
-                    }}
+            onKeyDown={handleKeyDown}
              />
         
             <button type="button" className="send-message-container hover-btn" style={{ right: '4.5rem' }} onClick={handleClick}>

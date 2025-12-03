@@ -1,10 +1,7 @@
-import { useTranslation } from "react-i18next";
 import { HiBadgeCheck } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
-const PricingCard: React.FC<PricingCardProps> = ({title, price, priceDescription, description, features, showVat=false, highlighted=false, linkText}) => {
-
-    const { t } = useTranslation();
+const PricingCard: React.FC<PricingCardProps> = ({title, price, priceDescription, description, features, highlighted=false, linkText}) => {
 
     return (
         <section className={`pricing-item ${highlighted ? "pricing-item-blue" : ""}`}>

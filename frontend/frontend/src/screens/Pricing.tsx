@@ -4,7 +4,8 @@ import Footer from "../components/Footer";
 import ContactSection from "../components/ContactSection";
 import Section from "../components/Section"
 import PricingCard from "../components/PricingCard";
-import qualityIcon from "../assets/quality_image.png"
+import qualityIcon from "../assets/quality_image.webp"
+import NavigationSection from '../components/NavigationSection';
 
 const Pricing = () => {
 
@@ -42,6 +43,8 @@ const Pricing = () => {
 
             <div className="main-pricing-container">
 
+              <NavigationSection first_link='Preise'/>
+
                 <div className="pricing-title">
                         <h1>{t('our')}</h1>
                         <h1 className="header-span">{t('prices')}</h1>
@@ -66,9 +69,9 @@ const Pricing = () => {
                 <ContactSection text="pricingContact"/>
 
             </div>
-        <Footer/>    
+            
         </div>
-        
+        <Footer/>
         </>
     )
 }

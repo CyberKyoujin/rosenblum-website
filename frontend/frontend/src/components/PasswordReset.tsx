@@ -74,9 +74,7 @@ const ResetPassword = () => {
         try {
             await resetPasswordConfirm(uid, token, data.password);
             setSuccess(true);
-            setTimeout(() => {
-                navigate('/login', { replace: true });
-            }, 5000);
+            navigate("/verification-success", {state: {successMessage: "Ihr Passwort wurde erfolgreich geändert."}})
         } catch (err: unknown) {
             setError(err as ApiErrorResponse);
         }

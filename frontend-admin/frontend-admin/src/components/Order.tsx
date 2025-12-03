@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../zustand/axiosInstance";
 import useMainStore from "../zustand/useMainStore";
+import { FaRegFileLines } from "react-icons/fa6";
+
 
 interface OrderProps {
     id: number;
@@ -19,18 +21,28 @@ const Order = ({id, name, timestamp, status, is_new}: OrderProps) => {
 
     return (
         <div className="small-order-container" key={id} onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}>
-            <div className="order-header">
-                <p style={{fontWeight: 'bold', color: is_new ? 'RGB(68 113 203)': 'black'}}># ro-{id}</p>
-                <p>{name}</p>
+
+            <div className="order-container-info">
+
+                <FaRegFileLines size={45} className="app-icon"/>
+
+                <div className="order-header">
+                    <p style={{fontWeight: 'bold', color: is_new ? 'RGB(68 113 203)': 'black'}}># ro-{id}</p>
+                    <p>{name}</p>
+                </div>
+
             </div>
 
-            <div>
-                <p>{timestamp}</p>
-            </div>
+            <div className="order-status-container">
+                <div>
+                    <p>{timestamp}</p>
+                </div>
 
-            <div className="order-footer" style={{backgroundColor: status === 'review' ? 'RGB(248 255 100)' : 'green'}}>
+                <div className="order-footer" style={{backgroundColor: status === 'review' ? 'RGB(248 255 100)' : 'green'}}>
 
+                </div>
             </div>
+            
         </div>
     )
 }

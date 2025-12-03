@@ -108,7 +108,6 @@ function OTP({
   };
 
   const handleClick = (
-    event: React.MouseEvent<HTMLInputElement, MouseEvent>,
     currentIndex: number,
   ) => {
     selectInput(currentIndex);
@@ -165,7 +164,7 @@ function OTP({
                 pattern: '[0-9]*',
                 onKeyDown: (event) => handleKeyDown(event, index),
                 onChange: (event) => handleChange(event, index),
-                onClick: (event) => handleClick(event, index),
+                onClick: () => handleClick(index),
                 onPaste: (event) => handlePaste(event, index),
                 value: value[index] ?? '',
               },

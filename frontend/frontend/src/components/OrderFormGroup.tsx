@@ -1,0 +1,64 @@
+import Checkbox from "@mui/material/Checkbox"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import FormGroup from "@mui/material/FormGroup"
+import IconButton from "@mui/material/IconButton"
+import Tooltip from "@mui/material/Tooltip"
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+
+const CustomTooltip = ({ title, children }) => {
+  return (
+    <Tooltip 
+      title={title}
+      arrow
+      placement="bottom"
+      enterTouchDelay={0}
+      
+      // === Настройка стилей через slotProps ===
+      slotProps={{
+        tooltip: {
+          // Стили, применяемые к самой всплывающей подсказке (контейнеру с текстом)
+          sx: {
+            backgroundColor: "#ffff" , 
+            color: 'black',             // Белый текст
+            fontSize: '0.8rem',  
+            border: '1px solid #4C79D4',      // Увеличенный размер шрифта
+            padding: '10px 15px',       // Внутренние отступы
+            lineHeight: "1.5rem"
+          },
+        },
+        arrow: {
+          // Стили, применяемые к стрелке
+          sx: {
+            color: "#4C79D4", // Цвет стрелки (должен соответствовать фону подсказки)
+          },
+        },
+      }}
+    >
+      {children}
+    </Tooltip>
+  );
+};
+
+const OrderFormGroup = () => {
+
+    const tooltipText = "Kostenvoranschlag (смета) — это предварительный расчет стоимости услуг или товаров, который не является юридически обязывающим.";
+
+    return (
+        <FormGroup className="order-checkbox-container">
+
+            <div>
+                <FormControlLabel control={<Checkbox defaultChecked />} label="Ich brauche einen Kostenvorschlag" />
+                    <CustomTooltip title={tooltipText}>
+                        <IconButton className="app-icon">
+                            <HelpOutlineIcon className="app-icon"/>
+                        </IconButton>
+                    </CustomTooltip>
+            </div>
+
+                <FormControlLabel required control={<Checkbox />} label="Ich bin sicher" />
+
+        </FormGroup>
+    )
+}
+
+export default OrderFormGroup

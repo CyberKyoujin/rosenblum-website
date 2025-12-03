@@ -4,9 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
 import { 
-    Typography,
-    Breadcrumbs,
-    Link,
     TextField,
     InputLabel,
     FormControl,
@@ -25,6 +22,7 @@ import useAuthStore from "../zustand/useAuthStore";
 import { ApiErrorResponse } from '../types/error';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import GoogleLoginBtn from '../components/GoogleLoginBtn';
+import NavigationSection from '../components/NavigationSection';
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email format"),
@@ -90,12 +88,7 @@ const Login = () => {
     return (
         <div className="register-container">
 
-            <div role="presentation">
-                <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">{t('home')}</Link>
-                <Typography color="text.primary">{t('login')}</Typography>
-                </Breadcrumbs>
-            </div>
+            <NavigationSection first_link={t('login')}/>
 
             <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
 

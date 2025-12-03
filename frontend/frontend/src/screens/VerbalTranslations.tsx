@@ -4,14 +4,12 @@ import Footer from "../components/Footer";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import gears from "../assets/gears.gif"
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
-import planetIcon from "../assets/planet_icon.jpg"
+import planetIcon from "../assets/planet_icon.webp"
 import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
-import questionIcon from "../assets/question_icon.png"
-import processIcon from "../assets/process_image.png"
+import questionIcon from "../assets/question_icon.webp"
+import processIcon from "../assets/process_image.webp"
+import NavigationSection from "../components/NavigationSection";
 
 
 const VerbalTranslations = () => {
@@ -23,14 +21,7 @@ const VerbalTranslations = () => {
         <>
         <div className="main-app-container">
 
-
-            <div role="presentation" className="profile-navigation">
-                <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/">Home</Link>
-                <Typography color="text.primary">Dolmetschen</Typography>
-                </Breadcrumbs>
-            </div>
-
+            <NavigationSection first_link="Dolmetschen"/>
 
             <div className="main-translations-container">
 
@@ -62,11 +53,11 @@ const VerbalTranslations = () => {
 
                 <div className="translations-section">
 
-                    <img src={processIcon} alt=""  className="third-image"/>
+                    <img src={processIcon} alt=""  className="third-image" loading="lazy"/>
 
                     <div className="translations-section-list">
                         <div className="translations-process-title">
-                            <img src={gears} alt="" style={{width: '70px'}}/>
+                            <img src={gears} alt="" style={{width: '70px'}} loading="lazy"/>
                            
                             <h1 className="header-span">{t('soWorks')}</h1>
                             <h1>{t('it')}</h1>

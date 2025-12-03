@@ -1,17 +1,14 @@
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import Footer from "../components/Footer";
 import OrdersSection from "../components/OrdersSection";
 import UserProfileSection from "../components/UserProfileSection";
 import useAuthStore from '../zustand/useAuthStore';
 import ProfileSkeleton from '../components/ProfileSkeleton';
 import ApiErrorAlert from '../components/ApiErrorAlert';
-import { ApiError } from '../types/auth';
 import ApiErrorView from '../components/ApiErrorView';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import NavigationSection from '../components/NavigationSection';
 
 const Profile = () => {
 
@@ -51,18 +48,16 @@ const Profile = () => {
 
             <main className="main-app-container">
 
-
-                <section role="presentation" className="profile-navigation">
-                    <Breadcrumbs aria-label="breadcrumb">
-                        <Link underline="hover" color="inherit" href="/">Home</Link>
-                        <Typography color="text.primary">Profil</Typography>
-                    </Breadcrumbs>
-                </section>
+                <NavigationSection first_link='Profil'/>
 
                 <article className="profile__main-section">
+
                     {userDataError ? (
+
                         <ApiErrorView message='"Es ist ein technisches Fehler aufgetreten. Versuchen Sie es bitte später."'/>
+
                     ) : (
+
                         <>
                             <UserProfileSection/>
 
@@ -70,10 +65,9 @@ const Profile = () => {
 
                             <OrdersSection/>  
                         </>
+
                     )}
-
                     
-
                 </article>
 
         

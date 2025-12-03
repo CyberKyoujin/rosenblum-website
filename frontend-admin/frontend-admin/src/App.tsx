@@ -17,9 +17,10 @@ import Translator from './screens/Translator'
 
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  
   const authStore = useAuthStore();
+
+  
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(async () => {

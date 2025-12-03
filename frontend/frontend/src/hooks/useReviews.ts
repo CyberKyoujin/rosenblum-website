@@ -1,7 +1,5 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { ApiError } from "../types/auth";
 import { toApiError } from "../axios/toApiError";
 import axiosInstance from "../axios/axiosInstance";
 import { ApiErrorResponse } from "../types/error";

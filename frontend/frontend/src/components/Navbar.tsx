@@ -1,11 +1,11 @@
 import { MdKeyboardArrowUp } from "react-icons/md";
 import { MdKeyboardArrowDown} from "react-icons/md";
-import logo from '../assets/logo.png'
-import smallLogo from '../assets/logo2.png'
+import logo from '../assets/logo.webp'
+import smallLogo from '../assets/logo2.webp'
 import LanguageDropdown from './LanguageDropdown'
 import { useTranslation } from 'react-i18next'
 import ProfileDropdown from './ProfileDropdown'
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import MenuSlider from "./MenuSlider";
 import { useNavigate } from "react-router-dom";
@@ -13,8 +13,6 @@ import { BiSolidMessageDetail } from "react-icons/bi";
 import useAuthStore from "../zustand/useAuthStore";
 import MessagesDropdown from "./MessagesDropdown";
 import ServicesMenu from "./ServicesMenu";
-import useOrderStore from "../zustand/useOrderStore";
-import { Message } from "../types/messages";
 import useMessageStore from "../zustand/useMessageStore";
 
 type OpenedComponent = "services" | "messages" | "slider" | null;
@@ -27,8 +25,6 @@ const Navbar: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore();
 
   const {messages} = useMessageStore();
-
-  const userMessages : Message[] = messages?.filter(msg => msg.receiver === user?.id) ?? [];
 
   const messagesCount = messages?.filter(m => m.receiver === user?.id && !m.viewed).length ?? 0;
 
@@ -46,8 +42,8 @@ const Navbar: React.FC = () => {
       <div className='navbar'>
           <div className='nav-container'>
               <div className='nav-header'>
-                  <img src={logo} alt="Logo" className='logo' onClick={() => navigate('/')}/>
-                  <img src={smallLogo} alt="Small Logo" className="small-logo" onClick={() => navigate('/')}/>
+                  <img src={logo} fetchPriority="high" alt="Logo" className='logo' onClick={() => navigate('/')}/>
+                  <img src={smallLogo} fetchPriority="high" alt="Small Logo" className="small-logo" onClick={() => navigate('/')}/>
               </div>
 
               <div className={openedComponent ? "overlay overlay-show" : "overlay"} onClick={handleOverlayClick}></div>

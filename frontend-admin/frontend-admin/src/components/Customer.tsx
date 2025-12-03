@@ -25,7 +25,6 @@ const Customer = ({id, profile_img_url, profile_img, first_name, last_name, emai
                 <div className="customer-top-section">
                     <img
                     src={profile_img_url || profile_img || default_avatar}
-                    alt={{default_avatar}}
                     className="customer-avatar"
                     /> 
                 </div>

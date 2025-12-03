@@ -25,6 +25,12 @@ html, body {
   display: none;
 }
 
+:root {
+  --blue: #4C79D4;
+  --brand-dark: #1a1a1a;
+  --accent: #ff5555;
+  --navbar-height: 128px;
+}
 
 
 /* NAVBAR */
@@ -140,11 +146,20 @@ html, body {
 /* HOME */
 
 .main-container{
-    max-width: 1280px;
-    margin: auto;
-    margin-top: 8rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard__orders-container{
+  min-width: 500px;
+  width: 100%;
+}
+
+.dashboard__requests-container{
+  min-width: 500px;
+  width: 100%;
 }
 
 .home-title-container{
@@ -231,30 +246,39 @@ html, body {
 .small-order-container{
     width: 100%;
     margin: auto;
+    min-height: 98px;
     background-color: rgb(230, 238, 252);
-    padding: 1.5rem;
+    padding: 01rem;
     border: 2px solid RGB(76 121 212);
     border-radius: 10px;
     position: relative;
     display: flex;
     justify-content: space-between;
-    padding-right: 4rem;
+    align-items: center;
     cursor: pointer;
+}
+
+.order-container-info{
+  display: flex;
+  gap: 1rem;
 }
 
 .order-header{
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.order-status-container{
+  display: flex;
+  gap: 1rem;
 }
 
 .order-footer{
     width: 14px;
     height: 14px;
-    position: absolute;
-    background-color: red;
     border-radius: 50%;
-    top: 1.75rem;
-    right: 1rem;
+    margin-top: 2px;
 }
 
 /* DASHBOARD */
@@ -271,13 +295,23 @@ html, body {
     margin-top: 2rem;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
 }
 
 .dashboard-title-requests{
   display: flex;
-  margin-top: 2rem;
+  
   gap: 1rem;
+}
+
+.dashboard-container{
+    width: 100%;
+    padding: 0rem 5rem 10rem 5rem;
+    margin: auto;
+    margin-top: 5rem;
+    display: flex;
+    gap: 8rem;
 }
 
 /* ORDER DETAILS*/
@@ -894,6 +928,10 @@ html, body {
   gap: 2rem;
 }
 
+.app-icon {
+  color: var(--blue);
+}
+
 .customer-avatar{
   width: 75px;
   height: 75px;
@@ -939,7 +977,6 @@ html, body {
   width: 100%;
   background-color: rgb(76, 121, 212);
   height: 20rem;
-  margin-top: 12rem;
 }
 
 @media (max-width: 475px){

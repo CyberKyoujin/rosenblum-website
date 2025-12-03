@@ -4,7 +4,7 @@ import { MessageState } from "../types/messages";
 import { toApiError } from "../axios/toApiError";
 import { ApiErrorResponse } from "../types/error";
 
-const useMessageStore = create<MessageState>((set, get) => ({
+const useMessageStore = create<MessageState>((set) => ({
     messages: null,
     messagesLoading: false,
     sendMessagesLoading: false,

@@ -1,5 +1,5 @@
 import { IoIosWarning } from "react-icons/io";
-import { ApiError } from "../types/auth";
+
 
 interface ApiErrorViewProps {
     message: string;

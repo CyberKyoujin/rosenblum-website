@@ -1,5 +1,3 @@
-import React from "react";
-
 import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +9,7 @@ import useAuthStore from "../zustand/useAuthStore";
 import { ApiErrorResponse } from "../types/error";
 import ApiErrorAlert from "./ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
+import { useNavigate } from 'react-router-dom';
 
 const sendPasswordSchema = z.object({
   email: z.string().email("Invalid email format"),
@@ -29,6 +28,8 @@ const SendPasswordReset = () => {
     const sendResetLink = useAuthStore(s => s.sendResetLink);
 
     const isAtTop = useIsAtTop(10);
+
+    const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm<SendResetFormValues>({resolver: zodResolver(sendPasswordSchema)});
 
@@ -52,11 +53,13 @@ const SendPasswordReset = () => {
             <section className="password-reset-container">
 
                 <div className="password-reset-info">
+
                     <h2>Passwort Reset</h2>
 
                     {successfullySent && 
                     <p>{`Successfully Sent a reset link to your Email !`}</p>
                     }
+
                 </div>
 
                  <form action="" className="password-reset-form" onSubmit={handleSubmit(onSubmit)}>
