@@ -1,6 +1,4 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../zustand/axiosInstance";
 import useMainStore from "../zustand/useMainStore";
 import { FaRegFileLines } from "react-icons/fa6";
 
@@ -8,12 +6,12 @@ import { FaRegFileLines } from "react-icons/fa6";
 interface OrderProps {
     id: number;
     name: string;
-    timestamp: string;
+    formatted_timestamp: string;
     status: string;
     is_new: boolean;
 }
 
-const Order = ({id, name, timestamp, status, is_new}: OrderProps) => {
+const Order = ({id, name, formatted_timestamp, status, is_new}: OrderProps) => {
 
     const navigate = useNavigate();
 
@@ -35,7 +33,7 @@ const Order = ({id, name, timestamp, status, is_new}: OrderProps) => {
 
             <div className="order-status-container">
                 <div>
-                    <p>{timestamp}</p>
+                    <p>{formatted_timestamp}</p>
                 </div>
 
                 <div className="order-footer" style={{backgroundColor: status === 'review' ? 'RGB(248 255 100)' : 'green'}}>

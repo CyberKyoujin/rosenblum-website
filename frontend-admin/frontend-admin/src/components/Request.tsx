@@ -1,7 +1,7 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../zustand/axiosInstance";
 import useMainStore from "../zustand/useMainStore";
+import { BiMessageDetail } from "react-icons/bi";
+
 
 interface RequestProps {
     id: number;
@@ -20,8 +20,14 @@ const Request = ({id, name, email, phone_number, message, formatted_timestamp}: 
 
     return (
         <div className="small-order-container" key={id} onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}>
-            <div className="order-header">
-                <p>{name}</p>
+            
+            <div className="order-container-info">
+                <BiMessageDetail size={45} className="app-icon"/>
+                
+                <div className="order-header">
+                    <p style={{fontWeight: 'bold'}}>{name}</p>
+                    <p>{email}</p>
+                </div>
             </div>
 
             <div>

@@ -37,7 +37,7 @@ interface Message{
 
 interface MainState {
     orders: OrderResponseData | null;
-    requests: RequestResponseData[];
+    requests: RequestResponseData | null;
     messages: Message[] | null;
     userData: UserData | null;
     isLoading: boolean;
@@ -53,7 +53,7 @@ interface MainState {
 
 const useMainStore = create<MainState>((set, get) => ({
     orders: null,
-    requests: [],
+    requests: null,
     userData: null,
     messages: null,
     isLoading: false,
@@ -134,7 +134,7 @@ const useMainStore = create<MainState>((set, get) => ({
         set({ isLoading: true }); 
         try {
             const response = await axiosInstance.get('/admin-user/requests/',  {params: {page: page_number}});
-            set({ requests: response.data });
+            set({ requests: response.data as RequestResponseData});
         } catch (err) {
             console.error("Error while fetching requests:" + err);
         } finally {
