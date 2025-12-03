@@ -4,7 +4,7 @@ export interface Order{
     name: string;
     formatted_timestamp: string;
     status: string;
-    new: boolean;
+    is_new: boolean;
 }
 
 export interface OrderResponseData {

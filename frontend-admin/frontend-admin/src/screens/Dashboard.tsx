@@ -4,13 +4,19 @@ import Divider from '@mui/material/Divider';
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import { BiMessageDetail } from "react-icons/bi";
-import Footer from "../components/Footer";
 import DashboardSection from "../components/DashboardSection";
-
+import useMainStore from "../zustand/useMainStore";
+import Order from "../components/Order";
+import Request from "../components/Request";
 
 const Dashboard = () => {
 
     const [message, setMessage] = useState<string | null>(null);
+
+    const orders = useMainStore(s => s.orders);
+    const requests = useMainStore(s => s.requests);
+    const fetchOrders = useMainStore(s => s.fetchOrders);
+    const fetchRequests = useMainStore(s => s.fetchRequests);
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -53,7 +59,7 @@ const Dashboard = () => {
                     
                     <Divider style={{marginTop: '1.5rem'}}/>
 
-                    <DashboardSection/>
+                    <DashboardSection data={orders} fetchData={fetchOrders} ItemComponent={Order}/>
                 </section>
 
                 <section className="dashboard__requests-container">
@@ -65,7 +71,8 @@ const Dashboard = () => {
 
                     <Divider style={{marginTop: '1.5rem'}}/>
 
-                    
+                    <DashboardSection data={requests} fetchData={fetchRequests} ItemComponent={Request}/>
+
                 </section>
                 </div>
                 

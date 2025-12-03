@@ -14,13 +14,15 @@ import Customers from './screens/Customers'
 import SearchResults from './screens/SearchResults'
 import GlobalMessages from './screens/GlobalMessages'
 import Translator from './screens/Translator'
+import useMainStore from './zustand/useMainStore'
 
 
 function App() {
   
   const authStore = useAuthStore();
 
-  
+  const fetchOrders = useMainStore(s => s.fetchOrders);
+  const fetchRequests = useMainStore(s => s.fetchRequests);
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(async () => {
@@ -31,8 +33,11 @@ function App() {
       }
     }, 240000); 
 
+    fetchOrders(1);
+    fetchRequests(1);
+
     return () => clearInterval(refreshTokenInterval);
-  }, [authStore]);
+  }, [authStore, fetchOrders, fetchRequests]);
 
   console.log(authStore.isAuthenticated, authStore.user);
 

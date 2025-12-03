@@ -37,11 +37,11 @@ const Home = () => {
     return (
         <div className="main-container" style={{padding: '0rem 2rem'}}>
 
-            <div className="home-title-container">
-                <h1>Melden Sie sich an</h1>
-            </div>
-
             <form className="main-form-container" onSubmit={handleSubmit}>
+                
+                <div className="home-title-container">
+                    <h1>Melden Sie sich an</h1>
+                </div>
 
                 <TextField fullWidth required 
                 id="outlined-basic1" 
