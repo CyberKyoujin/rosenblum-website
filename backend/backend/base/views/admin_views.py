@@ -19,7 +19,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-
+from django.db.models import Count
 
 class AdminLoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -131,7 +131,7 @@ class CustomerListView(generics.ListAPIView):
         filters.SearchFilter,      
         DjangoFilterBackend,        
         filters.OrderingFilter
-    ]
+        ]
     
         search_fields = [
         'id', 
@@ -141,9 +141,11 @@ class CustomerListView(generics.ListAPIView):
         'phone_number'
         ]
         
-    
-        ordering_fields = ['date_joined, first_name', 'last_name']
+        ordering_fields = ['date_joined', 'first_name', 'last_name', 'orders_count']
         ordering = ['date_joined']
+        
+        def get_queryset(self):
+            return CustomUser.objects.filter(is_superuser=False).annotate(orders_count=Count('order'))
     
     
 class SearchView(APIView):

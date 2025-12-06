@@ -151,7 +151,7 @@ class Review(models.Model):
     profile_photo_url = models.URLField(blank=True, null=True)
 
     rating = models.PositiveSmallIntegerField()
-    original_language = models.CharField(max_length=10)  # 'en', 'de', 'ru', 'uk', ...
+    original_language = models.CharField(max_length=10) 
     original_text = models.TextField()
 
     review_timestamp = models.DateTimeField()
