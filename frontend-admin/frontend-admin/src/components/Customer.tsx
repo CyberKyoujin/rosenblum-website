@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import default_avatar from "../assets/default_avatar.png"
+
 interface CustomerProps {
-    id: string;
+    id: number;
     profile_img_url: string;
     profile_img: string;
     first_name: string;
@@ -10,7 +11,7 @@ interface CustomerProps {
     orders: string;
 }
 
-const Customer = ({id, profile_img_url, profile_img, first_name, last_name, email, orders}: CustomerProps) => {
+const Customer = ({id, profile_img_url, first_name, last_name, email, orders}: CustomerProps) => {
 
     const navigate = useNavigate();
 
@@ -24,7 +25,7 @@ const Customer = ({id, profile_img_url, profile_img, first_name, last_name, emai
 
                 <div className="customer-top-section">
                     <img
-                    src={profile_img_url || profile_img || default_avatar}
+                    src={profile_img_url || default_avatar}
                     className="customer-avatar"
                     /> 
                 </div>

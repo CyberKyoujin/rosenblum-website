@@ -27,8 +27,7 @@ export const RequestsFilter = () => {
     const delayDebounce = setTimeout(() => {
 
       setFilters({ordering} as OrderFiltersParams);
-
-      fetchRequests();
+      
     }, 1000);
 
 

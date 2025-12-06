@@ -153,6 +153,7 @@ html, body {
 }
 
 .dashboard__orders-container{
+  max-width: 1920px;
   min-width: 500px;
   min-height: 1000px;
   width: 100%;
@@ -303,7 +304,7 @@ html, body {
 }
 
 .dashboard-orders-container{
-    max-width: 1200px;
+    
     margin: auto;
     margin-top: 2rem;
     display: flex;
@@ -324,6 +325,7 @@ html, body {
     margin: auto;
     margin-top: 5rem;
     display: flex;
+    justify-content: center;
     gap: 8rem;
 }
 
@@ -928,6 +930,7 @@ html, body {
 
 .customer-container{
   display: flex;
+  width: 100%;
   background-color: rgb(230,238,252);
   border: 2px solid rgb(76,121,212);
   padding: 1rem;
