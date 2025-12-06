@@ -78,7 +78,7 @@ class OrderView(APIView):
     def get(self, request, pk):
         try:
             order = Order.objects.get(id=pk)
-            serializer = OrderSerializer(order, many=False)
+            serializer = OrderSerializer(order, many=False, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Order.DoesNotExist:
             return Response({'detail': 'Order not found'}, status=status.HTTP_400_BAD_REQUEST)

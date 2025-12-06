@@ -52,6 +52,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return None
         
     def get_orders(self, obj):
+        if hasattr(obj, 'orders_count'):
+            return obj.orders_count
         return Order.objects.filter(user=obj).count()
         
 class UserDataSerializer(serializers.ModelSerializer):
