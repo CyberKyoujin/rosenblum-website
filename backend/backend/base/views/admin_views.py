@@ -123,11 +123,27 @@ class SendMessageView(APIView):
     
         return Response(status=status.HTTP_200_OK)
 
-class CustomerListView(APIView):
-    def get(self, request):
-        customers = CustomUser.objects.filter(is_superuser=False)
-        serializer = CustomUserSerializer(customers, many=True)    
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class CustomerListView(generics.ListAPIView):
+        queryset = CustomUser.objects.filter(is_superuser=False)
+        serializer_class = CustomUserSerializer   
+        
+        filter_backends = [
+        filters.SearchFilter,      
+        DjangoFilterBackend,        
+        filters.OrderingFilter
+    ]
+    
+        search_fields = [
+        'id', 
+        'email', 
+        'first_name', 
+        'last_name',
+        'phone_number'
+        ]
+        
+    
+        ordering_fields = ['date_joined, first_name', 'last_name']
+        ordering = ['date_joined']
     
     
 class SearchView(APIView):

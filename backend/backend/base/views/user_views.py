@@ -242,7 +242,7 @@ class RequestView(CreateAPIView):
 
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewSerializer
-        
+    pagination_class = None
     def get_queryset(self):
         return (
             Review.objects

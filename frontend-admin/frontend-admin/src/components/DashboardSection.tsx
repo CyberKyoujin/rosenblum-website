@@ -66,7 +66,7 @@ const DashboardSection = <T extends { id: number }> ({
             setFilters({search: search});
 
             if (search) setPage(1); 
-            fetchData(search ? 1 : page);
+            
         }, 1000)
 
         return () => clearTimeout(delayDebounce);
@@ -127,7 +127,7 @@ const DashboardSection = <T extends { id: number }> ({
                 <Stack spacing={2} sx={{marginTop: "2rem"}}>
                     <Pagination count={pageCount} page={page} color="primary" onChange={handleChange}/>
                 </Stack>
-                
+
                 }
 
             </div>  

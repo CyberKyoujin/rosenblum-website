@@ -34,7 +34,6 @@ export const OrderFilter = () => {
 
       setFilters({status, isNew, ordering} as OrderFiltersParams);
 
-      fetchOrders();
     }, 1000);
 
 
@@ -44,7 +43,7 @@ export const OrderFilter = () => {
   return (
     <>
         <FilterDropdown title="Filter Orders" onReset={handleReset}>
-            {/* 2. Статус */}
+            
             <FormControl fullWidth size="small">
               <InputLabel>Status</InputLabel>
               <Select
@@ -52,16 +51,16 @@ export const OrderFilter = () => {
                 label="Status"
                 onChange={(e) => setStatus(e.target.value)}
               >
-                <MenuItem value=""><em>All Statuses</em></MenuItem>
-                <MenuItem value="review">Review</MenuItem>
-                <MenuItem value="accepted">Accepted</MenuItem>
-                <MenuItem value="in_progress">In Progress</MenuItem>
-                <MenuItem value="completed">Completed</MenuItem>
-                <MenuItem value="canceled">Canceled</MenuItem>
+                <MenuItem value=""><em>Alle</em></MenuItem>
+                <MenuItem value="review">In Bearbeitung</MenuItem>
+                <MenuItem value="in_progress">Wird ausgeführt</MenuItem>
+                <MenuItem value="completed">Fertig</MenuItem>
+                <MenuItem value="ready_pick_up">Abholbereit</MenuItem>
+                <MenuItem value="sent">Versandt</MenuItem>
+                <MenuItem value="canceled">Storniert</MenuItem>
               </Select>
             </FormControl>
 
-            {/* 3. Сортировка */}
             <FormControl fullWidth size="small">
               <InputLabel>Sort By</InputLabel>
               <Select
@@ -69,12 +68,11 @@ export const OrderFilter = () => {
                 label="Sort By"
                 onChange={(e) => setOrdering(e.target.value)}
               >
-                <MenuItem value="-timestamp">Date: Newest first</MenuItem>
-                <MenuItem value="timestamp">Date: Oldest first</MenuItem>
+                <MenuItem value="-timestamp">Datum: Neue</MenuItem>
+                <MenuItem value="timestamp">Datum: Alte</MenuItem>
               </Select>
             </FormControl>
 
-            {/* 4. Чекбокс New */}
             <FormControlLabel
               control={
                 <Checkbox
@@ -82,7 +80,7 @@ export const OrderFilter = () => {
                   onChange={(e) => setIsNew(e.target.checked)}
                 />
               }
-              label="Show only NEW orders"
+              label="Neue Aufträge"
             />
             
         </FilterDropdown>

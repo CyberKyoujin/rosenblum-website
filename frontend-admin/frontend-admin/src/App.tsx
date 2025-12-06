@@ -22,9 +22,6 @@ function App() {
   
   const authStore = useAuthStore();
 
-  const fetchOrders = useOrdersStore(s => s.fetchOrders);
-  const fetchRequests = useRequestsStore(s => s.fetchRequests);
-
   useEffect(() => {
     const refreshTokenInterval = setInterval(async () => {
       try {
@@ -34,11 +31,9 @@ function App() {
       }
     }, 240000); 
 
-    fetchOrders(1);
-    fetchRequests(1);
 
     return () => clearInterval(refreshTokenInterval);
-  }, [authStore, fetchOrders, fetchRequests]);
+  }, [authStore]);
 
   console.log(authStore.isAuthenticated, authStore.user);
 
