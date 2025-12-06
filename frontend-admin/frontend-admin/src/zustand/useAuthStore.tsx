@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axiosInstance from "./axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie'
-import { Cookie } from "@mui/icons-material";
+import { toApiError } from "../utils/toApiError";
 
 
 interface AuthTokens {
@@ -52,29 +52,46 @@ const useAuthStore = create<AuthState>((set, get) => ({
     setUser: (user) => set({ user }),
 
     loginUser: async (formData: FormData) => {
-        try {
-            const response = await axiosInstance.post('/admin-user/login/', formData);
-            if (response.status === 200) {
-                const { access, refresh } = response.data;
-                const tokens: AuthTokens = { access, refresh}
-                Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' }); 
-                Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
-                get().setTokens(tokens);
-                window.location.href = '/dashboard';
-            } else if (response.status === 401){
-                set({loginError: true})
-            } else {
-                set({loginSuperuserError: true})
-            }
-        } catch (err) {
-            console.error(err);
-        } 
-    },
+    // 1. Сбрасываем ошибки перед новым запросом
+    set({ loginError: false, loginSuperuserError: false });
+
+    try {
+        const response = await axiosInstance.post('/admin-user/login/', formData);
+        
+        // Сюда мы попадаем ТОЛЬКО если статус 2xx (200, 201...)
+        const { access, refresh } = response.data;
+        const tokens: AuthTokens = { access, refresh };
+
+        Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' });
+        Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
+        
+        get().setTokens(tokens);
+        window.location.href = '/dashboard';
+
+    } catch (err) {
+        // 2. Сюда попадают ВСЕ ошибки (401, 500, Network Error)
+        console.error('Login failed:', err);
+
+        // Используем нашу "пуленепробиваемую" функцию
+        const apiError = toApiError(err);
+
+        // 3. Теперь безопасно проверяем статус
+        if (apiError.status === 401) {
+            // Неверный логин/пароль
+            set({ loginError: true });
+        } else {
+            // Любая другая ошибка (500, Сеть, 403 и т.д.)
+            set({ loginSuperuserError: true });
+            
+            // Опционально: можно сохранить сообщение об ошибке, чтобы показать пользователю
+            // set({ errorMessage: apiError.message });
+        }
+    }
+},
 
     setLoginError: () => set({loginError: false}),
     
     setSuperuserError: () => set({loginSuperuserError: false}),
-
 
     logoutUser: () => {
         Cookies.remove('access', { secure: true, sameSite: 'Strict' });

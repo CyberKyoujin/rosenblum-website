@@ -36,48 +36,19 @@ interface Message{
 
 
 interface MainState {
-    orders: OrderResponseData | null;
-    requests: RequestResponseData | null;
     messages: Message[] | null;
     userData: UserData | null;
     isLoading: boolean;
-    fetchOrders: (page_number: number) => Promise<void>;
-    fetchRequests: (page_number: number) => Promise<void>;
-    toggleOrder: (id: number) => Promise<void>;
     fetchUserData: (id: string) => Promise<void>;
     fetchUserMessages: (id: string) => Promise<void>;
     toggleMessages: (id: string) => Promise<void>;
     sendMessage: (formData: FormData, id: string) => Promise<void>;
-    updateOrder: (id: string, status: string) => Promise<void>;
 }
 
 const useMainStore = create<MainState>((set, get) => ({
-    orders: null,
-    requests: null,
     userData: null,
     messages: null,
     isLoading: false,
-
-    fetchOrders: async (page_number: number) => {
-        set({ isLoading: true }); 
-        try {
-            const response = await axiosInstance.get('/admin-user/orders/', {params: {page: page_number}});
-            set({ orders: response.data as OrderResponseData});
-        } catch (err) {
-            console.error("Error while fetching orders:" + err);
-        } finally {
-            set({ isLoading: false }); 
-        }
-    },
-
-    toggleOrder: async (id: number) => {
-        try{
-            await axiosInstance.get(`/admin-user/toggle-order/${id}`);
-
-        } catch (error){
-            console.log("Error toggling order!" + error);
-        }
-    },
 
     fetchUserData: async (id: string) => {
         set({ isLoading: true }); 
@@ -129,19 +100,6 @@ const useMainStore = create<MainState>((set, get) => ({
             console.error(error);
         }
     },
-
-    fetchRequests: async (page_number: number) => {
-        set({ isLoading: true }); 
-        try {
-            const response = await axiosInstance.get('/admin-user/requests/',  {params: {page: page_number}});
-            set({ requests: response.data as RequestResponseData});
-        } catch (err) {
-            console.error("Error while fetching requests:" + err);
-        } finally {
-            set({ isLoading: false }); 
-        }
-    }
-
 
 }))
 

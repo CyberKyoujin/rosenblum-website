@@ -14,15 +14,16 @@ import Customers from './screens/Customers'
 import SearchResults from './screens/SearchResults'
 import GlobalMessages from './screens/GlobalMessages'
 import Translator from './screens/Translator'
-import useMainStore from './zustand/useMainStore'
+import useRequestsStore from './zustand/useRequests'
+import useOrdersStore from './zustand/useOrdersStore'
 
 
 function App() {
   
   const authStore = useAuthStore();
 
-  const fetchOrders = useMainStore(s => s.fetchOrders);
-  const fetchRequests = useMainStore(s => s.fetchRequests);
+  const fetchOrders = useOrdersStore(s => s.fetchOrders);
+  const fetchRequests = useRequestsStore(s => s.fetchRequests);
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(async () => {
