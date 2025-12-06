@@ -4,8 +4,11 @@ from rest_framework import status
 from base.models import Order,File, CustomUser
 from base.serializers import OrderSerializer, FileSerializer
 from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import generics
+from rest_framework import viewsets, filters
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 @api_view(['POST'])
 def order_create(request):
@@ -46,10 +49,29 @@ class OrdersView(generics.ListAPIView):
         queryset = Order.objects.filter(user=user.id).prefetch_related('files').order_by('-date')
         return queryset
     
-class OrdersListView(generics.ListAPIView):
+class OrdersViewSet(generics.ListAPIView):
     permission_classes = []
+    queryset = Order.objects.select_related("user").all()
     serializer_class = OrderSerializer
-    queryset = Order.objects.all().order_by('-timestamp')
+    
+    filter_backends = [
+        filters.SearchFilter,      
+        DjangoFilterBackend,        
+        filters.OrderingFilter
+    ]
+    
+    search_fields = [
+        'id', 
+        'name', 
+        'email', 
+        'phone_number',
+        'message'
+    ]
+    
+    filterset_fields = ['status', 'new']
+    
+    ordering_fields = ['timestamp']
+    ordering = ['-timestamp']
     
 
 class OrderView(APIView):

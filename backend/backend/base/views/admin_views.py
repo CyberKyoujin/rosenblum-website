@@ -15,7 +15,11 @@ from django.conf import settings
 import datetime
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+
 
 class AdminLoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -136,8 +140,23 @@ class SearchView(APIView):
         data = {"customers": serializer.data, "orders": orders_serializer.data}
         return Response(data, status=status.HTTP_200_OK)
     
-class RequestView(APIView):
-    def get (self, request):
-        requests = RequestObject.objects.all().order_by("-timestamp")
-        serializer = RequestSerializer(requests, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+class RequestView(generics.ListAPIView):
+    queryset = RequestObject.objects.all()
+    serializer_class = RequestSerializer
+        
+    filter_backends = [
+        filters.SearchFilter,      
+        DjangoFilterBackend,        
+        filters.OrderingFilter
+    ]
+    
+    search_fields = [
+        'id', 
+        'name', 
+        'email', 
+        'phone_number',
+    ]
+    
+    ordering_fields = ['timestamp']
+    ordering = ['-timestamp']
+        

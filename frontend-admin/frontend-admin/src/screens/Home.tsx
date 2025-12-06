@@ -33,7 +33,6 @@ const Home = () => {
         await loginUser(formData);
     }
 
-
     return (
         <div className="main-container" style={{padding: '0rem 2rem'}}>
 

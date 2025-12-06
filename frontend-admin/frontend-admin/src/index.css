@@ -154,6 +154,7 @@ html, body {
 
 .dashboard__orders-container{
   min-width: 500px;
+  min-height: 1000px;
   width: 100%;
 }
 
@@ -287,7 +288,18 @@ html, body {
 .dashboard-title-orders{
     display: flex;
     gap: 1rem;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dashboard-title-search{
+  display: flex;
+  gap: 1rem;
+}
+
+.dashboard-title-info{
+  display: flex;
+  gap: 1rem;
 }
 
 .dashboard-orders-container{
@@ -984,4 +996,42 @@ html, body {
   .footer{
     margin-top: 5rem;
   }
+}
+
+/* ERROR */
+
+.error-view-container{
+  display: flex;
+  flex-direction: column;
+  margin-top: 5rem;
+  align-items: center;
+  gap: 2rem;
+}
+
+.error-alert-container {
+  width: 100%;
+  padding: 0 1rem;
+  z-index: 119999;
+  box-sizing: border-box; 
+}
+
+.error-alert-fixed {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 1920px;
+}
+
+.error-alert-fixed.below-navbar {
+  top: calc(var(--navbar-height) + 8px);
+}
+
+.error-alert-relative {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.show-alert{
+  display: block;
 }

@@ -1,84 +1,62 @@
-import { useEffect, useState } from "react";
-import { CiBoxList } from "react-icons/ci";
-import Divider from '@mui/material/Divider';
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Alert from '@mui/material/Alert';
-import { BiMessageDetail } from "react-icons/bi";
+import { CiBoxList } from "react-icons/ci";
 import DashboardSection from "../components/DashboardSection";
-import useMainStore from "../zustand/useMainStore";
 import Order from "../components/Order";
+import useDashboardStore from "../zustand/useOrdersStore";
+import ApiErrorAlert from "../components/ApiErrorAlert";
+import { useIsAtTop } from "../hooks/useIsAtTop";
+import useRequestsStore from "../zustand/useRequests";
+import useOrdersStore from "../zustand/useOrdersStore";
+import OrderFilter from "../components/OrderFilter";
+import { BiMessageDetail } from "react-icons/bi";
 import Request from "../components/Request";
+import RequestsFilter from "../components/RequestFilter";
+
 
 const Dashboard = () => {
 
-    const [message, setMessage] = useState<string | null>(null);
+    // ORDERS
+    
+    const orders = useOrdersStore(s => s.orders);
+    const ordersLoading = useOrdersStore(s => s.loading);
+    const ordersError = useOrdersStore(s => s.error);
+    const fetchOrders = useOrdersStore(s => s.fetchOrders);
+    const setOrdersFilters = useOrdersStore(s => s.setFilters);
 
-    const orders = useMainStore(s => s.orders);
-    const requests = useMainStore(s => s.requests);
-    const fetchOrders = useMainStore(s => s.fetchOrders);
-    const fetchRequests = useMainStore(s => s.fetchRequests);
+    // REQUESTS
 
-    const location = useLocation();
-    const navigate = useNavigate();
+    const requests = useRequestsStore(s => s.requests);
+    const requestLoading = useRequestsStore(s => s.loading);
+    const requestsError = useRequestsStore(s => s.error);
+    const fetchRequests = useRequestsStore(s => s.fetchRequests);
+    const setRequestFilters = useRequestsStore(s => s.setFilters);
 
-    useEffect(() => {
+    const error = useDashboardStore(s => s.error);
 
-        if (location.state?.message) {
-
-            setMessage(location.state.message);
-
-            const timer = setTimeout(() => {
-                setMessage(null); 
-                navigate(location.pathname, { replace: true, state: {} });
-            }, 3000);
-
-            return () => clearTimeout(timer); 
-        }
-
-    }, [location.state, location.pathname, navigate]);
+    const isAtTop = useIsAtTop(5);
 
     return (
         <>
+            <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed={true}/>
     
-            <div className={message ? "success-notification-container show-notification" : "success-notification-container"}>
-                <Alert severity="success">{message}</Alert>
-            </div>
+        
            
             <div className="main-container">
 
                 <div className="dashboard-container">
 
+
+                <DashboardSection data={orders} title="Aufträge" Icon={CiBoxList} fetchData={fetchOrders} ItemComponent={Order} loading={ordersLoading} error={ordersError} setFilters={setOrdersFilters} Filter={OrderFilter}/>
                 
 
-                <section className="dashboard__orders-container">
+                <DashboardSection data={requests} title="Anfragen" Icon={BiMessageDetail} fetchData={fetchRequests} ItemComponent={Request} loading={requestLoading} error={requestsError} setFilters={setRequestFilters} Filter={RequestsFilter}/>
 
-                    <div className="dashboard-title-orders">
-                        <CiBoxList style={{fontSize: '40px', color: 'RGB(76 121 212)'}}/>
-                        <h1 style={{marginTop: '0.1rem'}}>Aufträge </h1>
-                    </div>
-                    
-                    <Divider style={{marginTop: '1.5rem'}}/>
-
-                    <DashboardSection data={orders} fetchData={fetchOrders} ItemComponent={Order}/>
-                </section>
-
-                <section className="dashboard__requests-container">
-
-                    <div className="dashboard-title-requests">
-                        <BiMessageDetail style={{fontSize: '40px', color: 'RGB(76 121 212)'}}/>
-                        <h1 style={{marginTop: '0.1rem'}}>Anfragen </h1>
-                    </div>
-
-                    <Divider style={{marginTop: '1.5rem'}}/>
-
-                    <DashboardSection data={requests} fetchData={fetchRequests} ItemComponent={Request}/>
-
-                </section>
+                
                 </div>
                 
             </div>
-
-        
 
         </>
     )

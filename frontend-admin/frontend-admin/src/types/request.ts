@@ -13,3 +13,8 @@ export interface RequestResponseData {
     previous: string | null;
     results: Request[];
 }
+
+export interface RequestFiltersParams {
+    search? : string;
+    ordering?: string;
+}

@@ -21,8 +21,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { FaCheck } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
-import useMainStore from "../zustand/useMainStore";
 import CircularProgress from '@mui/material/CircularProgress';
+import useOrdersStore from "../zustand/useOrdersStore";
 
 interface File{
     id: string;
@@ -56,7 +56,6 @@ const statusValues = {
     "ready": "Abholbereit"
 };
 
-
 const OrderDetails = () => {
 
     const [orderData, setOrderData] = useState<OrderData | null>(null);
@@ -70,7 +69,7 @@ const OrderDetails = () => {
 
     const navigate = useNavigate();
 
-    const {updateOrder} = useMainStore.getState();
+    const updateOrder = useOrdersStore(s => s.updateOrder);
 
     const fetchOrder = async () => {
         setIsLoading(true);

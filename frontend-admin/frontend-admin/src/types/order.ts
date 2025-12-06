@@ -13,3 +13,10 @@ export interface OrderResponseData {
     previous: string | null;
     results: Order[];
 }
+
+export interface OrderFiltersParams {
+    search? : string;
+    status? : string;
+    new?: boolean | null;
+    ordering?: string;
+}

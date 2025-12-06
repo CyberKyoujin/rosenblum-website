@@ -171,6 +171,7 @@ class MessageSerializer(serializers.ModelSerializer):
     
 
 class RequestSerializer(serializers.ModelSerializer):
+    formatted_timestamp = serializers.SerializerMethodField()
     class Meta:
         model = RequestObject
         fields = '__all__'

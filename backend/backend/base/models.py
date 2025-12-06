@@ -71,6 +71,16 @@ class EmailVerification(models.Model):
 
     
 class Order(models.Model):
+    
+    class Status(models.TextChoices):
+        REVIEW = 'review'
+        IN_PROGRESS = "in_progress"
+        COMPLETED = "completed"
+        PICK_UP_READY = "ready_pick_up"
+        SENT = "sent"
+        CANCELED = "canceled"
+        
+    
     user = models.ForeignKey(CustomUser,models.CASCADE,null=True,blank=True)
     name = models.CharField(max_length = 264)
     email = models.EmailField(max_length = 264)
@@ -80,7 +90,7 @@ class Order(models.Model):
     street = models.CharField(max_length = 264)
     zip = models.CharField(max_length = 10)
     message = models.CharField(max_length = 1000)
-    status = models.CharField(max_length=40, default='review')
+    status = models.CharField(max_length=40, choices=Status.choices, default=Status.REVIEW)
     timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     new = models.BooleanField(default=True, null=True, blank=True)
 
