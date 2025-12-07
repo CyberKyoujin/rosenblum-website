@@ -16,6 +16,7 @@ import GlobalMessages from './screens/GlobalMessages'
 import Translator from './screens/Translator'
 import useRequestsStore from './zustand/useRequests'
 import useOrdersStore from './zustand/useOrdersStore'
+import CustomerProfile from './screens/CustomerProfile'
 
 
 function App() {
@@ -58,7 +59,7 @@ function App() {
         }/>
         <Route path='/user/:userId' element={
           <ProtectedRoute>
-            <UserDetails/>
+            <CustomerProfile/>
           </ProtectedRoute>
         }/>
         <Route path='/messages' element={

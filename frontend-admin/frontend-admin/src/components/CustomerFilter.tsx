@@ -47,8 +47,12 @@ export const CustomerFilter = () => {
                 label="Sort By"
                 onChange={(e) => setOrdering(e.target.value)}
               >
+                <MenuItem value="-first_name">Name: A-Z</MenuItem>
+                <MenuItem value="first_name">Name: Z-A</MenuItem>
                 <MenuItem value="-date_joined">Datum: Neue</MenuItem>
                 <MenuItem value="date_joined">Datum: Alte</MenuItem>
+                <MenuItem value="-orders_count">Bestellungen: Viele</MenuItem>
+                <MenuItem value="orders_count">Bestellungen: Wenige</MenuItem>
               </Select>
             </FormControl>
 

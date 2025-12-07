@@ -114,6 +114,10 @@ const OrderDetails = () => {
         }
     }
 
+    useEffect(() => {
+        console.log(orderData)
+    }, [orderData])
+
     return(
         <>
         <div 

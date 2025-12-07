@@ -11,7 +11,7 @@ interface CustomerProps {
     orders: string;
 }
 
-const Customer = ({id, profile_img_url, first_name, last_name, email, orders}: CustomerProps) => {
+const Customer = ({id, profile_img_url, profile_img, first_name, last_name, email, orders}: CustomerProps) => {
 
     const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ const Customer = ({id, profile_img_url, first_name, last_name, email, orders}: C
 
                 <div className="customer-top-section">
                     <img
-                    src={profile_img_url || default_avatar}
+                    src={profile_img_url || profile_img || default_avatar}
                     className="customer-avatar"
                     /> 
                 </div>

@@ -43,7 +43,7 @@ def order_create(request):
 class OrdersView(generics.ListAPIView):
     
     serializer_class = OrderSerializer
-
+    pagination_class = None
     def get_queryset(self):
         user = self.request.user
         queryset = Order.objects.filter(user=user.id).prefetch_related('files').order_by('-date')

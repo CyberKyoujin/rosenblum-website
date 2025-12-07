@@ -73,10 +73,6 @@ const DashboardSection = <T extends { id: number }> ({
 
     }, [search, setFilters, fetchData]);
 
-    useEffect(() => {
-        fetchData(page);
-    }, [page, fetchData])
-
     return (
 
         <section className="dashboard__orders-container">
@@ -116,7 +112,7 @@ const DashboardSection = <T extends { id: number }> ({
                 
                 }
 
-                { data?.results.map((item) => 
+                { data && data?.results.map((item) => 
                                 
                     <ItemComponent key={item.id} {...item} />
 
