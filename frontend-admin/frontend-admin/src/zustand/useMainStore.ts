@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axiosInstance from "./axiosInstance";
-import {OrderResponseData} from "../types/order";
+import {  OrderResponseData } from "../types/order";
 import { RequestResponseData } from "../types/request";
 
 interface UserData {

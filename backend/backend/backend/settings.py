@@ -161,9 +161,14 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 DEEPL_AUTH_KEY = config('DEEPL_AUTH_KEY')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+    },
+}
 GS_FILE_OVERWRITE = False
 
 CSRF_COOKIE_SAMESITE = 'None'
