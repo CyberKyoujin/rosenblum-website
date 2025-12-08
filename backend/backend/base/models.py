@@ -112,6 +112,11 @@ class Message(models.Model):
         local_timestamp = timezone.localtime(self.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
 
+class Chat(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    pass
+
+
 class File(models.Model):
     order = models.ForeignKey(Order,models.CASCADE, related_name='files', blank=True, null=True)
     message = models.ForeignKey(Message, models.CASCADE, related_name='files', blank=True, null=True)

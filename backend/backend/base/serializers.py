@@ -58,18 +58,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         
 class UserDataSerializer(serializers.ModelSerializer):
     
-    image_url = serializers.SerializerMethodField()
+    image_url = serializers.ImageField(source='profile_img', read_only=True)
     
     class Meta:
         model = CustomUser
-        fields = ['date_joined', 'phone_number', 'city', 'street', 'zip', 'image_url']
+        fields = ['id', 'date_joined', 'phone_number', 'city', 'street', 'zip', 'image_url', 'first_name', 'last_name', 'email', 'profile_img_url']
         
-    def get_image_url(self, obj):
-        request = self.context.get('request', None)
-        if request:
-            return request.build_absolute_uri(obj.profile_img.url)
-        else:
-            return obj.profile_img.url if obj.profile_img else None
 
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
@@ -158,11 +152,13 @@ class OrderSerializer(serializers.ModelSerializer):
     def get_formatted_timestamp(self, obj):
         local_timestamp = timezone.localtime(obj.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
-        
 
 class MessageSerializer(serializers.ModelSerializer):
     formatted_timestamp = serializers.SerializerMethodField()
     files = FileSerializer(many=True,read_only=True)
+    receiver_data = UserDataSerializer(source='receiver', read_only=True)
+    sender_data = UserDataSerializer(source='sender', read_only=True)
+    partner_data = serializers.SerializerMethodField()
     class Meta:
         model = Message
         fields = '__all__' 
@@ -170,6 +166,18 @@ class MessageSerializer(serializers.ModelSerializer):
     def get_formatted_timestamp(self, obj):
         local_timestamp = timezone.localtime(obj.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
+    
+    def get_partner_data(self, obj):
+        request = self.context.get('request')
+        if not request:
+            return None
+            
+        user = request.user
+        
+        if obj.sender_id == user.id:
+            return UserDataSerializer(obj.receiver, context=self.context).data
+        return UserDataSerializer(obj.sender, context=self.context).data
+    
     
 
 class RequestSerializer(serializers.ModelSerializer):

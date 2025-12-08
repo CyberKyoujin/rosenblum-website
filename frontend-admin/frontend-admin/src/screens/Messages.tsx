@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { SiGooglemessages } from "react-icons/si";
 import { useEffect } from "react";
-import useAuthStore from "../zustand/useAuthStore";
 import { useNavigate, useParams } from "react-router-dom";
 import smallLogo from '../assets/logo2.png'
 import { RiMailSendLine } from "react-icons/ri";
