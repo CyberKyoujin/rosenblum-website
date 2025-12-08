@@ -49,11 +49,8 @@ const CustomerOrdersSection = () => {
 
                             <MdOutlineStickyNote2 style={{ fontSize: '100px' }} />
 
-                            <h3>Sie haben noch keine Aufträge</h3>
+                            <h3>Der Nutzer hat noch keine Aufträge</h3>
 
-                            <button className="no-orders-btn hover-btn" onClick={() => navigate('/order')}>
-                                ANGEBOT ANFORDERN
-                            </button>
 
                         </div>
                     )}

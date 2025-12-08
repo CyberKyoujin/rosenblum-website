@@ -3,7 +3,7 @@ import CustomerProfileSection from "../components/CustomerProfileSection";
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import ErrorView from "../components/ErrorView";
 import { useIsAtTop } from '../hooks/useIsAtTop';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import CustomerProfileSkeleton from "../components/CustomerProfileSkeleton";
 import useCustomersStore from "../zustand/useCustomers";
@@ -11,16 +11,23 @@ import CustomerOrdersSection from "../components/CustomerOrdersSection";
 
 const CustomerProfile = () => {
 
+    const { userId } = useParams();
+
 
     const loading = useCustomersStore(s => s.loading);
     const error = useCustomersStore(s => s.error);
 
-    const [showOrderSuccessAlert, setShowOrderSuccessAlert] = useState(false);
-    const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
+    const fetchCustomerData = useCustomersStore(s => s.fetchCustomerData);
+    const fetchCustomerOrders = useCustomersStore(s => s.fetchCustomerOrders);
 
     const isAtTop = useIsAtTop(10);
-    const location = useLocation();
-    const navigate = useNavigate();
+    
+    useEffect(() => {
+        if (userId) {
+            fetchCustomerData(Number(userId));
+            fetchCustomerOrders(Number(userId)); 
+        }
+    }, [userId, fetchCustomerData, fetchCustomerOrders]);
    
 
     if (loading) {
@@ -31,11 +38,6 @@ const CustomerProfile = () => {
     return (
         <>
         {error && <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed={true}/>}
-
-        {showOrderSuccessAlert && <ApiErrorAlert successMessage={"Der Auftrag erfolgreich bearbeitet"} belowNavbar={isAtTop} fixed/>}
-
-        {showUpdateSuccessAlert && <ApiErrorAlert successMessage={"Profil erfolgreich bearbeitet"} belowNavbar={isAtTop} fixed/>}
-
 
             <main className="main-container">
 

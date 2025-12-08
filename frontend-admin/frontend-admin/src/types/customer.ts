@@ -21,6 +21,7 @@ export interface CustomerData {
     zip: string;
     profile_img: string;
     profile_img_url: string;
+    image_url: string;
 }
 
 export interface CustomerResponseData {

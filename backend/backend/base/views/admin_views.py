@@ -20,6 +20,7 @@ from rest_framework import generics
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.db.models import Count
+from django.db.models import Case, When, F, Q, Max, IntegerField, OuterRef, Subquery
 
 class AdminLoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -34,14 +35,121 @@ class AdminLoginView(TokenObtainPairView):
         else:
             return Response({"details": "Only admin users are allowed!"}, status=status.HTTP_403_FORBIDDEN)
 
-class UserListView(APIView):
-    permission_classes = []
-    def get(self, request):
-        users = CustomUser.objects.all()
-        serializer = CustomUserSerializer(users, many=True)
+
+# LIST VIEWS
+
+class CustomerListView(generics.ListAPIView):
+    queryset = CustomUser.objects.filter(is_superuser=False)
+    serializer_class = CustomUserSerializer   
+        
+    filter_backends = [
+        filters.SearchFilter,      
+        DjangoFilterBackend,        
+        filters.OrderingFilter
+    ]
+    
+    search_fields = [
+        'id', 
+        'email', 
+        'first_name', 
+        'last_name',
+        'phone_number'
+    ]
+        
+    ordering_fields = ['date_joined', 'first_name', 'last_name', 'orders_count']
+    ordering = ['date_joined']
+        
+    def get_queryset(self):
+        return CustomUser.objects.filter(is_superuser=False).annotate(orders_count=Count('order'))
+        
+class RequestView(generics.ListAPIView):
+    queryset = RequestObject.objects.all()
+    serializer_class = RequestSerializer
+        
+    filter_backends = [
+        filters.SearchFilter,      
+        DjangoFilterBackend,        
+        filters.OrderingFilter
+    ]
+    
+    search_fields = [
+        'id', 
+        'name', 
+        'email', 
+        'phone_number',
+    ]
+    
+    ordering_fields = ['timestamp']
+    ordering = ['-timestamp']
+
+class UserOrdersView(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        orders = Order.objects.filter(user=pk)
+        serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+class UserMessagesView(APIView):
+    def get(self, request, pk, *args,  **kwargs):
+        messages = Message.objects.filter(Q(sender=pk) | Q(receiver=pk)).order_by('-timestamp')
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
+class GlobalMessagesView(generics.ListAPIView):
+    serializer_class = MessageSerializer
+    queryset = Message.objects.all()
+    permission_classes = [IsAuthenticated]
+    
+    filter_backends = [
+        filters.SearchFilter,      
+        DjangoFilterBackend,        
+        filters.OrderingFilter
+    ]
+    
+    search_fields = [
+        'id',
+        'sender__first_name', 
+        'sender__last_name', 
+        'sender__email',
+        'receiver__first_name', 
+        'receiver__last_name', 
+        'receiver__email',
+        'message'
+    ]
+    
+    filterset_fields = ['viewed']
+    
+    ordering_fields = ['timestamp']
+    ordering = ['-timestamp']
+    
+    def get_queryset(self):
+        user = self.request.user
+        
+        # 1. Сначала берем только те сообщения, которые касаются текущего пользователя
+        # (чтобы не видеть чужие переписки, если вы не супер-админ)
+        # Если вы хотите видеть ВООБЩЕ все переписки всех людей, уберите этот фильтр.
+        all_my_messages = Message.objects.filter(
+            Q(sender=user) | Q(receiver=user)
+        )
+
+        # 2. Вычисляем ID собеседника для каждой строки
+        # Если я отправил - собеседник receiver, если я получил - собеседник sender.
+        partner_expression = Case(
+            When(sender=user, then=F('receiver_id')),
+            default=F('sender_id'),
+            output_field=IntegerField(),
+        )
+
+        # 3. Группируем по собеседнику и находим ID самого последнего сообщения
+        latest_message_ids = all_my_messages.annotate(
+            partner_id=partner_expression
+        ).values('partner_id').annotate(
+            max_id=Max('id') # Находим максимальный ID для каждого диалога
+        ).values('max_id')
+
+        # 4. Возвращаем QuerySet, отфильтрованный по найденным ID
+        # Это позволяет DRF продолжать применять search_fields и ordering поверх этого списка
+        return Message.objects.filter(id__in=latest_message_ids).order_by('-timestamp')
+
 # GOOGLE STORAGE VIEWS
 
 def get_gcs_client():
@@ -86,19 +194,6 @@ class ToggleOrder(APIView):
         return Response(status=status.HTTP_200_OK)
     
     
-class UserOrdersView(APIView):
-    def get(self, request, pk, *args, **kwargs):
-        orders = Order.objects.filter(user=pk)
-        serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
-class UserMessagesView(APIView):
-    def get(self, request, pk, *args,  **kwargs):
-        messages = Message.objects.filter(Q(sender=pk) | Q(receiver=pk)).order_by('-timestamp')
-        serializer = MessageSerializer(messages, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
 class ToggleViewed(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, pk, *args,  **kwargs):
@@ -122,30 +217,6 @@ class SendMessageView(APIView):
                 File.objects.create(message=message, file=file)
     
         return Response(status=status.HTTP_200_OK)
-
-class CustomerListView(generics.ListAPIView):
-        queryset = CustomUser.objects.filter(is_superuser=False)
-        serializer_class = CustomUserSerializer   
-        
-        filter_backends = [
-        filters.SearchFilter,      
-        DjangoFilterBackend,        
-        filters.OrderingFilter
-        ]
-    
-        search_fields = [
-        'id', 
-        'email', 
-        'first_name', 
-        'last_name',
-        'phone_number'
-        ]
-        
-        ordering_fields = ['date_joined', 'first_name', 'last_name', 'orders_count']
-        ordering = ['date_joined']
-        
-        def get_queryset(self):
-            return CustomUser.objects.filter(is_superuser=False).annotate(orders_count=Count('order'))
     
     
 class SearchView(APIView):
@@ -157,24 +228,5 @@ class SearchView(APIView):
         orders_serializer = OrderSerializer(orders, many=True)
         data = {"customers": serializer.data, "orders": orders_serializer.data}
         return Response(data, status=status.HTTP_200_OK)
-    
-class RequestView(generics.ListAPIView):
-    queryset = RequestObject.objects.all()
-    serializer_class = RequestSerializer
-        
-    filter_backends = [
-        filters.SearchFilter,      
-        DjangoFilterBackend,        
-        filters.OrderingFilter
-    ]
-    
-    search_fields = [
-        'id', 
-        'name', 
-        'email', 
-        'phone_number',
-    ]
-    
-    ordering_fields = ['timestamp']
-    ordering = ['-timestamp']
+
         
