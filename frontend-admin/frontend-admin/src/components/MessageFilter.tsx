@@ -35,7 +35,7 @@ export const MessageFilter = () => {
 
 
     return () => clearTimeout(delayDebounce);
-  }, [setFilters, ordering, fetchMessages]);
+  }, [setFilters, ordering, fetchMessages, isViewed]);
 
   return (
     <>

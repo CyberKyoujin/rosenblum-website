@@ -27,6 +27,7 @@ const Customer = ({id, profile_img_url, profile_img, first_name, last_name, emai
                     <img
                     src={profile_img_url || profile_img || default_avatar}
                     className="customer-avatar"
+                    referrerPolicy="no-referrer"
                     /> 
                 </div>
 

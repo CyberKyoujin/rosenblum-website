@@ -30,8 +30,6 @@ const useCustomersStore = create<CustomersState>((set, get) => ({
     setFilters: (newFilters) => {
         const updatedFilters = {...get().filters, ...newFilters}
         set({filters: updatedFilters})
-        console.log(get().filters)
-        get().fetchCustomers(1);
     },
 
     fetchCustomers: async (page_number=1) => {

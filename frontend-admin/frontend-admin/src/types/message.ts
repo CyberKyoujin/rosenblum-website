@@ -1,9 +1,11 @@
 import { CustomerData } from "./customer";
+import { FileData } from "./file";
 
 export interface Message {
     id: number;
     formatted_timestamp: string;
-    files: File[];
+    timestamp: string;
+    files: FileData[];
     message: string;
     viewed: boolean;
     sender: number;

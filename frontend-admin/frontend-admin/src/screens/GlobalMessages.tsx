@@ -5,6 +5,9 @@ import { BiSolidMessageDetail } from "react-icons/bi";
 import MessageItem from "../components/MessageItem";
 import MessageFilter from "../components/MessageFilter"; 
 import { useEffect } from "react";
+import ApiErrorAlert from "../components/ApiErrorAlert";
+import { useIsAtTop } from "../hooks/useIsAtTop";
+import useMainStore from "../zustand/useMainStore";
 
 const GlobalMessages = () => {
 
@@ -13,18 +16,26 @@ const GlobalMessages = () => {
     const messagesLoading = useMessages(s => s.loading);
     const messagesError = useMessages(s => s.error);
 
-    useEffect(() => {
+    const sendMessage = useMainStore(s => s.sendMessage);
+    const toggleMessages = useMessages(s => s.toggleMessages);
 
-        console.log(messages)
+    const isAtTop = useIsAtTop(5);
 
-    }, [messages])
-
+    const filters = useMessages(s => s.filters);
 
     const fetchMessages = useMessages(s => s.fetchMessages);
     const setMessagesFilters = useMessages(s => s.setFilters);
 
+   useEffect(() => {
+    fetchMessages(1);
+   }, [sendMessage, toggleMessages])
+
     return (
+
         <div className="main-container">
+
+            <ApiErrorAlert error={messagesError} belowNavbar={isAtTop} fixed/>
+
             <div className="dashboard-container">
 
                 <DashboardSection data={messages} title="Nachrichten" Icon={BiSolidMessageDetail} fetchData={fetchMessages} ItemComponent={MessageItem} loading={messagesLoading} error={messagesError} setFilters={setMessagesFilters} Filter={MessageFilter}/>
