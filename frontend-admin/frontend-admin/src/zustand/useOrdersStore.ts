@@ -25,6 +25,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
     setFilters: (newFilters) => {
         const updatedFilters = {...get().filters, ...newFilters}
         set({filters: updatedFilters})
+        get().fetchOrders(1);
     },
 
     fetchOrders: async (page_number=1) => {

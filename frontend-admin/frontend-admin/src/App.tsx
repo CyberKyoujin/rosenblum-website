@@ -44,14 +44,7 @@ function App() {
     return () => clearInterval(refreshTokenInterval);
   }, [authStore]);
 
-  useEffect(() => {
-    if (isAutenticated) {
-      fetchMessages(1);
-      fetchOrders(1);
-      fetchRequests(1);
-      fetchCustomers(1);
-    }
-  })
+  
 
   console.log(authStore.isAuthenticated, authStore.user);
 

@@ -9,6 +9,7 @@ import Customer from "../components/Customer";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import CustomerFilter from "../components/CustomerFilter";
 import DashboardSection from "../components/DashboardSection";
+import ApiErrorAlert from "../components/ApiErrorAlert";
 
 const Customers = () => {
 
@@ -23,6 +24,8 @@ const Customers = () => {
     return (
 
         <div className="main-container">
+
+            <ApiErrorAlert error={customersError} belowNavbar={isAtTop} fixed/>
 
             <div className="dashboard-container">
 
