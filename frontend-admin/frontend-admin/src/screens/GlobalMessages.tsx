@@ -13,8 +13,8 @@ const GlobalMessages = () => {
 
 
     const messages = useMessages(s => s.messages);
-    const messagesLoading = useMessages(s => s.loading);
-    const messagesError = useMessages(s => s.error);
+    const messagesLoading = useMessages(s => s.messagesLoading);
+    const messagesError = useMessages(s => s.fetchMessagesError);
 
     const sendMessage = useMainStore(s => s.sendMessage);
     const toggleMessages = useMessages(s => s.toggleMessages);
@@ -29,6 +29,7 @@ const GlobalMessages = () => {
    useEffect(() => {
     fetchMessages(1);
    }, [sendMessage, toggleMessages])
+
 
     return (
 

@@ -17,6 +17,8 @@ export const OrderFilter = () => {
 
   const setFilters = useOrdersStore((state) => state.setFilters);
 
+  const filters = useOrdersStore(s => s.filters)
+
   const [status, setStatus] = useState('');
   const [ordering, setOrdering] = useState('-timestamp');
   const [isNew, setIsNew] = useState(false);
@@ -29,6 +31,7 @@ export const OrderFilter = () => {
     setIsNew(false);
   };
 
+
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
 
@@ -36,9 +39,10 @@ export const OrderFilter = () => {
 
     }, 1000);
 
-
     return () => clearTimeout(delayDebounce);
   }, [setFilters, status, isNew, ordering, fetchOrders]);
+
+  
 
   return (
     <>

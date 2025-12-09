@@ -46,8 +46,8 @@ const Messages = () => {
     const { t } = useTranslation();
 
     useEffect(() => {
-        toggleMessages();
-    }, []);
+        toggleMessages(46);
+    }, [toggleMessages]);
 
     useEffect(() => {
         if (messagesEndRef.current) {

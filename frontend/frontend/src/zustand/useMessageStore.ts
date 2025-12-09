@@ -35,10 +35,10 @@ const useMessageStore = create<MessageState>((set) => ({
             }
     },
 
-    toggleMessages: async () => {
+    toggleMessages: async (sender_id) => {
                 try{
     
-                    await axiosInstance.get('/user/toggle-messages');
+                    await axiosInstance.post('/user/toggle-messages/', {sender_id});
 
                 } catch(err: unknown){
 

@@ -1562,6 +1562,7 @@ html, body {
 
 .profile__user-avatar{
   width: 150px;
+  height: 150px;
   border: 3px solid var(--blue);
   border-radius: 50%;
 }

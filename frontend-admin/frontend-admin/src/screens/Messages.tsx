@@ -3,14 +3,11 @@ import { SiGooglemessages } from "react-icons/si";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import smallLogo from '../assets/logo2.png'
-import { RiMailSendLine } from "react-icons/ri";
-import { FaPaperclip } from "react-icons/fa6";
 import { FaFile } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import defaultAvatar from "../assets/default_avatar.webp"
 import Alert from '@mui/material/Alert';
 import { Divider } from "@mui/material";
-import useMainStore from "../zustand/useMainStore";
 import { IoMdDownload } from "react-icons/io";
 import useMessages from "../zustand/useMessages";
 import useAuthStore from "../zustand/useAuthStore";
@@ -21,6 +18,9 @@ import AppSkeleton from "../components/Skeleton";
 import { ApiErrorResponse } from "../types/error";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import useCustomersStore from "../zustand/useCustomers";
+import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { IoCheckmarkSharp } from "react-icons/io5";
+
 
 const Messages = () => {
     const { userId } = useParams();
@@ -37,9 +37,13 @@ const Messages = () => {
 
     const customerData = useCustomersStore(s => s.customerData);
 
+    const userAvatar = customerData?.profile_img || customerData?.profile_img_url || defaultAvatar
+
     const [error, setError] = useState<ApiErrorResponse | null>(null);
 
     const isAtTop = useIsAtTop(5);
+
+    const formattedUserId = Number(userId)
 
     const [message, setMessage] = useState('');
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -54,10 +58,10 @@ const Messages = () => {
 
 
     useEffect(() => {
-        fetchCustomerData(Number(userId));
-        fetchUserMessages(Number(userId));
-        toggleMessages(Number(userId));
-    }, [userId, fetchUserMessages, toggleMessages]);
+        fetchCustomerData(formattedUserId);
+        fetchUserMessages(formattedUserId);
+        toggleMessages(formattedUserId);
+    }, [userId, fetchUserMessages, toggleMessages, sendMessage]);
 
     useEffect(() => {
         if (messagesEndRef.current) {
@@ -111,13 +115,14 @@ const Messages = () => {
                         formData.append('files', file);
                     });
                 }
+                console.log(message);
                 formData.append('message', message);
     
                 try {
-                    await sendMessage(formData, Number(user?.id));
+                    await sendMessage(formData,formattedUserId);
                     setMessage('');
                     setUploadedFiles([]);
-                    fetchUserMessages(Number(userId));
+                    fetchUserMessages(formattedUserId);
                 } catch (err: unknown) {
 
                     setError(err as ApiErrorResponse);
@@ -197,18 +202,21 @@ const Messages = () => {
                     sortMessagesAscending().map((message) => (
                         <div
                         key={message.id}
-                        className={`message ${message.sender === user?.id ? '' : 'message-user'}`}
+                        className={`message ${message.sender === formattedUserId ? '' : 'message-user'}`}
                         >
+
                         <img
                             src={
-                            message.sender === user?.id
-                                ? customerData?.profile_img
+                            message.sender === formattedUserId
+                                ? userAvatar
                                 : smallLogo
                             }
                             className="message-avatar"
                             onError={handleImageError}
                             referrerPolicy="no-referrer"
-                        />
+                            onClick={() => navigate(`/user/${userId}`)}
+                        ></img>
+
                         <div className="message-item">
                             <div
                             className="message-body"
@@ -237,14 +245,22 @@ const Messages = () => {
                             </div>
                             )}
 
-                            <p
-                            className="timestamp"
-                            style={{
-                                textAlign: message.sender === user?.id ? 'right' : 'left',
-                            }}
-                            >
-                            {message.formatted_timestamp}
-                            </p>
+                            <div className="message-timestamp">
+
+                                    {message.sender === user?.id && (
+                                        message.viewed ? <IoCheckmarkDoneSharp size={22} className="app-icon"/> : <IoCheckmarkSharp className="app-icon" />
+                                    )}
+
+                                    <p
+                                    className="timestamp"
+                                    style={{
+                                        textAlign: message.sender === user?.id ? 'right' : 'left',
+                                    }}
+                                    >
+                                    {message.formatted_timestamp}
+                                    </p>
+                                    
+                            </div>
                         </div>
                         </div>
                     ))
@@ -265,7 +281,7 @@ const Messages = () => {
                             <div className="files-container" style={{marginTop:'1rem', marginBottom: '1.5rem', justifyContent: 'flex-start', gap: '0.7rem', fontSize: '14px'}}>
                                 {uploadedFiles.map((file, index) => (
                                     <div key={index} className="file-container">
-                                        <FaFile style={{fontSize: '40px', color: 'rgb(76, 121, 212)'}}/>
+                                        <FaFile className="app-icon"/>
                                         <p>{file.name.length > 15 ? `${file.name.slice(0, 12)}...` : file.name}</p>
                                         <button className="file-remove-btn" onClick={() => removeFile(index)}><RiDeleteBin6Fill style={{fontSize: '20px'}}/></button>
                                     </div>
