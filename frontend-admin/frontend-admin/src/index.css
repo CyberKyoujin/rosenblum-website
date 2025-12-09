@@ -783,6 +783,7 @@ html, body {
   height: 60px;
   align-self: flex-start;
   border-radius: 50%;
+  cursor: pointer;
 }
 
 .message-input-container{
@@ -868,6 +869,12 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+}
+
+.message-timestamp{
+  display: flex;
+  align-items: center;
+  
 }
 
 @media (max-width: 786px){

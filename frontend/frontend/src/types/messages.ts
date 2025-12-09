@@ -9,7 +9,7 @@ export interface MessageState {
     fetchMessagesError : ApiErrorResponse | null;
 
     fetchUserMessages: () => Promise<void>;
-    toggleMessages: () => Promise<void>;
+    toggleMessages: (sender_id: number) => Promise<void>;
     sendMessage: (formData: FormData) => Promise<void>;
 
     sendRequest: (name: string, email: string, phone_number: string, message: string) => Promise<void>;
@@ -20,8 +20,8 @@ export interface MessageState {
 
 export interface Message {
     id: string;
-    sender: string;
-    receiver: string;
+    sender: number;
+    receiver: number;
     message: string;
     viewed: boolean;
     timestamp: string;

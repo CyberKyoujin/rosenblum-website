@@ -3,7 +3,6 @@ import defaultAvatar from "../assets/default_avatar.webp"
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
-import { GiPlainCircle } from "react-icons/gi";
 import { IoCheckmarkSharp } from "react-icons/io5";
 
 
@@ -18,7 +17,7 @@ const MessageItem = ({id, formatted_timestamp, files, message, partner_data, vie
 
     const navigate = useNavigate();
 
-    const messageText = message.length > 50 ? message.slice(0, 48) + "..." : message
+    const messageText = message?.length > 50 ? message.slice(0, 48) + "..." : message
     
     return (
         <div className="message-item-container" style={isNewMessage ? { backgroundColor: "#e7efffff" } : {}} onClick={() => navigate(`/user/${partner_data?.id}/messages`)}>

@@ -46,6 +46,8 @@ const useMessages = create<MessagesState>((set, get) => ({
                     ordering: filters.ordering
                 }});
             set({ messages: response.data as MessagesResponseData});
+
+            console.log(response.data);
         } catch (err: unknown) {
             const error = toApiError(err);
             set({fetchMessagesError: error});
@@ -74,6 +76,7 @@ const useMessages = create<MessagesState>((set, get) => ({
     sendMessage: async (formData, id) => {
         set({ sendMessagesLoading: true, fetchMessagesError: null }); 
         try{
+            formData.append('id', id.toString());
             await axiosInstance.post(`/admin-user/user/send-message/`, formData);
         } catch (err: unknown) {
             const error = toApiError(err);

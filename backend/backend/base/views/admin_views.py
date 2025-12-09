@@ -196,10 +196,28 @@ class ToggleOrder(APIView):
     
 class ToggleViewed(APIView):
     permission_classes = [IsAuthenticated]
-    def get(self, request, pk, *args,  **kwargs):
-        messages = Message.objects.filter(Q(sender=pk) | Q(receiver=pk))
-        messages.update(viewed=True)
-        return Response(status=status.HTTP_200_OK)
+
+    def post(self, request):
+        
+        sender_id = request.data.get('sender_id')
+        
+        if not sender_id:
+            return Response(
+                {"error": "sender_id is required"}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        
+        updated_count = Message.objects.filter(
+            receiver=request.user,  
+            sender_id=sender_id,    
+            viewed=False            
+        ).update(viewed=True)
+
+        return Response(
+            {"status": "success", "updated_count": updated_count}, 
+            status=status.HTTP_200_OK
+        )
     
     
 class SendMessageView(APIView):
