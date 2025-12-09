@@ -30,6 +30,7 @@ const useMessages = create<MessagesState>((set, get) => ({
     setFilters: (newFilters) => {
         const updatedFilters  = { ...get().filters, ...newFilters}
         set({filters: updatedFilters})
+        get().fetchMessages(1);
     },
 
     fetchMessages: async (page_number) => {

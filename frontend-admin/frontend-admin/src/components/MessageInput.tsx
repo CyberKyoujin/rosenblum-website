@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import { FaPaperclip } from "react-icons/fa6";
 import { CircularProgress } from "@mui/material";
 import { RiMailSendLine } from "react-icons/ri";
@@ -14,13 +14,31 @@ interface MessageInputProps {
     isLoading?: boolean;
 }
 
-const MessageInput = ({handleSubmit = () => {}, handleClick, message, setMessage, autoExpand, fileInputRef, handleFileInputChange, isLoading}: MessageInputProps) => {
+const MessageInput = ({handleSubmit = () => {}, message, setMessage, handleFileInputChange, isLoading}: MessageInputProps) => {
  
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            handleSubmit({} as React.FormEvent<HTMLFormElement>); 
+            handleSubmit({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
         }
+    };
+
+    const handleClick = () => {
+        if (fileInputRef.current) {
+        fileInputRef.current.click();
+        }
+    };
+
+    const autoExpand = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            const element = e.target;
+            element.style.height = 'auto';
+            const computed = window.getComputedStyle(element);
+            let height = element.scrollHeight;
+            height += parseInt(computed.getPropertyValue('border-top-width'), 10)
+                     + parseInt(computed.getPropertyValue('border-bottom-width'), 10);
+            element.style.height = `${height}px`;
     };
 
     return (
