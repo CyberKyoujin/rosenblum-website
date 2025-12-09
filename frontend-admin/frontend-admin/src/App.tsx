@@ -16,11 +16,20 @@ import Translator from './screens/Translator'
 import useRequestsStore from './zustand/useRequests'
 import useOrdersStore from './zustand/useOrdersStore'
 import CustomerProfile from './screens/CustomerProfile'
+import useMessages from './zustand/useMessages'
+import useCustomersStore from './zustand/useCustomers'
 
 
 function App() {
   
   const authStore = useAuthStore();
+
+  const isAutenticated = useAuthStore(s => s.isAuthenticated);
+
+  const fetchMessages = useMessages(s => s.fetchMessages);
+  const fetchOrders = useOrdersStore(s => s.fetchOrders);
+  const fetchRequests = useRequestsStore(s => s.fetchRequests);
+  const fetchCustomers = useCustomersStore(s => s.fetchCustomers);
 
   useEffect(() => {
     const refreshTokenInterval = setInterval(async () => {
@@ -34,6 +43,15 @@ function App() {
 
     return () => clearInterval(refreshTokenInterval);
   }, [authStore]);
+
+  useEffect(() => {
+    if (isAutenticated) {
+      fetchMessages(1);
+      fetchOrders(1);
+      fetchRequests(1);
+      fetchCustomers(1);
+    }
+  })
 
   console.log(authStore.isAuthenticated, authStore.user);
 

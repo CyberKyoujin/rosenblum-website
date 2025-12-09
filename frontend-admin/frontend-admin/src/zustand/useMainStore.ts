@@ -17,13 +17,6 @@ interface UserData {
     profile_img_url: string;
 }
 
-interface File{
-    id: number;
-    file: string;
-    file_name: string;
-    file_size: string;
-}
-
 interface Message{
     id: number;
     formatted_timestamp: string;
@@ -41,7 +34,6 @@ interface MainState {
     isLoading: boolean;
     fetchUserData: (id: string) => Promise<void>;
     fetchUserMessages: (id: string) => Promise<void>;
-    toggleMessages: (id: string) => Promise<void>;
     sendMessage: (formData: FormData, id: string) => Promise<void>;
 }
 

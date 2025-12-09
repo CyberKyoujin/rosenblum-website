@@ -1389,6 +1389,10 @@ html, body {
   justify-content: space-between;
 }
 
+.message-item-container:hover{
+  cursor: pointer;
+}
+
 .message-item__info{
   display: flex;
   gap: 1.5rem;
@@ -1405,6 +1409,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .small-avatar{
@@ -1417,4 +1422,10 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.message-item__message-text-info{
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
 }

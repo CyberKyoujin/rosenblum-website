@@ -23,8 +23,6 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
     setFilters: (newFilters) => {
         const updatedFilters = {...get().filters, ...newFilters}
         set({filters: updatedFilters})
-        console.log(get().filters)
-        get().fetchRequests(1);
     },
 
     fetchRequests: async (page_number: number) => {
