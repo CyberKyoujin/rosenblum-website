@@ -76,7 +76,9 @@ const Home = () => {
                     label="Password"
                     />
                 </FormControl>
+
                 <button type="submit" className="btn">WEITER</button>
+                
             </form>
 
         </div>

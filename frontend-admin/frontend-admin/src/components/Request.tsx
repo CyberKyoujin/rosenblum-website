@@ -19,7 +19,7 @@ const Request = ({id, name, email, phone_number, message, formatted_timestamp}: 
     const { toggleOrder } = useMainStore.getState();
 
     return (
-        <div className="small-order-container" key={id} onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}>
+        <div className="small-order-container" key={id} onClick={() => {navigate(`/request/${id}`); toggleOrder(id)}}>
             
             <div className="order-container-info">
                 <BiMessageDetail size={45} className="app-icon"/>

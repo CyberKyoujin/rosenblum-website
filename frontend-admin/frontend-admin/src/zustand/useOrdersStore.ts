@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { OrderResponseData } from "../types/order";
+import { Order, OrderResponseData } from "../types/order";
 import axiosInstance from "./axiosInstance";
 import { ApiErrorResponse } from "../types/error";
 import { toApiError } from "../utils/toApiError";
@@ -7,9 +7,12 @@ import { OrderFiltersParams } from "../types/order";
 
 interface OrdersState {
     orders: OrderResponseData | null;
+    order: Order | null;
     fetchOrders: (page_number: number) => Promise<void>;
+    fetchOrder: (id: number) => Promise<void>;
     toggleOrder: (id: number) => Promise<void>;
-    updateOrder: (id: string, status: string) => Promise<void>;
+    updateOrder: (id: number, status: string, order_type: string) => Promise<void>;
+    deleteOrder: (id: number) => Promise<void>;
     loading: boolean;
     error: ApiErrorResponse | null;
     filters: OrderFiltersParams;
@@ -18,6 +21,7 @@ interface OrdersState {
 
 const useOrdersStore = create<OrdersState>((set, get) => ({
     orders: null,
+    order: null,
     loading: false,
     error: null,
     filters: {search: "", ordering: "-timestamp"},
@@ -29,7 +33,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
     },
 
     fetchOrders: async (page_number=1) => {
-        set({ loading: true, error: null }); 
+        set({ loading: true, error: null, orders: null }); 
 
         const { filters } = get();
 
@@ -51,7 +55,27 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
         }
     },
 
-    toggleOrder: async (id: number) => {
+    fetchOrder: async (id) => {
+
+        set({ loading: true, error: null });
+
+        try {
+
+            const response = await axiosInstance.get(`/order/${id}/`);
+            set({order: response.data})
+
+            console.log(response.data);
+            
+        } catch (err: unknown) {
+            const error = toApiError(err);
+            set({error: error});
+        } finally {
+            set({ loading: false }); 
+        }
+
+    },
+
+    toggleOrder: async (id) => {
         set({ loading: true, error: null });
         try{
             await axiosInstance.get(`/admin-user/toggle-order/${id}`);
@@ -62,10 +86,10 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
         }
     },
 
-    updateOrder: async (id: string, status: string) => {
+    updateOrder: async (id, status, order_type) => {
         set({ loading: true, error: null });
         try{
-            await axiosInstance.patch(`/admin-user/orders/${id}/update/`, {status: status});
+            await axiosInstance.patch(`/admin-user/orders/${id}/update/`, {status: status, order_type: order_type});
         } catch (err: unknown) {
             const error = toApiError(err);
             set({error: error});
@@ -73,6 +97,21 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
             set({ loading: false }); 
         }
     },
+
+    deleteOrder: async (id) => {
+        set({ loading: true, error: null });
+
+        try{
+
+            await axiosInstance.delete(`/admin-user/orders/${id}/delete/`);
+
+        } catch(err: unknown) {
+            const error = toApiError(err);
+            set({error: error});
+        } finally {
+            set({ loading: false }); 
+        }
+    }
 
 }))
 

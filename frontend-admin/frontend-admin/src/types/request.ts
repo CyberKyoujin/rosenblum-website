@@ -1,4 +1,4 @@
-export interface Request {
+export interface RequestData {
     id: number;
     name: string;
     email: string;
@@ -17,4 +17,9 @@ export interface RequestResponseData {
 export interface RequestFiltersParams {
     search? : string;
     ordering?: string;
+}
+
+export interface RequestAnswer {
+    answer_text: string;
+    formatted_timestamp: string;
 }

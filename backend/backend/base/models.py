@@ -80,6 +80,10 @@ class Order(models.Model):
         SENT = "sent"
         CANCELED = "canceled"
         
+    class OrderType(models.TextChoices):
+        COSTS_ESTIMATE = 'costs_estimate'
+        ORDER = 'order'
+        
     
     user = models.ForeignKey(CustomUser,models.CASCADE,null=True,blank=True)
     name = models.CharField(max_length = 264)
@@ -91,6 +95,7 @@ class Order(models.Model):
     zip = models.CharField(max_length = 10)
     message = models.CharField(max_length = 1000)
     status = models.CharField(max_length=40, choices=Status.choices, default=Status.REVIEW)
+    order_type = models.CharField(max_length=40, choices=OrderType.choices, default=OrderType.ORDER)
     timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     new = models.BooleanField(default=True, null=True, blank=True)
 
@@ -148,10 +153,24 @@ class RequestObject(models.Model):
     
     def __str__(self):
         return f'Request number {self.pk} of {self.name}, time: {self.formatted_timestamp()}'
+    
+
+class RequestAnswer(models.Model):
+    request = models.ForeignKey(RequestObject, on_delete=models.CASCADE)
+    answer_text = models.TextField(max_length=1000, default="")
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    
+    def formatted_timestamp(self) -> str:
+        local_timestamp = timezone.localtime(self.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')
+    
+    def __str__(self):
+        return f'Answer to №{self.pk} от {self.request} ({self.formatted_timestamp()})'
+
 
 class Review(models.Model):
     google_review_id = models.CharField(max_length=255, unique=True)
-    place_id = models.CharField(max_length=255)  
+    place_id = models.CharField(max_length=255)   
     author_name = models.CharField(max_length=255)
     profile_photo_url = models.URLField(blank=True, null=True)
 
