@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Order,File, Message, RequestObject, Review, EmailVerification
+from .models import CustomUser,Order,File, Message, RequestObject, Review, EmailVerification, RequestAnswer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
@@ -184,6 +184,17 @@ class RequestSerializer(serializers.ModelSerializer):
     formatted_timestamp = serializers.SerializerMethodField()
     class Meta:
         model = RequestObject
+        fields = '__all__'
+        
+    def get_formatted_timestamp(self, obj):
+        local_timestamp = timezone.localtime(obj.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')
+    
+    
+class RequestAnswerSerializer(serializers.ModelSerializer):
+    formatted_timestamp = serializers.SerializerMethodField()
+    class Meta:
+        model = RequestAnswer
         fields = '__all__'
         
     def get_formatted_timestamp(self, obj):

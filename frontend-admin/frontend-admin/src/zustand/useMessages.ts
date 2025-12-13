@@ -34,7 +34,7 @@ const useMessages = create<MessagesState>((set, get) => ({
     },
 
     fetchMessages: async (page_number) => {
-        set({ messagesLoading: true, fetchMessagesError: null }); 
+        set({ messagesLoading: true, fetchMessagesError: null, messages: null }); 
 
         const { filters } = get();
 

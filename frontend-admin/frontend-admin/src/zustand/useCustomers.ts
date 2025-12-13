@@ -34,7 +34,7 @@ const useCustomersStore = create<CustomersState>((set, get) => ({
     },
 
     fetchCustomers: async (page_number=1) => {
-        set({ loading: true, error: null }); 
+        set({ loading: true, error: null, customers: null }); 
 
         const { filters } = get();
 

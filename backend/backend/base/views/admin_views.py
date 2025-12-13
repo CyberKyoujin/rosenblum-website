@@ -1,5 +1,6 @@
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
@@ -7,8 +8,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from base.serializers import UserTokenObtainPairSerializer, RequestSerializer
 from django.middleware.csrf import get_token
 from rest_framework.decorators import api_view
-from base.models import CustomUser, Order, Message, File, RequestObject
-from base.serializers import CustomUserSerializer, UserDataSerializer, OrderSerializer, MessageSerializer
+from base.models import CustomUser, Order, Message, File, RequestObject, RequestAnswer
+from base.serializers import CustomUserSerializer, UserDataSerializer, OrderSerializer, MessageSerializer, RequestAnswerSerializer
 from django.contrib.auth import authenticate
 from google.cloud import storage
 from django.conf import settings
@@ -62,7 +63,7 @@ class CustomerListView(generics.ListAPIView):
     def get_queryset(self):
         return CustomUser.objects.filter(is_superuser=False).annotate(orders_count=Count('order'))
         
-class RequestView(generics.ListAPIView):
+class RequestsView(generics.ListAPIView):
     queryset = RequestObject.objects.all()
     serializer_class = RequestSerializer
         
@@ -81,6 +82,25 @@ class RequestView(generics.ListAPIView):
     
     ordering_fields = ['timestamp']
     ordering = ['-timestamp']
+    
+class RequestView(APIView):
+    def get(self, request, pk):
+        try:
+            request_obj = RequestObject.objects.get(id=pk)
+            serializer = RequestSerializer(request_obj, many=False, context={'request': request})
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except RequestObject.DoesNotExist:
+            return Response({'detail': 'Request not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class RequestAnswerView(APIView):
+    def get(self, request, pk):
+        request_answers = RequestAnswer.objects.filter(request=pk)
+        serializer = RequestAnswerSerializer(request_answers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CreateRequestAnswerView(CreateAPIView):
+    queryset = RequestAnswer.objects.all()
+    serializer_class = RequestAnswerSerializer
 
 class UserOrdersView(APIView):
     def get(self, request, pk, *args, **kwargs):

@@ -69,11 +69,9 @@ class OrdersViewSet(generics.ListAPIView):
     ]
     
     filterset_fields = ['status', 'new']
-    
     ordering_fields = ['timestamp']
     ordering = ['-timestamp']
     
-
 class OrderView(APIView):
     def get(self, request, pk):
         try:

@@ -38,7 +38,6 @@ export const RequestsFilter = () => {
     <>
         <FilterDropdown title="Filter Requests" onReset={handleReset}>
 
-            {/* 3. Сортировка */}
             <FormControl fullWidth size="small">
               <InputLabel>Sort By</InputLabel>
               <Select

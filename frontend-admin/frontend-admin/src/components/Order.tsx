@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import useMainStore from "../zustand/useMainStore";
 import { FaRegFileLines } from "react-icons/fa6";
+import useOrdersStore from "../zustand/useOrdersStore";
 
 
 interface OrderProps {
@@ -15,7 +15,7 @@ const Order = ({id, name, formatted_timestamp, status, is_new}: OrderProps) => {
 
     const navigate = useNavigate();
 
-    const { toggleOrder } = useMainStore.getState();
+    const toggleOrder = useOrdersStore(s => s.toggleOrder);
 
     return (
         <div className="small-order-container" key={id} onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}>

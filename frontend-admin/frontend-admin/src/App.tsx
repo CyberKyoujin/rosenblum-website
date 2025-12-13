@@ -18,6 +18,7 @@ import useOrdersStore from './zustand/useOrdersStore'
 import CustomerProfile from './screens/CustomerProfile'
 import useMessages from './zustand/useMessages'
 import useCustomersStore from './zustand/useCustomers'
+import RequestDetails from './screens/RequestDetails'
 
 
 function App() {
@@ -65,6 +66,11 @@ function App() {
         <Route path='/order/:orderId' element={
           <ProtectedRoute>
             <OrderDetails/>
+          </ProtectedRoute>
+        }/>
+        <Route path='/request/:requestId' element={
+          <ProtectedRoute>
+            <RequestDetails/>
           </ProtectedRoute>
         }/>
         <Route path='/user/:userId' element={

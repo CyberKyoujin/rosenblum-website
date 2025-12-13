@@ -1,7 +1,4 @@
 
-
-
-
 const Translator = () => {
     return (
         <div>

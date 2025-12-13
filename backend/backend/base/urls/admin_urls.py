@@ -1,18 +1,23 @@
 from django.urls import path
-from base.views.admin_views import AdminLoginView, CustomerListView, RequestView, GlobalMessagesView
-from base.views.admin_views import  FileURLView, UserDataView, ToggleOrder, UserOrdersView, UserMessagesView, ToggleViewed, SearchView
+from base.views.admin_views import AdminLoginView, CustomerListView, RequestsView, GlobalMessagesView
+from base.views.admin_views import  RequestView, FileURLView, UserDataView, ToggleOrder, UserOrdersView, UserMessagesView, ToggleViewed, SearchView, CreateRequestAnswerView, RequestAnswerView
 from base.views.order_views import OrdersViewSet, OrderUpdateView, OrderDeleteView
 from base.views.user_views import SendMessageView
+
+
 urlpatterns = [
     path('login/', AdminLoginView.as_view(), name='login'),
     path('customers/', CustomerListView.as_view(), name='customers'),
     path('orders/', OrdersViewSet.as_view(), name='orders'),
-    path('requests/', RequestView.as_view(), name='requests'),
+    path('requests/', RequestsView.as_view(), name='requests'),
     path('messages/', GlobalMessagesView.as_view(), name="global-messages"),
     path('file/', FileURLView.as_view(), name='file'),
+    path('answer-request/', CreateRequestAnswerView.as_view(), name="answer_request"),
+    path('request-answer/<int:pk>/', RequestAnswerView.as_view(), name="request-answers"),
     path('user/<int:pk>/', UserDataView.as_view(), name='user'),
     path('toggle-order/<int:pk>/', ToggleOrder.as_view(), name='toggle-order'),
     path('user/<int:pk>/orders', UserOrdersView.as_view(), name='user-orders'),
+    path('user/request/<int:pk>/', RequestView.as_view(), name="request"),
     path('user/<int:pk>/messages', UserMessagesView.as_view(), name='user-messages'),
     path('user/toggle-messages/', ToggleViewed.as_view(), name='toggle-messages'),
     path('user/send-message/', SendMessageView.as_view(), name='send-message'),
