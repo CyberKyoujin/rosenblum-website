@@ -11,6 +11,7 @@ import { OrderFiltersParams } from "../types/order";
 import { RequestFiltersParams } from "../types/request";
 import { LuSearchX } from "react-icons/lu";
 
+
 interface PaginatedData<T> {
     count: number;
     results: T[]; 
@@ -70,7 +71,7 @@ const DashboardSection = <T extends { id: number }> ({
 
         return () => clearTimeout(delayDebounce);
 
-    }, [search, setFilters]);
+    }, [search, setFilters, fetchData]);
     
 
     return (

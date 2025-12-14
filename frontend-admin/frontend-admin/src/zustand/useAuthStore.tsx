@@ -3,7 +3,7 @@ import axiosInstance from "./axiosInstance";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie'
 import { toApiError } from "../utils/toApiError";
-
+import { ApiErrorResponse } from "../types/error";
 
 interface AuthTokens {
     access: string;
@@ -22,25 +22,23 @@ interface AuthState {
     authTokens: AuthTokens | null;
     isAuthenticated: boolean;
     user: User | null;
-    loginError: boolean;
-    loginSuperuserError: boolean;
+    loginError: ApiErrorResponse | null;
+    loginSuperuserError: ApiErrorResponse | null;
+    loading: boolean;
     setTokens: (tokens: AuthTokens) => void;
     setUser: (user: User) => void;
     loginUser: (formData: FormData) => Promise<void>;
     logoutUser: () => void;
     refreshToken: () => Promise<void>;
-    setLoginError: () => void;
-    setSuperuserError: () => void;
 }
-
-
 
 const useAuthStore = create<AuthState>((set, get) => ({
     authTokens: null,
     isAuthenticated: false,
     user: null,
-    loginError: false,
-    loginSuperuserError: false,
+    loading: false,
+    loginError: null,
+    loginSuperuserError: null,
 
     setTokens: (tokens: AuthTokens) => {
         if (tokens){
@@ -53,52 +51,43 @@ const useAuthStore = create<AuthState>((set, get) => ({
     setUser: (user) => set({ user }),
 
     loginUser: async (formData: FormData) => {
-    // 1. Сбрасываем ошибки перед новым запросом
-    set({ loginError: false, loginSuperuserError: false });
 
-    try {
-        const response = await axiosInstance.post('/admin-user/login/', formData);
-        
-        // Сюда мы попадаем ТОЛЬКО если статус 2xx (200, 201...)
-        const { access, refresh } = response.data;
-        const tokens: AuthTokens = { access, refresh };
+        set({ loginError: null, loginSuperuserError: null, loading: true });
 
-        Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' });
-        Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
-        
-        get().setTokens(tokens);
-        window.location.href = '/dashboard';
-
-    } catch (err) {
-        // 2. Сюда попадают ВСЕ ошибки (401, 500, Network Error)
-        console.error('Login failed:', err);
-
-        // Используем нашу "пуленепробиваемую" функцию
-        const apiError = toApiError(err);
-
-        // 3. Теперь безопасно проверяем статус
-        if (apiError.status === 401) {
-            // Неверный логин/пароль
-            set({ loginError: true });
-        } else {
-            // Любая другая ошибка (500, Сеть, 403 и т.д.)
-            set({ loginSuperuserError: true });
+        try {
+            const response = await axiosInstance.post('/admin-user/login/', formData);
             
-            // Опционально: можно сохранить сообщение об ошибке, чтобы показать пользователю
-            // set({ errorMessage: apiError.message });
-        }
-    }
-},
+            const { access, refresh } = response.data;
+            const tokens: AuthTokens = { access, refresh };
 
-    setLoginError: () => set({loginError: false}),
-    
-    setSuperuserError: () => set({loginSuperuserError: false}),
+            Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' });
+            Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
+            
+            get().setTokens(tokens);
+            window.location.href = '/dashboard';
+
+        } catch (err: unknown) {
+
+            console.error('Login failed:', err);
+            const apiError = toApiError(err);
+
+            if (apiError.status === 401) {
+            apiError.message = "E-Mail oder Passwort ist falsch";
+        } else if (apiError.status === 403) {
+            apiError.message = "Nur Admin-Nutzer können sich einloggen"; 
+        }
+
+            set({loginError: apiError});
+        } finally {
+            set({loading: false});
+        }
+
+    },
 
     logoutUser: () => {
         Cookies.remove('access', { secure: true, sameSite: 'Strict' });
         Cookies.remove('refresh', { secure: true, sameSite: 'Strict' });
         set({authTokens: null, user: null, isAuthenticated: false});
-        window.location.href = '/';
     },
 
     refreshToken: async () => {

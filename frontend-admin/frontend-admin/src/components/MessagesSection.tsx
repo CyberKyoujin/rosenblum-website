@@ -10,15 +10,17 @@ import { FaFile } from "react-icons/fa";
 import { SiGooglemessages } from "react-icons/si";
 import { User } from "../types/user";
 import { CustomerData } from "../types/customer";
+import ComponentLoading from "./ComponentLoading";
 
 interface MessagesSectionProps {
     messages: Message[];
     userId: number;
     user: User;
     customerData: CustomerData;
+    loading: boolean;
 }
 
-const MessagesSection = ({messages, userId, user, customerData} : MessagesSectionProps) => {
+const MessagesSection = ({messages, userId, user, customerData, loading} : MessagesSectionProps) => {
 
     const navigate = useNavigate();
 
@@ -46,7 +48,11 @@ const MessagesSection = ({messages, userId, user, customerData} : MessagesSectio
 
         <div className="messages-main-container" id="scroll-div" ref={messagesEndRef}>
 
-                    {messages && messages.length > 0 ? 
+                    {loading ? (
+
+                      <ComponentLoading/>
+
+                    ) : messages && messages.length > 0 ? 
                     
                     (sortedMessages.map((message) => (
 

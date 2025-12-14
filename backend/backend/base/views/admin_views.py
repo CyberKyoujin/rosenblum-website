@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView
-from base.serializers import UserTokenObtainPairSerializer, RequestSerializer
+from base.serializers import TranslateSerializer, UserTokenObtainPairSerializer, RequestSerializer
 from django.middleware.csrf import get_token
 from rest_framework.decorators import api_view
 from base.models import CustomUser, Order, Message, File, RequestObject, RequestAnswer
@@ -22,6 +22,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.db.models import Count
 from django.db.models import Case, When, F, Q, Max, IntegerField, OuterRef, Subquery
+from base.services.translations import translate_text
+from rest_framework.generics import GenericAPIView
 
 class AdminLoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -144,30 +146,22 @@ class GlobalMessagesView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         
-        # 1. Сначала берем только те сообщения, которые касаются текущего пользователя
-        # (чтобы не видеть чужие переписки, если вы не супер-админ)
-        # Если вы хотите видеть ВООБЩЕ все переписки всех людей, уберите этот фильтр.
         all_my_messages = Message.objects.filter(
             Q(sender=user) | Q(receiver=user)
         )
 
-        # 2. Вычисляем ID собеседника для каждой строки
-        # Если я отправил - собеседник receiver, если я получил - собеседник sender.
         partner_expression = Case(
             When(sender=user, then=F('receiver_id')),
             default=F('sender_id'),
             output_field=IntegerField(),
         )
 
-        # 3. Группируем по собеседнику и находим ID самого последнего сообщения
         latest_message_ids = all_my_messages.annotate(
             partner_id=partner_expression
         ).values('partner_id').annotate(
-            max_id=Max('id') # Находим максимальный ID для каждого диалога
+            max_id=Max('id') 
         ).values('max_id')
 
-        # 4. Возвращаем QuerySet, отфильтрованный по найденным ID
-        # Это позволяет DRF продолжать применять search_fields и ordering поверх этого списка
         return Message.objects.filter(id__in=latest_message_ids).order_by('-timestamp')
 
 # GOOGLE STORAGE VIEWS
@@ -266,5 +260,24 @@ class SearchView(APIView):
         orders_serializer = OrderSerializer(orders, many=True)
         data = {"customers": serializer.data, "orders": orders_serializer.data}
         return Response(data, status=status.HTTP_200_OK)
+    
+class TranslateText(GenericAPIView):
+    
+    serializer_class = TranslateSerializer
+    
+    def post(self, request):
+        
+        serializer = self.get_serializer(data=request.data)
+        
+        if serializer.is_valid():
+            
+            text = serializer.validated_data['text']
+            lan_to = serializer.validated_data['lan_to']
+            
+            translated_text = translate_text(text, lan_to=lan_to)
+            
+            return Response({"result": translated_text}, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         

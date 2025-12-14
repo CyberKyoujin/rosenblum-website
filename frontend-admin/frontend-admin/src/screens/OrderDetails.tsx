@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FaFileAlt } from "react-icons/fa";
 import Divider from '@mui/material/Divider';
-import CircularProgress from '@mui/material/CircularProgress';
 import useOrdersStore from "../zustand/useOrdersStore";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
@@ -11,6 +10,7 @@ import OrderDeleteNotification from "../components/OrderDeleteNotification";
 import OrderDetailsButtonGroup from "../components/OrderDetailsButtonGroup";
 import OrderDetailsItem from "../components/OrderDetailsItem";
 import { useOrderDetails } from "../hooks/useOrderDetails";
+import ComponentLoading from "../components/ComponentLoading";
 
 const OrderDetails = () => {
 
@@ -81,9 +81,7 @@ const OrderDetails = () => {
 
                         {loading ? (
 
-                            <div className="spinner-container">
-                                <CircularProgress style={{marginTop: "10rem"}} size={50}/>
-                            </div>
+                            <ComponentLoading/>
 
                         ) : error ? (
 

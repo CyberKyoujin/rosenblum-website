@@ -37,6 +37,7 @@ const Messages = () => {
     } = useCustomersStore();
 
     const user = useAuthStore(s => s.user);
+    const loading = useMessages(s => s.messagesLoading);
 
     const { 
         message, 
@@ -97,6 +98,7 @@ const Messages = () => {
                     userId={formattedUserId} 
                     user={user} 
                     customerData={customerData}
+                    loading={messagesLoading}
                 />
 
             )}

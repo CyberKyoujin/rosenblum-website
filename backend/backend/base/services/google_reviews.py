@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timezone
 from django.conf import settings
 from base.models import Review
-from .translation import translate_missing_translations_for_review
+from .review_translation import translate_missing_translations_for_review
 
 GOOGLE_PLACES_API_KEY = settings.GOOGLE_PLACES_API_KEY
 GOOGLE_PLACE_ID = settings.GOOGLE_PLACE_ID

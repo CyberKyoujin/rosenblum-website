@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -9,15 +9,22 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import useAuthStore from "../zustand/useAuthStore";
+import ApiErrorAlert from "../components/ApiErrorAlert";
+import { useIsAtTop } from "../hooks/useIsAtTop";
+import { ApiErrorResponse } from "../types/error";
+import { CircularProgress } from "@mui/material";
 
 const Home = () => {
 
+    const error = useAuthStore(s => s.loginError);
+    const loginUser = useAuthStore(s => s.loginUser);
+    const loading = useAuthStore(s => s.loading);
     
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
-    const { loginUser } = useAuthStore.getState();
+
+    const isAtTop = useIsAtTop(5);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -35,6 +42,8 @@ const Home = () => {
 
     return (
         <div className="main-container" style={{padding: '0rem 2rem'}}>
+
+            <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed/>
 
             <form className="main-form-container" onSubmit={handleSubmit}>
                 
@@ -69,7 +78,7 @@ const Home = () => {
                             onMouseDown={handleMouseDownPassword}
                             edge="end"
                             >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
                             </IconButton>
                         </InputAdornment>
                     }
@@ -77,7 +86,9 @@ const Home = () => {
                     />
                 </FormControl>
 
-                <button type="submit" className="btn">WEITER</button>
+                <button type="submit" className="btn">
+                    {loading ? <CircularProgress sx={{color: "white"}}/> : "WEITER"}
+                </button>
                 
             </form>
 

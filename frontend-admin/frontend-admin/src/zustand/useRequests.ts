@@ -4,7 +4,6 @@ import { toApiError } from "../utils/toApiError";
 import { ApiErrorResponse } from "../types/error";
 import axiosInstance from "./axiosInstance";
 
-
 interface RequestsState {
     requests: RequestResponseData | null;
     request: RequestData | null;
@@ -60,7 +59,7 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
 
     fetchRequestData: async (id) => {
 
-        set({ loading: true, error: null }); 
+        set({ loading: true, error: null, sendAnswerSuccess: false }); 
 
         try {
             
