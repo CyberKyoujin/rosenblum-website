@@ -228,3 +228,7 @@ class ReviewSerializer(serializers.ModelSerializer):
                 return t.translated_text
 
         return obj.original_text
+    
+class TranslateSerializer(serializers.Serializer):
+    text = serializers.CharField(required=True)
+    lan_to = serializers.CharField(required=True)

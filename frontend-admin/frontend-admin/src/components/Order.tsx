@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { FaRegFileLines } from "react-icons/fa6";
 import useOrdersStore from "../zustand/useOrdersStore";
+import { statusColors, StatusKeys } from "../types/order";
 
 
 interface OrderProps {
@@ -10,6 +11,7 @@ interface OrderProps {
     status: string;
     is_new: boolean;
 }
+
 
 const Order = ({id, name, formatted_timestamp, status, is_new}: OrderProps) => {
 
@@ -36,9 +38,10 @@ const Order = ({id, name, formatted_timestamp, status, is_new}: OrderProps) => {
                     <p>{formatted_timestamp}</p>
                 </div>
 
-                <div className="order-footer" style={{backgroundColor: status === 'review' ? 'RGB(248 255 100)' : 'green'}}>
+                <div className="order-status"
+                    style={{backgroundColor: statusColors[status as StatusKeys]}}
+                />
 
-                </div>
             </div>
             
         </div>

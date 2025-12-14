@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.webp";
 import useAuthStore from "../zustand/useAuthStore";
-import logo2 from "../assets/logo2.png"
+import logo2 from "../assets/logo2.webp"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { TbLogout2 } from "react-icons/tb";
@@ -53,15 +53,12 @@ const Navbar = () => {
             {isAuthenticated && 
             <div className="navbar-user-container">
 
-                <div className="search-container">
-                    <input type="text" placeholder="Suche..." onChange={(e) => setSearchQuery(e.target.value)}/>
-                    <button type="button" onClick={handleClick}><IoSearch/></button>
-                </div>
+    
 
                 <p>Hallo, {user?.first_name}</p>
 
                 <button 
-                onClick={() => logoutUser()} 
+                onClick={() => {logoutUser(); navigate('/')}} 
                 className="btn"
                 style={{padding: '0.5rem'}}>
                 <TbLogout2 style={{fontSize: '25px'}}/>

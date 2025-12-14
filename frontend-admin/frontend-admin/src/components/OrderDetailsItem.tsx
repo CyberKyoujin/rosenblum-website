@@ -12,7 +12,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Order } from "../types/order";
+import { Order, statusColors, StatusKeys, statusValues } from "../types/order";
 import { SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import Divider from "@mui/material/Divider";
@@ -27,21 +27,10 @@ interface OrderDetailsItemProps {
     setOrderType: React.Dispatch<SetStateAction<string>>;
 }
 
-const statusValues = {
-    "review": "wird überprüft",
-    "sent": "Versand",
-    "in_progress": "In Bearbeitung",
-    "canceled": "Storniert",
-    "ready_pick_up": "Abholbereit",
-    "completed": "Fertig"
-};
-
 const orderTypeValues = {
     "order": "Auftrag",
     "costs_estimate": "Kostenvoranschlag"
 }
-
-type StatusKeys = 'review' | 'in_progress' | 'completed' | 'ready_pick_up' | 'sent' | 'canceled';
 
 type OrderTypeKeys = 'order' | 'costs_estimate';
 
@@ -74,7 +63,7 @@ const OrderDetailsItem = ({
 
                                     <FormControl style={{display: formActive ? "block" : "none"}}>
 
-                                            <InputLabel id="demo-simple-select-label">Auftragstyp</InputLabel>
+                                            <InputLabel id="demo-simple-select-label">Typ</InputLabel>
 
                                             <Select labelId="demo-simple-select-label" id="demo-simple-select" label="Age" 
                                             style={{width: '180px'}}
@@ -101,7 +90,9 @@ const OrderDetailsItem = ({
         
                                         <p>Status: {statusValues[status as StatusKeys]}</p>
 
-                                        <div className={(status === "review" || status === "in_progress") && "order-status yellow-div"}/>
+                                        <div className="order-status"
+                                            style={{backgroundColor: statusColors[status as StatusKeys]}}
+                                        />
         
                                         <FormControl style={{display: formActive ? "block" : "none"}}>
 

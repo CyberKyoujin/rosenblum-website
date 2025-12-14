@@ -51,6 +51,8 @@ const useMessageStore = create<MessageState>((set) => ({
                 set({sendMessagesLoading: true});
 
                 try{
+
+                    formData.append("id", "46");
                     
                     await axiosInstance.post('/user/send-message/', formData)
                     

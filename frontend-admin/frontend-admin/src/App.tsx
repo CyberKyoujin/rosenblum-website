@@ -25,13 +25,6 @@ function App() {
   
   const authStore = useAuthStore();
 
-  const isAutenticated = useAuthStore(s => s.isAuthenticated);
-
-  const fetchMessages = useMessages(s => s.fetchMessages);
-  const fetchOrders = useOrdersStore(s => s.fetchOrders);
-  const fetchRequests = useRequestsStore(s => s.fetchRequests);
-  const fetchCustomers = useCustomersStore(s => s.fetchCustomers);
-
   useEffect(() => {
     const refreshTokenInterval = setInterval(async () => {
       try {
@@ -54,9 +47,9 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path='/' element={
-          <LoginProtectedRoute>
+          
             <Home/>
-          </LoginProtectedRoute>
+          
         }/>
         <Route path='/dashboard' element={
           <ProtectedRoute>

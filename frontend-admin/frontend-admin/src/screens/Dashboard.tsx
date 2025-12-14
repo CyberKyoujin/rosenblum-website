@@ -1,6 +1,3 @@
-import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import Alert from '@mui/material/Alert';
 import { CiBoxList } from "react-icons/ci";
 import DashboardSection from "../components/DashboardSection";
 import Order from "../components/Order";

@@ -1,5 +1,5 @@
 from django.urls import path
-from base.views.admin_views import AdminLoginView, CustomerListView, RequestsView, GlobalMessagesView
+from base.views.admin_views import AdminLoginView, CustomerListView, RequestsView, GlobalMessagesView, TranslateText
 from base.views.admin_views import  RequestView, FileURLView, UserDataView, ToggleOrder, UserOrdersView, UserMessagesView, ToggleViewed, SearchView, CreateRequestAnswerView, RequestAnswerView
 from base.views.order_views import OrdersViewSet, OrderUpdateView, OrderDeleteView
 from base.views.user_views import SendMessageView
@@ -11,6 +11,7 @@ urlpatterns = [
     path('orders/', OrdersViewSet.as_view(), name='orders'),
     path('requests/', RequestsView.as_view(), name='requests'),
     path('messages/', GlobalMessagesView.as_view(), name="global-messages"),
+    path('translate/', TranslateText.as_view(), name="translate"), 
     path('file/', FileURLView.as_view(), name='file'),
     path('answer-request/', CreateRequestAnswerView.as_view(), name="answer_request"),
     path('request-answer/<int:pk>/', RequestAnswerView.as_view(), name="request-answers"),
