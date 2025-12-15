@@ -1584,3 +1584,38 @@ dd {
   align-items: center;
   justify-content: center;
 }
+
+/* TRANSLATOR */
+
+.translation-container{
+  max-width: 1280px;
+  margin-top: 5rem;
+  display: flex;
+  gap: 5rem;
+}
+
+.translation-container section{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.translation-select-img{
+  width: 30px;
+}
+
+.translator__results-container{
+  height: 100%;
+  padding: 1rem;
+}
+
+.translator__select-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.translator__select{
+  width: 25%;
+}

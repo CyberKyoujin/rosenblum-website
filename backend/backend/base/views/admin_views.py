@@ -22,8 +22,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.db.models import Count
 from django.db.models import Case, When, F, Q, Max, IntegerField, OuterRef, Subquery
-from base.services.translations import translate_text
+from base.services.translations import stream_translate_text
 from rest_framework.generics import GenericAPIView
+from django.http import StreamingHttpResponse
 
 class AdminLoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -274,9 +275,9 @@ class TranslateText(GenericAPIView):
             text = serializer.validated_data['text']
             lan_to = serializer.validated_data['lan_to']
             
-            translated_text = translate_text(text, lan_to=lan_to)
+            event_stream = stream_translate_text(text, lan_to)
             
-            return Response({"result": translated_text}, status=status.HTTP_200_OK)
+            return StreamingHttpResponse(event_stream, content_type='text/plain')
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

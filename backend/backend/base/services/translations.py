@@ -1,23 +1,31 @@
 from google import genai
 from decouple import config
-
+from google.genai import types
 
 api_key = config("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 
 
-def translate_text(text_to_translate: str, lan_to: str) -> str:
+def stream_translate_text(text_to_translate: str, lan_to: str):
     
-    print(text_to_translate)
-    
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=f"Translate the following text, word, or document into {lan_to} as a certified translator for German, Russian, and Ukrainian languages.\n"
-        "Please respond only with the finished translation without any details or explanations.\n\n"
-        "Text, word or document (can be uploaded as an image or file).\n\n"
-        f"{text_to_translate}"
+    prompt = (
+        f"Translate the following text into {lan_to}. "
+        "Return ONLY the translation without any additional text or markdown formatting."
     )
-    
-    print(response.text)
-    
-    return response.text
+
+    try:
+        
+        response_stream = client.models.generate_content_stream(
+            model="gemini-2.5-flash",
+            config=types.GenerateContentConfig(
+                temperature=0.3, 
+            ),
+            contents=[prompt, text_to_translate]
+        )
+
+        for chunk in response_stream:
+            if chunk.text:
+                yield chunk.text
+
+    except Exception as e:
+        yield f"Error: {str(e)}"
