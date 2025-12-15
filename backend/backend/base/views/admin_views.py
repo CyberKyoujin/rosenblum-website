@@ -8,8 +8,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from base.serializers import TranslateSerializer, UserTokenObtainPairSerializer, RequestSerializer
 from django.middleware.csrf import get_token
 from rest_framework.decorators import api_view
-from base.models import CustomUser, Order, Message, File, RequestObject, RequestAnswer
-from base.serializers import CustomUserSerializer, UserDataSerializer, OrderSerializer, MessageSerializer, RequestAnswerSerializer
+from base.models import CustomUser, Order, Message, File, RequestObject, RequestAnswer, Translation
+from base.serializers import CustomUserSerializer, UserDataSerializer, TranslationSerializer, OrderSerializer, MessageSerializer, RequestAnswerSerializer
 from django.contrib.auth import authenticate
 from google.cloud import storage
 from django.conf import settings
@@ -277,8 +277,38 @@ class TranslateText(GenericAPIView):
             
             event_stream = stream_translate_text(text, lan_to)
             
-            return StreamingHttpResponse(event_stream, content_type='text/plain')
+            response = StreamingHttpResponse(event_stream, content_type='text/plain')
+            
+            return response
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class TranslationsView(generics.ListAPIView):
+    serializer_class = TranslationSerializer
+    queryset = Translation.objects.all()
+    
+    filter_backends = [
+        filters.SearchFilter,      
+        DjangoFilterBackend,        
+        filters.OrderingFilter
+    ]
+    
+    search_fields = [
+        'id',
+        'name', 
+    ]
+    
+    ordering_fields = ['timestamp']
+    ordering = ['-timestamp']
+    
+class TranslationView(APIView):
+    def get(self, request, pk, *args, **kwargs):
+        translation = Translation.objects.get(pk=pk)
+        serializer = TranslateSerializer(translation)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class CreateTranslationView(generics.CreateAPIView):
+    serializer_class = TranslationSerializer
+    queryset = Translation.objects.all()
 
         

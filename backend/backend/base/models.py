@@ -202,3 +202,12 @@ class ReviewTranslation(models.Model):
     def __str__(self):
         return f"{self.review_id} -> {self.language}"
     
+class Translation(models.Model):
+    name = models.CharField(max_length=50)
+    initial_text = models.TextField()
+    translated_text = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    
+    def __str__(self):
+        return f'Translation №{self.pk} от {self.formatted_timestamp()}'
+    
