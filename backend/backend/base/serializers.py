@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser,Order,File, Message, RequestObject, Review, EmailVerification, RequestAnswer
+from .models import CustomUser,Order,File, Message, RequestObject, Review, EmailVerification, RequestAnswer, Translation
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
@@ -232,3 +232,13 @@ class ReviewSerializer(serializers.ModelSerializer):
 class TranslateSerializer(serializers.Serializer):
     text = serializers.CharField(required=True)
     lan_to = serializers.CharField(required=True)
+    
+class TranslationSerializer(serializers.ModelSerializer):
+    formatted_timestamp = serializers.SerializerMethodField()
+    class Meta:
+        model = Translation
+        fields = "__all__"    
+        
+    def get_formatted_timestamp(self, obj):
+        local_timestamp = timezone.localtime(obj.timestamp)
+        return local_timestamp.strftime('%d.%m.%Y %H:%M')

@@ -19,6 +19,7 @@ import CustomerProfile from './screens/CustomerProfile'
 import useMessages from './zustand/useMessages'
 import useCustomersStore from './zustand/useCustomers'
 import RequestDetails from './screens/RequestDetails'
+import TranslationDetails from './components/TranslationDetails'
 
 
 function App() {
@@ -64,6 +65,11 @@ function App() {
         <Route path='/request/:requestId' element={
           <ProtectedRoute>
             <RequestDetails/>
+          </ProtectedRoute>
+        }/>
+        <Route path='/translation/:translationId' element={
+          <ProtectedRoute>
+            <TranslationDetails/>
           </ProtectedRoute>
         }/>
         <Route path='/user/:userId' element={

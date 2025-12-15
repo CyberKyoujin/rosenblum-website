@@ -13,7 +13,7 @@ import useRequestsStore from '../zustand/useRequests';
 
 export const RequestsFilter = () => {
 
-  const setFilters = useRequestsStore((state) => state.setFilters);
+  const setFilters = useRequestsStore((s) => s.setFilters);
 
   const [ordering, setOrdering] = useState('-timestamp');
 
