@@ -1,6 +1,6 @@
 from rest_framework.request import Request
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, DestroyAPIView
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
@@ -310,5 +310,8 @@ class TranslationView(APIView):
 class CreateTranslationView(generics.CreateAPIView):
     serializer_class = TranslationSerializer
     queryset = Translation.objects.all()
-
+    
+class DeleteTranslationView(generics.DestroyAPIView):
+    serializer_class = TranslationSerializer
+    queryset = Translation.objects.all()
         
