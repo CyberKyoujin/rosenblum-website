@@ -33,7 +33,7 @@ const useTranslations = create<TranslationsState>((set, get) => ({
     },
 
     fetchTranslations: async (page_number: number) => {
-        set({ loading: true, error: null }); 
+        set({ loading: true, error: null, }); 
 
         const { filters } = get();
 
@@ -57,7 +57,7 @@ const useTranslations = create<TranslationsState>((set, get) => ({
         set({ loading: true, error: null }); 
 
         try {
-            const response = await axiosInstance.post(`/admin-user/translations/${id}/`);
+            const response = await axiosInstance.get(`/admin-user/translations/${id}/`);
             set({translation: response.data});
         } catch (err: unknown) {
             const error = toApiError(err);
