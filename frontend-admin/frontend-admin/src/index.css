@@ -1623,6 +1623,7 @@ dd {
 }
 
 .translator__results-container{
+  min-height: 20rem;
   height: 100%;
   padding: 1rem;
 }
@@ -1677,4 +1678,32 @@ dd {
   right: 15px;
   color: rgb(99, 99, 99);
   cursor: pointer;
+}
+
+/* Translation Details */
+
+.translation-details-container{
+  display: flex;
+  gap: 2rem;
+}
+
+.translation-details-info{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.translation-details-info p{
+  color: gray;
+}
+
+.translation-details-info h3{
+  color: var(--blue);
+}
+
+.translation-details-section{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  line-height: 1.5rem;
 }

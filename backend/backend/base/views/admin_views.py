@@ -304,7 +304,7 @@ class TranslationsView(generics.ListAPIView):
 class TranslationView(APIView):
     def get(self, request, pk, *args, **kwargs):
         translation = Translation.objects.get(pk=pk)
-        serializer = TranslateSerializer(translation)
+        serializer = TranslationSerializer(translation)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class CreateTranslationView(generics.CreateAPIView):
