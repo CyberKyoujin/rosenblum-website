@@ -28,14 +28,14 @@ const Order = ({id, name, formatted_timestamp, status, is_new}: OrderProps) => {
 
                 <div className="order-header">
                     <p style={{fontWeight: 'bold', color: is_new ? 'RGB(68 113 203)': 'black'}}># ro-{id}</p>
-                    <p>{name}</p>
+                    <p className="order-customer-name">{name}</p>
                 </div>
 
             </div>
 
             <div className="order-status-container">
                 <div>
-                    <p>{formatted_timestamp}</p>
+                    <p className="order-timestamp-text">{formatted_timestamp}</p>
                 </div>
 
                 <div className="order-status"

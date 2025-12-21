@@ -9,7 +9,9 @@ import { IoSearch } from "react-icons/io5";
 import { MdGTranslate } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
-
+import { FaChartBar } from "react-icons/fa";
+import NavLinks from "../components/NavLinks";
+import TemporaryDrawer from "../components/Drawer";
 
 const Navbar = () => {
 
@@ -18,34 +20,19 @@ const Navbar = () => {
 
     const navigate = useNavigate();
 
-    const handleClick = () => {
-        if (searchQuery.trim().length > 0) {
-            navigate('/search', { state: { message: searchQuery } });
-        }
-    }
-
     return (
         <div className="main-nav-container">
-            <div className="nav-logo-container">
+
+            <section className="nav-content">
+
+                <div className="nav-logo-container">
                 <img src={logo} alt="" className="logo" onClick={() => navigate('/dashboard')}/>
                 <img src={logo2} alt="" className="small-logo" onClick={() => navigate('/dashboard')}/>
             </div>
 
             <div className="nav-links-container">
-                <div className="nav-link-container">
-                    <MdGTranslate style={{fontSize: "20px"}}/>
-                    <Link to="/translator" className="nav-link">Übersetzer</Link>
-                </div>
-
-                <div className="nav-link-container">
-                    <FaUser style={{fontSize: "20px"}}/>
-                    <Link to="/customers" className="nav-link">Kunden</Link>
-                </div>
-
-                <div className="nav-link-container">
-                    <BiSolidMessageSquareDetail style={{fontSize: "20px"}}/>
-                    <Link to="/messages" className="nav-link">Nachrichten</Link>
-                </div>
+                
+                <NavLinks/>
 
             </div>
 
@@ -53,19 +40,21 @@ const Navbar = () => {
             {isAuthenticated && 
             <div className="navbar-user-container">
 
-    
-
                 <p>Hallo, {user?.first_name}</p>
 
                 <button 
                 onClick={() => {logoutUser(); navigate('/')}} 
                 className="btn"
                 style={{padding: '0.5rem'}}>
-                <TbLogout2 style={{fontSize: '25px'}}/>
+                <TbLogout2 size={25}/>
                 </button>
 
             </div>
             }
+
+            <TemporaryDrawer userName={user?.first_name} logout={logoutUser}/>
+
+            </section>
 
         </div>
     )

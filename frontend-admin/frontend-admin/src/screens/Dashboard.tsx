@@ -37,18 +37,16 @@ const Dashboard = () => {
     return (
         <>
             <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed={true}/>
-    
-        
            
             <div className="main-container">
 
                 <div className="dashboard-container">
 
 
-                <DashboardSection data={orders} title="Aufträge" Icon={CiBoxList} fetchData={fetchOrders} ItemComponent={Order} loading={ordersLoading} error={ordersError} setFilters={setOrdersFilters} Filter={OrderFilter}/>
-                
+                    <DashboardSection data={orders} title="Aufträge" Icon={CiBoxList} fetchData={fetchOrders} ItemComponent={Order} loading={ordersLoading} error={ordersError} setFilters={setOrdersFilters} Filter={OrderFilter}/>
+                    
 
-                <DashboardSection data={requests} title="Anfragen" Icon={BiMessageDetail} fetchData={fetchRequests} ItemComponent={Request} loading={requestLoading} error={requestsError} setFilters={setRequestFilters} Filter={RequestsFilter}/>
+                    <DashboardSection data={requests} title="Anfragen" Icon={BiMessageDetail} fetchData={fetchRequests} ItemComponent={Request} loading={requestLoading} error={requestsError} setFilters={setRequestFilters} Filter={RequestsFilter}/>
 
                 
                 </div>
