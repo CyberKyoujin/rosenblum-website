@@ -13,10 +13,10 @@ import { CustomerData } from "../types/customer";
 import ComponentLoading from "./ComponentLoading";
 
 interface MessagesSectionProps {
-    messages: Message[];
+    messages: Message[] | null;
     userId: number;
-    user: User;
-    customerData: CustomerData;
+    user: User | null;
+    customerData: CustomerData | null;
     loading: boolean;
 }
 
@@ -32,14 +32,19 @@ const MessagesSection = ({messages, userId, user, customerData, loading} : Messa
     }; 
     
     const sortedMessages = useMemo(() => {
+
     if (!messages) return [];
+
     return [...messages].sort((a, b) => Date.parse(a.timestamp) - Date.parse(b.timestamp));
+
     }, [messages]);
 
     useEffect(() => {
-            if (messagesEndRef.current) {
-                messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-            }
+
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+        }
+
     }, [messages]); 
 
     const userAvatar = customerData?.profile_img || customerData?.profile_img_url || defaultAvatar

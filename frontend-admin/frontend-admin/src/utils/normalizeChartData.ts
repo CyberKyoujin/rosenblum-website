@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { DynamicsData } from "../types/statistics";
 
 

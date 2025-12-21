@@ -2,7 +2,6 @@
 import { useNavigate } from "react-router-dom";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import { FaRegFileLines } from "react-icons/fa6";
-import useOrdersStore from "../zustand/useOrdersStore";
 import useCustomersStore from "../zustand/useCustomers";
 
 const CustomerOrdersSection = () => {
@@ -50,7 +49,6 @@ const CustomerOrdersSection = () => {
                             <MdOutlineStickyNote2 style={{ fontSize: '100px' }} />
 
                             <h3>Der Nutzer hat noch keine Aufträge</h3>
-
 
                         </div>
                     )}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { RiContactsFill } from "react-icons/ri";
 import { MdCircle } from "react-icons/md";
 import { RequestData } from '../types/request';

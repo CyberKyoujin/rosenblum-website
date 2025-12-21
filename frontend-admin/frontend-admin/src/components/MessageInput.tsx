@@ -42,7 +42,9 @@ const MessageInput = ({handleSubmit = () => {}, message, setMessage, handleFileI
     };
 
     return (
+    
         <form className="message-input-container" onSubmit={handleSubmit}>
+            
             <textarea
             className="message-input"
             value={message}

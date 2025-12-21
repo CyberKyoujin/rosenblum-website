@@ -38,12 +38,14 @@ const RequestDetails = () => {
         <main className="main-container">
 
             <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed/>
+
             {sendAnswerSuccess && <ApiErrorAlert successMessage={"Anfrage erfolgreich beantwortet"} belowNavbar={isAtTop} fixed/>}
+
             {!isValidId && <ApiErrorAlert error={{status:404, code: "InvalidId", message: "Invalid Request ID"}} belowNavbar={isAtTop} fixed/>}
 
-            <article className="request-details-container">
 
-            
+            <article className="request-details-container">
+     
                 <header className="request-details-title">
 
                     <div className="request-details-item-title-container">

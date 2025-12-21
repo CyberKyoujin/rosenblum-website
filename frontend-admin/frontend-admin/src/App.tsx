@@ -1,26 +1,23 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import Navbar from './screens/Navbar'
+import { useEffect, lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import './App.css'
+
+import Navbar from './screens/Navbar'
 import Home from './screens/Home'
 import Dashboard from './screens/Dashboard'
 import useAuthStore from './zustand/useAuthStore'
-import ProtectedRoute from './components/ProtectedRoute'
-import OrderDetails from './screens/OrderDetails'
-import LoginProtectedRoute from './components/LoginProtectedRoute'
-import Messages from './screens/Messages'
-import Customers from './screens/Customers'
-import SearchResults from './screens/SearchResults'
-import GlobalMessages from './screens/GlobalMessages'
-import Translator from './screens/Translator'
-import useRequestsStore from './zustand/useRequests'
-import useOrdersStore from './zustand/useOrdersStore'
-import CustomerProfile from './screens/CustomerProfile'
-import useMessages from './zustand/useMessages'
-import useCustomersStore from './zustand/useCustomers'
-import RequestDetails from './screens/RequestDetails'
-import TranslationDetails from './components/TranslationDetails'
-import Statistics from './screens/Statistics'
+import AppLoader from './components/AppLoader'
+
+const ProtectedRoute = lazy(() => import('./components/ProtectedRoute'));
+const OrderDetails = lazy(() => import('./screens/OrderDetails'));
+const Messages = lazy(() => import('./screens/Messages'));
+const Customers = lazy(() => import('./screens/Customers'));
+const GlobalMessages = lazy(() => import('./screens/GlobalMessages'));
+const Translator = lazy(() => import('./screens/Translator'));
+const CustomerProfile = lazy(() => import('./screens/CustomerProfile'));
+const RequestDetails = lazy(() => import('./screens/RequestDetails'));
+const TranslationDetails = lazy(() => import('./components/TranslationDetails'));
+const Statistics = lazy(() => import('./screens/Statistics'));
 
 
 function App() {
@@ -40,76 +37,56 @@ function App() {
     return () => clearInterval(refreshTokenInterval);
   }, [authStore]);
 
-  
-
-  console.log(authStore.isAuthenticated, authStore.user);
 
   return (
     <>
-      <Navbar/>
-      <Routes>
-        <Route path='/' element={
+      <Navbar />
+      
+      <Suspense fallback={<AppLoader />}>
+        <Routes>
+          <Route path='/' element={<Home />} />
           
-            <Home/>
+          <Route path='/dashboard' element={
+            <ProtectedRoute><Dashboard /></ProtectedRoute>
+          } />
           
-        }/>
-        <Route path='/dashboard' element={
-          <ProtectedRoute>
-            <Dashboard/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/order/:orderId' element={
-          <ProtectedRoute>
-            <OrderDetails/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/request/:requestId' element={
-          <ProtectedRoute>
-            <RequestDetails/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/translation/:translationId' element={
-          <ProtectedRoute>
-            <TranslationDetails/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/user/:userId' element={
-          <ProtectedRoute>
-            <CustomerProfile/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/messages' element={
-          <ProtectedRoute>
-            <GlobalMessages/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/user/:userId/messages' element={
-          <ProtectedRoute>
-            <Messages/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/customers' element={
-          <ProtectedRoute>
-            <Customers/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/search' element={
-          <ProtectedRoute>
-            <SearchResults/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/translator' element={
-          <ProtectedRoute>
-            <Translator/>
-          </ProtectedRoute>
-        }/>
-        <Route path='/statistics' element={
-          <ProtectedRoute>
-            <Statistics/>
-          </ProtectedRoute>
-        }/>
-
-      </Routes>
+          <Route path='/order/:orderId' element={
+            <ProtectedRoute><OrderDetails /></ProtectedRoute>
+          } />
+          
+          <Route path='/request/:requestId' element={
+            <ProtectedRoute><RequestDetails /></ProtectedRoute>
+          } />
+          
+          <Route path='/translation/:translationId' element={
+            <ProtectedRoute><TranslationDetails /></ProtectedRoute>
+          } />
+          
+          <Route path='/user/:userId' element={
+            <ProtectedRoute><CustomerProfile /></ProtectedRoute>
+          } />
+          
+          <Route path='/messages' element={
+            <ProtectedRoute><GlobalMessages /></ProtectedRoute>
+          } />
+          
+          <Route path='/user/:userId/messages' element={
+            <ProtectedRoute><Messages /></ProtectedRoute>
+          } />
+          
+          <Route path='/customers' element={
+            <ProtectedRoute><Customers /></ProtectedRoute>
+          } />
+          
+          <Route path='/translator' element={
+            <ProtectedRoute><Translator /></ProtectedRoute>
+          } />
+          
+          <Route path='/statistics' element={
+            <ProtectedRoute><Statistics /></ProtectedRoute>
+          } />
+        </Routes>
+      </Suspense>
     </>
   )
 }

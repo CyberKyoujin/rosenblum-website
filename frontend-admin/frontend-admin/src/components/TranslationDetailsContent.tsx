@@ -1,5 +1,4 @@
 import Card from '@mui/material/Card';
-import React from 'react';
 import { Translation } from '../types/translation';
 
 interface TranslationDetailsContentProps {
@@ -8,7 +7,7 @@ interface TranslationDetailsContentProps {
 
 const TranslationDetailsContent = ({translation}: TranslationDetailsContentProps) => {
 
-    const {id, name, initial_text, translated_text, formatted_timestamp} = translation;
+    const { name, initial_text, translated_text, formatted_timestamp } = translation;
 
     return (
         <>

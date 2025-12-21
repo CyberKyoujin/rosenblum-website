@@ -55,7 +55,7 @@ export default function OrderQuantityLineChart({data, loading, error}: OrderQuan
                 
                 <CircularProgress sx={{marginBottom: "3rem"}}/>
                 ) :error ? (
-                <ErrorView message='Es ist ein Fehler aufgetreten.'/>
+                <ErrorView message='Es ist ein Fehler aufgetreten.' statsError/>
                 ): (
                 <LineChart
                 series={[

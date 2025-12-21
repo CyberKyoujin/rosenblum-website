@@ -11,12 +11,14 @@ interface UseTranslatorsReturn {
 }
 
 const useTranslators = (
+
     translate: (inputText: string, lanTo: string) => void,
     streamedText: string,
     translationName: string,
     togglePopup: () => void,
     setTranslationName: React.Dispatch<SetStateAction<string>>,
     fetchTranslations: (id: number) => Promise<void>
+    
     ): UseTranslatorsReturn => {
 
     const saveTranslation = useTranslations(s => s.saveTranslation);
@@ -25,6 +27,7 @@ const useTranslators = (
     const [lanTo, setLanTo] = useState("German");
 
     const handleLanguageChange = (event: React.SyntheticEvent | null, newValue: string | null) => {   
+        event?.preventDefault();
         setLanTo(newValue || ""); 
     };
     

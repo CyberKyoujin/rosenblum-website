@@ -13,10 +13,12 @@ interface UseChatFormReturn {
 }
 
 export const useChatForm = (
+
     sendMessage: (formData: FormData, id: number) => Promise<void>,
     fetchUserMessages: (id: number) => Promise<void>,
     userId: number,
     isLoading: boolean
+    
 ): UseChatFormReturn => {
 
     const [message, setMessage] = useState('');

@@ -87,11 +87,15 @@ const OrderDetails = () => {
 
                             <ErrorView/>
 
-                        ) : (
+                        ) : orderData ? (
 
                             <OrderDetailsItem orderType={orderType} setOrderType={setOrderType} orderData={orderData} status={status} setStatus={setStatus} formActive={formActive}/>
 
-                        )}
+                        ):
+
+                            <p>nicht gefunden</p>
+                            
+                        }
 
 
                     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -83,6 +83,7 @@ const Home = () => {
                     }
                     label="Password"
                     />
+                    
                 </FormControl>
 
                 <button type="submit" className="btn">

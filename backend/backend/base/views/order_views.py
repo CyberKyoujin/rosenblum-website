@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import generics
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
-
+from base.pagination import CustomPagination
 
 @api_view(['POST'])
 def order_create(request):
@@ -53,6 +53,7 @@ class OrdersViewSet(generics.ListAPIView):
     permission_classes = []
     queryset = Order.objects.select_related("user").all()
     serializer_class = OrderSerializer
+    pagination_class = CustomPagination
     
     filter_backends = [
         filters.SearchFilter,      
@@ -68,7 +69,7 @@ class OrdersViewSet(generics.ListAPIView):
         'message'
     ]
     
-    filterset_fields = ['status', 'new']
+    filterset_fields = ['status', 'is_new']
     ordering_fields = ['timestamp']
     ordering = ['-timestamp']
     

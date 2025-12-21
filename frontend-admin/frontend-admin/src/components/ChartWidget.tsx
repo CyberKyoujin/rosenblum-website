@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Typography, Grid, Skeleton } from '@mui/material';
+import { Paper, Typography, Grid } from '@mui/material';
 
 interface ChartWidgetProps {
   title: string;

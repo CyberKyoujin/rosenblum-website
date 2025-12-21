@@ -35,7 +35,7 @@ export default function LocationBarChart({data, loading, error}: LocationBarChar
       {loading ? (
         <CircularProgress sx={{marginBottom: "3rem"}}/>
       ) :error ? (
-        <ErrorView message='Es ist ein Fehler aufgetreten.'/>
+        <ErrorView message='Es ist ein Fehler aufgetreten.' statsError/>
       ): (
         <BarChart
         series={[

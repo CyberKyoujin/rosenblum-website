@@ -44,7 +44,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
                     search: filters.search,
                     ordering: filters.ordering,
                     status: filters.status,
-                    new: filters.new,
+                    is_new: filters.isNew,
             }});
             set({ orders: response.data as OrderResponseData});
         } catch (err: unknown) {
@@ -63,8 +63,6 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
 
             const response = await axiosInstance.get(`/order/${id}/`);
             set({order: response.data})
-
-            console.log(response.data);
             
         } catch (err: unknown) {
             const error = toApiError(err);

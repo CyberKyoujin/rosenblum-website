@@ -1,4 +1,3 @@
-import React from 'react';
 import { RequestAnswer } from '../types/request';
 import { BiSolidMessageSquareDetail } from "react-icons/bi";
 import Divider from "@mui/material/Divider";
@@ -10,8 +9,11 @@ interface RequestDetailsAnswersSectionProps {
 }
 
 const RequestDetailsAnswersSection = ({
+
     requestAnswers
+
     }: RequestDetailsAnswersSectionProps) => {
+
     return (
         <>
 

@@ -6,7 +6,7 @@ import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { IoCheckmarkSharp } from "react-icons/io5";
 
 
-const MessageItem = ({id, formatted_timestamp, files, message, partner_data, viewed, sender, receiver, sender_data, receiver_data}: Message) => {
+const MessageItem = ({formatted_timestamp, message, partner_data, viewed, sender, receiver}: Message) => {
     
     
     const user = useAuthStore(s => s.user);
@@ -27,7 +27,9 @@ const MessageItem = ({id, formatted_timestamp, files, message, partner_data, vie
                 <img src={profileImg} alt="" className="message-item-avatar" referrerPolicy="no-referrer"/>
 
                 <div className="message-item__message-info">
+
                     <h3>{partner_data?.first_name} {partner_data?.last_name}</h3>
+                    
                     <div className="message-item__message-text">
                         
 
@@ -38,16 +40,23 @@ const MessageItem = ({id, formatted_timestamp, files, message, partner_data, vie
                                 
                                 <IoCheckmarkSharp className="app-icon" size={25}/>
                                 Sie: {messageText}
+
                                 </>
+
                             ) : sender === 46 && viewed ? (
                                 <>
+
                                 <IoCheckmarkDoneSharp className="app-icon" size={25}/>
                                 Sie: {messageText}
+
                                 </>
+
                             ) : (
+
                                 <>
                                     {messageText}
                                 </>
+
                             )}
                             
                         </p>

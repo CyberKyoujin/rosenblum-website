@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import FilterDropdown from './FilterDropdown';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -32,22 +32,22 @@ const TranslationsFilter = () => {
   
     return (
         <>
-        <FilterDropdown title="Filter Requests" onReset={handleReset}>
+          <FilterDropdown title="Filter Requests" onReset={handleReset}>
 
-            <FormControl fullWidth size="small">
-              <InputLabel>Sort By</InputLabel>
-              <Select
-                value={ordering}
-                label="Sort By"
-                onChange={(e) => setOrdering(e.target.value)}
-              >
-                <MenuItem value="-timestamp">Datum: Neue</MenuItem>
-                <MenuItem value="timestamp">Datum: Alte</MenuItem>
-              </Select>
-            </FormControl>
-            
-        </FilterDropdown>
-    </>
+              <FormControl fullWidth size="small">
+                <InputLabel>Sort By</InputLabel>
+                <Select
+                  value={ordering}
+                  label="Sort By"
+                  onChange={(e) => setOrdering(e.target.value)}
+                >
+                  <MenuItem value="-timestamp">Datum: Neue</MenuItem>
+                  <MenuItem value="timestamp">Datum: Alte</MenuItem>
+                </Select>
+              </FormControl>
+              
+          </FilterDropdown>
+        </>
     );
 }
 

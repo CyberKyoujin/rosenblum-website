@@ -25,6 +25,8 @@ from django.db.models import Case, When, F, Q, Max, IntegerField, OuterRef, Subq
 from base.services.translations import stream_translate_text
 from rest_framework.generics import GenericAPIView
 from django.http import StreamingHttpResponse
+from base.pagination import CustomPagination
+
 
 class AdminLoginView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -69,6 +71,7 @@ class CustomerListView(generics.ListAPIView):
 class RequestsView(generics.ListAPIView):
     queryset = RequestObject.objects.all()
     serializer_class = RequestSerializer
+    pagination_class = CustomPagination
         
     filter_backends = [
         filters.SearchFilter,      
@@ -82,6 +85,8 @@ class RequestsView(generics.ListAPIView):
         'email', 
         'phone_number',
     ]
+    
+    filterset_fields = ['is_new']
     
     ordering_fields = ['timestamp']
     ordering = ['-timestamp']
@@ -204,7 +209,15 @@ class ToggleOrder(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, pk, *args, **kwargs):
         order = Order.objects.get(pk=pk)
-        order.new = False
+        order.is_new = False
+        order.save()
+        return Response(status=status.HTTP_200_OK)
+    
+class ToggleRequest(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request, pk, *args, **kwargs):
+        order = RequestObject.objects.get(pk=pk)
+        order.is_new = False
         order.save()
         return Response(status=status.HTTP_200_OK)
     
@@ -314,4 +327,5 @@ class CreateTranslationView(generics.CreateAPIView):
 class DeleteTranslationView(generics.DestroyAPIView):
     serializer_class = TranslationSerializer
     queryset = Translation.objects.all()
-        
+    
+         

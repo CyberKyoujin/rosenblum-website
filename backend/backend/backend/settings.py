@@ -63,11 +63,14 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://127.0.0.1:4173",
+    "http://localhost:4173",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',  # First app
     "http://localhost:5000",
+    "http://localhost:4173",
 ]
 
 SIMPLE_JWT = {
@@ -102,7 +105,8 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # First app
-    "http://localhost:5000",  # Second app
+    "http://localhost:5000",
+    "http://localhost:4173",# Second app
 ]
 
 CORS_ALLOW_CREDENTIALS = True

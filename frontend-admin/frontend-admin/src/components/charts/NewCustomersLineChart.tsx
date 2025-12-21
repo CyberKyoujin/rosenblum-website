@@ -29,7 +29,7 @@ export default function NewCustomersLineChart({data, loading, error}: NewCustome
       {loading ? (
               <CircularProgress sx={{marginBottom: "3rem"}}/>
             ) :error ? (
-              <ErrorView message='Es ist ein Fehler aufgetreten.'/>
+              <ErrorView message='Es ist ein Fehler aufgetreten.' statsError/>
             ): (
               <LineChart
                 series={[

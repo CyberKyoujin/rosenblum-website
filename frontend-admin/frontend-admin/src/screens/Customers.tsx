@@ -1,9 +1,5 @@
 
-import { useEffect, useState } from "react";
-import TextField from '@mui/material/TextField';
-import Divider from '@mui/material/Divider';
 import { FaRegUser } from "react-icons/fa";
-import { FiUserX } from "react-icons/fi";
 import useCustomersStore from "../zustand/useCustomers";
 import Customer from "../components/Customer";
 import { useIsAtTop } from "../hooks/useIsAtTop";
