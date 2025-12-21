@@ -20,6 +20,7 @@ import useMessages from './zustand/useMessages'
 import useCustomersStore from './zustand/useCustomers'
 import RequestDetails from './screens/RequestDetails'
 import TranslationDetails from './components/TranslationDetails'
+import Statistics from './screens/Statistics'
 
 
 function App() {
@@ -100,6 +101,11 @@ function App() {
         <Route path='/translator' element={
           <ProtectedRoute>
             <Translator/>
+          </ProtectedRoute>
+        }/>
+        <Route path='/statistics' element={
+          <ProtectedRoute>
+            <Statistics/>
           </ProtectedRoute>
         }/>
 

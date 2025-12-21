@@ -32,6 +32,7 @@ const MessageItem = ({id, formatted_timestamp, files, message, partner_data, vie
                         
 
                         <p className="message-item__message-text-info">
+
                             {sender === 46 && !viewed ? (
                                 <>
                                 
@@ -48,6 +49,7 @@ const MessageItem = ({id, formatted_timestamp, files, message, partner_data, vie
                                     {messageText}
                                 </>
                             )}
+                            
                         </p>
 
                     </div>

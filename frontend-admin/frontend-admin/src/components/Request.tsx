@@ -26,12 +26,12 @@ const Request = ({id, name, email, phone_number, message, formatted_timestamp}: 
                 
                 <div className="order-header">
                     <p style={{fontWeight: 'bold'}}>{name}</p>
-                    <p>{email}</p>
+                    <p className="order-customer-name">{email}</p>
                 </div>
             </div>
 
             <div>
-                <p>{formatted_timestamp}</p>
+                <p className="order-timestamp-text">{formatted_timestamp}</p>
             </div>
 
 

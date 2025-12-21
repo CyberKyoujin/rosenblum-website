@@ -72,7 +72,7 @@ const TranslatorSection = ({
                         sx={{lineHeight: "1,5rem"}}
                     />
 
-                    <button className='btn' style={{width: "100%"}} onClick={() => handleTranslateClick()}> 
+                    <button className='btn' style={{marginTop: "12px"}} onClick={() => handleTranslateClick()}> 
                             
                         {isLoading ? <CircularProgress sx={{color:'white'}}/> : "WEITER"} 
 
@@ -100,7 +100,7 @@ const TranslatorSection = ({
                             
                     </Card>
 
-                    <button className='btn' style={{width: "100%"}} onClick={() => togglePopup()}> SPEICHERN </button>
+                    <button className='btn' onClick={() => togglePopup()}> SPEICHERN </button>
 
                 </div>
 

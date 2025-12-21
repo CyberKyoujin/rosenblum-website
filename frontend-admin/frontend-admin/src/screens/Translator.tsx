@@ -62,7 +62,7 @@ const Translator = () => {
                     <h1>Übersetzer</h1>
                 </section>
 
-                <Divider sx={{width: "100%"}}/>
+                <Divider/>
 
                 <TranslatorSection lanTo={lanTo} handleLanguageChange={handleLanguageChange} inputText={inputText} setInputText={setInputText} handleTranslateClick={handleTranslateClick} isLoading={isLoading} streamedText={streamedText} togglePopup={togglePopup}/>
 

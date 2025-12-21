@@ -11,7 +11,6 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import useAuthStore from "../zustand/useAuthStore";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
-import { ApiErrorResponse } from "../types/error";
 import { CircularProgress } from "@mui/material";
 
 const Home = () => {

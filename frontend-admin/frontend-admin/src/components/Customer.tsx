@@ -33,13 +33,14 @@ const Customer = ({id, profile_img_url, profile_img, first_name, last_name, emai
 
                 <div className="customer-content">
                     <h3>{first_name} {last_name}</h3>
-                    <p>{email}</p>
+                    <p className="order-customer-name">{email}</p>
                 </div>
 
             </div>
 
             <div className="customer-bottom">
-                <p>{orders} Aufträge</p>
+                <p>{orders}</p>
+                <p className="customer-orders">Aufträge</p>
             </div>
         </div>
     )
