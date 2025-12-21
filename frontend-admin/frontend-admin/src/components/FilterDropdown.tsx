@@ -1,15 +1,8 @@
-import React, { useState, useEffect, Children } from 'react';
+import React, { useState } from 'react';
 import {
   Popover,
   Button,
   Box,
-  TextField,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  FormControlLabel,
-  Checkbox,
   Stack,
   IconButton,
   Typography,
@@ -18,13 +11,11 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 import { IoFilter } from "react-icons/io5";
-import useOrdersStore from '../zustand/useOrdersStore';
-import { OrderFiltersParams } from '../types/order';
 
 interface FilterDropdownProps {
   title?: string;
   onReset?: () => void;
-  children: React.ReactNode; // Сюда прилетят твои инпуты
+  children: React.ReactNode; 
 }
 
 export const FilterDropdown = ({title="Filters", onReset, children}: FilterDropdownProps) => {
@@ -72,7 +63,7 @@ export const FilterDropdown = ({title="Filters", onReset, children}: FilterDropd
 
         <Box sx={{ p: 3, width: 320 }}>
           <Stack direction="row" justifyContent="space-between" alignItems="center" mb={2}>
-            <Typography variant="h6">Filter Orders</Typography>
+            <Typography variant="h6">{title}</Typography>
             <IconButton size="small" onClick={handleClose}>
               <CloseIcon fontSize="small" />
             </IconButton>

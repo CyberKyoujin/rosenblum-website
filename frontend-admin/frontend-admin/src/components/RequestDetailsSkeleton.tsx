@@ -2,8 +2,6 @@ import { CircularProgress } from "@mui/material"
 import Divider from "@mui/material/Divider"
 import { FaQuestionCircle } from "react-icons/fa"
 
-
-
 const RequestDetailsSkeleton = () => {
     return (
 

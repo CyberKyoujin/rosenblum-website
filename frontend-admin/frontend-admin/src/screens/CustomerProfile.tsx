@@ -1,10 +1,9 @@
-import Footer from "../components/Footer";
 import CustomerProfileSection from "../components/CustomerProfileSection";
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import ErrorView from "../components/ErrorView";
 import { useIsAtTop } from '../hooks/useIsAtTop';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import CustomerProfileSkeleton from "../components/CustomerProfileSkeleton";
 import useCustomersStore from "../zustand/useCustomers";
 import CustomerOrdersSection from "../components/CustomerOrdersSection";

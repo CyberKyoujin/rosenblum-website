@@ -4,8 +4,6 @@ import {
   Select,
   FormControl,
   InputLabel,
-  FormControlLabel,
-  Checkbox,
 } from '@mui/material';
 
 import FilterDropdown from './FilterDropdown';

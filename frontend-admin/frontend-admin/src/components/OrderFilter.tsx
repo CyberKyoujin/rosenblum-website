@@ -17,18 +17,16 @@ export const OrderFilter = () => {
 
   const setFilters = useOrdersStore((state) => state.setFilters);
 
-  const filters = useOrdersStore(s => s.filters)
-
   const [status, setStatus] = useState('');
   const [ordering, setOrdering] = useState('-timestamp');
-  const [isNew, setIsNew] = useState(false);
+  const [isNew, setIsNew] = useState<boolean | null>(null);
 
   const fetchOrders = useOrdersStore(s => s.fetchOrders);
 
   const handleReset = () => {
     setStatus('');
     setOrdering('-timestamp');
-    setIsNew(false);
+    setIsNew(null);
   };
 
 
@@ -80,7 +78,7 @@ export const OrderFilter = () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={isNew}
+                  checked={isNew ?? false}
                   onChange={(e) => setIsNew(e.target.checked)}
                 />
               }

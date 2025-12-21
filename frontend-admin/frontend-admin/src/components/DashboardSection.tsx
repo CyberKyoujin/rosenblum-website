@@ -14,7 +14,8 @@ import { LuSearchX } from "react-icons/lu";
 
 interface PaginatedData<T> {
     count: number;
-    results: T[]; 
+    results: T[];
+    new_count?: number; 
 }
 
 interface DashboardSectionProps<T extends {id: number}> {
@@ -38,7 +39,7 @@ const DashboardSection = <T extends { id: number }> ({
     loading,
     error,
     setFilters,
-    Filter
+    Filter,
 } : DashboardSectionProps<T>) => {
 
     const [page, setPage] = useState(1);
@@ -72,6 +73,10 @@ const DashboardSection = <T extends { id: number }> ({
         return () => clearTimeout(delayDebounce);
 
     }, [search, setFilters, fetchData]);
+
+    useEffect(() => {
+
+    })
     
 
     return (
@@ -82,8 +87,19 @@ const DashboardSection = <T extends { id: number }> ({
             <div className="dashboard-title-orders">
 
                     <div className="dashboard-title-info">
-                        <Icon style={{fontSize: '40px', color: 'RGB(76 121 212)'}}/>
+
+                        <Icon className="app-icon" size={40}/>
                         <h1 style={{marginTop: '0.1rem'}}> {title} </h1>
+
+
+                        {data?.new_count &&
+
+                        <div className="new-items-counter">
+                            {data.new_count}
+                        </div>
+
+                        }
+
                     </div>
 
                     <div className="dashboard-title-search">

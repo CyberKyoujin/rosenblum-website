@@ -32,7 +32,7 @@ export default function OrderReviewsLineChart({orders, requests, loading, error}
       {loading ? (
               <CircularProgress sx={{marginBottom: "3rem"}}/>
             ) :error ? (
-              <ErrorView message='Es ist ein Fehler aufgetreten.'/>
+              <ErrorView message='Es ist ein Fehler aufgetreten.' statsError/>
             ): (
               <LineChart
                 series={[

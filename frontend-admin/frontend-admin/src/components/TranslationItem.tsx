@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BsTranslate } from "react-icons/bs";
 import { useNavigate } from 'react-router-dom';
 
@@ -20,23 +20,26 @@ const TranslationItem = ({id, name, translated_text, formatted_timestamp}: Trans
     })
 
     return (
+
         <div className="small-order-container" key={id} onClick={() => {navigate(`/translation/${id}`)}}>
                     
-                    <div className="order-container-info">
-                        <BsTranslate size={45} className="app-icon"/>
+            <div className="order-container-info">
+                
+                <BsTranslate size={45} className="app-icon"/>
                         
-                        <div className="order-header">
-                            <p style={{fontWeight: 'bold'}}>{name}</p>
-                            <p>{translated_text.slice(0,30) + "..."}</p>
-                        </div>
-                    </div>
-        
-                    <div>
-                        <p>{formatted_timestamp}</p>
-                    </div>
-        
-        
+                <div className="order-header">
+                    <p style={{fontWeight: 'bold'}}>{name}</p>
+                    <p>{translated_text.slice(0,30) + "..."}</p>
                 </div>
+
+            </div>
+        
+            <div>
+                <p>{formatted_timestamp}</p>
+            </div>
+        
+        </div>
+        
     );
 }
 

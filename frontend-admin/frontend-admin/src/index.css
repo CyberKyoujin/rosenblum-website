@@ -74,7 +74,7 @@ html, body {
 }
 
 .nav-link-container{
-  background-color: RGB(76 121 212);
+  background-color: var(--blue);
   padding: 0.7rem 1.5rem 0.7rem 1.5rem;
   width: 100%;
   height: 50%;
@@ -89,8 +89,8 @@ html, body {
 
 .nav-link-container:hover{
   background-color: white;
-  border: 1px solid RGB(76 121 212);
-  color: RGB(76 121 212);
+  border: 1px solid var(--blue);
+  color: var(--blue);
 }
 
 .nav-link{
@@ -99,7 +99,7 @@ html, body {
 }
 
 .nav-link-container:hover .nav-link{
-  color: RGB(76 121 212);
+  color: var(--blue);
 }
 
 .navbar-user-container{
@@ -116,7 +116,7 @@ html, body {
 .search-container input{
   padding: 0.7rem;
   width: 300px;
-  border: 2px solid RGB(76 121 212);
+  border: 2px solid var(--blue);
   border-radius: 5px;
 }
 
@@ -181,6 +181,7 @@ html, body {
     display: flex;
     align-items: center;
     flex-direction: column;
+    padding: 5rem;
 }
 
 .dashboard__orders-container{
@@ -202,14 +203,14 @@ html, body {
 }
 
 .home-title-container h1 {
-    color: RGB(76 121 212);
+    color: var(--blue);
 }
 
 .main-form-container{
     width: 100%;
     max-width: 800px;
     margin: auto;
-    border: 2px solid  RGB(76 121 212);
+    border: 2px solid  var(--blue);
     padding: 4rem;
     border-radius: 10px;
     margin-top: 4rem;
@@ -221,7 +222,7 @@ html, body {
 .btn{
     display: flex;
     padding: 1rem;
-    background-color: RGB(76 121 212);
+    background-color: var(--blue);
     border: none;
     color: white;
     font-size: 18px;
@@ -283,9 +284,9 @@ html, body {
     width: 100%;
     margin: auto;
     min-height: 98px;
-    background-color: rgb(230, 238, 252);
+    background-color: white;
     padding: 1rem;
-    border: 2px solid RGB(76 121 212);
+    border: 2px solid var(--blue);
     border-radius: 10px;
     position: relative;
     display: flex;
@@ -362,6 +363,20 @@ html, body {
     gap: 8rem;
 }
 
+.new-items-counter{
+  background-color: var(--blue);
+  width: 27px;
+  position: relative;
+  right: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 27px;
+  border-radius: 50%;
+  color: white;
+  font-size: 12px;
+}
+
 @media (max-width: 1250px) {
 
   .dashboard-container{
@@ -382,7 +397,7 @@ html, body {
 
   .dashboard-container{
     margin-top: 0;
-    padding: 0rem 2rem 0rem 1rem;
+    padding: 0rem 1rem 0rem 1rem;
   }
 
   .main-container{
@@ -398,7 +413,7 @@ html, body {
 @media (max-width: 450px) {
 
   .dashboard-container{
-    padding: 0rem 2rem 0rem 1rem;
+    padding: 0rem 1rem 0rem 1rem;
   }
   .dashboard-title-info h1{
     font-size: 25px;
@@ -452,7 +467,7 @@ html, body {
 .notification-btn-confirm{
   padding: 0.75rem;
   width: 150px;
-  border: 2px solid rgb(76, 121, 212);
+  border: 2px solid var(--blue);
   background-color: transparent;
   color: rgb(38, 95, 209);
   font-weight: bold;
@@ -463,7 +478,7 @@ html, body {
 .notification-btn-cancel{
   padding: 0.5rem;
   width: 150px;
-  background-color: rgb(76, 121, 212);
+  background-color: var(--blue);
   border: none;
   color: white;
   font-weight: bold;
@@ -582,7 +597,7 @@ html, body {
     gap: 2rem; 
     justify-content: flex-start; 
     align-items: center; 
-  
+    margin-top: 2rem;
   }
   
   .file-container{
@@ -592,7 +607,7 @@ html, body {
     display: flex;
     flex-direction: column;
     background-color: rgb(234, 241, 253);
-    border: 1px solid rgb(76, 121, 212);
+    border: 1px solid var(--blue);
     border-radius: 10px;
     justify-content: center;
     align-items: center;
@@ -604,7 +619,7 @@ html, body {
     width: 100%;
     padding: 0.25rem;
     border: none;
-    background-color: rgb(76, 121, 212);
+    background-color: var(--blue);
     border-radius: 5px;
     color: white;
     font-size: 20px;
@@ -617,7 +632,7 @@ html, body {
     width: 100%;
     padding: 0.1rem;
     border: none;
-    background-color: rgb(76, 121, 212);
+    background-color: var(--blue);
     border-radius: 5px;
     color: white;
     font-size: 20px;
@@ -631,7 +646,7 @@ html, body {
     gap: 1rem;
     padding: 0.75rem;
     margin-top: 2rem;
-    background-color: rgb(76, 121, 212);
+    background-color: var(--blue);
     border: none;
     color: white;
     font-size: 16px;
@@ -698,7 +713,7 @@ html, body {
   gap: 4rem;
   background-color: rgb(234, 241, 253);
   padding: 3rem;
-  border: 2px solid rgb(76, 121, 212);
+  border: 2px solid var(--blue);
   border-radius: 5px;
 }
 
@@ -726,7 +741,7 @@ html, body {
   width: 100%;
   padding: 0.5rem;
   color: white;
-  background-color: rgb(76, 121, 212);
+  background-color: var(--blue);
   border: none;
   display: flex;
   align-items: center;
@@ -744,7 +759,7 @@ html, body {
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  border: 3px solid rgb(76, 121, 212);
+  border: 3px solid var(--blue);
 }
 
 
@@ -896,7 +911,7 @@ html, body {
   width: 100%;  
   padding: 1rem 9rem 1rem 1rem;     
   box-sizing: border-box; 
-  border: 2px solid rgb(77, 137, 241); 
+  border: 2px solid var(--blue); 
   border-radius: 15px; 
   resize: none;       
   outline: none;      
@@ -910,7 +925,7 @@ html, body {
   position: absolute;
   display: flex;
   padding: 0.55rem;
-  background-color: rgb(76,121,212);
+  background-color: var(--blue);
   border-radius: 50%;
   color: white;
   font-size: 25px;
@@ -950,7 +965,7 @@ html, body {
   justify-content: center;
   padding: 0.5rem;
   font-size: 14px;
-  border: 1px solid rgb(76,121,212);
+  border: 1px solid var(--blue);
   border-radius: 5px;
 }
 
@@ -1039,7 +1054,7 @@ html, body {
   display: flex;
   width: 100%;
   background-color: rgb(230,238,252);
-  border: 2px solid rgb(76,121,212);
+  border: 2px solid var(--blue);
   padding: 1rem;
   justify-content: space-between;
   border-radius: 5px;
@@ -1059,7 +1074,7 @@ html, body {
   width: 75px;
   height: 75px;
   border-radius: 50%;
-  border: 3px solid rgb(76,121,212);
+  border: 3px solid var(--blue);
 }
 
 .customer-content{
@@ -1099,7 +1114,7 @@ html, body {
 
 .footer{
   width: 100%;
-  background-color: rgb(76, 121, 212);
+  background-color: var(--blue);
   height: 20rem;
 }
 
@@ -1151,8 +1166,6 @@ html, body {
 .show-alert{
   display: block;
 }
-
-/* PROFILE */
 
 /* PROFILE */
 
@@ -1314,9 +1327,6 @@ html, body {
   .profile-section-container{
     height: 26rem;
   }
-  .profile__user-data-container h1{
-
-  }
   .profile__img_container{
     gap: 1rem;
   }
@@ -1426,7 +1436,7 @@ html, body {
 .no-orders-btn{
   padding: 0.75rem;
   width: 100%;
-  background: rgb(76, 121, 212);
+  background: var(--blue);
   border: none;
   color: white;
   font-size: 18px;
@@ -1805,7 +1815,6 @@ dd {
 .app-statistics-container{
   max-width: 1400px;
   width: 100%;
-  margin-top: 5rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -1879,4 +1888,15 @@ dd {
   .drawer{
     width: 325px;
   }
+}
+
+.app-loader-container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction:  column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 7rem;
 }

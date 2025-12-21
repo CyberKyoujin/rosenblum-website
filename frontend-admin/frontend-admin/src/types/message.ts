@@ -20,6 +20,7 @@ export interface MessagesResponseData {
     next: string;
     previous: string | null;
     results: Message[];
+    new_count: number;
 }
 
 export interface MessagesFiltersParams {

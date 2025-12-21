@@ -17,11 +17,13 @@ interface UseOrderDetailsReturn {
 }
 
 export const useOrderDetails = (
-    orderData: Order,
+
+    orderData: Order | null,
     fetchOrder: (id: number) => Promise<void>,
     formattedOrderId: number,
     updateOrder: (id: number, status: string, order_type: string) => Promise<void>,
     deleteOrder: (id: number) => Promise<void>,
+
     ) : UseOrderDetailsReturn => {
 
     const navigate = useNavigate();
@@ -44,19 +46,19 @@ export const useOrderDetails = (
     }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
+        e.preventDefault();
             
-                try {
+        try {
     
-                    await updateOrder(formattedOrderId, status, orderType); 
+            await updateOrder(formattedOrderId, status, orderType); 
+            await fetchUserOrder();
+            setFormActive(false);
     
-                    await fetchUserOrder();
-    
-                    setFormActive(false);
-    
-                } catch (error) {
-                    console.log("Error updating the order: ", error);
-                }
+        } catch (error) {
+
+            console.log("Error updating the order: ", error);
+
+        }
             
     };
 

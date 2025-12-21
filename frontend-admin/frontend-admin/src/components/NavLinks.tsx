@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { IconType } from 'react-icons/lib';
 import { Link } from 'react-router-dom';
 import { MdGTranslate } from 'react-icons/md';

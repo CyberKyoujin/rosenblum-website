@@ -37,7 +37,7 @@ export default function OrdersBarChart({ data, loading, error }: OrderBarChartPr
         {loading ? (
               <CircularProgress sx={{marginBottom: "3rem"}}/>
             ) :error ? (
-              <ErrorView message='Es ist ein Fehler aufgetreten.'/>
+              <ErrorView message='Es ist ein Fehler aufgetreten.' statsError/>
             ): (
               <BarChart
 

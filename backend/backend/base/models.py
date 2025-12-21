@@ -97,7 +97,7 @@ class Order(models.Model):
     status = models.CharField(max_length=40, choices=Status.choices, default=Status.REVIEW)
     order_type = models.CharField(max_length=40, choices=OrderType.choices, default=OrderType.ORDER)
     timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    new = models.BooleanField(default=True, null=True, blank=True)
+    is_new = models.BooleanField(default=True, null=True, blank=True)
 
     def __str__(self):
         return f'Order number {self.pk}'
@@ -146,6 +146,7 @@ class RequestObject(models.Model):
     phone_number = models.CharField(max_length=255)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    is_new = models.BooleanField(default=True)
     
     def formatted_timestamp(self) -> str:
         local_timestamp = timezone.localtime(self.timestamp)

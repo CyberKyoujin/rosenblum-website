@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import useMainStore from "../zustand/useMainStore";
 import { BiMessageDetail } from "react-icons/bi";
+import useRequestsStore from "../zustand/useRequests";
 
 
 interface RequestProps {
@@ -10,23 +10,31 @@ interface RequestProps {
     phone_number: string;
     message: string;
     formatted_timestamp: string;
+    is_new: boolean;
 }
 
-const Request = ({id, name, email, phone_number, message, formatted_timestamp}: RequestProps) => {
+const Request = ({id, name, email, formatted_timestamp, is_new}: RequestProps) => {
 
     const navigate = useNavigate();
 
-    const { toggleOrder } = useMainStore.getState();
+    const toggleRequest = useRequestsStore(s => s.toggleRequest);
 
     return (
-        <div className="small-order-container" key={id} onClick={() => {navigate(`/request/${id}`); toggleOrder(id)}}>
+
+        <div 
+        className="small-order-container" 
+        key={id} 
+        onClick={() => {navigate(`/request/${id}`); toggleRequest(id)}}
+        style={{ backgroundColor: is_new ? "rgb(230, 238, 252)" : undefined }}>
             
             <div className="order-container-info">
                 <BiMessageDetail size={45} className="app-icon"/>
                 
                 <div className="order-header">
+
                     <p style={{fontWeight: 'bold'}}>{name}</p>
                     <p className="order-customer-name">{email}</p>
+
                 </div>
             </div>
 

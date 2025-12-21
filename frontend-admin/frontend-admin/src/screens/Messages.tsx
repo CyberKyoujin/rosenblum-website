@@ -1,4 +1,3 @@
-import React, { useState, useRef } from "react";
 import { SiGooglemessages } from "react-icons/si";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -37,7 +36,6 @@ const Messages = () => {
     } = useCustomersStore();
 
     const user = useAuthStore(s => s.user);
-    const loading = useMessages(s => s.messagesLoading);
 
     const { 
         message, 

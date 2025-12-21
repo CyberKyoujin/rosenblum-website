@@ -1,5 +1,5 @@
 import Divider from '@mui/material/Divider';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { FaChartBar } from 'react-icons/fa';
 import StatsGrid from '../components/StatsGrid';
 import ChartWidget from '../components/ChartWidget';

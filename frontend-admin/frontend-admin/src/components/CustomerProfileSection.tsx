@@ -1,15 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
-import { FaUserEdit, FaInfoCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaInfoCircle } from "react-icons/fa";
 import { LuMessageSquare } from "react-icons/lu";
 import defaultAvatar from "../assets/default_avatar.webp"
 import { MdBlock } from "react-icons/md";
 import useCustomersStore from "../zustand/useCustomers";
-import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 
 const UserProfileSection = () => {
-
-    const { userId } = useParams();
 
     const customerData = useCustomersStore(s => s.customerData);
     const customerOrders = useCustomersStore(s => s.customerOrders);
@@ -65,22 +62,29 @@ const UserProfileSection = () => {
                     </div>
 
                     <div className="profile__user-data-container profile-section-container">
+
                         <h2><FaInfoCircle className="profile__contact-icon"></FaInfoCircle>Kontanktdaten</h2>
+
                         <div className="profile__user-personal-info">
                             <p>Email: {customerData?.email}</p>
                             <p>Anschrift: {address}</p>
                             <p>Telefonnummer: {phoneNumber}</p>
                         </div>
+
                         <div className="profile__button-group">
+
                             <button className="profile__edit-btn hover-btn" onClick={() => navigate(`messages`)}>
                                 <LuMessageSquare className="profile__edit-icon"></LuMessageSquare>
                                 NACHRICHT SCHREIBEN
                             </button>
+
                             <button className="profile__delete-btn">
                                 <MdBlock className="profile__edit-icon"/>
                                 KONTO BLOCKIEREN
                             </button>
+
                         </div>
+
                     </div>
 
                 </section>

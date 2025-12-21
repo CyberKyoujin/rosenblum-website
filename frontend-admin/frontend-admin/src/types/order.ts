@@ -22,13 +22,19 @@ export interface OrderResponseData {
     next: string;
     previous: string | null;
     results: Order[];
+    new_count?: number;
 }
 
 export interface OrderFiltersParams {
     search? : string;
     status? : string;
-    new?: boolean | null;
+    isNew?: boolean | null;
     ordering?: string;
+}
+
+export interface NewItems{
+    orders: number,
+    requests: number;
 }
 
 export const statusValues = {
@@ -42,11 +48,11 @@ export const statusValues = {
 
 export const statusColors = {
     "review": "#FFE208",
-    "sent": "green",
+    "sent": "#05a500ff",
     "in_progress": "#FFE208",
-    "canceled": "red",
-    "ready_pick_up": "green",
-    "completed": "green"
+    "canceled": "#ff3737ff",
+    "ready_pick_up": "#05a500ff",
+    "completed": "#05a500ff"
 }
 
 export type StatusKeys = 'review' | 'in_progress' | 'completed' | 'ready_pick_up' | 'sent' | 'canceled';

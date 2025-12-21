@@ -12,6 +12,7 @@ interface RequestsState {
     fetchRequestData: (id: number) => Promise<void>;
     fetchRequestAnswers: (id: number) => Promise<void>;
     sendRequestAnswer: (formData: FormData) => Promise<void>;
+    toggleRequest: (id: number) => Promise<void>;
     loading: boolean;
     sendAnswerLoading: boolean;
     sendAnswerSuccess: boolean;
@@ -37,7 +38,7 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
     },
 
     fetchRequests: async (page_number: number) => {
-        set({ loading: true, error: null }); 
+        set({ loading: true, error: null, request: null }); 
 
         const { filters } = get();
 
@@ -46,7 +47,8 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
                 {params: {
                     page: page_number,
                     search: filters.search,
-                    ordering: filters.ordering
+                    ordering: filters.ordering,
+                    is_new: filters.isNew
                 }});
             set({ requests: response.data as RequestResponseData});
         } catch (err: unknown) {
@@ -101,7 +103,18 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
         } finally {
             set({ sendAnswerLoading: false }); 
         }
-    }
+    },
+
+    toggleRequest: async (id) => {
+        set({ loading: true, error: null });
+        try{
+            await axiosInstance.get(`/admin-user/toggle-request/${id}`);
+
+        } catch (err: unknown){
+            const error = toApiError(err);
+            set({error: error});
+        }
+    },
 
 }))
 

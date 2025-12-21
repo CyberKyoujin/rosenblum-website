@@ -20,7 +20,12 @@ const Order = ({id, name, formatted_timestamp, status, is_new}: OrderProps) => {
     const toggleOrder = useOrdersStore(s => s.toggleOrder);
 
     return (
-        <div className="small-order-container" key={id} onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}>
+
+        <div className="small-order-container" 
+        key={id} 
+        onClick={() => {navigate(`/order/${id}`); toggleOrder(id)}}
+        style={{ backgroundColor: is_new ? "rgb(230, 238, 252)" : undefined }}
+        >
 
             <div className="order-container-info">
 

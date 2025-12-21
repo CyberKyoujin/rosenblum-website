@@ -59,7 +59,8 @@ const OrderDetailsItem = ({
                                     
                                     <h3>{`# ro-${id}`}</h3>
                                     <p>Bestellt am {formatted_timestamp}</p>
-                                    <p>Auftragstyp: {orderTypeValues[orderType as OrderTypeKeys]}</p>
+
+                                    {!formActive && <p>Auftragstyp: {orderTypeValues[orderType as OrderTypeKeys]}</p>}
 
                                     <FormControl style={{display: formActive ? "block" : "none"}}>
 
@@ -88,12 +89,15 @@ const OrderDetailsItem = ({
         
                                 <div className="order-details-status">
         
-                                        <p>Status: {statusValues[status as StatusKeys]}</p>
+                                        {!formActive && (
 
-                                        <div className="order-status"
-                                            style={{backgroundColor: statusColors[status as StatusKeys]}}
-                                        />
-        
+                                            <>
+                                                <p>Status: {statusValues[status as StatusKeys]}</p>
+                                                <div className="order-status" style={{backgroundColor: statusColors[status as StatusKeys]}}/>
+                                            </>
+
+                                        )}
+
                                         <FormControl style={{display: formActive ? "block" : "none"}}>
 
                                             <InputLabel id="demo-simple-select-label">Status</InputLabel>
@@ -163,7 +167,7 @@ const OrderDetailsItem = ({
 
                                 {files.length != 0 ? (
 
-                                    <div className="files-container" style={{marginTop: '2rem'}}>
+                                    <div className="files-container">
 
                                         {orderData?.files.map((file, index) => (
 
@@ -184,12 +188,13 @@ const OrderDetailsItem = ({
 
                                 ) : (
 
-                                    <div className="files-container" style={{marginTop: '2rem'}}>
+                                    <div className="files-container">
                                         <p>Keine Daten vorhanden.</p>
                                     </div>
 
                                 )
                                 }
+
                             </div>
         
         

@@ -29,6 +29,7 @@ export interface CustomerResponseData {
     next: string;
     previous: string | null;
     results: Customer[];
+    new_count: number;
 }
 
 export interface CustomerFiltersParams {

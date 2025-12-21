@@ -36,7 +36,7 @@ export default function OrderStatusPieChart({data, loading, error}: OrderStatusP
     {loading ? (
               <CircularProgress sx={{marginBottom: "3rem"}}/>
             ) :error ? (
-              <ErrorView message='Es ist ein Fehler aufgetreten.'/>
+              <ErrorView message='Es ist ein Fehler aufgetreten.' statsError/>
             ): (
               <PieChart series={[{ data, innerRadius: 80 }]}>
                 <PieCenterLabel>Status</PieCenterLabel>

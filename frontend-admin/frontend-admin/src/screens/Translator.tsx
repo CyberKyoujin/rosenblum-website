@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from 'react';
 import { useStreamTranslation } from '../hooks/useStreamTranslation';
-import { CircularProgress, Divider } from '@mui/material';
+import { Divider } from '@mui/material';
 import { BsTranslate } from "react-icons/bs";
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import { useIsAtTop } from '../hooks/useIsAtTop';
@@ -32,7 +32,7 @@ const Translator = () => {
 
     const isAtTop = useIsAtTop(5);
 
-    const { translate, streamedText, isLoading, error } = useStreamTranslation();
+    const { translate, streamedText, isLoading } = useStreamTranslation();
 
     const {handleTranslationSave, handleLanguageChange, handleTranslateClick, lanTo, inputText, setInputText} = useTranslators(translate, streamedText, translationName, togglePopup, setTranslationName, fetchTranslations);
 
