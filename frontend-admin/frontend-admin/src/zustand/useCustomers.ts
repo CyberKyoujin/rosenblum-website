@@ -74,7 +74,7 @@ const useCustomersStore = create<CustomersState>((set, get) => ({
         set({ loading: true, error: null }); 
 
          try{
-                const response = await axiosInstance.get(`/admin-user/user/${id}/orders`);
+                const response = await axiosInstance.get(`/order/orders/user/${id}/`);
                 set ({customerOrders: response.data});
             } catch (err) {
                 const error = toApiError(err);

@@ -1,31 +1,23 @@
-from django.urls import path
+from django.urls import path, include
 from base.views.user_views import (UserTokenRefreshView, 
-                                   UserRegisterView, 
                                    UserTokenObtainPairView, 
-                                   GoogleLogin, UserView, 
-                                   UserUpdateView, UserMesagesView, 
-                                   ToggleViewed, SendMessageView, 
-                                   RequestView, 
+                                   GoogleLogin,
+                                   
                                    ReviewListView, 
-                                   EmailVerificationView, ResendVerificationCode, SendPasswordResetLink, ResetPassword)
+                                   )
 
-from rest_framework_simplejwt.views import TokenRefreshView 
+from rest_framework.routers import DefaultRouter
+from base.views.user_views import UserViewSet
+
+router = DefaultRouter()
+
+router.register(r'users', UserViewSet, basename='user')
 
 urlpatterns = [
-    path('register/', UserRegisterView.as_view(), name='register'),
-    path('email-verification/', EmailVerificationView.as_view(), name='email_verification'),
-    path('resend-verification/', ResendVerificationCode.as_view(), name='email_verification'),
+    path('', include(router.urls)),
     path('login/', UserTokenObtainPairView.as_view(), name='login'),
-    path('password-reset-link/', SendPasswordResetLink.as_view(), name='send-reset-link'),
-    path('password-reset-confirm/', ResetPassword.as_view(), name='password-reset'),
-    path("update/", UserUpdateView.as_view(), name=""),
-    path('token-refresh/', UserTokenRefreshView.as_view(), name='token-refresh'),
     path('login/google/', GoogleLogin.as_view(), name='google_login'),
-    path('user-data/', UserView.as_view(), name='user_data'),
-    path('messages/', UserMesagesView.as_view(), name='messages'),
-    path('toggle-messages/', ToggleViewed.as_view(), name='toggle-messages'),
-    path('send-message/', SendMessageView.as_view(), name='send-message'),
-    path('new-request/', RequestView.as_view(), name='request'),
+    path('token-refresh/', UserTokenRefreshView.as_view(), name='token-refresh'),
     path('reviews/', ReviewListView.as_view(), name='google_maps_reviews'),
     
 ]
