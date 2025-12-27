@@ -43,7 +43,7 @@ const useRequestDetails = () => {
                     formData.append("request", requestId);
                     formData.append("answer_text", answer);
                     
-                    await sendRequestAnswer(formData);
+                    await sendRequestAnswer(idAsNumber, formData);
                     await fetchRequestAnswers(idAsNumber);
     
                     setAnswer("")

@@ -57,14 +57,18 @@ const useMessages = create<MessagesState>((set, get) => ({
         }
     },
 
-     fetchUserMessages: async (id) => {
+    fetchUserMessages: async (id) => {
 
         set({ sendMessagesLoading: true, fetchMessagesError: null }); 
 
         try{
-            const response = await axiosInstance.get(`/admin-user/user/${id}/messages`);
+            const response = await axiosInstance.get(`/messages/`, {params: id ? { user_id: id } : {}});
+
+            const messagesData = response.data.results !== undefined 
+            ? response.data.results 
+            : response.data;
             
-            set({userMessages: response.data})
+            set({userMessages: messagesData})
             
         } catch (err: unknown) {
             const error = toApiError(err);
@@ -78,7 +82,7 @@ const useMessages = create<MessagesState>((set, get) => ({
         set({ sendMessagesLoading: true, fetchMessagesError: null }); 
         try{
             formData.append('id', id.toString());
-            await axiosInstance.post(`/admin-user/user/send-message/`, formData);
+            await axiosInstance.post(`/messages/`, formData);
         } catch (err: unknown) {
             const error = toApiError(err);
             set({fetchMessagesError: error});
@@ -89,7 +93,7 @@ const useMessages = create<MessagesState>((set, get) => ({
 
     toggleMessages: async (sender_id) => {
          try{
-            await axiosInstance.post(`/admin-user/user/toggle-messages/`, {sender_id});
+            await axiosInstance.post(`/messages/toggle/`, {sender_id});
         }catch (error) {
             console.log('Error while toggling user messages:' + error);
         }

@@ -12,24 +12,22 @@ const CustomTooltip = ({ title, children }) => {
       arrow
       placement="bottom"
       enterTouchDelay={0}
-      
-      // === Настройка стилей через slotProps ===
+
       slotProps={{
         tooltip: {
-          // Стили, применяемые к самой всплывающей подсказке (контейнеру с текстом)
+          
           sx: {
             backgroundColor: "#ffff" , 
-            color: 'black',             // Белый текст
+            color: 'black',        
             fontSize: '0.8rem',  
-            border: '1px solid #4C79D4',      // Увеличенный размер шрифта
-            padding: '10px 15px',       // Внутренние отступы
+            border: '1px solid #4C79D4',      
+            padding: '10px 15px',       
             lineHeight: "1.5rem"
           },
         },
         arrow: {
-          // Стили, применяемые к стрелке
           sx: {
-            color: "#4C79D4", // Цвет стрелки (должен соответствовать фону подсказки)
+            color: "#4C79D4", 
           },
         },
       }}

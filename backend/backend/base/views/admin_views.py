@@ -95,7 +95,7 @@ class GlobalMessagesView(generics.ListAPIView):
 class TranslationViewSet(viewsets.ModelViewSet):
     queryset = Translation.objects.all()
     permission_classes = [IsAdminUser]
-    serializer_class = TranslateSerializer
+    serializer_class = TranslationSerializer
     
     filter_backends = [
         filters.SearchFilter,      
@@ -114,7 +114,7 @@ class TranslationViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def translate(self, request):
 
-        serializer = self.get_serializer(data=request.data)
+        serializer = TranslateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
         text = serializer.validated_data['text']

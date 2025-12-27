@@ -15,7 +15,7 @@ const useOrderStore = create<OrderState>((set, get) => ({
 
         try{
         
-            await axiosInstance.post('/order/create/', formData, {
+            await axiosInstance.post('/orders/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data', 
                 }
@@ -40,7 +40,7 @@ const useOrderStore = create<OrderState>((set, get) => ({
 
         try{
             
-            const response = await axiosInstance.get('/order/orders/');
+            const response = await axiosInstance.get('/orders/');
             set({orders: response.data});
            
         } catch (err: unknown){

@@ -51,7 +51,7 @@ const useTranslations = create<TranslationsState>((set, get) => ({
         const { filters } = get();
 
         try {
-            const response = await axiosInstance.get('/admin-user/translations/',  
+            const response = await axiosInstance.get('admin-user/translations/',  
                 {params: {
                     page: page_number,
                     search: filters.search,
@@ -84,7 +84,7 @@ const useTranslations = create<TranslationsState>((set, get) => ({
         set({ loading: true, error: null, saveTranslationSuccess: false }); 
 
         try {
-            await axiosInstance.post('/admin-user/translations/create/', formData);
+            await axiosInstance.post('/admin-user/translations/', formData);
             set({saveTranslationSuccess: true});
         } catch (err: unknown) {
             const error = toApiError(err);
