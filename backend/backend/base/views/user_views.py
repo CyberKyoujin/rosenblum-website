@@ -29,139 +29,132 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes, force_str
 from base.services.email_notifications import send_reset_link_email
 
-class UserRegisterView(APIView):
-    def post(self, request):
-        
-        raw_email = request.data.get('email', '')
-        email = raw_email.strip()
-        
-        if CustomUser.objects.filter(email=email).exists():
-            return Response(status=status.HTTP_409_CONFLICT)
-        
-        data = request.data.copy()
-        data['email'] = email
-        
-        serializer = CustomUserSerializer(data=data)
-        if serializer.is_valid(): 
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+from rest_framework import viewsets, status, filters
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from django.db.models import Count
+from django.shortcuts import get_object_or_404
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+from django.db import transaction
 
-class EmailVerificationView(APIView):
-    def post(self, request):
-        user_email = request.data.get('email', '')
-        verification_code = request.data.get('code', '')  
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['id', 'email', 'first_name', 'last_name', 'phone_number']
+    ordering_fields = ['date_joined', 'first_name', 'last_name', 'orders_count']
+
+    def get_permissions(self):
+        """Управление доступом в одном месте"""
+        public_actions = [
+            'register', 'verify_email', 'resend_code', 
+            'reset_password_link', 'reset_password_confirm', 'google_login'
+        ]
+        if self.action in public_actions:
+            return [AllowAny()]
+        if self.action in ['me', 'retrieve'] and not self.request.user.is_staff:
+            return [IsAuthenticated()]
+        return [IsAdminUser()]
+
+    def get_serializer_class(self):
+        if self.action == 'me':
+            return UserDataSerializer
+        return CustomUserSerializer
+    
+    def list(self, request, *args, **kwargs):
+        """Заменяет CustomerListView"""
+        queryset = self.filter_queryset(CustomUser.objects.filter(is_superuser=False).annotate(orders_count=Count('order')))
+        page = self.paginate_queryset(queryset)
         
-        if not user_email or not verification_code:
-            return Response(
-                {"detail": "Email and code are required"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer = self.get_serializer(page, many=True) if page is not None else self.get_serializer(queryset, many=True)
+        
+        return self.get_paginated_response(serializer.data) if page is not None else Response(serializer.data)
+
+    # --- 1. ПРОФИЛЬ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ ---
+    @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        user = request.user
+        if request.method == 'GET':
+            serializer = UserDataSerializer(user)
+            return Response(serializer.data)
+        
+        serializer = CustomUserSerializer(user, data=request.data, partial=True, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    # --- 2. РЕГИСТРАЦИЯ И ВХОД ---
+    @action(detail=False, methods=['post'])
+    def register(self, request):
+        email = request.data.get('email', '').strip()
+        if CustomUser.objects.filter(email=email).exists():
+            return Response({"detail": "User already exists"}, status=status.HTTP_409_CONFLICT)
+        
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # --- 3. ВЕРИФИКАЦИЯ ПОЧТЫ ---
+    @action(detail=False, methods=['post'], url_path='verify-email')
+    def verify_email(self, request):
+        user_email = request.data.get('email', '')
+        verification_code = request.data.get('code', '')
         
         result = verify_email(user_email, verification_code)
-        
         if not result.ok:
-            error_map = {
-                'user_not_found': ({"detail": 'User not found.'}, status.HTTP_404_NOT_FOUND),
-                'no_active_verification': ({"detail": "No active verification found."}, status.HTTP_400_BAD_REQUEST),
-                'verification_code_expired': ({"detail": "Verification code expired."}, status.HTTP_400_BAD_REQUEST),
-                'no_verification_attempts': ({"detail": "No verification attempts left."}, status.HTTP_400_BAD_REQUEST),
-                'invalid_verification_code': ({"detail": "Invalid verification code.", "attempts": result.attempts}, status.HTTP_400_BAD_REQUEST),   
-            }
-            
-            body, code_status = error_map.get(result.error, ({"detail": "Unknown error"}, status.HTTP_400_BAD_REQUEST))
-            
-            return Response(body, status=code_status)
-        
-        return Response({"detail": "Email verified!"}, status=status.HTTP_200_OK)
-    
-class ResendVerificationCode(APIView):
-    def post(self, request):
+            return Response({"detail": result.error}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Email verified!"})
+
+    @action(detail=False, methods=['post'], url_path='resend-code')
+    def resend_code(self, request):
         email = request.data.get("email", "").strip()
-        
         user = get_object_or_404(CustomUser, email=email)
-        
         EmailVerification.objects.filter(user=user).delete()
         
         verification_code = send_verification_code(email, user.first_name, user.last_name)
         EmailVerification.objects.create(user=user, code=verification_code)
-        
-        return Response({"detail": "New verification code sent."}, status=status.HTTP_200_OK)
-        
-class SendPasswordResetLink(APIView):
-    def post(self, request):
+        return Response({"detail": "New code sent."})
+
+    @action(detail=False, methods=['post'], url_path='reset-password-link')
+    def reset_password_link(self, request):
         email = request.data.get("email", "").strip()
-        
         try:
             user = CustomUser.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            
-            frontend_url = "http://localhost:3000"
-            reset_link = f"{frontend_url}/password-reset/confirm/{uid}/{token}/"
-            
-            print(f"Link: {reset_link}")
-            
+            reset_link = f"{settings.FRONTEND_URL}/password-reset/confirm/{uid}/{token}/"
             send_reset_link_email(email, user.first_name, user.last_name, reset_link)
-            
-            return Response({"detail": "Link to password change has been successfully sent."}, status=status.HTTP_200_OK)
-        
         except CustomUser.DoesNotExist:
-            return Response({"detail": "Link to password change has been successfully sent."}, status=status.HTTP_200_OK)
-        
-class ResetPassword(APIView):
-    def post(self, request):
-        print(request.data)
+            pass 
+        return Response({"detail": "Link sent."})
+
+    @action(detail=False, methods=['post'], url_path='reset-password-confirm')
+    def reset_password_confirm(self, request):
         uidb64 = request.data.get('uid')
         token = request.data.get('token')
         password = request.data.get('password')
 
-        if not uidb64 or not token or not password:
-            return Response(
-                {"detail": "Missing required fields (uid, token, password)."}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = CustomUser.objects.get(pk=uid)
-        except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
-            return Response(
-                {"detail": "Invalid UID."}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        if not default_token_generator.check_token(user, token):
-            return Response(
-                {"detail": "Invalid or expired token."}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        user.set_password(password)
-        user.save()
-
-        return Response(
-            {"detail": "Password has been reset successfully."}, 
-            status=status.HTTP_200_OK
-        )
-        
-            
-            
-class UserView(APIView):
-    permission_classes = [IsAuthenticated,]
-    def get(self, request):
-        user = request.user
-        serializer = UserDataSerializer(user, many=False)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        
-
+            if default_token_generator.check_token(user, token):
+                user.set_password(password)
+                user.save()
+                return Response({"detail": "Password reset success."})
+        except Exception:
+            pass
+        return Response({"detail": "Invalid link."}, status=400)
+    
 class UserTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
         
-    
 class UserTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
-    
     
 class GoogleLogin(APIView):
     def post(self, request, *args, **kwargs):
@@ -192,81 +185,6 @@ class GoogleLogin(APIView):
         except ValueError as e:
             return Response({'error': str(e)}, status=400)
         
-        
-class UserUpdateView(APIView):
-    def patch(self, request):
-        print(request.data)
-        serializer = CustomUserSerializer(request.user, data=request.data, partial=True, context={'request': request})
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-       
-class UserMesagesView(APIView):
-    permission_classes = [IsAuthenticated]
-    def get(self, request):
-        messages = Message.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).order_by('-timestamp')
-        serializer = MessageSerializer(messages, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
-class ToggleViewed(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        
-        sender_id = request.data.get('sender_id')
-        
-        if not sender_id:
-            return Response(
-                {"error": "sender_id is required"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        
-        updated_count = Message.objects.filter(
-            receiver=request.user,  
-            sender_id=sender_id,    
-            viewed=False            
-        ).update(viewed=True)
-
-        return Response(
-            {"status": "success", "updated_count": updated_count}, 
-            status=status.HTTP_200_OK
-        )
-    
-    
-class SendMessageView(APIView):
-    permission_classes = [IsAuthenticated]
-    
-    def post(self, request):
-        message_text = request.data.get('message')
-        receiver_id = request.data.get('id')
-        
-        sender = request.user
-        
-        if not receiver_id:
-             return Response({"detail": "User ID is required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        print(f"Message: {message_text}, Receiver ID: {receiver_id}")
-        
-        receiver = get_object_or_404(CustomUser, pk=receiver_id)
-        
-        message = Message.objects.create(sender=sender, receiver=receiver, message=message_text)
-        
-        if request.FILES.getlist('files'):
-            for file in request.FILES.getlist('files'):
-                File.objects.create(message=message, file=file)
-    
-        return Response(status=status.HTTP_200_OK)
-    
-class RequestView(CreateAPIView):
-    queryset = RequestObject.objects.all()
-    serializer_class = RequestSerializer
-
-
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewSerializer
     pagination_class = None

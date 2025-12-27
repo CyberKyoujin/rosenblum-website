@@ -143,15 +143,31 @@ class FileSerializer(serializers.ModelSerializer):
         
         
 class OrderSerializer(serializers.ModelSerializer):
-    files = FileSerializer(many=True,read_only=True)
+    files = FileSerializer(many=True, read_only=True)
+    uploaded_files = serializers.ListField(
+        child=serializers.FileField(),
+        write_only=True,
+        required=False
+    )
     formatted_timestamp = serializers.SerializerMethodField()
+
     class Meta:
         model = Order
         fields = '__all__'
-        
+
     def get_formatted_timestamp(self, obj):
         local_timestamp = timezone.localtime(obj.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
+
+    def create(self, validated_data):
+        uploaded_files = validated_data.pop('uploaded_files', [])
+     
+        order = Order.objects.create(**validated_data)
+        
+        for file in uploaded_files:
+            File.objects.create(order=order, file=file)
+        return order
+    
 
 class MessageSerializer(serializers.ModelSerializer):
     formatted_timestamp = serializers.SerializerMethodField()
@@ -159,9 +175,16 @@ class MessageSerializer(serializers.ModelSerializer):
     receiver_data = UserDataSerializer(source='receiver', read_only=True)
     sender_data = UserDataSerializer(source='sender', read_only=True)
     partner_data = serializers.SerializerMethodField()
+    uploaded_files = serializers.ListField(
+        child=serializers.FileField(),
+        write_only=True,
+        required=False
+    )
+    
     class Meta:
         model = Message
         fields = '__all__' 
+        extra_kwargs = {'sender': {'required': False}}
         
     def get_formatted_timestamp(self, obj):
         local_timestamp = timezone.localtime(obj.timestamp)
@@ -178,8 +201,16 @@ class MessageSerializer(serializers.ModelSerializer):
             return UserDataSerializer(obj.receiver, context=self.context).data
         return UserDataSerializer(obj.sender, context=self.context).data
     
+    def create(self, validated_data):
+        uploaded_files = validated_data.pop('uploaded_files', [])
+     
+        message = Message.objects.create(**validated_data)
+        
+        for file in uploaded_files:
+            File.objects.create(message=message, file=file)
+        return message
     
-
+    
 class RequestSerializer(serializers.ModelSerializer):
     formatted_timestamp = serializers.SerializerMethodField()
     class Meta:

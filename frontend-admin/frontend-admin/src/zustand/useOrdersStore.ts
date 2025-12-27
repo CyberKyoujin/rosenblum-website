@@ -38,7 +38,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
         const { filters } = get();
 
         try {
-            const response = await axiosInstance.get('/admin-user/orders/', 
+            const response = await axiosInstance.get('/order/orders', 
                 {params: {
                     page: page_number,
                     search: filters.search,
@@ -61,7 +61,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
 
         try {
 
-            const response = await axiosInstance.get(`/order/${id}/`);
+            const response = await axiosInstance.get(`/order/orders/${id}/`);
             set({order: response.data})
             
         } catch (err: unknown) {
@@ -76,7 +76,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
     toggleOrder: async (id) => {
         set({ loading: true, error: null });
         try{
-            await axiosInstance.get(`/admin-user/toggle-order/${id}`);
+            await axiosInstance.post(`/order/orders/${id}/toggle/`);
 
         } catch (err: unknown){
             const error = toApiError(err);
@@ -87,7 +87,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
     updateOrder: async (id, status, order_type) => {
         set({ loading: true, error: null });
         try{
-            await axiosInstance.patch(`/admin-user/orders/${id}/update/`, {status: status, order_type: order_type});
+            await axiosInstance.patch(`/order/orders/${id}/`, {status: status, order_type: order_type});
         } catch (err: unknown) {
             const error = toApiError(err);
             set({error: error});
@@ -101,7 +101,7 @@ const useOrdersStore = create<OrdersState>((set, get) => ({
 
         try{
 
-            await axiosInstance.delete(`/admin-user/orders/${id}/delete/`);
+            await axiosInstance.delete(`/order/orders/${id}/`);
 
         } catch(err: unknown) {
             const error = toApiError(err);
