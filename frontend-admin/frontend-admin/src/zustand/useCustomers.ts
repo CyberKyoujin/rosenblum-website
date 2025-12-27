@@ -39,7 +39,7 @@ const useCustomersStore = create<CustomersState>((set, get) => ({
         const { filters } = get();
 
         try {
-            const response = await axiosInstance.get('/admin-user/customers/', 
+            const response = await axiosInstance.get('/user/users/', 
                 {params: {
                     page: page_number,
                     search: filters.search,
@@ -57,7 +57,7 @@ const useCustomersStore = create<CustomersState>((set, get) => ({
     fetchCustomerData: async (id) => {
         set({ loading: true, error: null }); 
          try{
-            const response = await axiosInstance.get(`/admin-user/user/${id}`);
+            const response = await axiosInstance.get(`/user/users/${id}`);
             set({customerData: response.data});
             
         } catch (err: unknown) {
@@ -74,7 +74,7 @@ const useCustomersStore = create<CustomersState>((set, get) => ({
         set({ loading: true, error: null }); 
 
          try{
-                const response = await axiosInstance.get(`/order/orders/user/${id}/`);
+                const response = await axiosInstance.get(`/orders/user/${id}/`);
                 set ({customerOrders: response.data});
             } catch (err) {
                 const error = toApiError(err);

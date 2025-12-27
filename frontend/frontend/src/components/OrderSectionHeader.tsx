@@ -1,4 +1,3 @@
-import { ReactElement } from "react";
 import { IconType } from "react-icons/lib"
 
 interface OrderSectionHeaderProps {

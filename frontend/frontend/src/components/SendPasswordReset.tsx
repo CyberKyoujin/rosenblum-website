@@ -9,7 +9,6 @@ import useAuthStore from "../zustand/useAuthStore";
 import { ApiErrorResponse } from "../types/error";
 import ApiErrorAlert from "./ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
-import { useNavigate } from 'react-router-dom';
 
 const sendPasswordSchema = z.object({
   email: z.string().email("Invalid email format"),
@@ -29,7 +28,6 @@ const SendPasswordReset = () => {
 
     const isAtTop = useIsAtTop(10);
 
-    const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm<SendResetFormValues>({resolver: zodResolver(sendPasswordSchema)});
 

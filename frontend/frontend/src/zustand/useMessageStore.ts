@@ -18,9 +18,13 @@ const useMessageStore = create<MessageState>((set) => ({
 
             try{
                 
-                const response = await axiosInstance.get('/user/messages/')
+                const response = await axiosInstance.get('/messages/')
+
+                const messagesData = response.data.results !== undefined 
+                ? response.data.results 
+                : response.data;
                 
-                set({messages: response.data})
+                set({messages: messagesData})
                 
             } catch(err: unknown) {
 
@@ -38,7 +42,7 @@ const useMessageStore = create<MessageState>((set) => ({
     toggleMessages: async (sender_id) => {
                 try{
     
-                    await axiosInstance.post('/user/toggle-messages/', {sender_id});
+                    await axiosInstance.post('/messages/toggle/', {sender_id});
 
                 } catch(err: unknown){
 
@@ -54,7 +58,7 @@ const useMessageStore = create<MessageState>((set) => ({
 
                     formData.append("id", "46");
                     
-                    await axiosInstance.post('/user/send-message/', formData)
+                    await axiosInstance.post('/messages/', formData)
                     
                 } catch (err: unknown){
 
@@ -71,7 +75,7 @@ const useMessageStore = create<MessageState>((set) => ({
 
                 try{
                     
-                    await axiosInstance.post('/user/new-request/', {name, email, phone_number, message});
+                    await axiosInstance.post('/requests/', {name, email, phone_number, message});
                     set({sendRequestSuccess: true});
 
                 } catch (err: unknown) {

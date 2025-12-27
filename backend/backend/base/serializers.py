@@ -160,7 +160,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
 
     def create(self, validated_data):
-        uploaded_files = validated_data.pop('uploaded_files', [])
+        uploaded_files = validated_data.pop('files', [])
      
         order = Order.objects.create(**validated_data)
         
@@ -202,7 +202,7 @@ class MessageSerializer(serializers.ModelSerializer):
         return UserDataSerializer(obj.sender, context=self.context).data
     
     def create(self, validated_data):
-        uploaded_files = validated_data.pop('uploaded_files', [])
+        uploaded_files = validated_data.pop('files', [])
      
         message = Message.objects.create(**validated_data)
         

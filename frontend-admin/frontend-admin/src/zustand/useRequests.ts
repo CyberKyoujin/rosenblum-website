@@ -11,7 +11,7 @@ interface RequestsState {
     fetchRequests: (page_number: number) => Promise<void>;
     fetchRequestData: (id: number) => Promise<void>;
     fetchRequestAnswers: (id: number) => Promise<void>;
-    sendRequestAnswer: (formData: FormData) => Promise<void>;
+    sendRequestAnswer: (id: number, formData: FormData) => Promise<void>;
     toggleRequest: (id: number) => Promise<void>;
     loading: boolean;
     sendAnswerLoading: boolean;
@@ -43,7 +43,7 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
         const { filters } = get();
 
         try {
-            const response = await axiosInstance.get('/admin-user/requests/',  
+            const response = await axiosInstance.get('requests/',  
                 {params: {
                     page: page_number,
                     search: filters.search,
@@ -65,7 +65,7 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
 
         try {
             
-            const response = await axiosInstance.get(`/admin-user/user/request/${id}`);
+            const response = await axiosInstance.get(`/requests/${id}`);
             set({ request: response.data });
         } catch (err: unknown) {
             const error = toApiError(err);
@@ -80,7 +80,7 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
         set({ loading: true, error: null });
         try {
             
-            const response = await axiosInstance.get(`/admin-user/request-answer/${id}`);
+            const response = await axiosInstance.get(`/requests/${id}/answers/`);
             set({requestAnswers: response.data});
 
         } catch (err: unknown) {
@@ -91,11 +91,11 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
         }
     },
 
-    sendRequestAnswer: async(formData) => {
+    sendRequestAnswer: async(id, formData) => {
         set({ sendAnswerLoading: true, error: null, sendAnswerSuccess: false });
         try {
             
-            await axiosInstance.post('/admin-user/answer-request/', formData);
+            await axiosInstance.post(`/requests/${id}/answers/`, formData);
             set({sendAnswerSuccess: true});
         } catch (err: unknown) {
             const error = toApiError(err);
@@ -108,7 +108,7 @@ const useRequestsStore = create<RequestsState>((set, get) => ({
     toggleRequest: async (id) => {
         set({ loading: true, error: null });
         try{
-            await axiosInstance.get(`/admin-user/toggle-request/${id}`);
+            await axiosInstance.post(`/requests/${id}/toggle/`);
 
         } catch (err: unknown){
             const error = toApiError(err);

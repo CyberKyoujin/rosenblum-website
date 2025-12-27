@@ -23,7 +23,7 @@ export default function useEmailVerification () {
 
             setLoading(true);
 
-            await axiosInstance.post('/user/email-verification/', {code, email});
+            await axiosInstance.post('/user/users/verify-email/', {code, email});
 
             setError(""); 
             
@@ -58,7 +58,7 @@ export default function useEmailVerification () {
     async function resendVerification(email: string | undefined){
 
         try {
-            await axiosInstance.post("/user/resend-verification/", {email});
+            await axiosInstance.post("/user/users/resend-code/", {email});
             setAttempts(3);
             setError("");
         } catch (err: any){

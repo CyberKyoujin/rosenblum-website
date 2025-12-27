@@ -45,7 +45,7 @@ export const useStreamTranslation = () => {
     indexRef.current = 0;
 
     try {
-      const response = await fetch(`${API_URL}/admin-user/translate/`, {
+      const response = await fetch(`${API_URL}/admin-user/translations/translate/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

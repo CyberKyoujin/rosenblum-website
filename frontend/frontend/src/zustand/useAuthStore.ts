@@ -53,7 +53,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
 
         try{
 
-            const response = await axiosInstance.get('user/user-data/');
+            const response = await axiosInstance.get('user/users/me/');
             set({ 
                 userData: response.data,
                 isAuthenticated: true,
@@ -82,7 +82,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
         set({loading: true});
         try{
 
-            await axiosInstance.post('/user/register/', {email: email, first_name: firstName, last_name: lastName, password: password});
+            await axiosInstance.post('user/users/register/', {email: email, first_name: firstName, last_name: lastName, password: password});
             get().fetchUserData();
             
         } catch(err: unknown){
@@ -147,7 +147,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
         set({loading: true});
 
         try {
-            await axiosInstance.post('/user/password-reset-link/', {email});
+            await axiosInstance.post('/user/users/reset-password-link/', {email});
         } catch (err: unknown) {
 
             throw toApiError(err);
@@ -162,7 +162,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
         set({loading: true});
 
         try {
-            await axiosInstance.post('/user/password-reset-confirm/', {uid, token, password});
+            await axiosInstance.post('/user/users/reset-password-confirm/', {uid, token, password});
         } catch (err: unknown) {
 
             throw toApiError(err);
@@ -205,7 +205,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
             set({userDataLoading: true, userDataError: null});
             try{
 
-                const response = await axiosInstance.get('/user/user-data/')
+                const response = await axiosInstance.get('/user/users/me/')
                 set({userData: response.data})     
                 
             } catch(err: unknown) {
@@ -229,7 +229,7 @@ const useAuthStore = create<AuthState>((set,get) =>({
             set({loading: true});
             try{
                 
-                await axiosInstance.patch('/user/update/', formData)
+                await axiosInstance.patch('/user/users/', formData)
                 
                 await get().fetchUserData();
 

@@ -2,9 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from base.views.admin_views import (AdminLoginView, TranslationViewSet, 
-                                    CustomerListView, 
                                     GlobalMessagesView,
-                                    UserDataView)
+                                )
 
 router = DefaultRouter()
 router.register(r'translations', TranslationViewSet, basename='translations')
