@@ -112,7 +112,7 @@ const Order = () => {
 
         const formData = new FormData();
         uploadedFiles.forEach(file => {
-            formData.append('files', file); 
+            formData.append('uploaded_files', file); 
         });
         formData.append('name', name);
         formData.append('email', email);

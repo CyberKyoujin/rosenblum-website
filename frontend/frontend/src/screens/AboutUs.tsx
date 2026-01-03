@@ -11,7 +11,6 @@ import NavigationSection from "../components/NavigationSection";
 
 const AboutUs = () => {
 
-
     const navigate = useNavigate();
     const { t } = useTranslation();
 

@@ -1,6 +1,5 @@
 import { IoIosWarning } from "react-icons/io";
 
-
 interface ApiErrorViewProps {
     message: string;
 }

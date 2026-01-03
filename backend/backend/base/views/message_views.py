@@ -1,5 +1,5 @@
 from rest_framework import viewsets, filters
-from base.models import Message, RequestObject, RequestAnswer
+from base.models import CustomUser, Message, RequestObject, RequestAnswer
 from base.serializers import MessageSerializer, RequestSerializer, RequestAnswerSerializer
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.db.models import Q
@@ -38,7 +38,8 @@ class MessageViewSet(viewsets.ModelViewSet):
         ).order_by('-timestamp')
         
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        print(self.request.data)
+        serializer.save(sender=self.request.user, receiver=CustomUser.objects.get(pk=self.request.data['id']))
         
     @action(detail=False, methods=['post'])
     def toggle(self, request):

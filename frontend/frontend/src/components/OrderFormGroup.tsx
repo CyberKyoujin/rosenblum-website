@@ -42,6 +42,7 @@ const OrderFormGroup = () => {
     const tooltipText = "Kostenvoranschlag (смета) — это предварительный расчет стоимости услуг или товаров, который не является юридически обязывающим.";
 
     return (
+
         <FormGroup className="order-checkbox-container">
 
             <div>
@@ -56,6 +57,7 @@ const OrderFormGroup = () => {
                 <FormControlLabel required control={<Checkbox />} label="Ich bin sicher" />
 
         </FormGroup>
+        
     )
 }
 

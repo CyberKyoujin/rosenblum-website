@@ -39,6 +39,7 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, be
   const containerClasses = `error-alert-container ${positionClass} ${offsetClass} show-alert`;
 
   const renderActionElement = (timerColor: string) => (
+
     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
       
       {action && <div>{action}</div>}
@@ -55,6 +56,7 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, be
         {({ remainingTime }) => remainingTime}
 
       </CountdownCircleTimer>
+      
     </div>
   );
 

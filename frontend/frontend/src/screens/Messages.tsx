@@ -98,7 +98,7 @@ const Messages = () => {
             if (message.length > 0 || uploadedFiles.length > 0) {
                 if (uploadedFiles.length > 0) {
                     uploadedFiles.forEach(file => {
-                        formData.append('files', file);
+                        formData.append('uploaded_files', file);
                     });
                 }
                 formData.append('message', message);
@@ -168,7 +168,7 @@ const Messages = () => {
         <NavigationSection first_link="Nachrichten"/>
 
             <div className="messages-title-container">
-                <SiGooglemessages style={{fontSize: '45px', color: 'rgb(76, 121, 212)'}}/>
+                <SiGooglemessages className="app-icon" size={45}/>
                 <div style={{display: 'flex', gap: '0.5rem'}}>
                     <h1>{t('messagesTitleFirst')}</h1>
                     <h1 className="header-span">{t('messagesTitleSecond')}</h1>  

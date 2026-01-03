@@ -11,134 +11,89 @@ import ruFlag from '../assets/ru.svg';
 import deFlag from '../assets/de.svg';
 import uaFlag from '../assets/ua.svg';
 import { MdLocalOffer } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import MenuSliderTitle from "./MenuSliderTitle";
+import SliderLinksSection from "./SliderLinksSection";
+import MenuSliderLargeLink from "./MenuSliderLargeLink";
 
 interface MenuSliderProps {
     sliderOpened: boolean;
     setSliderOpened: (open: boolean) => void;
 }
 
+const menuSliderLinks = {
+  1: [
+    {link: "sworn-translations", linkText: "sworn_translations"}, 
+    {link: "verbal-translations", linkText: "verbalTranslations"}, 
+    {link: "apostille", linkText: "appostile"}
+  ],
+  2: [
+    {link: "languages", linkText: "german", image: deFlag}, 
+    {link: "languages", linkText: "ukrainian", image: uaFlag}, 
+    {link: "languages", linkText: "russian", image: ruFlag}
+  ],
+  3: [
+    {link: "pricing", linkText: "prices"}, 
+    {link: "areas", linkText: "expertise"}, 
+    {link: "faq", linkText: "faq"}
+  ],
+}
+
 const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }) => {
 
   const {t} = useTranslation();
-  const navigate = useNavigate();
 
   return (
     <aside className={sliderOpened ? "menu-slider show-slider": "menu-slider"}>
 
         <div className="slider-header">
+
           <img src={logo} alt="" loading="lazy" className="slider-logo"/>
+          
           <IoCloseOutline className="services-close" onClick={() => setSliderOpened(!sliderOpened)}/>
+
         </div>
 
         <div className="slider-content">
 
           <p className="services-title">{t('services')}</p>
+
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
 
           <div className="slider-item-container">
 
-            <div className="slider-title-top">
-              <BsTranslate style={{color: 'RGB(76 121 212)'}}/>
-              <p>{t('translations')}</p>
-            </div>
+            <MenuSliderTitle Icon={BsTranslate} text="translations"/>
 
-            <div className="slider-item">
-
-                <p 
-                onClick={()=> {navigate('/sworn-translations'); setSliderOpened(false)}}>
-                {t('sworn_translations')}
-                </p>
-
-                <p 
-                onClick={()=> {navigate('/verbal-translations'); setSliderOpened(false)}}>
-                {t('verbalTranslations')}
-                </p>
-
-                <p
-                onClick={()=> {navigate('/apostille'); setSliderOpened(false)}}>
-                {t('appostile')}
-                </p>
-            </div>
+            <SliderLinksSection sectionLinks={menuSliderLinks[1]} toggleSlider={setSliderOpened}/>
 
           </div>
 
           <div className="slider-item-container">
 
-            <div className="slider-title-top">
-              <FaLanguage style={{color: 'RGB(76 121 212)'}}/>
-              <p>{t('languages')}</p>
-            </div>
+            <MenuSliderTitle Icon={FaLanguage} text="languages"/>
 
-            <div className="slider-item">
-
-              <p
-              onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
-              <img src={deFlag} loading="lazy" alt="" />{t('german')}
-              </p>
-
-              <p
-              onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
-              <img src={uaFlag} loading="lazy" alt="" />{t('ukrainian')}
-              </p>
-
-              <p
-              onClick={()=> {navigate('/languages'); setSliderOpened(false)}}>
-              <img src={ruFlag} loading="lazy" alt="" />{t('russian')}
-              </p>
-
-            </div>
+            <SliderLinksSection sectionLinks={menuSliderLinks[2]} toggleSlider={setSliderOpened}/>
 
           </div>
 
           <div className="slider-item-container">
 
-            <div className="slider-title-top">
-              <TbTools style={{color: 'RGB(76 121 212)'}}/>
-              <p>{t('expertise')}</p>
-            </div>
+            <MenuSliderTitle Icon={TbTools} text="expertise"/>
 
-            <div className="slider-item">
-
-                <p 
-                onClick={()=> {navigate('/pricing'); setSliderOpened(false)}}>
-                {t('prices')}
-                </p>
-
-                <p 
-                onClick={()=> {navigate('/areas'); setSliderOpened(false)}}>
-                {t('expertise')}
-                </p>
-
-                <p 
-                onClick={()=> {navigate('/faq'); setSliderOpened(false)}}>
-                {t('faq')}
-                </p>
-
-            </div>
+            <SliderLinksSection sectionLinks={menuSliderLinks[3]} toggleSlider={setSliderOpened}/>
 
           </div>
 
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', marginTop: '1rem'}}/>
+          <MenuSliderLargeLink link="about-us" linkText="aboutUs" Icon={FaInfo} toggleSlider={setSliderOpened}/>
 
-          <div className="slider-footer-container" onClick={() => {navigate('about-us/'); setSliderOpened(!setSliderOpened)}}>
-                <FaInfo className="slider-icon"/>
-                <p>{t('aboutUs')}</p>
-          </div>
 
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', padding: '0px'}}/>
+          <MenuSliderLargeLink link="contact-us" linkText="contact" Icon={GrContactInfo} toggleSlider={setSliderOpened}/>
 
-          <div className="slider-footer-container" onClick={() => {navigate('contact-us/'); setSliderOpened(!setSliderOpened)}}>
-                <GrContactInfo className="slider-icon"/>
-                <p>{t('contact')}</p>
-          </div>
 
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
+          <MenuSliderLargeLink link="order" linkText="offer" Icon={MdLocalOffer} toggleSlider={setSliderOpened}/>
 
-          <div className="slider-footer-container" onClick={() => {navigate('/order'); setSliderOpened(!setSliderOpened)}}>
-                <MdLocalOffer className="slider-icon"/>
-                <p>{t('offer')}</p>
-          </div>
 
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
 

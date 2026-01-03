@@ -19,6 +19,7 @@ const languages: LanguageOption[] = [
 ];
 
 const LanguageDropdown: React.FC = () => {
+
   const { i18n } = useTranslation();
   const [language, setLanguage] = React.useState<string>(i18n.language || 'de');
 
@@ -26,28 +27,39 @@ const LanguageDropdown: React.FC = () => {
     const newLanguage = event.target.value as string;
     setLanguage(newLanguage); 
     i18n.changeLanguage(newLanguage);
-    
   };
 
   return (
+    
     <FormControl sx={{ width: '6.34rem', display: 'flex' }}>
+
       <Select
         sx={{ height: '45px' }}
         id="language-select"
         value={language}
         onChange={handleChange}
       >
+
         {languages.map((lang) => (
+
           <MenuItem sx={{ height: '40px', borderColor: 'rgb(76, 121, 212)' }} key={lang.code} value={lang.code}>
+
             <div style={{ display: 'flex', alignItems: 'center', fontWeight: '500' }}>
+
               <ListItemIcon style={{ minWidth: 'unset', marginRight: '8px' }}>
                 <img src={lang.image} alt={lang.code} loading="lazy" style={{ width: 24, height: 16 }} />
               </ListItemIcon>
+
               <Typography variant="inherit" noWrap>{lang.short}</Typography>
+
             </div>
+
           </MenuItem>
+
         ))}
+
       </Select>
+
     </FormControl>
   );
 };

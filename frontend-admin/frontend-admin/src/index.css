@@ -181,7 +181,7 @@ html, body {
     display: flex;
     align-items: center;
     flex-direction: column;
-    padding: 5rem;
+    padding: 0rem 5rem;
 }
 
 .dashboard__orders-container{
@@ -272,9 +272,7 @@ html, body {
         padding: 3rem;
         margin-top: 3rem;
     }
-    .main-container{
-        margin-top: 5rem;
-    }
+  
 }
 
 
@@ -318,6 +316,7 @@ html, body {
     margin-top: 2px;
 }
 
+
 /* DASHBOARD */
 
 .dashboard-title-orders{
@@ -355,6 +354,7 @@ html, body {
 
 .dashboard-container{
     width: 100%;
+    max-width: 1920px;
     padding: 0rem 5rem 10rem 5rem;
     margin: auto;
     margin-top: 5rem;
@@ -393,10 +393,35 @@ html, body {
   
 }
 
+@media (max-width: 768px) {
+
+  .dashboard-container{
+    padding: 0;
+  }
+  .main-container{
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .dashboard-container{
+    padding: 0;
+  }
+  .main-container{
+    padding: 1rem;
+  }
+  .dashboard-title-orders{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
 @media (max-width: 550px) {
 
   .dashboard-container{
-    margin-top: 0;
+    margin-top: 4rem;
     padding: 0rem 1rem 0rem 1rem;
   }
 
@@ -420,7 +445,10 @@ html, body {
   }
 
   .order-customer-name, .order-timestamp-text{
-    font-size: 14px;
+    font-size: 12px;
+  }
+  .small-order-container{
+    padding: 0.7rem;
   }
   
 }
@@ -594,7 +622,7 @@ html, body {
   .files-container{
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem; 
+    gap: 1rem; 
     justify-content: flex-start; 
     align-items: center; 
     margin-top: 2rem;
@@ -687,7 +715,7 @@ html, body {
   @media (max-width: 550px){
     .order-details-top{
       flex-direction: column;
-      gap: 2rem;
+      gap: 1rem;
     }
     .order-details-title{
       margin-top: 2rem;
@@ -697,11 +725,18 @@ html, body {
       display: none;
     }
   }
+
+  @media (max-width: 395px){
+    .file-container{
+      width: 100%;
+    }
+  }
   
   @media (max-width: 380px){
     .order-details-title{
       font-size: 14px;
     }
+    
   }
 
 /* USER DATA PROFILE */
@@ -1109,6 +1144,22 @@ html, body {
   margin-top: 5rem;
   font-size: 20px;
 }
+@media (max-width: 475px){
+  .customer-container{
+    padding: 0.75rem;
+  }
+  .customer-content h3{
+    font-size: 14px;
+  }
+  .customer-content p{
+    font-size: 12px;
+  }
+  .customer-avatar{
+    width: 50px;
+    height: 50px;
+  }
+}
+
 
 /* FOOTER */
 
@@ -1750,6 +1801,12 @@ dd {
 
 @keyframes blink { 50% { opacity: 0; } }
 
+@media (max-width: 768px) {
+  .translation-info-container{
+    flex-direction: column;
+  }
+}
+
 
 /* TRANSLATION POPUP */
 
@@ -1810,6 +1867,27 @@ dd {
   line-height: 1.5rem;
 }
 
+@media(max-width: 576px){
+  .translator-title h1{
+    font-size: 24px;
+  }
+  .translation-container{
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .translation-details-title{
+    flex-direction: column;
+    gap: 1.5rem;
+    
+  }
+  .order-action-btn{
+    width: 150px;
+  }
+  .translation-details-container{
+    flex-direction: column;
+  }
+}
+
 /* STASTICS */
 
 .app-statistics-container{
@@ -1818,7 +1896,7 @@ dd {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 0rem 2rem 0rem 2rem;
+  padding: 3rem 2rem 0rem 2rem;
 }
 
 .statistics-title{
@@ -1840,7 +1918,7 @@ dd {
 
 @media(max-width: 600px){
   .app-statistics-container{
-    padding: 0rem 1rem 0rem 1rem;
+    padding: 3rem 1rem 0rem 1rem;
   }
 }
 

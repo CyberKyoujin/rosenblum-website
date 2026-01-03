@@ -12,6 +12,7 @@ import useAuthStore from '../zustand/useAuthStore';
 import defaultAvatar from '../assets/default_avatar.webp'
 
 export default function AccountMenu() {
+  
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 

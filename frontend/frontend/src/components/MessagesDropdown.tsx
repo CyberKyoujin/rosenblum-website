@@ -1,69 +1,56 @@
 import React from "react";
 import useAuthStore from "../zustand/useAuthStore";
-import smallLogo from '../assets/logo2.webp'
 import Divider from '@mui/material/Divider';
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { SiGooglemessages } from "react-icons/si";
 import { useTranslation } from "react-i18next";
 import useMessageStore from "../zustand/useMessageStore";
-
+import MessagesDropdownDisplaySection from "./MessagesDropdownDisplaySection";
 
 interface Props {
     isOpened: boolean;
 }
 
 const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
-    const { userMessages, user } = useAuthStore();
-    
-    const { toggleMessages } = useMessageStore();
-    
-    const navigate = useNavigate();
 
+    const user = useAuthStore(s => s.user);
+    const userMessages = useMessageStore(s => s.messages);
+    
     const {t} = useTranslation();
 
-    const messages = userMessages?.filter((message) => message.receiver === user?.id)
+    const messages = userMessages?.filter((message) => message.receiver === user?.id);
+    const slicedMessages = messages?.slice(0,3)
 
     return (
         <div className={`messages-dropdown ${isOpened ? 'show-messages-dropdown' : ''}`}>
+
             {messages && messages?.length > 0 ? (
-                messages?.slice(0, 3).map((message) => (
-                    <React.Fragment key={message.id}>
-                        <div className="message-container" onClick={() => navigate('/messages')}>
-                            <img src={smallLogo} loading="lazy" alt="" style={{width: '45px', height: '45px'}} />
-                            <div className="message-content">
-                                <div className="message-timestamp">
-                                    <p style={{fontWeight: 'bold', fontSize: '14px', marginLeft: 'auto'}}>Rosenblum Übersetzungsbüro</p>
-                                    <p style={{fontSize: '12px', color: 'grey', marginRight: 'auto', marginTop: '4px'}}>{message.formatted_timestamp}</p>
-                                </div>
-                                <p style={{fontSize: '12px'}}>
-                                    {message.message ? (
-                                        message.message.length > 40 ? message.message.slice(0, 40) + '...' : message.message
-                                    ) : 'No message content'}
-                                </p>
-                            </div>
-                            <div className="viewed-container" style={{display: message.viewed ? 'none' : 'block'}} />
-                        </div>
-                        <Divider />
-                    </React.Fragment>
-                ))
+
+                <MessagesDropdownDisplaySection messages={slicedMessages}/>
             ) 
             : 
             (   
                 <>
+
                     <div className="no-messages">
-                        <SiGooglemessages style={{fontSize: '40px', color: 'rgb(76 121 212)'}}/>
+                        <SiGooglemessages className="app-icon" size={40}/>
                         <p>{t('noMessages')}</p>
                     </div>
 
                     <Divider />
+
                 </>
                 
             )}
-            <div className="messages-footer" onClick={() => { toggleMessages(); navigate('/messages'); }}>
+
+            <Link to="/messages" className="messages-footer app-link">
+                
                 <button className="messages-btn">
                     {t('allMessages')}
                 </button>
-            </div>
+
+            </Link>
+
         </div>
     );
 };

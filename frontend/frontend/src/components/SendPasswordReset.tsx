@@ -28,7 +28,6 @@ const SendPasswordReset = () => {
 
     const isAtTop = useIsAtTop(10);
 
-
     const { register, handleSubmit, formState: { errors }, reset } = useForm<SendResetFormValues>({resolver: zodResolver(sendPasswordSchema)});
 
     const onSubmit = async (data: SendResetFormValues) => {

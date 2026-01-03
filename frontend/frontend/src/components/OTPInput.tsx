@@ -120,7 +120,6 @@ function OTP({
     event.preventDefault();
     const clipboardData = event.clipboardData;
 
-    // Check if there is text data in the clipboard
     if (clipboardData.types.includes('text/plain')) {
       let pastedText = clipboardData.getData('text/plain');
       pastedText = pastedText.replace(/\D/g, '').substring(0, length).trim();
