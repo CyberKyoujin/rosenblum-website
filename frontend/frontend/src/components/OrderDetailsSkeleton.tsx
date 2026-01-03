@@ -8,21 +8,23 @@ const OrderDetailsSkeleton = () => {
 
     return (
         <div className="main-app-container">
+
             <div className="order-details-container">
             
-            <div className="order-details-title">
-                <FaFileAlt style={{fontSize: '25px', color: 'rgb(76, 121, 212)', marginBottom: '4px'}}/>
-                <div style={{display: 'flex'}}>
-                    <h1>{t('order')}</h1>
-                    <h1 className="header-span">{t('übersicht')}</h1>
+                <div className="order-details-title">
+
+                    <FaFileAlt className="app-icon" size={25} style={{marginBottom: '4px'}}/>
+
+                    <div style={{display: 'flex'}}>
+                        <h1>{t('order')}</h1>
+                        <h1 className="header-span">{t('übersicht')}</h1>
+                    </div>
+
                 </div>
-            </div>
 
-            <Divider orientation="horizontal" style={{marginTop: '1.5rem'}}/>
+                <Divider orientation="horizontal" style={{marginTop: '1.5rem'}}/>
 
-            <div className="order-details-content skeleton" style={{height: "40rem"}}>
-
-            </div>
+                <div className="order-details-content skeleton" style={{height: "40rem"}}/>
 
             </div>
         </div>

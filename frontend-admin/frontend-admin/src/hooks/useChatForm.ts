@@ -71,7 +71,7 @@ export const useChatForm = (
 
         if (uploadedFiles.length > 0) {
             uploadedFiles.forEach(file => {
-                formData.append('files', file);
+                formData.append('uploaded_files', file);
             });
         }
 

@@ -41,7 +41,12 @@ const useOrderStore = create<OrderState>((set, get) => ({
         try{
             
             const response = await axiosInstance.get('/orders/');
-            set({orders: response.data});
+
+            const ordersData = response.data.results !== undefined 
+                ? response.data.results 
+                : response.data;
+
+            set({orders: ordersData});
            
         } catch (err: unknown){
             throw toApiError(err);

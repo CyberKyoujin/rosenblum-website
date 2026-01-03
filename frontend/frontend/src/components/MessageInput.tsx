@@ -24,7 +24,9 @@ const MessageInput = ({handleSubmit = () => {}, handleClick, message, setMessage
     };
 
     return (
+
         <form className="message-input-container" onSubmit={handleSubmit}>
+            
             <textarea
             className="message-input"
             value={message}
@@ -49,7 +51,7 @@ const MessageInput = ({handleSubmit = () => {}, handleClick, message, setMessage
             />
         
             <button className="send-message-container hover-btn" type="submit">
-                {isLoading ? <CircularProgress style={{color: 'white', width: '24px', height: '24px'}}/> : <RiMailSendLine/>}
+                {isLoading ? <CircularProgress size={24} style={{color: 'white'}}/> : <RiMailSendLine/>}
             </button>
 
         </form>

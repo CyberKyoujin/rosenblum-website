@@ -50,22 +50,29 @@ const UserProfileSection = () => {
                     </div>
 
                     <div className="profile__user-data-container profile-section-container">
+
                         <h2><FaInfoCircle className="profile__contact-icon"></FaInfoCircle>Kontanktdaten</h2>
+
                         <div className="profile__user-personal-info">
                             <p>Email: {user?.email}</p>
                             <p>Anschrift: {userData?.street}, {userData?.zip} {userData?.city}</p>
                             <p>Telefonnummer: {userData?.phone_number}</p>
                         </div>
+
                         <div className="profile__button-group">
+
                             <Link to="/edit-profile" className="profile__edit-btn">
                                 <FaUserEdit className="profile__edit-icon"></FaUserEdit>
                                 PROFIL BEARBEITEN
                             </Link>
+
                             <button className="profile__delete-btn">
                                 <MdDelete className="profile__edit-icon"/>
                                 KONTO LÖSCHEN
                             </button>
+                            
                         </div>
+
                     </div>
 
                 </section>

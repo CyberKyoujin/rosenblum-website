@@ -13,31 +13,39 @@ const OrderInfoAccordion = () => {
     const { t } = useTranslation();
 
     return (
+
         <div className="info-container">
-                <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '0px', display: 'flex', flexDirection:'column', }}>
-                        <AccordionSummary
-                        expandIcon={<ArrowDownwardIcon style={{color: 'rgb(76, 121, 212)'}}/>}
-                        aria-controls="panel1-content"
-                        id="panel1-header"
-                        >
-                        <Typography style={{display: 'flex', color: 'rgb(49, 97, 192)', alignItems: 'center', gap: '1rem'}}>
-                            <IoWarningOutline className="warning-icon"/> 
-                            <p>{t('spelling')}</p>
-                        </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails style={{padding: '1rem 3rem 2rem 3rem'}}>
-                        <Typography className="pass-info">
-                            Die richtige Schreibwiesen können Sie in ihrem <span style={{color: 'rgb(49, 97, 192)', fontWeight: '600'}}>Reisepass</span> finden.
-                        </Typography>
 
-                        <div className="pass-container">
-                            <img src={dePass} alt="" loading="lazy"/>
-                            <img src={ukrPass} alt="" loading="lazy"/>
-                        </div>
+            <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '0px', display: 'flex', flexDirection:'column', }}>
+                
+                <AccordionSummary
+                expandIcon={<ArrowDownwardIcon className="app-icon"/>}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                >
 
-                        </AccordionDetails>
-                    </Accordion>
-                </div>
+                    <Typography style={{display: 'flex', color: 'rgb(49, 97, 192)', alignItems: 'center', gap: '1rem'}}>
+                        <IoWarningOutline className="warning-icon"/> 
+                        <p>{t('spelling')}</p>
+                    </Typography>
+
+                </AccordionSummary>
+
+                <AccordionDetails style={{padding: '1rem 3rem 2rem 3rem'}}>
+
+                    <Typography className="pass-info">
+                        Die richtige Schreibwiesen können Sie in ihrem <span style={{color: 'rgb(49, 97, 192)', fontWeight: '600'}}>Reisepass</span> finden.
+                    </Typography>
+
+                    <div className="pass-container">
+                        <img src={dePass} alt="" loading="lazy"/>
+                        <img src={ukrPass} alt="" loading="lazy"/>
+                    </div>
+
+                </AccordionDetails>
+            </Accordion>
+
+        </div>
     )
 }
 

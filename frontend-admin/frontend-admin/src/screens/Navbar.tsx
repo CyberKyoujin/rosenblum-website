@@ -25,28 +25,28 @@ const Navbar = () => {
                 
             </div>
 
-            <div className="nav-links-container">
-                
-                <NavLinks/>
-
-            </div>
-
 
             {isAuthenticated && 
+            <>
+                <div className="nav-links-container">
+                    
+                    <NavLinks/>
 
-            <div className="navbar-user-container">
+                </div>
 
-                <p>Hallo, {user?.first_name}</p>
+                <div className="navbar-user-container">
 
-                <button 
-                onClick={() => {logoutUser(); navigate('/')}} 
-                className="btn"
-                style={{padding: '0.5rem'}}>
-                <TbLogout2 size={25}/>
-                </button>
+                    <p>Hallo, {user?.first_name}</p>
 
-            </div>
+                    <button 
+                    onClick={() => {logoutUser(); navigate('/')}} 
+                    className="btn"
+                    style={{padding: '0.5rem'}}>
+                    <TbLogout2 size={25}/>
+                    </button>
 
+                </div>
+            </>
             }
 
             <TemporaryDrawer userName={user?.first_name} logout={logoutUser}/>

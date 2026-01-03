@@ -1,7 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-
 interface SectionProps {
     image: string;
     imageClass: string;
@@ -11,24 +10,27 @@ interface SectionProps {
     order: boolean;
 }
 
-
 const Section: React.FC<SectionProps> = ({image, imageClass, titleTextFirst, titleTextSecond, text, order }) => {
 
     const { t } = useTranslation();
 
-    return(
+    return (
+
         <div className="translations-section">
-                    {order && <img src={image} alt="" fetchPriority="high" className={imageClass}/>}
+            {order && <img src={image} alt="" fetchPriority="high" className={imageClass}/>}
 
-                    <div className="translations-section-text">
-                        <div className="translations-section-title">
-                            <h1>{titleTextFirst}</h1>
-                            <h1 className="header-span">{titleTextSecond}</h1>
-                        </div>
-                        <p>{t(text)}</p>
-                    </div> 
+            <div className="translations-section-text">
 
-                    {!order && <img src={image} alt="" className={imageClass} loading="lazy"/>}
+                <div className="translations-section-title">
+                    <h1>{titleTextFirst}</h1>
+                    <h1 className="header-span">{titleTextSecond}</h1>
+                </div>
+
+                <p>{t(text)}</p>
+
+            </div> 
+
+            {!order && <img src={image} alt="" className={imageClass} loading="lazy"/>}
 
         </div>
     )

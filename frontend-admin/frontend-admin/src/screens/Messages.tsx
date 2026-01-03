@@ -74,7 +74,7 @@ const Messages = () => {
             )}
 
             <div className="messages-title-container">
-                <SiGooglemessages style={{ fontSize: '45px', color: 'rgb(76, 121, 212)' }} />
+                <SiGooglemessages className="app-icon" size={45} />
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <h1>Ihre</h1>
                     <h1 className="header-span">Nachrichten</h1>

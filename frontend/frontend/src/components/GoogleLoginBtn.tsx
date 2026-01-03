@@ -2,9 +2,7 @@ import {useEffect} from "react";
 import useAuthStore from "../zustand/useAuthStore";
 import { useNavigate } from "react-router-dom";
 
-
 const GOOGLE_CLIENT_ID = "675268927786-p5hg3lrdsm61rki2h6dohkcs4r0k5p40.apps.googleusercontent.com";
-
 
 const GoogleLoginBtn = () => {
 
@@ -15,15 +13,12 @@ const GoogleLoginBtn = () => {
     useEffect(() => {
         
         const handleCredentialResponse = async (response: any) => {
-            console.log("Google response", response.credential);
-
             try {
                 await googleLogin(response.credential);
                 navigate('/profile');
             } catch (err: unknown) {
                 console.error("Google login failed", err);
             }
-            
         };
 
         const initGoogleBtn = () => {
@@ -48,7 +43,7 @@ const GoogleLoginBtn = () => {
 
     }, [googleLogin, navigate]);
 
-    return <div id="google-signin-btn" className="custom-google-sign-in-button"></div>;
+    return <div id="google-signin-btn" className="custom-google-sign-in-button"/>;
 
 }
 
