@@ -10,6 +10,14 @@ import apoIcon from "../assets/apo_icon.webp"
 import timeIcon from "../assets/time_icon.webp"
 import questionIcon from "../assets/question_icon.webp"
 import NavigationSection from "../components/NavigationSection";
+import ServiceProcessSteps from "../components/ServiceProcessSteps";
+
+const apostilleSteps = [
+    {stepTitle: "rechtsdokumenteTitle", step: "rechtsdokumente"},
+    {stepTitle: "handelsdokumenteTitle", step: "handelsdokumente"},
+    {stepTitle: "standesamtsdokumenteTitle", step: "standesamtsdokumente"},
+    {stepTitle: "bildungsdokumenteTitle", step: "bildungsdokumente"}
+]
 
 const Apostille = () => {
 
@@ -33,24 +41,7 @@ const Apostille = () => {
 
             <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
-            <div className="translations-section" style={{gap: '4rem'}}>
-
-                <img src={timeIcon} alt="" className="third-image" loading="lazy"/>
-
-                <div className="translations-section-text">
-                        <div className="translations-section-title">
-                            <h1>{t('whenYouNeed')}</h1>
-                            <h1 className="header-span">{t('oneApostille') + " ?"}</h1>
-                        </div>
-                        <ol className="services-list" style={{lineHeight: '25px', fontSize: '18px', marginLeft: '1rem'}}>
-                            <li><span>{t('rechtsdokumenteTitle')}</span>{t('rechtsdokumente')}</li>
-                            <li><span>{t('handelsdokumenteTitle')}</span>{t('handelsdokumente')}</li>
-                            <li><span>{t('standesamtsdokumenteTitle')}</span>{t('standesamtsdokumente')}</li>
-                            <li><span>{t('bildungsdokumenteTitle')}</span>{t('bildungsdokumente')}</li>
-                        </ol>
-                </div>
-
-            </div>
+            <ServiceProcessSteps linkText="" steps={apostilleSteps} addProcessIcon={false} img={timeIcon} title="whenYouNeed" titleSpan="oneApostille"/>
 
             <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 

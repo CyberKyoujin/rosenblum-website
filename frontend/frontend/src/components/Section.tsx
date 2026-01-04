@@ -22,8 +22,8 @@ const Section: React.FC<SectionProps> = ({image, imageClass, titleTextFirst, tit
             <div className="translations-section-text">
 
                 <div className="translations-section-title">
-                    <h1>{titleTextFirst}</h1>
-                    <h1 className="header-span">{titleTextSecond}</h1>
+                    <h1>{t(titleTextFirst)}</h1>
+                    <h1 className="header-span">{t(titleTextSecond)}</h1>
                 </div>
 
                 <p>{t(text)}</p>

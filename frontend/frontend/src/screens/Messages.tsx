@@ -29,7 +29,6 @@ const Messages = () => {
     const fetchUserMessages = useMessageStore(s => s.fetchUserMessages);
     const sendMessage = useMessageStore(s => s.sendMessage);
     const fetchMessagesError = useMessageStore(s => s.fetchMessagesError);
-
     
     const [message, setMessage] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
