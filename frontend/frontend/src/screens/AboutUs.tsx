@@ -1,17 +1,17 @@
 import { Divider } from "@mui/material";
 import Footer from "../components/Footer";
 import { GrContactInfo } from "react-icons/gr";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import teamIcon from "../assets/team_icon.webp"
 import goalIcon from "../assets/goal_icon.webp"
 import questionIcon from "../assets/question_icon.webp"
 import planeIcon from "../assets/planet_icon.webp"
 import NavigationSection from "../components/NavigationSection";
+import Section from "../components/Section";
 
 const AboutUs = () => {
 
-    const navigate = useNavigate();
     const { t } = useTranslation();
 
     return(
@@ -21,59 +21,25 @@ const AboutUs = () => {
             <NavigationSection first_link="Über Uns"/>
 
             <div className="about-main-container">
-                
-                <div className="about-container">
-                    <img src={planeIcon} alt="" loading="lazy" />
-                    <div className="about-text">
-                        <div className="about-header">
-                            <h1>{t('aboutUsFirst')}</h1>
-                            <h1 className="header-span">{t('aboutUsSecond')}</h1>
-                        </div>
-                        <p>{t('aboutUsText')}</p>
-                    </div>
-                </div>
+
+                <Section image={planeIcon} imageClass="first-image" titleTextFirst="aboutUsFirst" titleTextSecond="aboutUsSecond" text="aboutUsText" order/>
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
-                <div className="about-container about-container-gap">
-                    <div className="about-text">
-                        <div className="about-header">
-                            <h1>{t('teamFirst')}</h1>
-                            <h1 className="header-span">{t('teamSecond')}</h1>
-                        </div>
-                        <p>{t('teamText')}</p>
-                    </div>
-                    <img src={teamIcon} alt="" loading="lazy"/>
-                </div>
+                <Section image={teamIcon} imageClass="first-image" titleTextFirst="teamFirst" titleTextSecond="teamSecond" text="teamText" order={false}/>
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
-                <div className="about-container about-container-gap">
-                    <img src={goalIcon} alt="" loading="lazy"/>
-                    <div className="about-text">
-                        <div className="about-header">
-                            <h1>{t('missionFirst')}</h1>
-                            <h1 className="header-span">{t('missionSecond')}</h1>
-                        </div>
-                        <p>{t('missionText')}</p>
-                    </div>
-                </div>
+                <Section image={goalIcon} imageClass="first-image" titleTextFirst="missionFirst" titleTextSecond="missionSecond" text="missionText" order/>
 
                 <Divider style={{marginTop: '3rem', marginBottom: '3rem'}}/>
 
-                <div className="about-container about-container-gap">
-                    <div className="about-text">
-                        <div className="about-header">
-                            <h1>{t('whyUsFirst')}</h1>
-                            <h1 className="header-span">{t('whyUsSecond')}</h1>
-                        </div>
-                        <p>{t('whyUsText')}</p>
-                    </div>
-                    <img src={questionIcon} alt="" loading="lazy"/>
-                </div>
+                <Section image={questionIcon} imageClass="first-image" titleTextFirst="whyUsFirst" titleTextSecond="whyUsSecond" text="whyUsText" order={false}/>
 
-                <button className="contact-us-btn hover-btn" onClick={() => navigate('/contact-us')}><GrContactInfo style={{fontSize: '35px'}}/>{t('contactUsFull')}</button>
-
+                <Link to="/contact-us" className="contact-us-btn hover-btn app-link">
+                    <GrContactInfo size={35}/>
+                    {t('contactUsFull')}
+                </Link>
        
             </div>
         </div>

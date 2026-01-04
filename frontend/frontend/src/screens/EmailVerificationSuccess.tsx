@@ -13,21 +13,25 @@ const EmailVerificationSuccess = () => {
     const message = state?.successMessage;
 
     return (
+
         <div className="verification_success__page">
-        <div className="verification_success__container">
-            
+
+            <div className="verification_success__container">
+                
                 <Lottie animationData={verificationSuccess} loop={false} className="verification_success__icon"/>
+
                 <div className="verification_success__details">
                     <h1>{message}</h1>
                     <p>Willkomen bei Übersetzungsbüro Rosenblum.</p>
                     <Link to="/login" className="verification_success__btn">Anmelden</Link>
                 </div> 
 
-        </div>
+            </div>
 
-        <Footer/>
+            <Footer/>
 
         </div>
+        
     )
 }
 

@@ -60,10 +60,8 @@ const Pricing = () => {
 
                 <Divider style={{marginTop: '4rem'}}/>
                 
-
                 <Section image={qualityIcon} imageClass="second-image" titleTextFirst={t('quality')} titleTextSecond={t('satisfaction')} text="qualityAndHappiness" order={true}/>
-
-
+                
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
                 <ContactSection text="pricingContact"/>
