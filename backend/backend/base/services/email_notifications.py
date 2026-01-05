@@ -52,3 +52,26 @@ def send_order_ready_email(user_email: str, order_id: int):
     )
     
     send_simple_email(subject, message, user_email)
+    
+def send_request_created(user_email: str, request_id: int, requester_name: str):
+    subject = "Ihre Anfrage ist erfolgreich versandt!"
+    message = (
+        f"Hallo, {requester_name}\n\n"
+        f"Ihre Anfrage #{request_id} ist erfolgreich bei uns eingegangen, wir bearbeiten die schnellstmöglich\n\n"
+        "Mit freundlichen Grüßen,\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+    
+    send_simple_email(subject, message, user_email)
+    
+def send_request_answered_email(user_email: str, request_id: int, answer_text: str, requester_name: str):
+    subject = "Antwort zu Ihrer Anfrage!"
+    message = (
+        f"Antwort zum Anfrage #{request_id}.\n\n"
+        f"Hallo, {requester_name}\n\n"
+        f"{answer_text}\n\n"
+        "Mit freundlichen Grüßen,\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+    
+    send_simple_email(subject, message, user_email)
