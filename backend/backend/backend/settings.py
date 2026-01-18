@@ -105,6 +105,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # First app
+    "http://localhost:3001",
     "http://localhost:5000",
     "http://localhost:4173",# Second app
 ]
@@ -137,8 +138,8 @@ AUTH_USER_MODEL = 'base.CustomUser'
 
 #GOOGLE AUTH
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY', default='')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET', default='')
 
 # PLACES API
 
@@ -147,33 +148,54 @@ GOOGLE_PLACE_ID = config('GOOGLE_PLACE_ID', default='')
 
 # STORAGE BUCKET
 
-GS_BUCKET_NAME = config('GS_BUCKET_NAME')
-service_account_path = os.path.join(BASE_DIR, config('GOOGLE_SERVICE_ACCOUNT_FILE'))
-GS_CREDENTIALS = service_account.Credentials.from_service_account_file(service_account_path)
+GS_BUCKET_NAME = config('GS_BUCKET_NAME', default='')
+if GS_BUCKET_NAME:
+    service_account_file = config('GOOGLE_SERVICE_ACCOUNT_FILE', default='')
+    if service_account_file:
+        service_account_path = os.path.join(BASE_DIR, service_account_file)
+        if os.path.exists(service_account_path):
+            GS_CREDENTIALS = service_account.Credentials.from_service_account_file(service_account_path)
 
 # EMAIL SETTINGS
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+
+# Use console backend if email credentials are not configured (for local dev)
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+    EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+    EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+    EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
+else:
+    # Print emails to console for development
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Deepl
 
-DEEPL_AUTH_KEY = config('DEEPL_AUTH_KEY')
+DEEPL_AUTH_KEY = config('DEEPL_AUTH_KEY', default='')
 
-STORAGES = {
-    "default": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-    },
-}
-GS_FILE_OVERWRITE = False
+# Use Google Cloud Storage if GS_BUCKET_NAME is set, otherwise use local storage
+if GS_BUCKET_NAME:
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        },
+    }
+    GS_FILE_OVERWRITE = False
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
@@ -208,12 +230,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Use DATABASE_URL if provided (for Docker/production), otherwise use SQLite
+DATABASE_URL = config('DATABASE_URL', default='')
+
+if DATABASE_URL:
+    # Parse DATABASE_URL for PostgreSQL
+    # Format: postgres://user:password@host:port/dbname
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL)
     }
-}
+else:
+    # Local development with SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -253,7 +287,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-MEDIA_URL = f"https://storage.cloud.google.com/{GS_BUCKET_NAME}/"
+MEDIA_URL = f"https://storage.cloud.google.com/{GS_BUCKET_NAME}/" if GS_BUCKET_NAME else '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

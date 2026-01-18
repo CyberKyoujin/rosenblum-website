@@ -44,6 +44,7 @@ export default function AccountMenu() {
           aria-controls={open ? 'account-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={open ? 'true' : undefined}
+          data-testid="profile-dropdown"
         >
           {avatar != '' ? (
             <img className='profile-img-sm' src={avatar} alt="Profile" style={{ width: 46, height: 46 }} onError={handleImageError}/>
@@ -54,6 +55,7 @@ export default function AccountMenu() {
         </IconButton>
       </div>
       <Menu
+        data-testid="profile-dropdown-menu"
         anchorEl={anchorEl}
         id="account-menu"
         open={open}
@@ -115,7 +117,7 @@ export default function AccountMenu() {
           </MenuItem>
         ) : (
           <>
-            <MenuItem onClick={() => {
+            <MenuItem data-testid="register-btn" onClick={() => {
               handleClose();
               navigate('/register');
             }}>

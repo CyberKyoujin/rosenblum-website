@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Alert } from '@mui/material';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useTranslation } from 'react-i18next';
 import { ApiErrorResponse } from '../types/error';
 
 interface ApiErrorAlertProps {
@@ -9,11 +10,12 @@ interface ApiErrorAlertProps {
   belowNavbar?: boolean;
   onClose?: () => void;
   fixed?: boolean;
-  action?: React.ReactNode; 
+  action?: React.ReactNode;
   duration?: number;
 }
 
 const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, belowNavbar, onClose, fixed = false, action, duration = 5 }) => {
+  const { t } = useTranslation();
  
   const [alertVisible, setAlertVisible] = useState(false);
 
@@ -75,7 +77,7 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, be
     let displayMessage = error.message;
     
     if (error.code === 'validation_error') {
-        displayMessage = `${error.message} (Check fields)`;
+        displayMessage = `${error.message} (${t('checkFields')})`;
     }
 
     content = (
@@ -91,7 +93,7 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, be
 
   return (
 
-    <div className={containerClasses}>
+    <div className={containerClasses} data-testid="alert">
       {content}
     </div>
 

@@ -53,8 +53,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ form, onSubmit, loading, showPass
         </FormControl>
 
         <div className='login-title-footer__item'>
-          <p>Passwort vergessen?</p>
-          <p className="login-span" onClick={() => navigate('/send-reset-password')}>Reset</p>
+          <p>{t('forgotPassword')}</p>
+          <p className="login-span" onClick={() => navigate('/send-reset-password')}>{t('resetPassword')}</p>
         </div>
 
         <button className="confirm-btn" type='submit' disabled={loading}>

@@ -23,7 +23,7 @@ const EmailVerificationSuccess = () => {
                 <div className="verification_success__details">
                     <h1>{message}</h1>
                     <p>Willkomen bei Übersetzungsbüro Rosenblum.</p>
-                    <Link to="/login" className="verification_success__btn">Anmelden</Link>
+                    <Link to="/login" className="verification_success__btn" data-testid="success-btn">Anmelden</Link>
                 </div> 
 
             </div>

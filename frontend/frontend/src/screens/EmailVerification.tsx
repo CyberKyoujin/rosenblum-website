@@ -54,7 +54,7 @@ const EmailVerification = () => {
               <Alert severity="error">{error}</Alert>
             )}
 
-            {(error === "No verification attempts left." || error === "Verification code expired.") && (
+            {(error === "Es gibt kein Verifizierungscode" || error === "Der Code ist abgelaufen" || error === "Sie haben keine Versuche übrig") && (
               <button
                 className="otp-form__resend-code"
                 onClick={handleResendVerificationClick}
@@ -71,7 +71,7 @@ const EmailVerification = () => {
           </div>
 
             <OTPInput value={code} onChange={setCode}/>
-            <button type="submit" className='order-btn otp_btn'>Code Senden</button>
+            <button style={{display: "block"}}type="submit" className='order-btn otp_btn' data-testid="otp-submit">Code Senden</button>
 
         </form>
 

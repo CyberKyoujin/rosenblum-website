@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../axios/axiosInstance";
 import { FaFileAlt } from "react-icons/fa";
 import Divider from '@mui/material/Divider';
 import { IoPersonSharp } from "react-icons/io5";
@@ -60,7 +60,7 @@ const OrderDetails = () => {
             setOrderDetailsError(null);
 
             try{
-                const response = await axios.get(`http://127.0.0.1:8000/order/${orderId}`);
+                const response = await axiosInstance.get(`/orders/${orderId}/`);
                 setOrderData(response.data);
             } catch (err: unknown) {
                 
@@ -90,7 +90,7 @@ const OrderDetails = () => {
 
                 <div className="order-details-title">
                     <FaFileAlt style={{fontSize: '25px', color: 'rgb(76, 121, 212)', marginBottom: '4px'}}/>
-                    <div style={{display: 'flex'}}>
+                    <div style={{display: 'flex', fontSize: "14px"}}>
                         <h1>{t('order')}</h1>
                         <h1 className="header-span">{t('übersicht')}</h1>
                     </div>

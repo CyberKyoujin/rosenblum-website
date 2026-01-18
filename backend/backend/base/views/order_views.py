@@ -24,6 +24,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff:
             return self.queryset
+        # Return empty queryset for anonymous users
+        if not user.is_authenticated:
+            return self.queryset.none()
         return self.queryset.filter(user=user)
 
     def perform_create(self, serializer):

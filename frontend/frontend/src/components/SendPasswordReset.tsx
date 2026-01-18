@@ -10,11 +10,9 @@ import { ApiErrorResponse } from "../types/error";
 import ApiErrorAlert from "./ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 
-const sendPasswordSchema = z.object({
-  email: z.string().email("Invalid email format"),
+const createSendPasswordSchema = (t: (key: string) => string) => z.object({
+  email: z.string().email(t('invalidEmail')),
 });
-
-type SendResetFormValues = z.infer<typeof sendPasswordSchema>;
 
 const SendPasswordReset = () => {
 
@@ -27,6 +25,9 @@ const SendPasswordReset = () => {
     const sendResetLink = useAuthStore(s => s.sendResetLink);
 
     const isAtTop = useIsAtTop(10);
+
+    const sendPasswordSchema = createSendPasswordSchema(t);
+    type SendResetFormValues = z.infer<typeof sendPasswordSchema>;
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm<SendResetFormValues>({resolver: zodResolver(sendPasswordSchema)});
 
@@ -51,10 +52,10 @@ const SendPasswordReset = () => {
 
                 <div className="password-reset-info">
 
-                    <h2>Passwort Reset</h2>
+                    <h2>{t('resetPassword')}</h2>
 
-                    {successfullySent && 
-                    <p>{`Successfully Sent a reset link to your Email !`}</p>
+                    {successfullySent &&
+                    <p>{t('resetLinkSent')}</p>
                     }
 
                 </div>

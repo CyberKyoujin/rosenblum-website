@@ -153,6 +153,8 @@ function OTP({
               input: InputElement,
             }}
 
+            data-testid="otp-input"
+
             aria-label={`Digit ${index + 1} of OTP`}
             slotProps={{
               input: {

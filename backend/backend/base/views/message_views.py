@@ -1,7 +1,7 @@
 from rest_framework import viewsets, filters
 from base.models import CustomUser, Message, RequestObject, RequestAnswer
 from base.serializers import MessageSerializer, RequestSerializer, RequestAnswerSerializer
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.db.models import Q
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -12,6 +12,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all().prefetch_related("files").order_by('-timestamp')
     serializer_class = MessageSerializer
+    pagination_class = None
     
     def get_permissions(self):
         
@@ -39,7 +40,19 @@ class MessageViewSet(viewsets.ModelViewSet):
         
     def perform_create(self, serializer):
         print(self.request.data)
-        serializer.save(sender=self.request.user, receiver=CustomUser.objects.get(pk=self.request.data['id']))
+        receiver_id = self.request.data.get('id')
+
+        if not receiver_id:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({'receiver': 'Receiver ID is required'})
+
+        try:
+            receiver = CustomUser.objects.get(pk=receiver_id)
+        except CustomUser.DoesNotExist:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({'receiver': f'User with ID {receiver_id} does not exist'})
+
+        serializer.save(sender=self.request.user, receiver=receiver)
         
     @action(detail=False, methods=['post'])
     def toggle(self, request):
@@ -91,6 +104,9 @@ class RequestViewSet(viewsets.ModelViewSet):
         
         if self.action in admin_actions:
             return [IsAdminUser()]
+        
+        if self.action == "create":
+            return [AllowAny()]
         
         return [IsAuthenticated()]
     

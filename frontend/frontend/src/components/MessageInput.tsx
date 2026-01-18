@@ -29,6 +29,7 @@ const MessageInput = ({handleSubmit = () => {}, handleClick, message, setMessage
             
             <textarea
             className="message-input"
+            data-testid="message-input"
             value={message}
             onChange={(e) => {
                 setMessage && setMessage(e.target.value);
@@ -48,9 +49,10 @@ const MessageInput = ({handleSubmit = () => {}, handleClick, message, setMessage
                 style={{ display: 'none' }} 
                 multiple 
                 accept=".jpg, .png, .jpeg, .pdf, .doc, .docx, .xlsx"
+                data-testid="message-file-input"
             />
         
-            <button className="send-message-container hover-btn" type="submit">
+            <button className="send-message-container hover-btn" type="submit" data-testid="message-submit">
                 {isLoading ? <CircularProgress size={24} style={{color: 'white'}}/> : <RiMailSendLine/>}
             </button>
 
