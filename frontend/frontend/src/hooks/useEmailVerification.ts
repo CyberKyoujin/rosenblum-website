@@ -1,13 +1,28 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
-import axios from "axios";
+import { toApiError } from "../axios/toApiError";
+
+interface Errors {
+  detail: string;
+  attempts: number;
+}
 
 interface VerificationState {
     attempts?: number;
     message?: string;
-    detail?: string;
+    errors?: Errors;
 }
+
+const errorMessages = {
+    "user_not_found": "Kein entsprechendes Konto gefunden",
+    "no_active_verification": "Es gibt kein Verifizierungscode",
+    "verification_code_expired": "Der Code ist abgelaufen",
+    "no_verification_attempts": "Sie haben keine Versuche übrig",
+    "invalid_verification_code": "Der Code ist nicht korrekt"
+} as const;
+
+type ErrorCodeKey = keyof typeof errorMessages;
 
 export default function useEmailVerification () {
 
@@ -31,22 +46,22 @@ export default function useEmailVerification () {
 
         } catch (err: any) {
 
-            console.log("Verification error:" , err);
+            const error = err as VerificationState;
 
-            if (axios.isAxiosError(err) && err.response) {
+            const errorCode = err.errors.detail;
 
-                const data = err.response.data as VerificationState;
+            const attempts = error.errors?.attempts
 
-                if (typeof data.attempts === "number") {
-                    setAttempts(data.attempts);
-                }
+            setAttempts((attempts === null ? 0 : attempts) || 0)
+           
 
-                setError(data.message || data.detail || "Die Verifizierung ist fehlgeschlagen. Bitte versuchen Sie es erneut.");
+            if (errorCode && errorCode in errorMessages) {
 
+                setError(errorMessages[errorCode as ErrorCodeKey]);
 
             } else {
-                setError("Netzwerkfehler. Bitte versuchen Sie es später erneut.");
-                setLoading(false);
+
+                setError("Die Verifizierung ist fehlgeschlagen. Bitte versuchen Sie es erneut.");
             }
 
         } finally {

@@ -18,11 +18,15 @@ def normalize_target_lang(lang_code: str) -> str:
 
 def translate_text(text: str, target_lang: str) -> str:
     auth_key = settings.DEEPL_AUTH_KEY
-    deepl_client = deepl.DeepLClient(auth_key)
-    
-    target_lang = normalize_target_lang(target_lang) 
-    
-    result = deepl_client.translate_text(text, target_lang=target_lang)
+    if not auth_key or not text or text.strip() == "":
+        # If no DeepL key or empty text, return original text
+        return text
+
+    translator = deepl.Translator(auth_key)
+
+    target_lang = normalize_target_lang(target_lang)
+
+    result = translator.translate_text(text, target_lang=target_lang)
     return result.text
 
 def translate_missing_translations_for_review(review: Review):

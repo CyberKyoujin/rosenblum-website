@@ -32,9 +32,13 @@ const ServiceProcessSteps: React.FC<ServiceProcessStepsProps> = ({steps, link, l
                         <div className="translations-process-title">
 
                             {addProcessIcon && <img src={gears} alt="" style={{width: '70px'}} loading="lazy"/>}
-                           
-                            <h1 className="header-span">{t(title)}</h1>
-                            <h1>{t(titleSpan)}</h1>
+                          
+                          
+                           <div className='process-title-cont'>
+                                <h1 className="header-span">{t(title)}</h1>
+                                <h1>{t(titleSpan)}</h1>
+                           </div>
+                            
                            
                         </div>
                         <ol className="services-list" style={{lineHeight: '25px', fontSize: '18px', marginLeft: '2rem'}}>

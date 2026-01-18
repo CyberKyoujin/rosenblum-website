@@ -24,22 +24,20 @@ import ApiErrorAlert from '../components/ApiErrorAlert';
 import { ApiErrorResponse } from '../types/error';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 
-const resetPasswordSchema = z.object({
-  password: z.string().min(8, "Der Passwort muss mindestens 8 Zeichen lang sein."), 
+const createResetPasswordSchema = (t: (key: string) => string) => z.object({
+  password: z.string().min(8, t('passwordMinLength')),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Die Passwörter stimmen nicht überein", 
+  message: t('passwordMismatch'),
   path: ["confirmPassword"],
 });
-
-type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
 const ResetPassword = () => {
 
     const { t } = useTranslation();
     const navigate = useNavigate();
     const isAtTop = useIsAtTop(10);
-    
+
     const { uid, token } = useParams<{ uid: string; token: string }>();
 
     const [error, setError] = useState<ApiErrorResponse | null>(null);
@@ -48,6 +46,9 @@ const ResetPassword = () => {
 
     const resetPasswordConfirm = useAuthStore(s => s.resetPassword);
     const loading = useAuthStore(s => s.loading);
+
+    const resetPasswordSchema = createResetPasswordSchema(t);
+    type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm<ResetPasswordFormValues>({resolver: zodResolver(resetPasswordSchema), mode: "onChange" });
 
@@ -76,7 +77,7 @@ const ResetPassword = () => {
         try {
             await resetPasswordConfirm(uid, token, data.password);
             setSuccess(true);
-            navigate("/verification-success", {state: {successMessage: "Ihr Passwort wurde erfolgreich geändert."}})
+            navigate("/verification-success", {state: {successMessage: t('passwordResetSuccess')}})
         } catch (err: unknown) {
             setError(err as ApiErrorResponse);
         }
@@ -86,8 +87,8 @@ const ResetPassword = () => {
         return (
             <div className="main-app-container">
                  <div className="register-container" style={{ textAlign: 'center', padding: '2rem' }}>
-                    <ApiErrorAlert successMessage={t('passwordResetSuccess') || "Das Passwort wurde erfolgreich geändert!"} belowNavbar={isAtTop} fixed/>
-                    <p style={{ marginTop: '1rem' }}>Sie werden zur Anmeldeseite weitergeleitet...</p>
+                    <ApiErrorAlert successMessage={t('passwordResetSuccess')} belowNavbar={isAtTop} fixed/>
+                    <p style={{ marginTop: '1rem' }}>{t('redirectingToLogin')}</p>
                  </div>
             </div>
         );
@@ -98,7 +99,7 @@ const ResetPassword = () => {
             <section className="password-reset-container">
                 
                 <div  className="password-reset-info">
-                    <h2>{"Neues Passwort erstellen"}</h2>
+                    <h2>{t('passwordResetTitle')}</h2>
                 </div>
                 
                 <ApiErrorAlert error={error} />
@@ -127,7 +128,7 @@ const ResetPassword = () => {
 
                     <TextField
                         {...register('confirmPassword')}
-                        label={"Passwort bestätigen"}
+                        label={t('confirmPassword')}
                         type="password"
                         variant="outlined"
                         required
@@ -138,13 +139,13 @@ const ResetPassword = () => {
                     />
 
                     <div className="requirements-container">
-                        <RequirementItem isValid={passwordChecks.length} text={t('letters') || "Min. 8 Zeichen"} />
-                        <RequirementItem isValid={passwordChecks.number} text={t('numbers') || "Mindestens eine Zahl"} />
-                        <RequirementItem isValid={passwordChecks.uppercase} text={t('uppercase') || "Großbuchstaben"} />
+                        <RequirementItem isValid={passwordChecks.length} text={t('letters')} />
+                        <RequirementItem isValid={passwordChecks.number} text={t('numbers')} />
+                        <RequirementItem isValid={passwordChecks.uppercase} text={t('uppercase')} />
                     </div>
 
                     <button className="confirm-btn" type='submit' disabled={loading}>
-                        {loading ? <CircularProgress size={24} sx={{ color: 'white' }}/> : (t('save') || "Speichern")}
+                        {loading ? <CircularProgress size={24} sx={{ color: 'white' }}/> : t('save')}
                     </button>
 
                 </form>

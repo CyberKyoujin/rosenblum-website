@@ -42,7 +42,7 @@ const Register = () => {
           <div className="register-form">
             <div>
               <div className="register-title-container">
-                <h1>{t('joinUs')}</h1>
+                <h1 data-testid="register-title">{t('joinUs')}</h1>
                 <h1 className="register-title-span">{t('join')}</h1>
               </div>
 

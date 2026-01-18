@@ -77,7 +77,7 @@ const Home = () => {
         <div className="home-header">
         <img src={planetIcon} alt="" fetchPriority="high"/>
             <div className="home-header-text">
-                <h1>{t('weTranslate')}</h1>
+                <h1 data-testid="we-translate">{t('weTranslate')}</h1>
                 <h1 className="header-span">{t('professional')}.</h1>
                 <div className="home-header-content">
                     <p>{t('excellentTranslations')}</p>
@@ -123,7 +123,7 @@ const Home = () => {
                 <h1>{t('weAre')}</h1>
                 <h1 className="header-span">{t('reliable')}.</h1>
                 <div className="home-header-content">
-                    <p className="reliable-item-left"><img src={tick} alt="" loading="lazy" style={{width: '35px'}}/>{t('certified')}</p>
+                    <p className="home-reliable-item"><img src={tick} alt="" loading="lazy" style={{width: '35px'}}/>{t('certified')}</p>
                     <p className="reliable-item"><img src={tick} alt="" loading="lazy" style={{width: '35px'}}/>{t('swornTranslators')}</p>
                     <p className="reliable-item-left"><img src={tick} loading="lazy" alt="" style={{width: '35px'}}/>{t('orderTime')}</p>
                     <p className="reliable-item"><img src={tick} alt="" loading="lazy" style={{width: '35px'}}/>{t('fairPrices')}</p>

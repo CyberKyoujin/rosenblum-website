@@ -41,9 +41,10 @@ const Pricing = () => {
         <>
         <div className='main-app-container'>
 
+            <NavigationSection first_link='Preise'/>
+
             <div className="main-pricing-container">
 
-              <NavigationSection first_link='Preise'/>
 
                 <div className="pricing-title">
                         <h1>{t('our')}</h1>

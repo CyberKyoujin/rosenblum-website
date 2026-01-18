@@ -40,6 +40,8 @@ export function useReviews() {
           signal: controller.signal, 
         });
         
+        console.log(response.data)
+
         setReviews(response.data);
 
       } catch (err: unknown) {

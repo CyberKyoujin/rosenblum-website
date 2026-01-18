@@ -27,9 +27,10 @@ pnpm-lock.yaml
 service-account-file.json
 rosenblum-key.json
 
-# IDE
+# IDE and dev tools
 .idea/
 .vscode/
+.claude/
 
 # OS
 .DS_Store

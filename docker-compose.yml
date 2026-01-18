@@ -1,0 +1,163 @@
+# ============================================
+# Docker Compose - Rosenblum Website
+# ============================================
+# Orchestrates all services: backend, frontend, frontend-admin, database
+
+version: '3.8'
+
+services:
+  # ==========================================
+  # PostgreSQL Database
+  # ==========================================
+  db:
+    image: postgres:16-alpine
+    container_name: rosenblum-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-rosenblum}
+      POSTGRES_USER: ${POSTGRES_USER:-rosenblum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rosenblum_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rosenblum} -d ${POSTGRES_DB:-rosenblum}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rosenblum-network
+
+  # ==========================================
+  # Django Backend API
+  # ==========================================
+  backend:
+    build:
+      context: ./backend/backend
+      dockerfile: Dockerfile
+    container_name: rosenblum-backend
+    restart: unless-stopped
+    environment:
+      # Django settings
+      DEBUG: ${DEBUG:-False}
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
+
+      # Superuser
+
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+
+      # Database
+      DATABASE_URL: postgres://${POSTGRES_USER:-rosenblum}:${POSTGRES_PASSWORD:-rosenblum_secret}@db:5432/${POSTGRES_DB:-rosenblum}
+
+      # Google OAuth
+      SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: ${SOCIAL_AUTH_GOOGLE_OAUTH2_KEY}
+      SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: ${SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET}
+
+      # Google Places API
+      GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
+      GOOGLE_PLACE_ID: ${GOOGLE_PLACE_ID}
+
+      # Google Cloud Storage
+      GS_BUCKET_NAME: ${GS_BUCKET_NAME}
+      GOOGLE_SERVICE_ACCOUNT_FILE: ${GOOGLE_SERVICE_ACCOUNT_FILE:-service-account-file.json}
+
+      # Email
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+
+      # DeepL Translation
+      DEEPL_AUTH_KEY: ${DEEPL_AUTH_KEY}
+
+      # Google Gemini
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    volumes:
+      - backend_static:/app/static
+      - backend_media:/app/media
+      # Mount service account file (optional - only needed if using Google Cloud Storage)
+      # Uncomment the line below and ensure the file exists if you need GCS
+      # - ./backend/backend/service-account-file.json:/app/service-account-file.json:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/admin/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - rosenblum-network
+
+  # ==========================================
+  # React Frontend (User-facing)
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend/frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    container_name: rosenblum-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - rosenblum-network
+
+  # ==========================================
+  # React Frontend Admin Panel
+  # ==========================================
+  frontend-admin:
+    build:
+      context: ./frontend-admin/frontend-admin
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    container_name: rosenblum-frontend-admin
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - rosenblum-network
+
+# ==========================================
+# Volumes - Persistent Data Storage
+# ==========================================
+volumes:
+  postgres_data:
+    name: rosenblum-postgres-data
+  backend_static:
+    name: rosenblum-backend-static
+  backend_media:
+    name: rosenblum-backend-media
+
+# ==========================================
+# Networks - Service Communication
+# ==========================================
+networks:
+  rosenblum-network:
+    name: rosenblum-network
+    driver: bridge

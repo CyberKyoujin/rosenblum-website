@@ -1,15 +1,17 @@
 import { FaFile } from "react-icons/fa";
 import smallLogo from '../assets/logo2.webp'
+import defaultAvatar from '../assets/default_avatar.webp'
 
-const MessageItem = ({ msg, userId, onImageError }: any) => {
+const MessageItem = ({ msg, userId }: any) => {
     const isUser = msg.sender === userId;
 
+    const senderAvatar = msg.sender_data.profile_img_url || defaultAvatar;
+
     return (
-        <div className={`message ${isUser ? 'message-user' : ''}`}>
+        <div className={`message ${isUser ? 'message-user' : ''}`} data-testid="message-div">
             <img
-                src={isUser ? msg.sender_profile_img : smallLogo}
+                src={isUser ? senderAvatar : smallLogo}
                 className="message-avatar"
-                onError={onImageError}
             />
             <div className="message-item">
                 <div className="message-body" style={{ background: isUser ? 'rgb(177, 203, 248)' : undefined }}>

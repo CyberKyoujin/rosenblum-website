@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 
 * {
@@ -13,6 +12,8 @@ html, body {
   background-color: white;
   font-family: "Rubik", sans-serif;
   margin: 0;
+  /* FIXED: Важно для мобилок, чтобы не появлялась белая полоса справа */
+  overflow-x: hidden; 
 }
 
 .loading-circle{
@@ -36,20 +37,20 @@ html, body {
 .navbar{
   display: flex;
   width: 100%;
-  height: 8rem;
+  height: 8rem; /* 128px на десктопе */
   background-color: white;
   border-bottom: 1px solid rgb(184, 184, 184);
   justify-items: center;
   position: relative;
   align-items: center;
   letter-spacing: 1px;
+  transition: height 0.3s ease; /* Плавное изменение высоты */
 }
 
 .main-app-container{
-  height: 100%;
+  min-height: calc(100vh - 80px);
   padding: 0rem 0rem 7rem 0rem;
   display: flex;
-  
   flex-direction: column;
 }
 
@@ -76,7 +77,6 @@ html, body {
   display: flex;
   width: fit-content;
   align-items: center;
-  
   position: relative;
 }
 
@@ -94,6 +94,7 @@ html, body {
   cursor: pointer;
   color: rgb(53, 100, 196);
 }
+
 .order-btn{
   background-color: RGB(68 113 203);
   border: none;
@@ -298,6 +299,8 @@ html, body {
   background-color: white;
   top: 5rem;
   width: 400px;
+  /* FIXED: Максимальная ширина для мобилок */
+  max-width: 90vw; 
   padding: 1rem;
   border-radius: 5px;
   right: 1rem;
@@ -405,30 +408,40 @@ html, body {
   }
 }
 
+/* FIXED: Основной мобильный медиа-запрос */
 @media (max-width: 640px){
   .messages-dropdown{
     width: 320px;
     top: 5rem;
     left: 50%;
-    transform: translate(-80%, -10%);
+    transform: translate(-50%, 0); /* Центрирование */
   }
   .logo{
     display: none;
   }
   .small-logo{
     display: block;
-    top: 0.45rem;
-    width: 80px;
+    top: 50%; /* Центрируем лого по вертикали */
+    transform: translateY(-50%);
+    width: 60px; /* Чуть меньше лого для мобилки */
   }
   .navbar{
-    padding: 1rem 1rem 6.7rem 1rem;
+    /* FIXED: Уменьшаем высоту навбара, чтобы он не занимал 20% экрана */
+    height: 5.5rem; 
+    padding: 0rem 1rem;
   }
   .nav-center{
     gap: 0.75rem;
+    height: 100%;
   }
   .nav-container{
     gap: 1rem;
     padding: 0px;
+    height: 100%;
+    align-items: center;
+  }
+  .main-app-container{
+    padding: 0rem 1rem 7rem 1rem;
   }
 }
 
@@ -659,6 +672,8 @@ html, body {
 
 .home-header img{
   width: 600px;
+  max-width: 100%; /* FIXED: Чтобы картинка не вылезала на мобилках */
+  height: auto;
 }
 
 .home-header h1{
@@ -674,7 +689,6 @@ html, body {
   display: flex;
   width: 100%;
   flex-direction: column;
-  
   margin-top: 4rem;
 }
 
@@ -740,6 +754,10 @@ html, body {
   display: block;
 }
 
+.home-reliable-item{
+  font-size: 15px;
+}
+
 .reviews-header{
   display: flex;
   max-width: 1280px;
@@ -803,11 +821,11 @@ html, body {
 
 .map-container{
   width: 100%;
-  
+  padding: 0rem 1rem 0rem 1rem;
   max-width: 1280px;
   display: flex;
   margin: auto;
-  margin-top: 4rem;
+  margin-top: 2rem;
   justify-content: center;
   gap:4rem;
 }
@@ -816,13 +834,14 @@ html, body {
   width: 100%;
   border: 4px solid rgb(76, 121, 212);
   width: 700px;
+  max-width: 100%; /* FIXED */
   height: 400px;
 }
 
 .map-img{
-  width: 620px;
-  height: 400px;
+  width: 400px;
   border: 4px solid rgb(76, 121, 212);
+  object-fit: cover;
 }
 
 .contacts-container{
@@ -924,6 +943,10 @@ html, body {
   .slider-container{
     max-width: 500px;
   }
+  .map-container{
+    display: flex;
+    flex-direction: column;
+  }
 
 }
 
@@ -1019,7 +1042,7 @@ html, body {
 
 @media (max-width: 475px){
   .home-header-content p{
-    font-size: 13px;
+    font-size: 16px;
     gap: 0.5rem;
     
   }
@@ -1027,6 +1050,7 @@ html, body {
     padding: 1.5rem;
   }
   .home-header-content{
+    margin-top: 2rem;
     gap: 1rem;
   }
   .contacts-container{
@@ -1049,16 +1073,171 @@ html, body {
 
 /* FOOTER */
 
-.footer{
+.footer {
   width: 100%;
-  height: 100%;
   background-color: rgb(76, 121, 212);
-  min-height: 24rem;
+  color: white;
+  padding: 3rem 2rem 1rem;
+  margin-top: auto;
 }
 
-@media (max-width: 475px){
-  .footer{
-    margin-top: 5rem;
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.footer-section h3,
+.footer-section h4 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.footer-tagline {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.footer-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.footer-social a {
+  color: white;
+  transition: opacity 0.2s ease;
+}
+
+.footer-social a:hover {
+  opacity: 0.7;
+}
+
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: opacity 0.2s ease;
+}
+
+.footer-nav a:hover {
+  opacity: 0.7;
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.footer-contact-item svg {
+  font-size: 1.2rem;
+}
+
+.footer-contact-item a,
+.footer-contact-item span {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-contact-item a:hover {
+  opacity: 0.7;
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .footer-brand {
+    grid-column: span 2;
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .footer {
+    padding: 2rem 1.5rem 1rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .footer-brand {
+    grid-column: span 1;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+
+  .footer-nav {
+    align-items: center;
+  }
+
+  .footer-contact-item {
+    justify-content: center;
+  }
+
+  .footer-bottom {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 400px) {
+  .footer {
+    padding: 1.5rem 1rem 1rem;
+  }
+
+  .footer-logo {
+    font-size: 1.3rem;
+  }
+
+  .footer-section h4 {
+    font-size: 0.95rem;
+  }
+
+  .footer-nav a,
+  .footer-contact-item {
+    font-size: 0.85rem;
   }
 }
 
@@ -1096,7 +1275,7 @@ html, body {
   width: 100%;
   max-width: 1280px;
   margin: auto;
-  padding: 2rem;
+  padding: 1rem;
   margin-top: 2rem;
   position: relative;
 }
@@ -1308,7 +1487,7 @@ html, body {
     font-size: 25px;
   }
   .login-title-footer{
-    font-size: 13px;
+    font-size: 16px;
     gap: 0.2rem;
   }
 }
@@ -1328,6 +1507,10 @@ html, body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 .send-icon{
@@ -1693,6 +1876,7 @@ html, body {
 .profile-navigation{
   max-width: 1280px;
   width: 100%;
+  padding-left: 1rem;
   margin: auto;
   margin-top: 2rem;
 }
@@ -1720,6 +1904,7 @@ html, body {
   }
   .profile__user-avatar{
     width: 120px;
+    height: 120px;
   }
   .profile__user-stats-container p{
     font-size: 16px;
@@ -1842,7 +2027,7 @@ html, body {
 /* ORDER DETAILS */
 
 .order-details{
-  padding: 1.5rem;
+  padding: 1rem;
 }
 
 .order-details-container{
@@ -2347,6 +2532,7 @@ html, body {
   max-width: 1280px;
   margin: auto;
   margin-top: 3rem;
+  padding: 1rem;
 }
 
 .contact-title{
@@ -2500,7 +2686,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4rem;
+  gap: 1rem;
 }
 
 .first-image{
@@ -2663,13 +2849,13 @@ html, body {
     font-size: 12px;
   }
   .first-image{
-    width: 200px;
+    width: 350px;
   }
   .second-image{
-    width: 400px;
+    width: 350px;
   }
   .contact-image{
-    width: 300px;
+    width: 350px;
   }
   .translations-section-text{
     gap: 1rem;
@@ -2679,6 +2865,7 @@ html, body {
     line-height: 30px;
   }
   .translations-services-title{
+    text-align: center;
     font-size: 13px;
   }
   .services-list li{
@@ -2687,14 +2874,34 @@ html, body {
   .translations-process-title h1{
     font-size: 25px;
   }
+  .translations-process-title{
+    justify-content: center;
+  }
   .third-image{
-    width: 400px;
+    width: 350px;
   }
   .translations-contact-title{
     font-size: 13px;
   }
   .translations-contact-text p{
     font-size: 15px;
+  }
+  .process-title-cont{
+    text-align: center;
+  }
+}
+
+@media (max-width: 420px){
+  .translations-services-title{
+    text-align: center;
+    font-size: 13px;
+  }
+  .header-span {
+    text-align: center;
+  }
+  .translations-process-title h1{
+    font-size: 25px;
+    flex-direction: column;
   }
 }
 
@@ -2901,7 +3108,7 @@ html, body {
 .main-pricing-container{
   max-width: 1200px;
   margin: auto;
-  margin-top: 5rem;
+  margin-top: 3rem;
 }
 
 .pricing-title{
@@ -3272,7 +3479,7 @@ html, body {
   height: 50px;
   font-size: 20px;
   font-weight: 500;
-  border-radius: 15px;
+  border-radius: 5px;
 }
 
 .otp-form__resend-code{
@@ -3404,6 +3611,7 @@ html, body {
 .error-alert-relative {
   position: relative;
   margin-bottom: 1rem;
+  padding: 0;
 }
 
 .show-alert{
@@ -3413,15 +3621,16 @@ html, body {
 /* SEND PASSWORD RESET */
 
 .password-reset-container{
-  max-width: 1280px;
+  max-width: 600px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2.5rem;
   justify-content: center;
-  height: 50vw;
-  align-self: center;
+  flex: 1;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
 .password-reset-form{

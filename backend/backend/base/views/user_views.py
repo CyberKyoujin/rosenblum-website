@@ -74,7 +74,6 @@ class UserViewSet(viewsets.ModelViewSet):
         
         return self.get_paginated_response(serializer.data) if page is not None else Response(serializer.data)
 
-    # --- 1. ПРОФИЛЬ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ ---
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
     def me(self, request):
         user = request.user
@@ -87,7 +86,6 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data)
 
-    # --- 2. РЕГИСТРАЦИЯ И ВХОД ---
     @action(detail=False, methods=['post'])
     def register(self, request):
         email = request.data.get('email', '').strip()
@@ -99,15 +97,18 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    # --- 3. ВЕРИФИКАЦИЯ ПОЧТЫ ---
     @action(detail=False, methods=['post'], url_path='verify-email')
     def verify_email(self, request):
         user_email = request.data.get('email', '')
         verification_code = request.data.get('code', '')
         
+        
         result = verify_email(user_email, verification_code)
+        
+        print(user_email, verification_code, result)
+        
         if not result.ok:
-            return Response({"detail": result.error}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": result.error, "attempts": result.attempts}, status=status.HTTP_400_BAD_REQUEST)
         return Response({"detail": "Email verified!"})
 
     @action(detail=False, methods=['post'], url_path='resend-code')
@@ -159,20 +160,40 @@ class UserTokenRefreshView(TokenRefreshView):
 class GoogleLogin(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            token = request.data.get('access_token')
-            idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY)
+            # Check if Google OAuth is configured
+            if not settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY:
+                return Response({
+                    'error': 'Google OAuth is not configured on the server',
+                    'detail': 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY is missing'
+                }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
-            print(idinfo)
-            
+            token = request.data.get('access_token')
+            if not token:
+                return Response({
+                    'error': 'access_token is required'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            # Verify the token with Google
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                google_requests.Request(),
+                settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+            )
+
+            print(f"Google Login - User info: {idinfo}")
+
             with transaction.atomic():
                 user, created = CustomUser.objects.get_or_create(email=idinfo['email'])
 
                 if created:
-                    user.first_name = idinfo['given_name']
-                    user.last_name = idinfo['family_name']
-                    user.profile_img_url = idinfo['picture']
+                    user.first_name = idinfo.get('given_name', '')
+                    user.last_name = idinfo.get('family_name', '')
+                    user.profile_img_url = idinfo.get('picture', '')
                     user.is_active = True
                     user.save()
+                    print(f"Google Login - Created new user: {user.email}")
+                else:
+                    print(f"Google Login - Existing user logged in: {user.email}")
 
                 refresh = RefreshToken.for_user(user)
                 access_token = UserTokenObtainPairSerializer.get_token(user)
@@ -183,12 +204,31 @@ class GoogleLogin(APIView):
                 }, status=status.HTTP_200_OK)
 
         except ValueError as e:
-            return Response({'error': str(e)}, status=400)
+            print(f"Google Login - ValueError: {str(e)}")
+            return Response({
+                'error': 'Invalid token',
+                'detail': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(f"Google Login - Unexpected error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return Response({
+                'error': 'Internal server error',
+                'detail': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewSerializer
     pagination_class = None
     def get_queryset(self):
+        # Sync reviews from Google Places API
+        try:
+            sync_google_reviews()
+        except Exception as e:
+            # Log error but don't fail the request
+            print(f"Failed to sync Google reviews: {e}")
+
         return (
             Review.objects
             .all()

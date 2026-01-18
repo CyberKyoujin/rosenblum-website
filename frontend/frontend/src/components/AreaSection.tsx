@@ -18,7 +18,7 @@ const AreaSection: React.FC<AreaSectionProps> = ({img, Icon, title, specialisati
     return (
         <div className="areas-main-section">
 
-                    { !alignImageRight && <img src={img} alt="" loading="lazy"/>}
+                    { !alignImageRight && <img  className="third-image" src={img} alt="" loading="lazy"/>}
 
                     <div className="areas-text-section">
                         <div className="areas-section-title">

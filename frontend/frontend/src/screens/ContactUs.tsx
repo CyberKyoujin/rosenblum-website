@@ -125,7 +125,7 @@ const ContactUs = () => {
                 </div>
 
                 <div className="map-container">
-                    <img src={sutthausen1} alt="" className="map-img" loading="lazy"/>
+                <img src={sutthausen1} alt="" className="map-img" loading="lazy"/>
                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map"  loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
                 </div>
 
@@ -144,7 +144,7 @@ const ContactUs = () => {
                         <IoWarningOutline className="warning-icon"/>
                         <p>{t('onlyGerman')}</p>
                     </div>
-                    <TextField value={number} type="number" required id="outlined-basic" label={number ? "" : t('phoneNumber')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
+                    <TextField value={number} type="tel" required id="outlined-basic" label={number ? "" : t('phoneNumber')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setNumber(e.target.value)}/>
                     <TextField required multiline label={t('yourMessage')} variant="outlined" style={{width: '100%'}}  onChange={(e) => setMessage(e.target.value)} rows={10}/>
                     <button className="contact-btn hover-btn" type="submit">
                         {requestLoading ? <CircularProgress style={{color: "white"}}/> : t('send')}

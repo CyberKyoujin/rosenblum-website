@@ -56,7 +56,7 @@ const useMessageStore = create<MessageState>((set) => ({
 
                 try{
 
-                    formData.append("id", "46");
+                    formData.append("id", "7");
                     
                     await axiosInstance.post('/messages/', formData)
                     

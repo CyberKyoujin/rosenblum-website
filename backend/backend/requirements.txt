@@ -1,0 +1,77 @@
+# Django core
+Django==5.0.2
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.1
+
+# CORS and security
+django-cors-headers==4.3.1
+
+# Authentication
+social-auth-app-django==5.4.0
+social-auth-core==4.5.3
+python3-openid==3.2.0
+oauthlib==3.2.2
+requests-oauthlib==1.4.0
+
+# Database (PostgreSQL for production)
+psycopg2-binary==2.9.9
+dj-database-url==2.1.0
+
+# Google Cloud services
+google-cloud-storage==2.16.0
+google-auth==2.29.0
+google-api-core==2.18.0
+google-cloud-core==2.4.1
+google-crc32c==1.5.0
+google-resumable-media==2.7.0
+googleapis-common-protos==1.63.0
+google-maps-reviews==0.0.3
+google-generativeai==0.8.3
+
+# Storage
+django-storages==1.14.2
+
+# Environment variables
+python-decouple==3.8
+
+# Image processing
+pillow==10.2.0
+
+# HTTP client
+requests==2.31.0
+
+# Filtering
+django-filter==24.1
+
+# Translation
+deepl==1.18.0
+
+# Production WSGI server
+gunicorn==21.2.0
+
+# Testing
+pytest==7.4.3
+pytest-django==4.7.0
+pytest-cov==4.1.0
+factory-boy==3.3.0
+
+# Additional dependencies
+asgiref==3.7.2
+cachetools==5.3.3
+certifi==2024.2.2
+cffi==1.16.0
+charset-normalizer==3.3.2
+cryptography==42.0.5
+defusedxml==0.8.0rc2
+idna==3.6
+proto-plus==1.23.0
+protobuf==4.25.3
+pyasn1==0.5.1
+pyasn1-modules==0.3.0
+pycparser==2.21
+PyJWT==2.8.0
+pytz==2024.1
+rsa==4.9
+sqlparse==0.4.4
+tzdata==2024.1
+urllib3==2.2.1

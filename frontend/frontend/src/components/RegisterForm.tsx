@@ -37,6 +37,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         label={t('firstName')}
         variant="outlined"
         fullWidth
+        data-testid="first-name"
         error={!!errors.firstName}
       />
 
@@ -45,6 +46,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         label={t('lastName')}
         variant="outlined"
         fullWidth
+        data-testid="last-name"
         error={!!errors.lastName}
       />
 
@@ -53,6 +55,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         <OutlinedInput
           {...register('password')}
           id="pass"
+          data-testid="password"
           type={showPassword ? 'text' : 'password'}
           endAdornment={
             <InputAdornment position="end">
@@ -72,7 +75,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         <RequirementItem isValid={passwordChecks.uppercase} text={t('uppercase')} />
       </div>
 
-      <button className="confirm-btn" type='submit' disabled={loading}>
+      <button className="confirm-btn" type='submit' disabled={loading} data-testid="register-confirm">
         {loading ? <CircularProgress size={24} sx={{ color: '#ffffff' }}/> : t('next')}
       </button>
     </form>

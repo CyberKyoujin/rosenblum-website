@@ -5,9 +5,9 @@ import IconButton from "@mui/material/IconButton"
 import Tooltip from "@mui/material/Tooltip"
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
-const CustomTooltip = ({ title, children }) => {
+const CustomTooltip = ({ title, children }: { title: string; children: React.ReactElement }) => {
   return (
-    <Tooltip 
+    <Tooltip
       title={title}
       arrow
       placement="bottom"
@@ -15,19 +15,19 @@ const CustomTooltip = ({ title, children }) => {
 
       slotProps={{
         tooltip: {
-          
+
           sx: {
-            backgroundColor: "#ffff" , 
-            color: 'black',        
-            fontSize: '0.8rem',  
-            border: '1px solid #4C79D4',      
-            padding: '10px 15px',       
+            backgroundColor: "#ffff" ,
+            color: 'black',
+            fontSize: '0.8rem',
+            border: '1px solid #4C79D4',
+            padding: '10px 15px',
             lineHeight: "1.5rem"
           },
         },
         arrow: {
           sx: {
-            color: "#4C79D4", 
+            color: "#4C79D4",
           },
         },
       }}
