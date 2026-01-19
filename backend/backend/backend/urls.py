@@ -20,10 +20,12 @@ router.register(r'orders', OrderViewSet, basename='order')
 
 urlpatterns = [
     
-    path('', include(router.urls)),
     path('admin/', admin.site.urls),
-    path('user/', include('base.urls.user_urls')),
-    path('admin-user/', include('base.urls.admin_urls')),
-    path('statistics/', include('base.urls.statistics_urls'))
+    path('api/', include([
+        path('', include(router.urls)), 
+        path('user/', include('base.urls.user_urls')), 
+        path('admin-user/', include('base.urls.admin_urls')),
+        path('statistics/', include('base.urls.statistics_urls')),
+    ])),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -81,7 +81,7 @@ const EditProfile = () => {
       <div className="profile-edit-container">
         <div className="profile-title-container">
           <div style={{display: 'flex', gap: '0.5rem'}}>
-            <RiEdit2Fill size={40} style={{ color: 'rgb(76, 121, 212)' }} />
+            <RiEdit2Fill size={40} className='app-icon' />
             <h1>{t('editProfileFirst')}</h1>
             <h1 className="header-span">{t('editProfileSecond')}</h1>
           </div>
@@ -98,7 +98,7 @@ const EditProfile = () => {
             <div className="edit-avatar-container" style={{display: user?.profile_img_url ? 'none' : 'block'}}>
 
                 <div className='image-container'>
-                    <img src={profileUrl || profileImg || defaultAvatar}/>
+                    <img src={profileUrl || profileImg || defaultAvatar} className="profile__user-avatar"/>
                 </div>
               
               <input type="file" id="file-input" style={{ display: 'none' }} onChange={handleFileChange} accept=".jpg, .png, .jpeg"/>

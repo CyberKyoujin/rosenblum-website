@@ -22,4 +22,15 @@ export default defineConfig({
       all: false, // Only report coverage for files that were actually imported during tests
     },
   },
+  server: {
+    port: 3000, 
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false,
+        
+      },
+  }
+  }
 })

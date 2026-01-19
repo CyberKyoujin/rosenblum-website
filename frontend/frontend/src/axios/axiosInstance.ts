@@ -3,7 +3,7 @@ import Cookies from "js-cookie"
 import useAuthStore from "../zustand/useAuthStore";
 import { ApiError } from "../types/auth";
 
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "http://localhost:8000/api";
 
 const axiosInstance = axios.create({
     baseURL: BASE_URL,

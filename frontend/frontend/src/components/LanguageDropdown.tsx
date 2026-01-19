@@ -31,20 +31,20 @@ const LanguageDropdown: React.FC = () => {
 
   return (
     
-    <FormControl sx={{ width: '6.34rem', display: 'flex' }}>
+    <FormControl sx={{ width: '6.34rem', display: 'flex' }} className="language-select">
 
       <Select
         sx={{ height: '45px' }}
-        id="language-select"
         value={language}
         onChange={handleChange}
+        className="language-select"
       >
 
         {languages.map((lang) => (
 
-          <MenuItem sx={{ height: '40px', borderColor: 'rgb(76, 121, 212)' }} key={lang.code} value={lang.code}>
+          <MenuItem sx={{ height: '40px', borderColor: 'rgb(76, 121, 212)' }} key={lang.code} value={lang.code} className="language-select">
 
-            <div style={{ display: 'flex', alignItems: 'center', fontWeight: '500' }}>
+            <div style={{ display: 'flex', alignItems: 'center', fontWeight: '500' }} className="language-select">
 
               <ListItemIcon style={{ minWidth: 'unset', marginRight: '8px' }}>
                 <img src={lang.image} alt={lang.code} loading="lazy" style={{ width: 24, height: 16 }} />
