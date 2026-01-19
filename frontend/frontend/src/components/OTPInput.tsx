@@ -145,7 +145,7 @@ function OTP({
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }} >
       {new Array(length).fill(null).map((_, index) => (
         <React.Fragment key={index}>
           <BaseInput
@@ -154,7 +154,7 @@ function OTP({
             }}
 
             data-testid="otp-input"
-
+            
             aria-label={`Digit ${index + 1} of OTP`}
             slotProps={{
               input: {
@@ -185,7 +185,7 @@ interface OTPInputProps {
 
 export default function OTPInput({value, onChange}: OTPInputProps) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} className="otp-input-container">
       <OTP separator={<span>-</span>} value={value} onChange={onChange} length={6}/>
     </Box>
   );
@@ -230,6 +230,16 @@ const InputElement = styled('input')(
   box-shadow: 0 2px 4px ${
     theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
   };
+
+  @media(max-width: 575px){
+  width: 50px;
+  height: 50px;
+  }
+
+  @media(max-width: 400px){
+  width: 40px;
+  height: 50px;
+  }
 
   &:hover {
     border-color: ${blue[400]};

@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import sendIcon from '../assets/send_icon.webp';
 import OrderForm from '../components/OrderForm';
 import { useOrder } from '../hooks/useOrder';
+import { Divider } from "@mui/material";
 
 const Order = () => {
   const { t } = useTranslation();
@@ -23,7 +24,6 @@ const Order = () => {
             <h1>{t('documents')}</h1>
             <h1 className="header-span">{t('sendSmall')}</h1>
           </div>
-          <img src={sendIcon} alt="" className="send-icon" />
         </div>
 
         <OrderForm logic={logic} />

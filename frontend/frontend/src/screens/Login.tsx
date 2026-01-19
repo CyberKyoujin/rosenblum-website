@@ -5,6 +5,7 @@ import ApiErrorAlert from '../components/ApiErrorAlert';
 import GoogleLoginBtn from '../components/GoogleLoginBtn';
 import LoginForm from '../components/LoginForm';
 import { useLogin } from '../hooks/useLogin';
+import Footer from '../components/Footer';
 
 const Login = () => {
 
@@ -19,6 +20,7 @@ const Login = () => {
   );
 
   return (
+    <>
     <div className="register-container">
 
       <NavigationSection first_link={t('login')}/>
@@ -69,6 +71,8 @@ const Login = () => {
 
     </div>
 
+    <Footer/>
+    </>
   );
 };
 

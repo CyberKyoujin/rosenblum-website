@@ -183,7 +183,7 @@ if GS_BUCKET_NAME:
             "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
         },
         "staticfiles": {
-            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
         },
     }
     GS_FILE_OVERWRITE = False

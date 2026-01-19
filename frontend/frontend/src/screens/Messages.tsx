@@ -11,6 +11,7 @@ import { useIsAtTop } from "../hooks/useIsAtTop";
 import NavigationSection from "../components/NavigationSection";
 import MessageItem from "../components/MessageItem";
 import { useMessages } from "../hooks/useMessages";
+import Footer from '../components/Footer';
 
 const Messages = () => {
     const { t } = useTranslation();
@@ -20,6 +21,7 @@ const Messages = () => {
     if (logic.loading) return <MessagesSkeleton />;
 
     return (
+        <>
         <div className="messages-container" style={{ padding: '1rem' }}>
 
             {(logic.fetchMessagesError || logic.error) && (
@@ -82,7 +84,11 @@ const Messages = () => {
                 handleFileInputChange={logic.fileState.onFileInputChange}
                 isLoading={logic.sending}
             />
+
+            
         </div>
+        <Footer/>
+        </>
     );
 };
 

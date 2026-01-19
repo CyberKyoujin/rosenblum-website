@@ -16,7 +16,7 @@ const OrderForm = ({ logic }: { logic: any }) => {
   const { register, formState: { errors } } = logic.methods;
 
   return (
-    <form className="order-container" onSubmit={logic.onSubmit} style={{ marginTop: '2rem' }}>
+    <form className="order-container" onSubmit={logic.onSubmit} >
       <OrderSectionHeader Icon={GrContactInfo} headerText={t('contactInformation')} />
       
       <div className="order-contacts-content">
