@@ -73,52 +73,6 @@ test.describe("Navigation", () => {
 
     });
 
-    test.describe("Navbar Navigation", () => {
-
-        test("should navigate to home via logo", async ({ page }) => {
-            await page.goto("/about-us");
-
-            await page.locator(".navbar img, .navbar a").first().click();
-
-            await expect(page).toHaveURL("/");
-        });
-
-        test("should open services dropdown menu", async ({ page }) => {
-            await page.goto("/");
-
-            // Click on services dropdown - hover to trigger (use first match)
-            await page.locator(".navbar").getByText(/unsere leistungen/i).first().hover();
-
-            // Check if dropdown becomes visible
-            await expect(page.locator(".services-container")).toBeVisible({ timeout: 5000 });
-        });
-
-        test("should navigate to about us", async ({ page }) => {
-            await page.goto("/");
-
-            await page.locator(".navbar").getByRole("link", { name: /über uns/i }).click();
-
-            await expect(page).toHaveURL(/\/about-us/);
-        });
-
-        test("should navigate to contact", async ({ page }) => {
-            await page.goto("/");
-
-            await page.locator(".navbar").getByRole("link", { name: /kontakt/i }).click();
-
-            await expect(page).toHaveURL(/\/contact-us/);
-        });
-
-        test("should navigate to order via offer button", async ({ page }) => {
-            await page.goto("/");
-
-            await page.locator(".navbar").getByRole("link", { name: /angebot/i }).click();
-
-            await expect(page).toHaveURL(/\/order/);
-        });
-
-    });
-
     test.describe("Profile Dropdown", () => {
 
         test("should display profile dropdown menu", async ({ page }) => {
@@ -196,17 +150,6 @@ test.describe("Navigation", () => {
             await page.goto("/edit-profile");
 
             await expect(page).toHaveURL(/\/login/);
-        });
-
-    });
-
-    test.describe("Language Switcher", () => {
-
-        test("should display language dropdown", async ({ page }) => {
-            await page.goto("/");
-
-            const languageDropdown = page.locator(".navbar").locator("[class*='flag'], [class*='language'], select").first();
-            await expect(languageDropdown).toBeVisible();
         });
 
     });

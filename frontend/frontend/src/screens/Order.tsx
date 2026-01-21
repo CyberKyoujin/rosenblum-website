@@ -3,10 +3,8 @@ import { useIsAtTop } from '../hooks/useIsAtTop';
 import NavigationSection from '../components/NavigationSection';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import Footer from "../components/Footer";
-import sendIcon from '../assets/send_icon.webp';
 import OrderForm from '../components/OrderForm';
 import { useOrder } from '../hooks/useOrder';
-import { Divider } from "@mui/material";
 
 const Order = () => {
   const { t } = useTranslation();

@@ -26,6 +26,7 @@ urlpatterns = [
         path('user/', include('base.urls.user_urls')), 
         path('admin-user/', include('base.urls.admin_urls')),
         path('statistics/', include('base.urls.statistics_urls')),
+        path('test-helpers/', include('base.urls.helpers_urls'))
     ])),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

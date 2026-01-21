@@ -37,17 +37,29 @@ vi.mock('react-icons/io5', () => ({
 }))
 
 describe('MessageItem', () => {
+  const mockCustomerData = {
+    id: 2,
+    date_joined: '2024-01-01',
+    email: 'john@example.com',
+    first_name: 'John',
+    last_name: 'Doe',
+    phone_number: '+49123456789',
+    city: 'Berlin',
+    street: 'Main St',
+    zip: '12345',
+    profile_img: '',
+    profile_img_url: '',
+    image_url: 'https://example.com/avatar.jpg',
+  }
+
   const defaultProps = {
     id: 1,
     formatted_timestamp: '15.01.2024 10:30',
     message: 'Hello, this is a test message',
-    partner_data: {
-      id: 2,
-      first_name: 'John',
-      last_name: 'Doe',
-      image_url: 'https://example.com/avatar.jpg',
-      profile_img_url: '',
-    },
+    partner_data: mockCustomerData,
+    sender_data: mockCustomerData,
+    receiver_data: { ...mockCustomerData, id: 1 },
+    files: [],
     viewed: true,
     sender: 2,
     receiver: 1,

@@ -9,7 +9,7 @@ class TestRequestObjectList:
 
     def test_list_requests_unauthenticated(self, api_client):
         """Test unauthenticated users cannot list requests"""
-        response = api_client.get('/requests/')
+        response = api_client.get('/api/requests/')
 
         # Depending on permissions
         assert response.status_code in [
@@ -32,7 +32,7 @@ class TestRequestObjectList:
             message='Request 2'
         )
 
-        response = admin_client.get('/requests/')
+        response = admin_client.get('/api/requests/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -53,7 +53,7 @@ class TestRequestObjectCreate:
             'message': 'I need help with translation'
         }
 
-        response = authenticated_client.post('/requests/', data)
+        response = authenticated_client.post('/api/requests/', data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['name'] == 'John Doe'
@@ -68,7 +68,7 @@ class TestRequestObjectCreate:
         ).exists()
 
     def test_create_request_unauthenticated(self, api_client):
-        """Test unauthenticated user cannot create a request"""
+        """Test unauthenticated user can create a request (contact form)"""
         data = {
             'name': 'John Doe',
             'email': 'john@example.com',
@@ -76,10 +76,12 @@ class TestRequestObjectCreate:
             'message': 'I need help with translation'
         }
 
-        response = api_client.post('/requests/', data)
+        response = api_client.post('/api/requests/', data)
 
-        # Requires authentication
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        # Request creation is allowed for unauthenticated users (AllowAny)
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data['name'] == 'John Doe'
+        assert response.data['email'] == 'john@example.com'
 
     def test_create_request_missing_required_fields(self, authenticated_client):
         """Test request creation fails without required fields"""
@@ -88,7 +90,7 @@ class TestRequestObjectCreate:
             # Missing email, phone_number, message
         }
 
-        response = authenticated_client.post('/requests/', data)
+        response = authenticated_client.post('/api/requests/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -101,7 +103,7 @@ class TestRequestObjectCreate:
             'message': 'Test message'
         }
 
-        response = authenticated_client.post('/requests/', data)
+        response = authenticated_client.post('/api/requests/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'email' in response.data
@@ -117,7 +119,7 @@ class TestRequestObjectCreate:
             'message': long_message
         }
 
-        response = authenticated_client.post('/requests/', data)
+        response = authenticated_client.post('/api/requests/', data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert len(response.data['message']) == 5000
@@ -136,7 +138,7 @@ class TestRequestObjectDetail:
             message='Test request'
         )
 
-        response = admin_client.get(f'/requests/{request_obj.id}/')
+        response = admin_client.get(f'/api/requests/{request_obj.id}/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['id'] == request_obj.id
@@ -151,7 +153,7 @@ class TestRequestObjectDetail:
             message='Test request'
         )
 
-        response = authenticated_client.get(f'/requests/{request_obj.id}/')
+        response = authenticated_client.get(f'/api/requests/{request_obj.id}/')
 
         assert response.status_code in [
             status.HTTP_403_FORBIDDEN,
@@ -175,7 +177,7 @@ class TestRequestObjectUpdate:
 
         data = {'is_new': False}
 
-        response = admin_client.patch(f'/requests/{request_obj.id}/', data)
+        response = admin_client.patch(f'/api/requests/{request_obj.id}/', data)
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['is_new'] is False
@@ -194,7 +196,7 @@ class TestRequestObjectUpdate:
             is_new=True
         )
 
-        response = admin_client.post(f'/requests/{request_obj.id}/toggle/')
+        response = admin_client.post(f'/api/requests/{request_obj.id}/toggle/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['status'] == 'request toggled'
@@ -214,7 +216,7 @@ class TestRequestObjectUpdate:
 
         data = {'is_new': False}
 
-        response = authenticated_client.patch(f'/requests/{request_obj.id}/', data)
+        response = authenticated_client.patch(f'/api/requests/{request_obj.id}/', data)
 
         # Regular users can update (no admin restriction on update action)
         # But they can't retrieve it first (403 on retrieve)
@@ -239,7 +241,7 @@ class TestRequestObjectDelete:
         )
         request_id = request_obj.id
 
-        response = admin_client.delete(f'/requests/{request_obj.id}/')
+        response = admin_client.delete(f'/api/requests/{request_obj.id}/')
 
         if response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED:
             pytest.skip("Request deletion not allowed")
@@ -268,7 +270,7 @@ class TestRequestAnswerCreate:
         }
 
         # Answers are created via nested endpoint /requests/{id}/answers/
-        response = admin_client.post(f'/requests/{request_obj.id}/answers/', data)
+        response = admin_client.post(f'/api/requests/{request_obj.id}/answers/', data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['answer_text'] == 'Here is the answer to your question'
@@ -292,7 +294,7 @@ class TestRequestAnswerCreate:
             'answer_text': 'Unauthorized answer'
         }
 
-        response = authenticated_client.post(f'/requests/{request_obj.id}/answers/', data)
+        response = authenticated_client.post(f'/api/requests/{request_obj.id}/answers/', data)
 
         # Regular users don't have access to answers endpoint (admin only)
         assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -320,7 +322,7 @@ class TestRequestAnswerList:
             answer_text='Answer 2'
         )
 
-        response = admin_client.get(f'/requests/{request_obj.id}/answers/')
+        response = admin_client.get(f'/api/requests/{request_obj.id}/answers/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -336,7 +338,7 @@ class TestRequestAnswerList:
             message='Question'
         )
 
-        response = authenticated_client.get(f'/requests/{request_obj.id}/answers/')
+        response = authenticated_client.get(f'/api/requests/{request_obj.id}/answers/')
 
         # Regular users don't have access to answers endpoint (admin only)
         assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -370,7 +372,7 @@ class TestRequestFiltering:
             is_new=False
         )
 
-        response = admin_client.get('/requests/?is_new=true')
+        response = admin_client.get('/api/requests/?is_new=true')
 
         if 'results' not in response.data and not isinstance(response.data, list):
             pytest.skip("Filtering not implemented")

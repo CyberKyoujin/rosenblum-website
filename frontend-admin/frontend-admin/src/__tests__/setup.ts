@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+import { vi, beforeEach } from 'vitest'
 
 // Mock js-cookie
 vi.mock('js-cookie', () => ({
@@ -78,7 +78,7 @@ Object.defineProperty(window, 'ResizeObserver', {
 })
 
 // Mock scrollTo
-window.scrollTo = vi.fn()
+window.scrollTo = vi.fn() as unknown as typeof window.scrollTo
 
 // Reset all mocks before each test
 beforeEach(() => {

@@ -34,7 +34,7 @@ class TestAdminLoginView:
 
     def test_admin_login_success(self, api_client, admin_user):
         """Test admin can login successfully"""
-        response = api_client.post('/admin-user/login/', {
+        response = api_client.post('/api/admin-user/login/', {
             'email': 'admin@example.com',
             'password': 'adminpass123'
         })
@@ -45,7 +45,7 @@ class TestAdminLoginView:
 
     def test_non_admin_login_forbidden(self, api_client, regular_user):
         """Test non-admin user gets 403"""
-        response = api_client.post('/admin-user/login/', {
+        response = api_client.post('/api/admin-user/login/', {
             'email': 'regular@example.com',
             'password': 'userpass123'
         })
@@ -55,7 +55,7 @@ class TestAdminLoginView:
 
     def test_invalid_credentials_unauthorized(self, api_client, admin_user):
         """Test invalid credentials return 401"""
-        response = api_client.post('/admin-user/login/', {
+        response = api_client.post('/api/admin-user/login/', {
             'email': 'admin@example.com',
             'password': 'wrongpassword'
         })
@@ -64,7 +64,7 @@ class TestAdminLoginView:
 
     def test_nonexistent_user_unauthorized(self, api_client):
         """Test nonexistent user returns 401"""
-        response = api_client.post('/admin-user/login/', {
+        response = api_client.post('/api/admin-user/login/', {
             'email': 'nonexistent@example.com',
             'password': 'somepassword'
         })
@@ -73,7 +73,7 @@ class TestAdminLoginView:
 
     def test_missing_credentials(self, api_client):
         """Test missing credentials return error"""
-        response = api_client.post('/admin-user/login/', {})
+        response = api_client.post('/api/admin-user/login/', {})
 
         assert response.status_code in [status.HTTP_400_BAD_REQUEST, status.HTTP_401_UNAUTHORIZED]
 
@@ -96,7 +96,7 @@ class TestGlobalMessagesView:
         admin.is_active = True
         admin.save()
 
-        response = api_client.post('/admin-user/login/', {
+        response = api_client.post('/api/admin-user/login/', {
             'email': 'admin@example.com',
             'password': 'adminpass123'
         })
@@ -123,13 +123,13 @@ class TestGlobalMessagesView:
 
     def test_list_messages_requires_auth(self, api_client):
         """Test messages list requires authentication"""
-        response = api_client.get('/admin-user/messages/')
+        response = api_client.get('/api/admin-user/messages/')
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_list_messages_returns_latest_per_conversation(self, admin_client, setup_messages):
         """Test returns only latest message per conversation partner"""
-        response = admin_client.get('/admin-user/messages/')
+        response = admin_client.get('/api/admin-user/messages/')
 
         assert response.status_code == status.HTTP_200_OK
         # Should return 2 conversations (one with user1, one with user2)
@@ -138,7 +138,7 @@ class TestGlobalMessagesView:
 
     def test_messages_ordered_by_timestamp(self, admin_client, setup_messages):
         """Test messages are ordered by timestamp descending"""
-        response = admin_client.get('/admin-user/messages/')
+        response = admin_client.get('/api/admin-user/messages/')
 
         assert response.status_code == status.HTTP_200_OK
         messages = response.data if isinstance(response.data, list) else response.data.get('results', response.data)
@@ -150,13 +150,13 @@ class TestGlobalMessagesView:
 
     def test_filter_by_viewed_status(self, admin_client, setup_messages):
         """Test filtering messages by viewed status"""
-        response = admin_client.get('/admin-user/messages/', {'viewed': 'false'})
+        response = admin_client.get('/api/admin-user/messages/', {'viewed': 'false'})
 
         assert response.status_code == status.HTTP_200_OK
 
     def test_search_messages(self, admin_client, setup_messages):
         """Test searching messages"""
-        response = admin_client.get('/admin-user/messages/', {'search': 'user1'})
+        response = admin_client.get('/api/admin-user/messages/', {'search': 'user1'})
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -179,7 +179,7 @@ class TestTranslationViewSet:
         admin.is_active = True
         admin.save()
 
-        response = api_client.post('/admin-user/login/', {
+        response = api_client.post('/api/admin-user/login/', {
             'email': 'admin@example.com',
             'password': 'adminpass123'
         })
@@ -193,7 +193,7 @@ class TestTranslationViewSet:
         user.is_active = True
         user.save()
 
-        response = api_client.post('/user/login/', {
+        response = api_client.post('/api/user/login/', {
             'email': 'regular@example.com',
             'password': 'userpass123'
         })
@@ -202,13 +202,13 @@ class TestTranslationViewSet:
 
     def test_list_translations_requires_admin(self, api_client):
         """Test translations list requires admin"""
-        response = api_client.get('/admin-user/translations/')
+        response = api_client.get('/api/admin-user/translations/')
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_regular_user_cannot_access_translations(self, regular_client):
         """Test regular user cannot access translations"""
-        response = regular_client.get('/admin-user/translations/')
+        response = regular_client.get('/api/admin-user/translations/')
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -220,13 +220,13 @@ class TestTranslationViewSet:
             translated_text='Hallo'
         )
 
-        response = admin_client.get('/admin-user/translations/')
+        response = admin_client.get('/api/admin-user/translations/')
 
         assert response.status_code == status.HTTP_200_OK
 
     def test_admin_can_create_translation(self, admin_client):
         """Test admin can create translation"""
-        response = admin_client.post('/admin-user/translations/', {
+        response = admin_client.post('/api/admin-user/translations/', {
             'name': 'New Translation',
             'initial_text': 'Good morning',
             'translated_text': 'Guten Morgen'
@@ -243,7 +243,7 @@ class TestTranslationViewSet:
             translated_text='Hallo'
         )
 
-        response = admin_client.get(f'/admin-user/translations/{translation.id}/')
+        response = admin_client.get(f'/api/admin-user/translations/{translation.id}/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['name'] == 'Test'
@@ -256,7 +256,7 @@ class TestTranslationViewSet:
             translated_text='Hallo'
         )
 
-        response = admin_client.patch(f'/admin-user/translations/{translation.id}/', {
+        response = admin_client.patch(f'/api/admin-user/translations/{translation.id}/', {
             'name': 'Updated'
         })
 
@@ -272,7 +272,7 @@ class TestTranslationViewSet:
             translated_text='Hallo'
         )
 
-        response = admin_client.delete(f'/admin-user/translations/{translation.id}/')
+        response = admin_client.delete(f'/api/admin-user/translations/{translation.id}/')
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
         assert not Translation.objects.filter(id=translation.id).exists()
@@ -282,7 +282,7 @@ class TestTranslationViewSet:
         Translation.objects.create(name='Alpha', initial_text='A', translated_text='A')
         Translation.objects.create(name='Beta', initial_text='B', translated_text='B')
 
-        response = admin_client.get('/admin-user/translations/', {'search': 'Alpha'})
+        response = admin_client.get('/api/admin-user/translations/', {'search': 'Alpha'})
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -291,7 +291,7 @@ class TestTranslationViewSet:
         Translation.objects.create(name='First', initial_text='A', translated_text='A')
         Translation.objects.create(name='Second', initial_text='B', translated_text='B')
 
-        response = admin_client.get('/admin-user/translations/', {'ordering': '-timestamp'})
+        response = admin_client.get('/api/admin-user/translations/', {'ordering': '-timestamp'})
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -300,7 +300,7 @@ class TestTranslationViewSet:
         """Test translate endpoint returns streaming response"""
         mock_stream.return_value = iter(['Translated ', 'text'])
 
-        response = admin_client.post('/admin-user/translations/translate/', {
+        response = admin_client.post('/api/admin-user/translations/translate/', {
             'text': 'Hello',
             'lan_to': 'German'
         })
@@ -310,7 +310,7 @@ class TestTranslationViewSet:
 
     def test_translate_endpoint_requires_text(self, admin_client):
         """Test translate endpoint requires text parameter"""
-        response = admin_client.post('/admin-user/translations/translate/', {
+        response = admin_client.post('/api/admin-user/translations/translate/', {
             'lan_to': 'German'
         })
 
@@ -318,7 +318,7 @@ class TestTranslationViewSet:
 
     def test_translate_endpoint_requires_language(self, admin_client):
         """Test translate endpoint requires lan_to parameter"""
-        response = admin_client.post('/admin-user/translations/translate/', {
+        response = admin_client.post('/api/admin-user/translations/translate/', {
             'text': 'Hello'
         })
 

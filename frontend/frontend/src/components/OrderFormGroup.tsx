@@ -47,6 +47,7 @@ const OrderFormGroup = () => {
 
             <div>
                 <FormControlLabel control={<Checkbox defaultChecked />} label="Ich brauche einen Kostenvorschlag" />
+
                     <CustomTooltip title={tooltipText}>
                         <IconButton className="app-icon">
                             <HelpOutlineIcon className="app-icon"/>
@@ -54,7 +55,7 @@ const OrderFormGroup = () => {
                     </CustomTooltip>
             </div>
 
-                <FormControlLabel required control={<Checkbox />} label="Ich bin sicher" />
+                <FormControlLabel required control={<Checkbox defaultChecked/>} label="Ich bin sicher" />
 
         </FormGroup>
         

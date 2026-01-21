@@ -47,7 +47,7 @@ test.describe("Profile Page (Authenticated)", () => {
 
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
-            await expect(page.getByText("Aufträge")).toBeVisible();
+            await expect(page.getByTestId("order-title")).toBeVisible();
         });
 
         test("should display user orders", async ({ page }) => {

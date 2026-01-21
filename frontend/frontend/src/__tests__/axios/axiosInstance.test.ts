@@ -1,6 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
+import { describe, it, expect, vi  } from 'vitest'
+
 
 // We need to test the interceptors in isolation
 // Since axiosInstance is a module with side effects, we'll test the interceptor logic
@@ -85,8 +84,6 @@ describe('axiosInstance interceptors', () => {
     })
 
     it('handles 401 error with token refresh logic', async () => {
-      const mockSetTokens = vi.fn()
-      const mockLogoutUser = vi.fn()
 
       const error = {
         response: { status: 401 },
@@ -204,7 +201,7 @@ describe('axiosInstance interceptors', () => {
       const error = {
         response: {
           status: 500,
-          data: {},
+          data: {} as { message?: string },
         },
       }
 

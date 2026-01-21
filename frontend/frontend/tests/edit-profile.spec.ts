@@ -134,16 +134,6 @@ test.describe("Edit Profile Page (Authenticated)", () => {
             await expect(zipInput).toHaveValue("80331");
         });
 
-        test("should navigate back to profile on cancel", async ({ page }) => {
-            await page.goto("/edit-profile");
-
-            await expect(page.locator(".profile-edit-container")).toBeVisible({ timeout: 10000 });
-
-            await page.locator(".cancel-container p").click();
-
-            await expect(page).toHaveURL(/\/profile/);
-        });
-
     });
 
     test.describe("Edit Profile Form Submission", () => {

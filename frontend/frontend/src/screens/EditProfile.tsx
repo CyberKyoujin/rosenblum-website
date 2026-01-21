@@ -3,7 +3,7 @@ import { TextField, Divider, CircularProgress } from '@mui/material';
 import { RiEdit2Fill } from 'react-icons/ri';
 import { MdAddAPhoto } from 'react-icons/md';
 import useAuthStore from '../zustand/useAuthStore';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import defaultAvatar from '../assets/default_avatar.webp'
 import { useTranslation } from 'react-i18next';
 import { ApiErrorResponse } from '../types/error';
@@ -86,7 +86,7 @@ const EditProfile = () => {
             <h1 className="header-span">{t('editProfileSecond')}</h1>
           </div>
           <div className='cancel-container'>
-             <p onClick={() => navigate('/profile')}>{t('cancel')}</p>
+             <Link to='/profile' data-testid="edit-profile-back">{t('cancel')}</Link>
           </div>
         </div>
 

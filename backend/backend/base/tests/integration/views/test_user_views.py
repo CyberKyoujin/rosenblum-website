@@ -18,7 +18,7 @@ class TestUserRegistration:
         }
 
         try:
-            response = api_client.post('/user/users/register/', data)
+            response = api_client.post('/api/user/users/register/', data)
         except TypeError as e:
             # Serializer has M2M field issue (groups field with fields='__all__')
             if "many-to-many" in str(e):
@@ -45,7 +45,7 @@ class TestUserRegistration:
             'last_name': 'Doe'
         }
 
-        response = api_client.post('/user/users/register/', data)
+        response = api_client.post('/api/user/users/register/', data)
 
         # Returns 409 CONFLICT for duplicate email
         assert response.status_code == status.HTTP_409_CONFLICT
@@ -54,7 +54,7 @@ class TestUserRegistration:
         """Test registration without required fields fails"""
         data = {'email': 'incomplete@example.com'}
 
-        response = api_client.post('/user/users/register/', data)
+        response = api_client.post('/api/user/users/register/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -67,7 +67,7 @@ class TestUserRegistration:
             'last_name': 'Doe'
         }
 
-        response = api_client.post('/user/users/register/', data)
+        response = api_client.post('/api/user/users/register/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -89,7 +89,7 @@ class TestUserAuthentication:
             'password': 'TestPass123!'
         }
 
-        response = api_client.post('/user/login/', data)
+        response = api_client.post('/api/user/login/', data)
 
         assert response.status_code == status.HTTP_200_OK
         assert 'access' in response.data
@@ -108,7 +108,7 @@ class TestUserAuthentication:
             'password': 'WrongPass123!'
         }
 
-        response = api_client.post('/user/login/', data)
+        response = api_client.post('/api/user/login/', data)
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -125,7 +125,7 @@ class TestUserAuthentication:
             'password': 'TestPass123!'
         }
 
-        response = api_client.post('/user/login/', data)
+        response = api_client.post('/api/user/login/', data)
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -136,7 +136,7 @@ class TestUserAuthentication:
             'password': 'SomePass123!'
         }
 
-        response = api_client.post('/user/login/', data)
+        response = api_client.post('/api/user/login/', data)
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -153,12 +153,12 @@ class TestUserAuthentication:
             'email': 'refresh@example.com',
             'password': 'TestPass123!'
         }
-        login_response = api_client.post('/user/login/', login_data)
+        login_response = api_client.post('/api/user/login/', login_data)
         refresh_token = login_response.data['refresh']
 
         # Use refresh token to get new access token
         refresh_data = {'refresh': refresh_token}
-        response = api_client.post('/user/token-refresh/', refresh_data)
+        response = api_client.post('/api/user/token-refresh/', refresh_data)
 
         assert response.status_code == status.HTTP_200_OK
         assert 'access' in response.data
@@ -170,7 +170,7 @@ class TestUserProfile:
 
     def test_get_own_profile_via_me(self, authenticated_client, authenticated_user):
         """Test authenticated user can get their own profile via /me endpoint"""
-        response = authenticated_client.get('/user/users/me/')
+        response = authenticated_client.get('/api/user/users/me/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['email'] == authenticated_user.email
@@ -183,7 +183,7 @@ class TestUserProfile:
             'last_name': 'Name'
         }
 
-        response = authenticated_client.patch('/user/users/me/', data)
+        response = authenticated_client.patch('/api/user/users/me/', data)
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['first_name'] == 'Updated'
@@ -198,7 +198,7 @@ class TestUserProfile:
         """Test regular user access to another user's profile by id"""
         other_user = create_user(email='other@example.com')
 
-        response = authenticated_client.get(f'/user/users/{other_user.id}/')
+        response = authenticated_client.get(f'/api/user/users/{other_user.id}/')
 
         # Based on UserViewSet permissions, retrieve action requires admin for non-staff users
         # But the logic allows retrieve if `not self.request.user.is_staff` returns IsAuthenticated
@@ -212,7 +212,7 @@ class TestUserProfile:
         """Test unauthenticated user cannot access profiles"""
         user = create_user(email='user@example.com')
 
-        response = api_client.get(f'/user/users/{user.id}/')
+        response = api_client.get(f'/api/user/users/{user.id}/')
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -222,7 +222,7 @@ class TestUserProfile:
         create_user(email='user2@example.com')
         create_user(email='user3@example.com')
 
-        response = admin_client.get('/user/users/')
+        response = admin_client.get('/api/user/users/')
 
         assert response.status_code == status.HTTP_200_OK
         # Check response has data (either paginated or list)
@@ -231,7 +231,7 @@ class TestUserProfile:
 
     def test_list_users_as_regular_user(self, authenticated_client):
         """Test regular user cannot list all users"""
-        response = authenticated_client.get('/user/users/')
+        response = authenticated_client.get('/api/user/users/')
 
         # Regular users don't have access to list endpoint - requires admin
         assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -265,7 +265,7 @@ class TestReviewEndpoint:
             review_timestamp=timezone.now()
         )
 
-        response = api_client.get('/user/reviews/')
+        response = api_client.get('/api/user/reviews/')
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) >= 2
@@ -296,7 +296,7 @@ class TestReviewEndpoint:
             review_timestamp=timezone.now()
         )
 
-        response = api_client.get('/user/reviews/')
+        response = api_client.get('/api/user/reviews/')
 
         assert response.status_code == status.HTTP_200_OK
         # ReviewSerializer uses 'id' and 'author_name', not 'google_review_id'
@@ -326,7 +326,7 @@ class TestReviewEndpoint:
         )
 
         # Request with German language
-        response = api_client.get('/user/reviews/?lang=de')
+        response = api_client.get('/api/user/reviews/?lang=de')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -349,7 +349,7 @@ class TestReviewEndpoint:
             review_timestamp=timezone.now()
         )
 
-        response = api_client.get('/user/reviews/')
+        response = api_client.get('/api/user/reviews/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -368,7 +368,7 @@ class TestPasswordReset:
         data = {'email': 'reset@example.com'}
 
         try:
-            response = api_client.post('/user/users/reset-password-link/', data)
+            response = api_client.post('/api/user/users/reset-password-link/', data)
         except AttributeError as e:
             # FRONTEND_URL setting is missing
             if "FRONTEND_URL" in str(e):
@@ -383,7 +383,7 @@ class TestPasswordReset:
         data = {'email': 'nonexistent@example.com'}
 
         try:
-            response = api_client.post('/user/users/reset-password-link/', data)
+            response = api_client.post('/api/user/users/reset-password-link/', data)
         except AttributeError as e:
             # FRONTEND_URL setting is missing
             if "FRONTEND_URL" in str(e):
