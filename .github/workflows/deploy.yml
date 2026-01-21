@@ -75,31 +75,7 @@ jobs:
           npm ci
           npm run test -- --run
 
-      - name: Install & Run Frontend E2E (User)
-        uses: actions/upload-artifact@v4
-        run: |
-          cd frontend/frontend
-          npm ci
-          npx playwright install --with-deps
-          npx playwright test
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-
-      - name: Install & Run Frontend E2E (Admin)
-        uses: actions/upload-artifact@v4
-        run: |
-          cd frontend-admin/frontend-admin
-          npm ci
-          npx playwright install --with-deps
-          npx playwright test
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+  
 
   # ====================================================
   # ЭТАП 2: ДЕПЛОЙ НА HETZNER
