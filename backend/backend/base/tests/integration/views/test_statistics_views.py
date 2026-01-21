@@ -16,7 +16,7 @@ class TestDashboardStatsView:
         create_order()
         create_order()
 
-        response = api_client.get('/statistics/')
+        response = api_client.get('/api/statistics/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['total_orders'] == 3
@@ -27,14 +27,14 @@ class TestDashboardStatsView:
         create_order(status='review')
         create_order(status='completed')
 
-        response = api_client.get('/statistics/')
+        response = api_client.get('/api/statistics/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['new_orders'] == 2
 
     def test_empty_database_returns_zeros(self, api_client):
         """Test returns zeros when no orders exist"""
-        response = api_client.get('/statistics/')
+        response = api_client.get('/api/statistics/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['total_orders'] == 0
@@ -44,7 +44,7 @@ class TestDashboardStatsView:
         """Test statistics endpoint is public"""
         create_order()
 
-        response = api_client.get('/statistics/')
+        response = api_client.get('/api/statistics/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -60,7 +60,7 @@ class TestOrderStatusDistributionView:
         create_order(status='completed')
         create_order(status='sent')
 
-        response = api_client.get('/statistics/status-distribution/')
+        response = api_client.get('/api/statistics/status-distribution/')
 
         assert response.status_code == status.HTTP_200_OK
         assert isinstance(response.data, list)
@@ -74,7 +74,7 @@ class TestOrderStatusDistributionView:
         """Test returns German labels for statuses"""
         create_order(status='review')
 
-        response = api_client.get('/statistics/status-distribution/')
+        response = api_client.get('/api/statistics/status-distribution/')
 
         assert response.status_code == status.HTTP_200_OK
         review_data = next((d for d in response.data if d['id'] == 'review'), None)
@@ -82,7 +82,7 @@ class TestOrderStatusDistributionView:
 
     def test_empty_database_returns_empty_list(self, api_client):
         """Test returns empty list when no orders"""
-        response = api_client.get('/statistics/status-distribution/')
+        response = api_client.get('/api/statistics/status-distribution/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data == []
@@ -92,7 +92,7 @@ class TestOrderStatusDistributionView:
         create_order(status='review')
         create_order(status='in_progress')
 
-        response = api_client.get('/statistics/status-distribution/')
+        response = api_client.get('/api/statistics/status-distribution/')
 
         assert response.status_code == status.HTTP_200_OK
         for item in response.data:
@@ -110,7 +110,7 @@ class TestOrderDynamicsView:
         create_order()
         create_order()
 
-        response = api_client.get('/statistics/ordering-dynamics/')
+        response = api_client.get('/api/statistics/ordering-dynamics/')
 
         assert response.status_code == status.HTTP_200_OK
         # Response data may be a QuerySet or list depending on serialization
@@ -130,7 +130,7 @@ class TestOrderDynamicsView:
             message='Test'
         )
 
-        response = api_client.get('/statistics/ordering-dynamics/')
+        response = api_client.get('/api/statistics/ordering-dynamics/')
 
         assert response.status_code == status.HTTP_200_OK
         # Should have at least one month of data
@@ -142,7 +142,7 @@ class TestOrderDynamicsView:
         """Test each entry has period and count"""
         create_order()
 
-        response = api_client.get('/statistics/ordering-dynamics/')
+        response = api_client.get('/api/statistics/ordering-dynamics/')
 
         assert response.status_code == status.HTTP_200_OK
         if len(response.data) > 0:
@@ -160,7 +160,7 @@ class TestOrderTypeDistributionView:
         create_order(order_type='order')
         create_order(order_type='costs_estimate')
 
-        response = api_client.get('/statistics/type-distribution/')
+        response = api_client.get('/api/statistics/type-distribution/')
 
         assert response.status_code == status.HTTP_200_OK
         # Response data may be a QuerySet or list depending on serialization
@@ -173,7 +173,7 @@ class TestOrderTypeDistributionView:
         create_order(order_type='order')
         create_order(order_type='costs_estimate')
 
-        response = api_client.get('/statistics/type-distribution/')
+        response = api_client.get('/api/statistics/type-distribution/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -196,7 +196,7 @@ class TestGeographyStatsView:
         create_order(city='Berlin')
         create_order(city='Munich')
 
-        response = api_client.get('/statistics/customers-geography/')
+        response = api_client.get('/api/statistics/customers-geography/')
 
         assert response.status_code == status.HTTP_200_OK
         # Response data may be a QuerySet or list depending on serialization
@@ -210,7 +210,7 @@ class TestGeographyStatsView:
         create_order(city='Berlin')
         create_order(city='Berlin')
 
-        response = api_client.get('/statistics/customers-geography/')
+        response = api_client.get('/api/statistics/customers-geography/')
 
         assert response.status_code == status.HTTP_200_OK
         if len(response.data) >= 2:
@@ -222,7 +222,7 @@ class TestGeographyStatsView:
         create_order(city='')
         # Note: city=None not allowed by model's NOT NULL constraint
 
-        response = api_client.get('/statistics/customers-geography/')
+        response = api_client.get('/api/statistics/customers-geography/')
 
         assert response.status_code == status.HTTP_200_OK
         data = list(response.data) if hasattr(response.data, '__iter__') else response.data
@@ -236,7 +236,7 @@ class TestGeographyStatsView:
         for city in cities:
             create_order(city=city)
 
-        response = api_client.get('/statistics/customers-geography/')
+        response = api_client.get('/api/statistics/customers-geography/')
 
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data) <= 10
@@ -251,7 +251,7 @@ class TestUserGrowthView:
         create_user(email='user1@example.com')
         create_user(email='user2@example.com')
 
-        response = api_client.get('/statistics/customers-growth/')
+        response = api_client.get('/api/statistics/customers-growth/')
 
         assert response.status_code == status.HTTP_200_OK
         # Response data may be a QuerySet or list depending on serialization
@@ -262,7 +262,7 @@ class TestUserGrowthView:
         """Test each entry has period and count"""
         create_user(email='user1@example.com')
 
-        response = api_client.get('/statistics/customers-growth/')
+        response = api_client.get('/api/statistics/customers-growth/')
 
         assert response.status_code == status.HTTP_200_OK
         if len(response.data) > 0:
@@ -274,7 +274,7 @@ class TestUserGrowthView:
         create_user(email='user1@example.com')
         create_user(email='user2@example.com')
 
-        response = api_client.get('/statistics/customers-growth/')
+        response = api_client.get('/api/statistics/customers-growth/')
 
         assert response.status_code == status.HTTP_200_OK
         # Results should be ordered
@@ -298,7 +298,7 @@ class TestComparisonStatsView:
             message='Test request'
         )
 
-        response = api_client.get('/statistics/order-request-comparison/')
+        response = api_client.get('/api/statistics/order-request-comparison/')
 
         assert response.status_code == status.HTTP_200_OK
         assert 'orders' in response.data
@@ -308,7 +308,7 @@ class TestComparisonStatsView:
         """Test orders data has correct structure"""
         create_order()
 
-        response = api_client.get('/statistics/order-request-comparison/')
+        response = api_client.get('/api/statistics/order-request-comparison/')
 
         assert response.status_code == status.HTTP_200_OK
         if len(response.data['orders']) > 0:
@@ -324,7 +324,7 @@ class TestComparisonStatsView:
             message='Test request'
         )
 
-        response = api_client.get('/statistics/order-request-comparison/')
+        response = api_client.get('/api/statistics/order-request-comparison/')
 
         assert response.status_code == status.HTTP_200_OK
         if len(response.data['requests']) > 0:
@@ -335,7 +335,7 @@ class TestComparisonStatsView:
         """Test only includes data from last 180 days"""
         create_order()
 
-        response = api_client.get('/statistics/order-request-comparison/')
+        response = api_client.get('/api/statistics/order-request-comparison/')
 
         assert response.status_code == status.HTTP_200_OK
         # Data should be from recent period
@@ -344,7 +344,7 @@ class TestComparisonStatsView:
 
     def test_empty_data_returns_empty_lists(self, api_client):
         """Test returns empty lists when no data"""
-        response = api_client.get('/statistics/order-request-comparison/')
+        response = api_client.get('/api/statistics/order-request-comparison/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['orders'] == []

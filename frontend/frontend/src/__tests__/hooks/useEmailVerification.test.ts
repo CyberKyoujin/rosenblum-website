@@ -71,9 +71,7 @@ describe('useEmailVerification', () => {
     })
 
     it('sets loading state during verification', async () => {
-      let loadingDuringCall = false
       vi.mocked(axiosInstance.post).mockImplementationOnce(async () => {
-        loadingDuringCall = true
         return { data: {} }
       })
 

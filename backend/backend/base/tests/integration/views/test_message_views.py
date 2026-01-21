@@ -11,7 +11,7 @@ class TestMessageList:
 
     def test_list_messages_unauthenticated(self, api_client):
         """Test unauthenticated users cannot list messages"""
-        response = api_client.get('/messages/')
+        response = api_client.get('/api/messages/')
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
@@ -30,7 +30,7 @@ class TestMessageList:
             message='Test message 2'
         )
 
-        response = authenticated_client.get('/messages/')
+        response = authenticated_client.get('/api/messages/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -52,7 +52,7 @@ class TestMessageList:
             message='Received message 2'
         )
 
-        response = authenticated_client.get('/messages/')
+        response = authenticated_client.get('/api/messages/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -72,7 +72,7 @@ class TestMessageList:
             message='Private message'
         )
 
-        response = authenticated_client.get('/messages/')
+        response = authenticated_client.get('/api/messages/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -95,7 +95,7 @@ class TestMessageCreate:
             'message': 'Hello, this is a test message!'
         }
 
-        response = authenticated_client.post('/messages/', data)
+        response = authenticated_client.post('/api/messages/', data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['message'] == 'Hello, this is a test message!'
@@ -116,7 +116,7 @@ class TestMessageCreate:
             'message': 'Message without receiver'
         }
 
-        response = authenticated_client.post('/messages/', data)
+        response = authenticated_client.post('/api/messages/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -127,7 +127,7 @@ class TestMessageCreate:
             'message': 'Message to nobody'
         }
 
-        response = authenticated_client.post('/messages/', data)
+        response = authenticated_client.post('/api/messages/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -140,7 +140,7 @@ class TestMessageCreate:
             'message': ''
         }
 
-        response = authenticated_client.post('/messages/', data)
+        response = authenticated_client.post('/api/messages/', data)
 
         # Depending on validation rules
         if response.status_code == status.HTTP_201_CREATED:
@@ -168,7 +168,7 @@ class TestMessageCreate:
         File.objects.create(message=message, file=uploaded_file)
 
         # Retrieve message and check file is included
-        response = authenticated_client.get(f'/messages/{message.id}/')
+        response = authenticated_client.get(f'/api/messages/{message.id}/')
 
         if response.status_code == status.HTTP_404_NOT_FOUND:
             pytest.skip("Message detail endpoint not implemented")
@@ -191,7 +191,7 @@ class TestMessageDetail:
             message='Sent message'
         )
 
-        response = authenticated_client.get(f'/messages/{message.id}/')
+        response = authenticated_client.get(f'/api/messages/{message.id}/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['id'] == message.id
@@ -206,7 +206,7 @@ class TestMessageDetail:
             message='Received message'
         )
 
-        response = authenticated_client.get(f'/messages/{message.id}/')
+        response = authenticated_client.get(f'/api/messages/{message.id}/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['id'] == message.id
@@ -222,7 +222,7 @@ class TestMessageDetail:
             message='Private message'
         )
 
-        response = authenticated_client.get(f'/messages/{message.id}/')
+        response = authenticated_client.get(f'/api/messages/{message.id}/')
 
         assert response.status_code in [
             status.HTTP_403_FORBIDDEN,
@@ -255,7 +255,7 @@ class TestMessageUpdate:
         # Toggle endpoint marks all unread messages from sender as viewed
         data = {'sender_id': sender.id}
 
-        response = authenticated_client.post('/messages/toggle/', data)
+        response = authenticated_client.post('/api/messages/toggle/', data)
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['status'] == 'success'
@@ -271,7 +271,7 @@ class TestMessageUpdate:
 
     def test_toggle_requires_sender_id(self, authenticated_client):
         """Test toggle action requires sender_id"""
-        response = authenticated_client.post('/messages/toggle/', {})
+        response = authenticated_client.post('/api/messages/toggle/', {})
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'sender_id' in str(response.data).lower()
@@ -287,7 +287,7 @@ class TestMessageUpdate:
 
         data = {'message': 'Edited message'}
 
-        response = authenticated_client.patch(f'/messages/{message.id}/', data)
+        response = authenticated_client.patch(f'/api/messages/{message.id}/', data)
 
         # Depending on business logic - messages might be editable or not
         if response.status_code == status.HTTP_200_OK:
@@ -315,7 +315,7 @@ class TestMessageDelete:
         )
         message_id = message.id
 
-        response = authenticated_client.delete(f'/messages/{message.id}/')
+        response = authenticated_client.delete(f'/api/messages/{message.id}/')
 
         if response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED:
             pytest.skip("Message deletion not allowed")
@@ -334,7 +334,7 @@ class TestMessageDelete:
             message='Received message'
         )
 
-        response = authenticated_client.delete(f'/messages/{message.id}/')
+        response = authenticated_client.delete(f'/api/messages/{message.id}/')
 
         # Depending on business logic
         if response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED:
@@ -367,7 +367,7 @@ class TestMessageFiltering:
             message='To user1'
         )
 
-        response = admin_client.get(f'/messages/?user_id={user1.id}')
+        response = admin_client.get(f'/api/messages/?user_id={user1.id}')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -406,7 +406,7 @@ class TestMessageFiltering:
             message='Third message'
         )
 
-        response = authenticated_client.get('/messages/')
+        response = authenticated_client.get('/api/messages/')
 
         assert response.status_code == status.HTTP_200_OK
 

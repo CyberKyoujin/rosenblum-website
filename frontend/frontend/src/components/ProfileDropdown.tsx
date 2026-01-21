@@ -127,7 +127,7 @@ export default function AccountMenu() {
               </ListItemIcon>
               {t('register')}
             </MenuItem>
-            <MenuItem onClick={() => {
+            <MenuItem data-testid="login-btn" onClick={() => {
               handleClose();
               navigate('/login');
             }}>

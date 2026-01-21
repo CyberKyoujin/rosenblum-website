@@ -13,7 +13,7 @@ vi.mock('../../axios/axiosInstance', () => ({
 
 // Mock jwt-decode
 vi.mock('jwt-decode', () => ({
-  jwtDecode: vi.fn((token: string) => ({
+  jwtDecode: vi.fn(() => ({
     id: 1,
     email: 'test@example.com',
     first_name: 'John',
@@ -35,7 +35,6 @@ describe('useAuthStore', () => {
       userDataLoading: false,
       userDataError: null,
       isAuthenticated: false,
-      emailAlreadyExists: false,
       userData: null,
       userMessages: null,
       isAuthLoading: true,
@@ -100,7 +99,7 @@ describe('useAuthStore', () => {
 
   describe('initAuth', () => {
     it('does nothing when no tokens in cookies', async () => {
-      vi.mocked(Cookies.get).mockReturnValue(undefined)
+      vi.mocked(Cookies.get).mockReturnValue(undefined as unknown as { [key: string]: string })
 
       await act(async () => {
         await useAuthStore.getState().initAuth()
@@ -113,8 +112,8 @@ describe('useAuthStore', () => {
 
     it('initializes auth from cookies and fetches user data', async () => {
       vi.mocked(Cookies.get)
-        .mockReturnValueOnce('access-token') // first call for access
-        .mockReturnValueOnce('refresh-token') // second call for refresh
+        .mockReturnValueOnce('access-token' as unknown as { [key: string]: string }) // first call for access
+        .mockReturnValueOnce('refresh-token' as unknown as { [key: string]: string }) // second call for refresh
 
       vi.mocked(axiosInstance.get).mockResolvedValueOnce({
         data: {
@@ -139,8 +138,8 @@ describe('useAuthStore', () => {
 
     it('logs out user on 401 error', async () => {
       vi.mocked(Cookies.get)
-        .mockReturnValueOnce('access-token')
-        .mockReturnValueOnce('refresh-token')
+        .mockReturnValueOnce('access-token' as unknown as { [key: string]: string })
+        .mockReturnValueOnce('refresh-token' as unknown as { [key: string]: string })
 
       vi.mocked(axiosInstance.get).mockRejectedValueOnce({
         status: 401,
@@ -278,7 +277,7 @@ describe('useAuthStore', () => {
 
   describe('updateToken', () => {
     it('refreshes token successfully', async () => {
-      vi.mocked(Cookies.get).mockReturnValueOnce('old-refresh-token')
+      vi.mocked(Cookies.get).mockReturnValueOnce('old-refresh-token' as unknown as { [key: string]: string })
       vi.mocked(axiosInstance.post).mockResolvedValueOnce({
         data: { access: 'new-access', refresh: 'new-refresh' },
       })
@@ -292,7 +291,7 @@ describe('useAuthStore', () => {
     })
 
     it('logs out when no refresh token', async () => {
-      vi.mocked(Cookies.get).mockReturnValueOnce(undefined)
+      vi.mocked(Cookies.get).mockReturnValueOnce(undefined as unknown as { [key: string]: string })
 
       await expect(
         act(async () => {
@@ -304,7 +303,7 @@ describe('useAuthStore', () => {
     })
 
     it('logs out on refresh error', async () => {
-      vi.mocked(Cookies.get).mockReturnValueOnce('refresh-token')
+      vi.mocked(Cookies.get).mockReturnValueOnce('refresh-token' as unknown as { [key: string]: string })
       vi.mocked(axiosInstance.post).mockRejectedValueOnce({ status: 401, code: 'invalid_token', message: 'Invalid refresh token' })
 
       let errorThrown = false

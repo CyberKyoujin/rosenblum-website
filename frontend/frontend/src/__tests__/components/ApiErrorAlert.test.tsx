@@ -151,7 +151,7 @@ describe('ApiErrorAlert', () => {
         message: 'Test error',
       }
 
-      const { container, rerender } = render(<ApiErrorAlert error={error} />)
+      const { rerender } = render(<ApiErrorAlert error={error} />)
 
       expect(screen.getByText('Test error')).toBeInTheDocument()
 

@@ -261,6 +261,7 @@ class TestOrderModel:
     def test_date_auto_generated(self, create_user):
         """Test that date is auto-generated on creation"""
         user = create_user(email="date@example.com")
+        before_creation = timezone.now().date()
         order = Order.objects.create(
             user=user,
             name="Date User",
@@ -271,8 +272,10 @@ class TestOrderModel:
             zip="99999",
             message="Date message"
         )
+        after_creation = timezone.now().date()
         assert order.date is not None
-        assert order.date == timezone.now().date()
+        # Date should be between before and after creation (handles midnight edge case)
+        assert before_creation <= order.date <= after_creation
 
     def test_message_max_length_1000(self, create_user):
         """Test that message field has max length of 1000 characters"""

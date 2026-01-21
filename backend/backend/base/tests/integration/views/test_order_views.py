@@ -11,7 +11,7 @@ class TestOrderList:
     def test_list_orders_unauthenticated(self, api_client):
         """Test unauthenticated users get empty order list"""
         # OrderViewSet returns empty queryset for anonymous users (not 401)
-        response = api_client.get('/orders/')
+        response = api_client.get('/api/orders/')
 
         assert response.status_code == status.HTTP_200_OK
         results = response.data.get('results', response.data) if isinstance(response.data, dict) else response.data
@@ -33,7 +33,7 @@ class TestOrderList:
         )
         create_order(user=other_user, name='Other Order')
 
-        response = authenticated_client.get('/orders/')
+        response = authenticated_client.get('/api/orders/')
 
         assert response.status_code == status.HTTP_200_OK
         assert 'results' in response.data or isinstance(response.data, list)
@@ -55,7 +55,7 @@ class TestOrderList:
         create_order(user=user1, name='User1 Order')
         create_order(user=user2, name='User2 Order')
 
-        response = admin_client.get('/orders/')
+        response = admin_client.get('/api/orders/')
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -83,7 +83,7 @@ class TestOrderCreate:
             'order_type': 'order'
         }
 
-        response = authenticated_client.post('/orders/', data)
+        response = authenticated_client.post('/api/orders/', data)
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data['name'] == 'John Doe'
@@ -113,7 +113,7 @@ class TestOrderCreate:
             'order_type': 'costs_estimate'
         }
 
-        response = api_client.post('/orders/', data)
+        response = api_client.post('/api/orders/', data)
 
         # Depending on your business logic
         if response.status_code == status.HTTP_401_UNAUTHORIZED:
@@ -130,7 +130,7 @@ class TestOrderCreate:
             # Missing email, phone_number, etc.
         }
 
-        response = authenticated_client.post('/orders/', data)
+        response = authenticated_client.post('/api/orders/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'email' in response.data or 'phone_number' in response.data
@@ -147,7 +147,7 @@ class TestOrderCreate:
             'message': 'Message'
         }
 
-        response = authenticated_client.post('/orders/', data)
+        response = authenticated_client.post('/api/orders/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert 'email' in response.data
@@ -165,7 +165,7 @@ class TestOrderCreate:
             'status': 'invalid_status'  # Invalid choice
         }
 
-        response = authenticated_client.post('/orders/', data)
+        response = authenticated_client.post('/api/orders/', data)
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -178,7 +178,7 @@ class TestOrderDetail:
         """Test user can retrieve their own order"""
         order = create_order(user=authenticated_user, name='My Order')
 
-        response = authenticated_client.get(f'/orders/{order.id}/')
+        response = authenticated_client.get(f'/api/orders/{order.id}/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['id'] == order.id
@@ -189,7 +189,7 @@ class TestOrderDetail:
         other_user = create_user(email='other@example.com')
         other_order = create_order(user=other_user, name='Other Order')
 
-        response = authenticated_client.get(f'/orders/{other_order.id}/')
+        response = authenticated_client.get(f'/api/orders/{other_order.id}/')
 
         assert response.status_code in [
             status.HTTP_403_FORBIDDEN,
@@ -201,7 +201,7 @@ class TestOrderDetail:
         user = create_user(email='user@example.com')
         order = create_order(user=user, name='User Order')
 
-        response = admin_client.get(f'/orders/{order.id}/')
+        response = admin_client.get(f'/api/orders/{order.id}/')
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['id'] == order.id
@@ -218,7 +218,7 @@ class TestOrderDetail:
         )
         File.objects.create(order=order, file=uploaded_file)
 
-        response = authenticated_client.get(f'/orders/{order.id}/')
+        response = authenticated_client.get(f'/api/orders/{order.id}/')
 
         assert response.status_code == status.HTTP_200_OK
         assert 'files' in response.data
@@ -242,7 +242,7 @@ class TestOrderUpdate:
             'status': 'in_progress'
         }
 
-        response = authenticated_client.patch(f'/orders/{order.id}/', data)
+        response = authenticated_client.patch(f'/api/orders/{order.id}/', data)
 
         # Check if users can update or only admins
         if response.status_code == status.HTTP_403_FORBIDDEN:
@@ -258,7 +258,7 @@ class TestOrderUpdate:
 
         data = {'status': 'completed'}
 
-        response = admin_client.patch(f'/orders/{order.id}/', data)
+        response = admin_client.patch(f'/api/orders/{order.id}/', data)
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['status'] == 'completed'
@@ -274,7 +274,7 @@ class TestOrderUpdate:
 
         data = {'status': 'canceled'}
 
-        response = authenticated_client.patch(f'/orders/{other_order.id}/', data)
+        response = authenticated_client.patch(f'/api/orders/{other_order.id}/', data)
 
         assert response.status_code in [
             status.HTTP_403_FORBIDDEN,
@@ -288,7 +288,7 @@ class TestOrderUpdate:
 
         data = {'is_new': False}
 
-        response = admin_client.patch(f'/orders/{order.id}/', data)
+        response = admin_client.patch(f'/api/orders/{order.id}/', data)
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data['is_new'] is False
@@ -302,7 +302,7 @@ class TestOrderDelete:
         """Test regular user cannot delete their own order"""
         order = create_order(user=authenticated_user)
 
-        response = authenticated_client.delete(f'/orders/{order.id}/')
+        response = authenticated_client.delete(f'/api/orders/{order.id}/')
 
         # Depending on business logic
         assert response.status_code in [
@@ -317,7 +317,7 @@ class TestOrderDelete:
         order = create_order(user=user)
         order_id = order.id
 
-        response = admin_client.delete(f'/orders/{order.id}/')
+        response = admin_client.delete(f'/api/orders/{order.id}/')
 
         if response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED:
             pytest.skip("Order deletion not allowed")
@@ -338,7 +338,7 @@ class TestOrderFiltering:
         create_order(user=authenticated_user, status='in_progress', name='Order 2')
         create_order(user=authenticated_user, status='review', name='Order 3')
 
-        response = authenticated_client.get('/orders/?status=review')
+        response = authenticated_client.get('/api/orders/?status=review')
 
         if 'results' not in response.data and not isinstance(response.data, list):
             pytest.skip("Filtering not implemented")
@@ -359,7 +359,7 @@ class TestOrderFiltering:
         create_order(user=user, is_new=True, name='New Order 2')
         create_order(user=user, is_new=False, name='Old Order')
 
-        response = admin_client.get('/orders/?is_new=true')
+        response = admin_client.get('/api/orders/?is_new=true')
 
         if 'results' not in response.data and not isinstance(response.data, list):
             pytest.skip("Filtering not implemented")

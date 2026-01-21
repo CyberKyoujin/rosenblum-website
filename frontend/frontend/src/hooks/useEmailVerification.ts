@@ -1,18 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
-import { toApiError } from "../axios/toApiError";
-
-interface Errors {
-  detail: string;
-  attempts: number;
-}
-
-interface VerificationState {
-    attempts?: number;
-    message?: string;
-    errors?: Errors;
-}
 
 const errorMessages = {
     "user_not_found": "Kein entsprechendes Konto gefunden",
@@ -46,21 +34,28 @@ export default function useEmailVerification () {
 
         } catch (err: any) {
 
-            const error = err as VerificationState;
+            // Handle axios error response structure
+            const responseData = err?.response?.data;
 
-            const errorCode = err.errors.detail;
+            const errorCode = responseData?.detail;
+            const attemptsValue = responseData?.attempts;
+            const errorMessage = responseData?.message;
 
-            const attempts = error.errors?.attempts
-
-            setAttempts((attempts === null ? 0 : attempts) || 0)
-           
+            if (attemptsValue !== undefined) {
+                setAttempts(attemptsValue === null ? 0 : attemptsValue);
+            } else {
+                setAttempts(0);
+            }
 
             if (errorCode && errorCode in errorMessages) {
-
                 setError(errorMessages[errorCode as ErrorCodeKey]);
-
+            } else if (errorMessage) {
+                setError(errorMessage);
+            } else if (errorCode) {
+                setError(errorCode);
+            } else if (!err?.response) {
+                setError("Netzwerkfehler. Bitte versuchen Sie es später erneut.");
             } else {
-
                 setError("Die Verifizierung ist fehlgeschlagen. Bitte versuchen Sie es erneut.");
             }
 
