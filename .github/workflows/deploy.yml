@@ -51,6 +51,7 @@ jobs:
           DATABASE_URL: postgres://test_user:test_password@localhost:5432/rosenblum_test
           SECRET_KEY: "test_secret_key_ci"
           DEBUG: "True"
+          ALLOWED_HOSTS: "localhost,127.0.0.1"
         run: |
           cd backend/backend
           pytest
