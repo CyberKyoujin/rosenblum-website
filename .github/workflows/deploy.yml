@@ -108,9 +108,7 @@ jobs:
       - name: Run E2E Tests (User Frontend - Mocked)
         run: |
           cd frontend/frontend
-          npm run dev &
-          sleep 10
-          npx playwright test tests/*.spec.ts --project=chromium --reporter=list
+          npx playwright test --project=chromium --reporter=list
         continue-on-error: false
 
       - name: Run E2E Tests (Admin Frontend - Mocked)
@@ -118,9 +116,7 @@ jobs:
           cd frontend-admin/frontend-admin
           npm ci
           npx playwright install --with-deps chromium
-          npm run dev &
-          sleep 10
-          npx playwright test tests/*.spec.ts --project=chromium --reporter=list
+          npx playwright test --project=chromium --reporter=list
         continue-on-error: false
 
       # --- E2E Integration Tests (Real Backend) ---
