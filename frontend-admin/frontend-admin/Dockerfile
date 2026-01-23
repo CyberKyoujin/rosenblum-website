@@ -24,8 +24,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build argument for API URL (can be overridden at build time)
-ARG VITE_API_URL=http://localhost:8000
+# Build argument for API URL (empty = use relative /api path for same-origin requests)
+ARG VITE_API_URL=
 ENV VITE_API_URL=$VITE_API_URL
 
 # Build the application
