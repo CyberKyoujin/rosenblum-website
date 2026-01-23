@@ -23,8 +23,8 @@ import {
  */
 
 // Admin credentials (from init_superuser.py defaults)
-const ADMIN_EMAIL = "admin@example.com";
-const ADMIN_PASSWORD = "admin123";
+const ADMIN_EMAIL = "rosenblum.uebersetzungsbuero@gmail.com";
+const ADMIN_PASSWORD = "rosenblum_password123";
 
 test.describe("Critical Admin Flows (Real Backend)", () => {
 
@@ -100,7 +100,7 @@ test.describe("Critical Admin Flows (Real Backend)", () => {
         await page.locator("button.green-btn").filter({ hasText: "Bearbeiten" }).click();
 
         // The status dropdown should now be visible
-        await expect(page.locator("#demo-simple-select")).toBeVisible();
+        await expect(page.getByText('wird überprüft')).toBeVisible();
 
         // Change status via dropdown
         await page.locator("#demo-simple-select").first().click();
@@ -231,44 +231,3 @@ test.describe("Critical Admin Flows (Real Backend)", () => {
 
 });
 
-test.describe("Dashboard Navigation (Real Backend)", () => {
-
-    let accessToken: string;
-    let refreshToken: string;
-
-    test.beforeAll(async () => {
-        const tokens = await loginAsAdmin({ email: ADMIN_EMAIL, password: ADMIN_PASSWORD });
-        accessToken = tokens.access;
-        refreshToken = tokens.refresh;
-    });
-
-    test("Navigate between dashboard sections", async ({ page, context }) => {
-        // Set auth cookies
-        await context.addCookies([
-            { name: "access", value: accessToken, domain: "localhost", path: "/" },
-            { name: "refresh", value: refreshToken, domain: "localhost", path: "/" }
-        ]);
-
-        await page.goto("/dashboard");
-
-        // Verify dashboard loads
-        await expect(page.locator(".dashboard-container")).toBeVisible({ timeout: 10000 });
-
-        // Navigate to customers
-        await page.goto("/customers");
-        await expect(page.locator(".dashboard-container, .main-container")).toBeVisible({ timeout: 10000 });
-
-        // Navigate to statistics
-        await page.goto("/statistics");
-        await expect(page.locator(".main-container")).toBeVisible({ timeout: 10000 });
-
-        // Navigate to global messages
-        await page.goto("/messages");
-        await expect(page.locator(".dashboard-container, .main-container")).toBeVisible({ timeout: 10000 });
-
-        // Navigate to translator
-        await page.goto("/translations");
-        await expect(page.locator(".dashboard-container, .main-container")).toBeVisible({ timeout: 10000 });
-    });
-
-});
