@@ -65,7 +65,7 @@ export async function setupApiMocks(page: Page, options?: {
     statistics?: object;
 }) {
     // Mock token refresh endpoint
-    await page.route(/.*localhost:8000\/api\/user\/token-refresh.*/, async (route) => {
+    await page.route(/.*\/api\/user\/token-refresh.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -77,7 +77,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock orders endpoint
-    await page.route(/.*localhost:8000\/api\/orders.*/, async (route) => {
+    await page.route(/.*\/api\/orders.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -86,7 +86,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock users endpoint - /user/users/ is the actual endpoint
-    await page.route(/.*localhost:8000\/api\/user\/users.*/, async (route) => {
+    await page.route(/.*\/api\/user\/users.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -95,7 +95,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock messages endpoint - /admin-user/messages/ is the actual endpoint
-    await page.route(/.*localhost:8000\/api\/admin-user\/messages.*/, async (route) => {
+    await page.route(/.*\/api\/admin-user\/messages.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -104,7 +104,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock translations endpoint - admin-user/translations/ is the actual endpoint
-    await page.route(/.*localhost:8000\/api\/admin-user\/translations.*/, async (route) => {
+    await page.route(/.*\/api\/admin-user\/translations.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -113,7 +113,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock statistics endpoints
-    await page.route(/.*localhost:8000\/api\/statistics\/status-distribution.*/, async (route) => {
+    await page.route(/.*\/api\/statistics\/status-distribution.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -121,7 +121,7 @@ export async function setupApiMocks(page: Page, options?: {
         });
     });
 
-    await page.route(/.*localhost:8000\/api\/statistics\/ordering-dynamics.*/, async (route) => {
+    await page.route(/.*\/api\/statistics\/ordering-dynamics.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -129,7 +129,7 @@ export async function setupApiMocks(page: Page, options?: {
         });
     });
 
-    await page.route(/.*localhost:8000\/api\/statistics\/type-distribution.*/, async (route) => {
+    await page.route(/.*\/api\/statistics\/type-distribution.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -137,7 +137,7 @@ export async function setupApiMocks(page: Page, options?: {
         });
     });
 
-    await page.route(/.*localhost:8000\/api\/statistics\/customers-geography.*/, async (route) => {
+    await page.route(/.*\/api\/statistics\/customers-geography.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -145,7 +145,7 @@ export async function setupApiMocks(page: Page, options?: {
         });
     });
 
-    await page.route(/.*localhost:8000\/api\/statistics\/customers-growth.*/, async (route) => {
+    await page.route(/.*\/api\/statistics\/customers-growth.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -153,7 +153,7 @@ export async function setupApiMocks(page: Page, options?: {
         });
     });
 
-    await page.route(/.*localhost:8000\/api\/statistics\/order-request-comparison.*/, async (route) => {
+    await page.route(/.*\/api\/statistics\/order-request-comparison.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -162,11 +162,20 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock base statistics endpoint
-    await page.route(/.*localhost:8000\/api\/statistics\/$/, async (route) => {
+    await page.route(/.*\/api\/statistics\/?$/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
             body: JSON.stringify(options?.statistics ?? {})
+        });
+    });
+
+    // Mock requests endpoint
+    await page.route(/.*\/api\/requests.*/, async (route) => {
+        await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({ count: 0, results: [] })
         });
     });
 }
