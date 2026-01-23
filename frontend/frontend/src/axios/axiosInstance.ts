@@ -3,7 +3,8 @@ import Cookies from "js-cookie"
 import useAuthStore from "../zustand/useAuthStore";
 import { ApiError } from "../types/auth";
 
-const BASE_URL = "http://localhost:8000/api";
+// Use VITE_API_URL if set, otherwise use relative path for same-origin requests
+const BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
