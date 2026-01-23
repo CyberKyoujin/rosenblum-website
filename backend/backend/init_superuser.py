@@ -21,6 +21,6 @@ if not CustomUser.objects.filter(username=username).exists():
         is_superuser=True,
         is_active=True
     )
-    print(f'Superuser {username} created')
+    print(f'Superuser {email} created')
 else:
-    print(f'Superuser {username} already exists')
+    print(f'Superuser {email} already exists')
