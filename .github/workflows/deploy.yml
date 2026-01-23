@@ -146,13 +146,13 @@ jobs:
       - name: Run Integration E2E Tests (User Frontend - Critical Flows)
         run: |
           cd frontend/frontend
-          npx playwright test tests/integration/ --project=chromium --reporter=list
+          npx playwright test --config=playwright.integration.config.ts
         continue-on-error: false
 
       - name: Run Integration E2E Tests (Admin Frontend - Critical Flows)
         run: |
           cd frontend-admin/frontend-admin
-          npx playwright test tests/integration/ --project=chromium --reporter=list
+          npx playwright test --config=playwright.integration.config.ts
         continue-on-error: false
 
 
