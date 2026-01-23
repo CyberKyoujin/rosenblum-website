@@ -46,7 +46,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     REQUIRED_FIELDS = []
     
     def __str__(self):
-        return self.email + ", name: " + self.first_name + self.last_name
+        return self.email + "name: " + self.first_name + self.last_name
     
 
 class EmailVerification(models.Model):
