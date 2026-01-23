@@ -233,8 +233,8 @@ jobs:
             echo '${{ secrets.GOOGLE_CREDENTIALS }}' > backend/backend/service-account.json
 
             # 5. Перезапуск контейнеров
-            docker compose -f docker-compose.yml -f docker-compose.prod.yml down
-            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build --remove-orphans
+            docker compose down
+            docker compose up -d --build --remove-orphans
 
             # 6. Ждем запуска контейнеров и выполняем миграции
             sleep 15
