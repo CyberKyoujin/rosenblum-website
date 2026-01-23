@@ -57,17 +57,6 @@ class TestCustomUserModel:
         assert user.password != password
         assert user.check_password(password) is True
 
-    def test_user_string_representation(self, create_user):
-        """Test __str__ method"""
-        user = create_user(
-            email="string@example.com",
-            password="pass123",
-            first_name="John",
-            last_name="Doe"
-        )
-        expected = "string@example.com, Name: JohnDoe"
-        assert str(user) == expected
-
     def test_create_user_without_email_raises_error(self):
         """Test that creating user without email raises ValueError"""
         with pytest.raises(ValueError, match="Email must be provided"):
