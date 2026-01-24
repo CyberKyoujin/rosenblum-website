@@ -104,10 +104,14 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # First app
+    "http://localhost:3000",
     "http://localhost:3001",
     "http://localhost:5000",
-    "http://localhost:4173",# Second app
+    "http://localhost:4173",
+    "https://rosenblum-uebersetzungen.de",
+    "https://www.rosenblum-uebersetzungen.de",
+    "http://rosenblum-uebersetzungen.de",
+    "http://www.rosenblum-uebersetzungen.de",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
