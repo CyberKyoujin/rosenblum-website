@@ -78,7 +78,7 @@ export async function setupAuth(page: Page) {
 
 /**
  * Setup API mocks for authenticated routes
- * Matches both localhost:8000/api and 127.0.0.1:8000/api patterns
+ * Matches both direct backend calls (localhost:8000/api) and proxied calls (/api)
  */
 export async function setupApiMocks(page: Page, options?: {
     userData?: object;
@@ -86,7 +86,7 @@ export async function setupApiMocks(page: Page, options?: {
     messages?: object[];
 }) {
     // Mock token refresh endpoint
-    await page.route(/.*localhost:8000\/api\/user\/token-refresh.*/, async (route) => {
+    await page.route(/.*\/api\/user\/token-refresh.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -98,7 +98,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock user/users/me/ endpoint - for fetching current user data (GET only)
-    await page.route(/.*localhost:8000\/api\/user\/users\/me.*/, async (route) => {
+    await page.route(/.*\/api\/user\/users\/me.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
@@ -107,7 +107,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock user profile update endpoint (PATCH /user/users/) - must be after /me/ route
-    await page.route(/.*localhost:8000\/api\/user\/users\/?$/, async (route) => {
+    await page.route(/.*\/api\/user\/users\/?$/, async (route) => {
         const method = route.request().method();
         if (method === "PATCH") {
             await route.fulfill({
@@ -128,7 +128,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock orders endpoint
-    await page.route(/.*localhost:8000\/api\/orders.*/, async (route) => {
+    await page.route(/.*\/api\/orders.*/, async (route) => {
         if (route.request().method() === "GET") {
             await route.fulfill({
                 status: 200,
@@ -151,7 +151,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock messages endpoint
-    await page.route(/.*localhost:8000\/api\/messages\/?$/, async (route) => {
+    await page.route(/.*\/api\/messages\/?$/, async (route) => {
         if (route.request().method() === "GET") {
             await route.fulfill({
                 status: 200,
@@ -174,7 +174,7 @@ export async function setupApiMocks(page: Page, options?: {
     });
 
     // Mock messages toggle endpoint
-    await page.route(/.*localhost:8000\/api\/messages\/toggle.*/, async (route) => {
+    await page.route(/.*\/api\/messages\/toggle.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
