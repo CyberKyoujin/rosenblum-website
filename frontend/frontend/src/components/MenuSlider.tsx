@@ -54,8 +54,6 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
 
         </div>
 
-        <LanguageDropdown/>
-
         <div className="slider-content">
 
           <p className="services-title">{t('services')}</p>
