@@ -59,18 +59,30 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5000",
-    "http://localhost:5000",
     "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:4173",
+    "http://localhost:3001",
+    "http://localhost:5000",
+    "http://localhost:8000",
     "http://localhost:4173",
+    # Production - main site
+    "https://rosenblum-uebersetzungen.de",
+    "https://www.rosenblum-uebersetzungen.de",
+    "http://rosenblum-uebersetzungen.de",
+    "http://www.rosenblum-uebersetzungen.de",
+    # Production - admin panel (port 3001)
+    "http://rosenblum-uebersetzungen.de:3001",
+    "http://46.224.229.147:3001",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',  # First app
+    "http://localhost:3000",
+    "http://localhost:3001",
     "http://localhost:5000",
     "http://localhost:4173",
+    "https://rosenblum-uebersetzungen.de",
+    "https://www.rosenblum-uebersetzungen.de",
+    "http://rosenblum-uebersetzungen.de:3001",
+    "http://46.224.229.147:3001",
 ]
 
 SIMPLE_JWT = {
@@ -103,16 +115,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:5000",
-    "http://localhost:4173",
-    "https://rosenblum-uebersetzungen.de",
-    "https://www.rosenblum-uebersetzungen.de",
-    "http://rosenblum-uebersetzungen.de",
-    "http://www.rosenblum-uebersetzungen.de",
-]
 
 CORS_ALLOW_CREDENTIALS = True
 
