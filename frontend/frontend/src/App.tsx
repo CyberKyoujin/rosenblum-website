@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ProfileSkeleton from './components/ProfileSkeleton';
 import MessagesSkeleton from './components/MessagesSkeleton';
 import OrderDetailsSkeleton from './components/OrderDetailsSkeleton';
+import CookieConsent from './components/CookieConsent';
 
 const Home = lazy(() => import('./screens/Home'));
 const Login = lazy(() => import('./screens/Login'));
@@ -33,6 +34,9 @@ const EmailVerification = lazy(() => import("./screens/EmailVerification"));
 const EmailVerificationSuccess = lazy(() => import("./screens/EmailVerificationSuccess"));
 const SendPasswordReset = lazy(() => import("./components/SendPasswordReset"));
 const PasswordReset = lazy(() => import("./components/PasswordReset"));
+const Impressum = lazy(() => import("./screens/Impressum"));
+const Datenschutz = lazy(() => import("./screens/Datenschutz"));
+const AGB = lazy(() => import("./screens/AGB"));
 
 function App() {
   
@@ -219,8 +223,26 @@ function App() {
             </Suspense>
           </ProtectedRoute>
         }/>
+
+        <Route path="/imprint" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Impressum/>
+          </Suspense>
+        }/>
+
+        <Route path="/privacy" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Datenschutz/>
+          </Suspense>
+        }/>
+
+        <Route path="/terms" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <AGB/>
+          </Suspense>
+        }/>
       </Routes>
-      
+      <CookieConsent />
     </main>
   );
 }

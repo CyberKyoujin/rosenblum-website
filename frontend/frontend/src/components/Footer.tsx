@@ -30,9 +30,9 @@ const Footer = () => {
                     <h4>{t('footerQuickLinks')}</h4>
                     <nav className="footer-nav">
                         <Link to="/">{t('home')}</Link>
-                        <Link to="/translations">{t('translations')}</Link>
-                        <Link to="/about">{t('about')}</Link>
-                        <Link to="/contact">{t('contactSmall')}</Link>
+                        <Link to="/sworn-translations">{t('translations')}</Link>
+                        <Link to="/about-us">{t('about')}</Link>
+                        <Link to="/contact-us">{t('contactSmall')}</Link>
                     </nav>
                 </div>
 
@@ -49,15 +49,15 @@ const Footer = () => {
                     <h4>{t('contactSmall')}</h4>
                     <div className="footer-contact-item">
                         <EmailIcon />
-                        <a href="mailto:info@rosenblum.de">info@rosenblum.de</a>
+                        <a href="mailto:rosenblum.uebersetzungsbuero@gmail.com">rosenblum.uebersetzungsbuero@gmail.com</a>
                     </div>
                     <div className="footer-contact-item">
                         <PhoneIcon />
-                        <a href="tel:+4912345678">+49 123 456 78</a>
+                        <a href="tel:+4917624137205">0176 24137205</a>
                     </div>
                     <div className="footer-contact-item">
                         <LocationOnIcon />
-                        <span>Berlin, Germany</span>
+                        <span>Osnabrück, Germany</span>
                     </div>
                 </div>
             </div>
