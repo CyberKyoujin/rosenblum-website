@@ -73,6 +73,7 @@ CORS_ALLOWED_ORIGINS = [
     # Production - admin panel (port 3001)
     "http://rosenblum-uebersetzungen.de:3001",
     "http://46.224.229.147:3001",
+    "https://admin.rosenblum-uebersetzungen.de"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -84,6 +85,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.rosenblum-uebersetzungen.de",
     "http://rosenblum-uebersetzungen.de:3001",
     "http://46.224.229.147:3001",
+    "https://admin.rosenblum-uebersetzungen.de"
 ]
 
 SIMPLE_JWT = {
