@@ -300,5 +300,15 @@
     "confirmAction": "Підтвердити дію",
     "areYouSure": "Ви впевнені?",
     "yes": "Так",
-    "no": "Ні"
+    "no": "Ні",
+    "sentry_button_label": "Повідомити про помилку",
+    "sentry_form_title": "Повідомити про помилку",
+    "sentry_email_label": "Ваш Email",
+    "sentry_email_placeholder": "foo@example.com",
+    "sentry_message_label": "Що сталося?",
+    "sentry_message_placeholder": "Опишіть баг або вашу пропозицію...",
+    "sentry_submit_label": "Надіслати",
+    "sentry_cancel_label": "Скасувати",
+    "sentry_screenshot_label": "Додати скріншот",
+    "sentry_success_message": "Дякуємо! Ваш звіт було успішно надіслано."
 }

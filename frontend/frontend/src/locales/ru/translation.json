@@ -300,5 +300,15 @@
     "confirmAction": "Подтвердить действие",
     "areYouSure": "Вы уверены?",
     "yes": "Да",
-    "no": "Нет"
+    "no": "Нет",
+    "sentry_button_label": "Сообщить об ошибке",
+    "sentry_form_title": "Сообщить об ошибке",
+    "sentry_email_label": "Ваш Email",
+    "sentry_email_placeholder": "foo@example.com",
+    "sentry_message_label": "Что произошло?",
+    "sentry_message_placeholder": "Опишите баг или ваше предложение...",
+    "sentry_submit_label": "Отправить",
+    "sentry_cancel_label": "Отмена",
+    "sentry_screenshot_label": "Добавить скриншот",
+    "sentry_success_message": "Спасибо! Ваш отчет был успешно отправлен."
 }

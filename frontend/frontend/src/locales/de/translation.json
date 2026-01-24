@@ -300,5 +300,15 @@
     "confirmAction": "Aktion bestätigen",
     "areYouSure": "Sind Sie sicher?",
     "yes": "Ja",
-    "no": "Nein"
+    "no": "Nein",
+    "sentry_button_label": "Fehler melden",
+    "sentry_form_title": "Einen Fehler melden",
+    "sentry_email_label": "Ihre E-Mail",
+    "sentry_email_placeholder": "foo@example.com",
+    "sentry_message_label": "Was ist passiert?",
+    "sentry_message_placeholder": "Beschreiben Sie den Fehler...",
+    "sentry_submit_label": "Senden",
+    "sentry_cancel_label": "Abbrechen",
+    "sentry_screenshot_label": "Screenshot hinzufügen",
+    "sentry_success_message": "Danke! Ihr Bericht wurde erfolgreich gesendet."
 }

@@ -4,6 +4,7 @@ from datetime import timedelta
 import os
 from google.oauth2 import service_account
 from corsheaders.defaults import default_headers
+import sentry_sdk
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -181,6 +182,17 @@ else:
 # Deepl
 
 DEEPL_AUTH_KEY = config('DEEPL_AUTH_KEY', default='')
+
+# Sentry init
+
+sentry_sdk.init(
+    dsn="https://43d80d8d368ee0d0d3be49c9f1f1a7f6@o4510766445428736.ingest.de.sentry.io/4510766446870608",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+    # Enable sending logs to Sentry
+    enable_logs=True,
+)
 
 # Use Google Cloud Storage if GS_BUCKET_NAME is set, otherwise use local storage
 if GS_BUCKET_NAME:

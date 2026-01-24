@@ -18,9 +18,13 @@ router.register(r'messages', MessageViewSet, basename='message')
 router.register(r'requests', RequestViewSet, basename='request')
 router.register(r'orders', OrderViewSet, basename='order')
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 urlpatterns = [
     
     path('admin/', admin.site.urls),
+    path('sentry-debug/', trigger_error),
     path('api/', include([
         path('', include(router.urls)), 
         path('user/', include('base.urls.user_urls')), 
