@@ -108,6 +108,18 @@ test.describe("Navigation", () => {
 
     test.describe("Footer Navigation", () => {
 
+        test.beforeEach(async ({ page }) => {
+            // Dismiss cookie consent banner by setting localStorage before page loads
+            await page.addInitScript(() => {
+                localStorage.setItem('cookie_consent', 'true');
+                localStorage.setItem('cookie_preferences', JSON.stringify({
+                    necessary: true,
+                    analytics: false,
+                    functional: false
+                }));
+            });
+        });
+
         test("should display footer on homepage", async ({ page }) => {
             await page.goto("/");
 
