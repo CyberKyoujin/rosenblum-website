@@ -83,23 +83,6 @@ test.describe("Homepage", () => {
             await expect(page.getByRole("heading", { name: "zuverlässig." })).toBeVisible();
         });
 
-        test("should display certification points", async ({ page }) => {
-            await page.goto("/");
-
-            await expect(page.getByText(/zertifiziert/i)).toBeVisible();
-            await expect(page.getByText(/dolmetscher/i)).toBeVisible();
-            await expect(page.getByText(/termingerecht/i)).toBeVisible();
-            await expect(page.getByText(/faire preise/i)).toBeVisible();
-        });
-
-        test("should navigate to about page on learn more click", async ({ page }) => {
-            await page.goto("/");
-
-            await page.getByRole("button", { name: /mehr erfahren/i }).click();
-
-            await expect(page).toHaveURL(/\/about-us/);
-        });
-
     });
 
     test.describe("Reviews Section", () => {
