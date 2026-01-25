@@ -17,7 +17,6 @@ import ApiErrorAlert from "../components/ApiErrorAlert";
 import ApiErrorView from "../components/ApiErrorView";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import deFlag from "../assets/de.svg"
-import processIcon from "../assets/quality_image.webp"
 import stepArrow from "../assets/stepArrow1.png"
 import { FaCcVisa } from "react-icons/fa";
 import { FaCcMastercard } from "react-icons/fa";
