@@ -9,7 +9,7 @@
 html, body {
   width: 100%;
   height: 100%;
-  background-color: white;
+  background-color: rgb(253, 253, 253);
   font-family: "Rubik", sans-serif;
   margin: 0;
   /* FIXED: Важно для мобилок, чтобы не появлялась белая полоса справа */
@@ -681,11 +681,44 @@ html, body {
   color:rgb(76, 121, 212);
 }
 
+.home-badge-flag{
+  width: 25px;
+  height: 25px;
+  margin-top: 0.3rem;
+  border-radius: 10px;
+}
+
+.badge-icon{
+  border-radius: 3px;
+}
+
 .home-header-text{
   display: flex;
   width: 100%;
   flex-direction: column;
   margin-top: 4rem;
+}
+
+.home-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+  border: 1px solid rgb(76, 121, 212);
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgb(50, 90, 170);
+  width: fit-content;
+  margin-top: 1rem;
+  
+  box-shadow: 0 2px 8px rgba(76, 121, 212, 0.15);
+}
+
+.home-badge-flag {
+  font-size: 18px;
 }
 
 .home-header-content{
@@ -752,6 +785,248 @@ html, body {
 
 .home-reliable-item{
   font-size: 15px;
+}
+
+/* Home Features Grid */
+.home-features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.home-feature-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  min-height: 200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eaeaea;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-feature-card::before {
+  content: '';
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 3px solid rgba(76, 121, 212, 0.06);
+  border-radius: 50%;
+  right: -40px;
+  bottom: -40px;
+  box-shadow:
+    inset 0 0 0 8px rgba(76, 121, 212, 0.04),
+    inset 0 0 0 20px rgba(76, 121, 212, 0.03),
+    inset 0 0 0 35px rgba(76, 121, 212, 0.02);
+  pointer-events: none;
+}
+
+.home-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(76, 121, 212, 0.15);
+  border-color: rgb(76, 121, 212);
+}
+
+.feature-card-icon {
+  font-size: 48px;
+  color: rgb(76, 121, 212);
+  margin-bottom: 1rem;
+}
+
+.feature-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.feature-card-text {
+  font-size: 15px;
+  color: #555;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.feature-card-details {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+  line-height: 1.5;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+}
+
+/* Trust Badges Section */
+.trust-badges-section {
+  max-width: calc(1280px - 4rem);
+  margin: 2rem 2rem 1rem 2rem;
+  padding: 2rem;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eaeaea;
+}
+
+.trust-badges-title {
+  font-size: 16px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.trust-badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.trust-badge {
+  padding: 1rem 1.5rem;
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #e0e5eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.trust-badge:hover {
+  border-color: rgb(76, 121, 212);
+  box-shadow: 0 4px 15px rgba(76, 121, 212, 0.15);
+  transform: translateY(-2px);
+}
+
+.trust-badge-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: #444;
+  letter-spacing: 0.5px;
+}
+
+/* ACTION STEPS */
+
+.action-steps-container{
+  max-width: calc(1280px);
+  padding: 0rem 1rem 0rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+}
+
+.action-steps-content{
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.action-steps-title{
+  display: flex;
+  font-size: 25px;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.action-steps-img{
+  width: 550px;
+  height: 550px;
+}
+
+.action-steps-items{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.action-steps-items h4{
+  color: #444;
+}
+
+.action-steps-items p{
+  color: #444;
+}
+
+.action-link-btn{
+  width: 100%;
+  text-decoration: none;
+  background-color: var(--blue);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-steps-list{
+  padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  color: #444;
+  gap: 0.5rem;
+}
+
+.action-pay-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem 0rem 0.5rem 0rem;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+  border: 1px solid rgb(76, 121, 212);
+  border-radius: 10px;
+}
+
+.action-pay-badge img{
+  width: 40px;
+}
+
+.step-arrow{
+  height: 60px;
+  width: 125px;
+}
+
+.end-arrow{
+  height: 60px;
+  width: 80px;
+}
+
+.action-steps-item{
+  max-width: 900px;
+  padding: 1rem 1.5rem;
+  background: white;
+  line-height: 2rem;
+  border-radius: 10px;
+  border: 2px solid #e0e5eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.action-span {
+  font-weight: bold;
+}
+
+.action-steps-item:hover {
+  border-color: rgb(76, 121, 212);
+  box-shadow: 0 4px 15px rgba(76, 121, 212, 0.15);
+  transform: translateY(-2px);
 }
 
 .reviews-header{
@@ -897,6 +1172,9 @@ html, body {
   .home-container{
     margin-top: 0rem;
   }
+  .action-steps-container{
+    padding: 0rem 1rem 0rem 1rem;
+  }
   .home-header{
     flex-direction: column;
     align-items: center;
@@ -906,6 +1184,13 @@ html, body {
   .home-header-text{
     margin-top: 0rem;
     text-align: center;
+    align-items: center;
+  }
+  .action-steps-title{
+    font-size: 16px;
+  }
+  .home-badge {
+    margin: 1.5rem auto 0.5rem auto;
   }
   .home-header img{
     width: 500px;
@@ -918,6 +1203,9 @@ html, body {
   .home-counter-container div{
     width: fit-content;
     text-wrap: nowrap;
+  }
+  .action-steps-img{
+    display: none;
   }
   .slider-container{
     max-width: 800px;
@@ -979,7 +1267,45 @@ html, body {
   .contacts-container{
     flex-direction: column;
     gap: 1rem;
-  
+
+  }
+  .home-features-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1.5rem;
+  }
+  .home-feature-card {
+    min-height: 180px;
+    padding: 1.5rem;
+  }
+  .feature-card-icon {
+    font-size: 40px;
+  }
+  .feature-card-title {
+    font-size: 18px;
+  }
+  .feature-card-text {
+    font-size: 14px;
+  }
+  .feature-card-details {
+    font-size: 12px;
+  }
+  .trust-badges-section {
+    margin: 1.5rem 1.5rem ;
+    padding: 1.5rem 1rem;
+  }
+  .trust-badges-title {
+    font-size: 13px;
+    margin-bottom: 1rem;
+  }
+  .trust-badges-container {
+    gap: 0.75rem;
+  }
+  .trust-badge {
+    padding: 0.75rem 1rem;
+  }
+  .trust-badge-text {
+    font-size: 13px;
   }
 }
 

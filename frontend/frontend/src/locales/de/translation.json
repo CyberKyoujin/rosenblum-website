@@ -22,6 +22,7 @@
     "appostile": "Apostille",
     "weTranslate": "Wir übersetzen",
     "professional": "profesionell",
+    "germanyWideBadge": "Wir arbeiten deutschlandweit",
     "excellentTranslations": "Wir sind Ihr kompetenter, zuverlässiger Partner für verschiedene Fachübersetzungen, wie technische, medizinische, oder Finanztexte. Hochwertige Übersetzungen von profesionellen Üsersetzern seit schon 8 Jahren. Finden Sie eine perfekte Sprachlösung für Sie.",
     "learnMore": "MEHR ERFAHREN",
     "since": "Schon seit",
@@ -31,6 +32,19 @@
     "trans": "Übersetzungen",
     "weAre": "Wir sind",
     "reliable": "zuverlässig",
+    "featureCard1Title": "Beeidigter Übersetzer",
+    "featureCard1Text": "Übersetzungen werden von einem beeidigten Übersetzer angefertigt, der vom Landgericht Hannover ernannt wurde.",
+    "featureCard1Details": "Jedes Dokument trägt ein offizielles Siegel und eine Unterschrift, die die Richtigkeit der Übersetzung für alle deutschen Behörden bestätigt.",
+    "featureCard2Title": "Alle Dokumentenarten",
+    "featureCard2Text": "Wir übersetzen alles: von Geburts- und Heiratsurkunden bis hin zu Diplomen, Führerscheinen und Gerichtsurteilen.",
+    "featureCard2Details": "Wir kennen die Anforderungen für Standesamt, Jobcenter, Uni-Assist und Botschaften.",
+    "featureCard3Title": "Schnelle Abwicklung",
+    "featureCard3Text": "Bearbeitungszeit: bis 72 Stunden für standardisierte Unterlagen (Geburts- und Heiratsurkunden, Führerscheinen, Reifezeugnisse, Bescheinigungen)",
+    "featureCard3Details": "Original der Übersetzung wird per Post deutschlandweit verschickt.",
+    "featureCard4Title": "Volle Transparenz",
+    "featureCard4Text": "Festpreise ohne versteckte Gebühren. Bequeme Online-Zahlung und Statusverfolgung Ihrer Bestellung.",
+    "featureCard4Details": "Sie wissen immer, in welchem Stadium sich Ihre Übersetzung befindet, und erhalten eine offizielle Rechnung für das Finanzamt oder Jobcenter.",
+    "trustBadgesTitle": "Unsere Übersetzungen werden anerkannt bei",
     "orderOffer": "ANGEBOT ANFORDERN",
     "certified": "Wir sind nach ISO 9:1995 zertifiziert",
     "swornTranslators": "Beeidigte Dolmetscher",
@@ -310,5 +324,36 @@
     "sentry_submit_label": "Senden",
     "sentry_cancel_label": "Abbrechen",
     "sentry_screenshot_label": "Screenshot hinzufügen",
-    "sentry_success_message": "Danke! Ihr Bericht wurde erfolgreich gesendet."
+    "sentry_success_message": "Danke! Ihr Bericht wurde erfolgreich gesendet.",
+    "thisWay": "So",
+    "itWorks": "funktioniert es.",
+    "how_it_works": {
+    "step1": {
+      "title": "Schritt 1: Dokument auswählen & Preis checken",
+      "text": "Prüfen Sie die Preise für Standarddokumente. Sie sehen sofort, ob Ihr Dokument ein Standarddokument (Urkunden) ist oder eine individuelle Berechnung (Diplome) erfordert.",
+      "btn": "Unsere Preise"
+    },
+    "step2": {
+      "title": "Schritt 2: Bestellung aufgeben & Upload",
+      "text_part1": "Laden Sie Fotos oder Scans Ihrer Dokumente hoch. In diesem Schritt wählen Sie: ",
+      "span_pay_now": "sofort bezahlen",
+      "text_part2": " oder ",
+      "span_quote": "einen Kostenvoranschlag anfordern",
+      "text_part3": " für Behörden oder bei nicht standardmäßigen Dokumenten.",
+      "btn": "Auftrag abgeben"
+    },
+    "step3": {
+      "title": "Schritt 3: Bezahlung (Sofort oder nach Angebot)",
+      "std_part1": "Standarddokumente: Bezahlen Sie sofort via ",
+      "span_stripe": "Stripe",
+      "std_part2": " (Visa, Apple Pay, Sparkasse Giropay) oder wählen Sie ",
+      "span_rechnung": "Rechnung",
+      "std_part3": " (Zahlung per Überweisung).",
+      "individual": "Individuell: Bei Diplomen oder Arbeitsbüchern warten Sie auf die Bewertung des Managers. Sie erhalten eine Benachrichtigung und können die Bestellung mit einem Klick in Ihrem Kundenkonto bezahlen."
+    },
+    "step4": {
+      "title": "Schritt 4: Bearbeitung & Versand",
+      "text": "Ein beeidigter Übersetzer bereitet die Dokumente vor. Danach versenden wir das Original mit offiziellem Stempel und die Rechnung per Post deutschlandweit."
+    }
+  }
 }
