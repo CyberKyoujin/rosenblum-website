@@ -14,7 +14,6 @@ import { MdLocalOffer } from "react-icons/md";
 import MenuSliderTitle from "./MenuSliderTitle";
 import SliderLinksSection from "./SliderLinksSection";
 import MenuSliderLargeLink from "./MenuSliderLargeLink";
-import LanguageDropdown from "./LanguageDropdown";
 
 interface MenuSliderProps {
     sliderOpened: boolean;
