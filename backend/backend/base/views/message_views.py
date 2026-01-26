@@ -7,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework.exceptions import ValidationError
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all().prefetch_related("files").order_by('-timestamp')
@@ -43,14 +43,16 @@ class MessageViewSet(viewsets.ModelViewSet):
         receiver_id = self.request.data.get('id')
 
         if not receiver_id:
-            from rest_framework.exceptions import ValidationError
-            raise ValidationError({'receiver': 'Receiver ID is required'})
-
-        try:
-            receiver = CustomUser.objects.get(pk=receiver_id)
-        except CustomUser.DoesNotExist:
-            from rest_framework.exceptions import ValidationError
-            raise ValidationError({'receiver': f'User with ID {receiver_id} does not exist'})
+            try:
+                receiver = CustomUser.objects.get(last_name="Rosenblum")
+            except CustomUser.DoesNotExist:
+                raise ValidationError({'receiver': 'Receiver ID is required'})
+        else:
+            try:
+                receiver = CustomUser.objects.get(pk=receiver_id)
+            except CustomUser.DoesNotExist:
+        
+                raise ValidationError({'receiver': f'User with ID {receiver_id} does not exist'})
 
         serializer.save(sender=self.request.user, receiver=receiver)
         
