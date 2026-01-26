@@ -2,13 +2,11 @@ import Divider from '@mui/material/Divider';
 import { SiGooglemessages } from "react-icons/si";
 import { FaFile } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import Alert from '@mui/material/Alert';
 import { useTranslation } from "react-i18next";
 import MessagesSkeleton from "../components/MessagesSkeleton";
 import MessageInput from "../components/MessageInput";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
-import NavigationSection from "../components/NavigationSection";
 import MessageItem from "../components/MessageItem";
 import { useMessages } from "../hooks/useMessages";
 import Footer from '../components/Footer';
@@ -28,7 +26,6 @@ const Messages = () => {
                 <ApiErrorAlert error={logic.fetchMessagesError || logic.error} belowNavbar={isAtTop} fixed />
             )}
 
-            <NavigationSection first_link="Nachrichten" />
 
             <div className="messages-title-container">
                 <SiGooglemessages className="app-icon" size={45} />
@@ -61,18 +58,29 @@ const Messages = () => {
                 <div className="files-container" style={{ marginTop: '1rem', fontSize: '14px' }}>
                     {logic.fileState.uploadedFiles.map((file, index) => (
                         <div key={index} className="file-container">
-                            <FaFile style={{ fontSize: '40px', color: 'rgb(76, 121, 212)' }} />
-                            <p>{file.name.length > 15 ? `${file.name.slice(0, 12)}...` : file.name}</p>
+
+                            <div className='file-container-name'>
+
+                                <FaFile size={25} className='app-icon'/>
+                      
+
+                                <p>{file.name.length > 35 ? `${file.name.slice(0, 28)}...` : file.name}</p>
+
+                            </div>
+                        
                             <button className="file-remove-btn" onClick={() => logic.fileState.removeFile(index)}>
                                 <RiDeleteBin6Fill style={{ fontSize: '20px' }} />
                             </button>
+
+               
+                            
                         </div>
                     ))}
                 </div>
             )}
 
             {logic.fileState.uploadLimit && (
-                <Alert severity="error" sx={{ mb: 2 }}>Sie können maximal 3 Files hochladen</Alert>
+                <ApiErrorAlert error={{status: 400, code: "Error", message: "Sie können maximal 3 Files hochladen"}} belowNavbar={isAtTop} fixed></ApiErrorAlert>
             )}
 
             <MessageInput 

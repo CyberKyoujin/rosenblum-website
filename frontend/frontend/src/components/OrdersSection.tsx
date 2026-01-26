@@ -12,7 +12,9 @@ const OrdersSection = () => {
     const navigate = useNavigate();
  
     return (
-        <section className="profile-section-container profile__user-orders-section">
+        <section className="profile__user-orders-section">
+
+            <h1 className="profile__orders-title" data-testid="order-title">Aufträge</h1>
 
                     {orders && orders.length > 0 ? (
                         <>

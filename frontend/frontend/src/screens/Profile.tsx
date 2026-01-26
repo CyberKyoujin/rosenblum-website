@@ -61,7 +61,7 @@ const Profile = () => {
                         <>
                             <UserProfileSection/>
 
-                            <h1 className="profile__orders-title" data-testid="order-title">Aufträge</h1>
+                            
 
                             <OrdersSection/>  
                         </>

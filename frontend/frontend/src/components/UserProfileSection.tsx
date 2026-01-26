@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import { FaUserEdit, FaInfoCircle } from "react-icons/fa";
+import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import useAuthStore from "../zustand/useAuthStore";
 import defaultAvatar from "../assets/default_avatar.webp"
 import useOrderStore from "../zustand/useOrderStore";
-
+import { RiContactsLine } from "react-icons/ri";
 
 const UserProfileSection = () => {
 
@@ -51,12 +51,20 @@ const UserProfileSection = () => {
 
                     <div className="profile__user-data-container profile-section-container">
 
-                        <h2><FaInfoCircle className="profile__contact-icon"></FaInfoCircle>Kontanktdaten</h2>
+                        <h2><RiContactsLine className="profile__contact-icon"></RiContactsLine>Kontanktdaten</h2>
 
                         <div className="profile__user-personal-info">
-                            <p>Email: {user?.email}</p>
-                            <p>Anschrift: {userData?.street}, {userData?.zip} {userData?.city}</p>
-                            <p>Telefonnummer: {userData?.phone_number}</p>
+                            <p>Email: {user?.email || "nicht angegeben"}</p>
+                            
+                            <p>
+                                Anschrift: {
+                                    userData?.street && userData?.zip && userData?.city 
+                                    ? `${userData.street}, ${userData.zip} ${userData.city}` 
+                                    : "nicht angegeben"
+                                }
+                            </p>
+                            
+                            <p>Telefonnummer: {userData?.phone_number || "nicht angegeben"}</p>
                         </div>
 
                         <div className="profile__button-group">
@@ -67,7 +75,6 @@ const UserProfileSection = () => {
                             </Link>
 
                             <button className="profile__delete-btn">
-                                <MdDelete className="profile__edit-icon"/>
                                 KONTO LÖSCHEN
                             </button>
                             
