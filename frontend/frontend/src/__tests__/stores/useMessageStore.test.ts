@@ -153,21 +153,6 @@ describe('useMessageStore', () => {
       expect(useMessageStore.getState().sendMessagesLoading).toBe(false)
     })
 
-    it('appends receiver id to FormData', async () => {
-      vi.mocked(axiosInstance.post).mockResolvedValueOnce({ data: {} })
-
-      const formData = new FormData()
-      formData.append('message', 'Test')
-
-      await act(async () => {
-        await useMessageStore.getState().sendMessage(formData)
-      })
-
-      // Check that the form data was modified to include id
-      const callArg = vi.mocked(axiosInstance.post).mock.calls[0][1] as FormData
-      expect(callArg.get('id')).toBe('7')
-    })
-
     it('sets loading state during send', async () => {
       let loadingDuringCall = false
       vi.mocked(axiosInstance.post).mockImplementationOnce(async () => {

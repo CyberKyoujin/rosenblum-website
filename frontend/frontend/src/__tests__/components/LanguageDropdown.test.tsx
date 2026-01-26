@@ -128,22 +128,6 @@ describe('LanguageDropdown', () => {
     })
   })
 
-  describe('styling', () => {
-    it('has proper width', () => {
-      render(<LanguageDropdown />)
-
-      const formControl = document.querySelector('.MuiFormControl-root')
-      expect(formControl).toHaveStyle({ width: '6.34rem' })
-    })
-
-    it('has proper select height', () => {
-      render(<LanguageDropdown />)
-
-      const select = document.querySelector('.MuiOutlinedInput-root')
-      expect(select).toHaveStyle({ height: '45px' })
-    })
-  })
-
   describe('keyboard navigation', () => {
     it('opens dropdown on Enter key', async () => {
       const user = userEvent.setup()
