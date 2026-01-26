@@ -17,6 +17,8 @@ import { ApiErrorResponse } from "../types/error";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import ApiErrorView from "../components/ApiErrorView";
+import { IoMdDownload } from "react-icons/io";
+import Footer from "../components/Footer";
 
 interface File{
     id: string;
@@ -80,19 +82,19 @@ const OrderDetails = () => {
     }
 
     return (
+        <>
         
         <div className="main-app-container">
 
         <ApiErrorAlert error={orderDetailsError} belowNavbar={isAtTop} fixed/>
 
-        <div className="order-details">
             <div className="order-details-container">
 
                 <div className="order-details-title">
-                    <FaFileAlt style={{fontSize: '25px', color: 'rgb(76, 121, 212)', marginBottom: '4px'}}/>
-                    <div style={{display: 'flex', fontSize: "14px"}}>
+                    <FaFileAlt size={35} style={{ color: 'rgb(76, 121, 212)', marginBottom: '4px'}}/>
+                    <div style={{display: 'flex', fontSize: "14px", gap: "0.5rem"}}>
                         <h1>{t('order')}</h1>
-                        <h1 className="header-span">{t('übersicht')}</h1>
+                        <h1 className="header-span">{t('orderReview')}</h1>
                     </div>
                 </div>
 
@@ -142,9 +144,15 @@ const OrderDetails = () => {
                             <div className="files-container" style={{marginTop: '2rem'}}>
                                 {orderData?.files.map((file, index) => (
                                     <div key={index} className="file-container">
-                                        <FaFile style={{fontSize: '40px', color: 'rgb(76, 121, 212)'}}/>
-                                        <p>{file.file_name.length > 15 ? `${file.file_name.slice(0, 12)}...` : file.file_name}</p>
-                                        <p>{`${file.file_size} MB`}</p>
+                                        <div className="small-file-name">
+                                            <FaFile size={30} className="app-icon"/>
+                                            <p>{file.file_name.length > 15 ? `${file.file_name.slice(0, 15)}...` : file.file_name}</p>
+                                        </div>
+
+                                        <div className="small-file-name">
+                                            <p>{`${file.file_size} MB`}</p>
+                                            <button className="download-btn-small" onClick={() => window.open(file.file, '_blank')}><IoMdDownload/></button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -166,9 +174,11 @@ const OrderDetails = () => {
             </div>
 
             
+                
         </div>
-        </div>
-        
+
+        <Footer/>
+        </>
     )
 
 }

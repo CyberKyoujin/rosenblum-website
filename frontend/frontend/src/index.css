@@ -299,7 +299,6 @@ html, body {
   background-color: white;
   top: 5rem;
   width: 400px;
-  /* FIXED: Максимальная ширина для мобилок */
   max-width: 90vw; 
   padding: 1rem;
   border-radius: 5px;
@@ -414,7 +413,7 @@ html, body {
     width: 320px;
     top: 5rem;
     left: 50%;
-    transform: translate(-75%, 0); /* Центрирование */
+    transform: translate(-55%, 0); /* Центрирование */
   }
   .logo{
     display: none;
@@ -444,6 +443,12 @@ html, body {
     padding: 0rem 1rem 7rem 1rem;
   }
 }
+
+/* @media (max-width: 455px){
+  .messages-dropdown{
+    width: 150px;
+  }
+} */
 
 
 
@@ -1908,25 +1913,28 @@ html, body {
 .files-container{
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem; 
+  gap: 0.5rem; 
   justify-content: flex-start; 
   align-items: center; 
-
+  margin-bottom: 0.5rem;
 }
 
 .file-container{
-  width: 130px;
-  height: 170px;
-  padding: 1rem;
+  width: 100%;
+  padding: 0.5rem;
   display: flex;
-  flex-direction: column;
   background-color: rgb(234, 241, 253);
   border: 1px solid rgb(76, 121, 212);
   border-radius: 10px;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
   text-wrap: nowrap;
+}
+
+.file-container-name{
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 .app-icon {
@@ -1934,10 +1942,10 @@ html, body {
 }
 
 .file-remove-btn{
-  width: 60%;
+  width: 40px;
   background-color: rgb(76, 121, 212);
   border: none;
-  padding: 0.5rem;
+  padding: 0.25rem;
   border-radius: 5px;
   color: white;
   letter-spacing: 1px;
@@ -2070,15 +2078,15 @@ html, body {
 }
 
 .profile-section-container{
-  border: 2px solid var(--blue);
+  position: relative;
   border-radius: 15px;
   padding: 2rem;
   min-height: 25rem;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 40px 0 rgba(0, 0, 0, 0.19);
 }
 
 .profile__img_container{
-  width: 35%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2098,6 +2106,19 @@ html, body {
   width: 100%;
   padding: 1rem;
   justify-content: space-between;
+}
+
+.profile__user-orders-section{
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  padding-top: 3rem;
+  padding: 2rem;
+  gap: 2rem;
+  border-radius: 15px;
+  min-height: 25rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 40px 0 rgba(0, 0, 0, 0.19);
+  margin-bottom: 5rem;
 }
 
 .profile__user-stats-item{
@@ -2135,6 +2156,7 @@ html, body {
 .profile__user-data-container{
   width: 65%;
   display: flex;
+  position: relative;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -2168,11 +2190,14 @@ html, body {
 }
 
 .profile__delete-btn{
-  width: 100%;
-  padding: 0.5rem;
-  border: none;
-  background-color: var(--accent);
-  color: white;
+  width: 200px;
+  position: absolute;
+  top: 70px;
+  left: 34px;
+  padding: 0.25rem;
+  border: 1px solid var(--blue);
+  background-color: transparent;
+  color: var(--blue);
   font-size: 14px;
   font-weight: 600;
   border-radius: 5px;
@@ -2194,6 +2219,7 @@ html, body {
 
 .profile__orders-title{
   text-align: center;
+  font-size: 26px;
 }
 
 
@@ -2279,10 +2305,8 @@ html, body {
 
 .profile-order-container{
   width: 100%;
-  margin-bottom: 2rem;
   display: flex;
   gap: 2rem;
-  background-color: rgb(234, 241, 253);
   padding: 1rem;
   align-items: center;
   border: solid 1px var(--blue);
@@ -2327,6 +2351,7 @@ html, body {
   color: white;
   font-size: 18px;
   letter-spacing: 2px;
+  border-radius: 5px;
   margin-top: 1rem;
 }
 
@@ -2349,12 +2374,11 @@ html, body {
 
 /* ORDER DETAILS */
 
-.order-details{
-  padding: 1rem;
-}
+
 
 .order-details-container{
   max-width: 1280px;
+  padding: 1rem;
   margin: auto;
 }
 
@@ -2367,10 +2391,6 @@ html, body {
 
 .order-details-content{
   margin-top: 2rem;
-  padding: 2rem;
-  background-color: rgb(234, 241, 253);
-  border-radius: 5px;
-  border: 2px solid rgb(49, 97, 192);
   display: flex;
   flex-direction: column;
 }
@@ -2412,6 +2432,9 @@ html, body {
   }
   .order-details-title{
     margin-top: 2rem;
+  }
+  .order-details-container{
+    padding: 0;
   }
 }
 
@@ -2519,6 +2542,15 @@ html, body {
   }
   .cancel-container{
     margin-left: 0;
+  }
+  .language-select{
+    width: 70px;
+  }
+  .language-img{
+    margin-top: 0.2rem;
+  }
+  .language-dropdown-img{
+    display: none;
   }
 }
 
@@ -2642,24 +2674,37 @@ html, body {
 }
 
 .small-files-container{
-  margin-top: 1rem;
+  width: 100%;
+  margin-top: 0.5rem;
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .small-file-container{
-  width: 90px;
-  height: 110px;
+  width: 100%;
   background-color: rgb(234,241,253);
   display: flex;
-  flex-direction: column;
   gap: 0;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 0.5rem;
   font-size: 14px;
   border: 1px solid rgb(76,121,212);
+  border-radius: 5px;
+}
+
+.small-file-name{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.small-file-name button{
+  border: none;
+  background-color: var(--blue);
+  color: white;
+  padding: 0.25rem;
   border-radius: 5px;
 }
 
@@ -2723,10 +2768,14 @@ html, body {
   .send-message-container{
     top: 11px;
   }
-  .small-file-container{
-    width: 73px;
-    font-size: 12px;
+  .messages-title-container{
+    font-size: 14px;
   }
+
+  .messages-container{
+    margin-bottom: 0;
+  }
+  
 }
 
 

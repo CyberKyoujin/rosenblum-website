@@ -271,7 +271,6 @@
     "editProfileSecond": "профиль",
     "cancel": "Отменить",
     "save": "СОХРАНИТЬ",
-    "order": "Заказ",
     "overview": "обзор",
     "data": "Приложение файлов",
     "forgotPassword": "Забыли пароль?",
@@ -327,6 +326,8 @@
     "sentry_success_message": "Спасибо! Ваш отчет был успешно отправлен.",
     "thisWay": "Так",
     "itWorks": "это работает.",
+    "order": "Ваш",
+    "orderReview": "заказ",
     "how_it_works": {
     "step1": {
       "title": "Шаг 1. Выбор документа и проверка цены",

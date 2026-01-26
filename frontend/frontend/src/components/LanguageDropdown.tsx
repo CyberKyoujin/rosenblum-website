@@ -31,7 +31,7 @@ const LanguageDropdown: React.FC = () => {
 
   return (
     
-    <FormControl sx={{ width: '6.34rem', display: 'flex' }} className="language-select">
+    <FormControl sx={{  display: 'flex' }} className="language-select">
 
       <Select
         sx={{ height: '45px' }}
@@ -47,10 +47,10 @@ const LanguageDropdown: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', fontWeight: '500' }} className="language-select">
 
               <ListItemIcon style={{ minWidth: 'unset', marginRight: '8px' }}>
-                <img src={lang.image} alt={lang.code} loading="lazy" style={{ width: 24, height: 16 }} />
+                <img src={lang.image} alt={lang.code} loading="lazy" style={{ width: 24, height: 16 }} className='language-img'/>
               </ListItemIcon>
 
-              <Typography variant="inherit" noWrap>{lang.short}</Typography>
+              <Typography variant="inherit" noWrap className='language-dropdown-img'>{lang.short}</Typography>
 
             </div>
 

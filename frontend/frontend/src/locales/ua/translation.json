@@ -271,7 +271,6 @@
     "editProfileSecond": "профіль",
     "cancel": "Скасувати",
     "save": "ЗБЕРЕГТИ",
-    "order": "Замовлення",
     "overview": "огляд",
     "data": "Вкладення файлів",
     "forgotPassword": "Забули пароль?",
@@ -327,6 +326,8 @@
     "sentry_success_message": "Дякуємо! Ваш звіт було успішно надіслано.",
     "thisWay": "Так",
     "itWorks": "це працює.",
+    "order": "Ваше",
+    "orderReview": "замовлення",
     "how_it_works": {
     "step1": {
       "title": "Крок 1. Вибір документа та перевірка ціни",
