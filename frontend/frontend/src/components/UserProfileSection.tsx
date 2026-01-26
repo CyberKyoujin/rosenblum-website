@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { FaUserEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import useAuthStore from "../zustand/useAuthStore";
 import defaultAvatar from "../assets/default_avatar.webp"
 import useOrderStore from "../zustand/useOrderStore";
