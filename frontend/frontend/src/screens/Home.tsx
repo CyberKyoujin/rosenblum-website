@@ -8,7 +8,7 @@ import Rating from '@mui/material/Rating';
 import Footer from "../components/Footer";
 import { MdLocalOffer, MdVerified, MdLocalShipping } from "react-icons/md";
 import { IoLocationSharp, IoDocuments } from "react-icons/io5";
-import { HiPhone, HiEye } from "react-icons/hi";
+import { HiEye } from "react-icons/hi";
 import { Link, useNavigate } from "react-router-dom";
 import { useReviews } from "../hooks/useReviews";
 import ReviewsSliderSkeleton from "../components/ReviewsSliderSkeleton";
@@ -23,7 +23,7 @@ import { FaCcMastercard } from "react-icons/fa";
 import { FaCcApplePay } from "react-icons/fa";
 import { FaGooglePay } from "react-icons/fa";
 import endArrow from "../assets/endArrow.webp"
-
+import sutthausen1 from "../assets/sutthausen1.webp"
 
 const Home = () => {
 
@@ -100,7 +100,7 @@ const Home = () => {
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '4rem'}}/>
 
-        <div className="reviews-header">
+        <div className="reviews-header" style={{marginBottom: 0}}>
             <h1>{t('weStay')}</h1>
             <h1 className="header-span">{t('disposal')}</h1>
         </div>
@@ -308,25 +308,36 @@ const Home = () => {
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
 
-        <div className="reviews-header" style={{flexDirection: 'row', gap: '0.5rem'}}>
+        <div className="location-header">
             <h1>{t('ourr')}</h1>
             <h1 className="header-span">{t('location')}</h1>
+            <div className="contacts-container">
+                <p><IoLocationSharp className="contacts-icon"/> Altepoststraße 25, 49074 Osnabrück</p>
+            </div>
         </div>
 
-        <div className="contacts-container">
-            <p><IoLocationSharp className="contacts-icon"/> Sutthauser Str. 23, 49080 Osnabrück</p>
-            <p><HiPhone className="contacts-icon"/> +49 179 5689980</p>
-        </div>
+        
 
-        <div className="map-container">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde" className="map" width="1200" height="500" style={{ border: 0 }} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
-        </div>
+        <div className="cu__map-section">
+                        <div className="cu__map-image">
+                            <img src={sutthausen1} alt="Office location" loading="lazy"/>
+                        </div>
+                        <div className="cu__map-embed">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4883.597447767886!2d8.048247212787198!3d52.26519995494562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47b9e5859eaa8cdb%3A0x7060899a7a6ade65!2sOleg%20Rosenblum%20%C3%9Cbersetzungsb%C3%BCro!5e0!3m2!1sen!2sde!4v1710683696231!5m2!1sen!2sde"
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                title="Office location map"
+                            />
+                        </div>
+                    </div>
+
 
             
     </div>
            
     </div>
-<Footer/> 
+    <Footer/> 
     
     </>              
     )

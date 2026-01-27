@@ -30,11 +30,7 @@ const AboutUs = () => {
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
-                <Section image={goalIcon} imageClass="first-image" titleTextFirst="missionFirst" titleTextSecond="missionSecond" text="missionText" order/>
-
-                <Divider style={{marginTop: '3rem', marginBottom: '3rem'}}/>
-
-                <Section image={questionIcon} imageClass="first-image" titleTextFirst="whyUsFirst" titleTextSecond="whyUsSecond" text="whyUsText" order={false}/>
+                <Section image={questionIcon} imageClass="first-image" titleTextFirst="whyUsFirst" titleTextSecond="whyUsSecond" text="whyUsText" order={true}/>
 
                 <Link to="/contact-us" className="contact-us-btn hover-btn app-link">
                     <GrContactInfo size={35}/>
