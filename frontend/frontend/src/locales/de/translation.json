@@ -355,5 +355,44 @@
       "title": "Schritt 4: Bearbeitung & Versand",
       "text": "Ein beeidigter Übersetzer bereitet die Dokumente vor. Danach versenden wir das Original mit offiziellem Stempel und die Rechnung per Post deutschlandweit."
     }
+  },
+  "documents_price": {
+    "title": "Unsere",
+    "titleHighlight": "Unterlagen",
+    "subtitle": "Festpreise für Standarddokumente inkl. MwSt.",
+    "certificates": "Heirats-, Geburts-, Sterbe-, Scheidungsurkunde, Namensänderung",
+    "schoolCertificates": "Reifezeugnisse (Zeugnis + Anlage)",
+    "driverLicense": "Führerschein",
+    "registrationCerts": "Melde-, Negativbescheinigungen",
+    "apostille": "Apostille",
+    "otherCerts": "Bescheinigungen, Zertifikate, Zeugnisse (bis 1 Seite)",
+    "otherDocs": "Sonstige Dokumente",
+    "otherDocsDescription": "Diplome, Arbeitsbücher, Gerichtsurteile, Impfpässe, Ledigkeitsbescheinigungen, etc.",
+    "individualCalc": "Individuelle Berechnung",
+    "requestQuote": "Angebot anfordern",
+    "vatIncluded": "inkl. MwSt."
+  },
+  "contactPage": {
+    "title": "Kontaktieren Sie",
+    "titleHighlight": "uns",
+    "subtitle": "Wir freuen uns auf Ihre Anfrage und stehen Ihnen gerne zur Verfügung.",
+    "address": "Adresse",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "workingHours": "Öffnungszeiten",
+    "responsiblePerson": "Zuständige Person",
+    "monday": "Montag",
+    "tuesday": "Dienstag",
+    "wednesday": "Mittwoch",
+    "thursday": "Donnerstag",
+    "friday": "Freitag",
+    "appointmentNote": "Termine nach Vereinbarung auch außerhalb der Öffnungszeiten möglich.",
+    "formTitle": "Schreiben Sie uns",
+    "formSubtitle": "Füllen Sie das Formular aus und wir melden uns schnellstmöglich bei Ihnen.",
+    "namePlaceholder": "Ihr Name",
+    "emailPlaceholder": "Ihre E-Mail-Adresse",
+    "phonePlaceholder": "+49 ...",
+    "messagePlaceholder": "Wie können wir Ihnen helfen?",
+    "successMessage": "Ihre Nachricht wurde erfolgreich gesendet!"
   }
 }

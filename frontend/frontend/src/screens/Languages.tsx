@@ -2,12 +2,9 @@ import ua from "../assets/ua.svg"
 import ru from "../assets/ru.svg"
 import de from "../assets/de.svg"
 import Divider from '@mui/material/Divider';
-import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
-import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
 import qualityIcon from "../assets/quality_image.webp"
-import questionIcon from "../assets/question_icon.webp"
 import NavigationSection from "../components/NavigationSection";
 import LanguageCardsSection from "../components/LanguageCard";
 import ServiceProcessSteps from "../components/ServiceProcessSteps";
@@ -27,8 +24,6 @@ const languageSteps = [
 
 const Languages = () => {
 
-    const { t } = useTranslation();
-
     return (
         
         <>
@@ -40,10 +35,6 @@ const Languages = () => {
                 <div className="languages-main-container">
 
                     <LanguageCardsSection cards={languageCards}/>
-
-                    <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
-
-                    <Section image={questionIcon} imageClass="second-image" titleTextFirst={t('whyDiversity')} titleTextSecond={t('importantIs')} text="vielfalt" order={false}/>
 
                     <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 

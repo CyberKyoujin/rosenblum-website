@@ -6,18 +6,13 @@ const ProfileSkeleton = () => {
 
         <section className="profile__main-section">
 
-            <div className="profile__user-data-section">
-
-                <div className="profile__user-data-container profile-section-container skeleton"/>
-                    
-                <div className="profile__img-container profile-section-container skeleton"/>
-                
+            <div className="profile-cards">
+                <div className="profile-card skeleton" style={{ minHeight: '220px' }}/>
+                <div className="profile-card skeleton" style={{ minHeight: '280px' }}/>
             </div>
 
-            <h1 className="profile__orders-title">Aufträge</h1>
+            <section className="orders-section-wrapper skeleton" style={{ minHeight: '120px' }}/>
 
-            <section className="profile__user-orders-section profile-section-container skeleton"/>
-    
         </section>
 
         </main>

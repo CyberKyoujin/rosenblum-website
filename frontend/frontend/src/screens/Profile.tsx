@@ -1,4 +1,3 @@
-import Footer from "../components/Footer";
 import OrdersSection from "../components/OrdersSection";
 import UserProfileSection from "../components/UserProfileSection";
 import useAuthStore from '../zustand/useAuthStore';
@@ -72,8 +71,6 @@ const Profile = () => {
 
         
             </main>
-
-            <Footer/>
             
         </>
     )

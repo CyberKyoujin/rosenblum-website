@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import ContactSection from "../components/ContactSection";
 import Section from "../components/Section"
 import PricingCard from "../components/PricingCard";
+import DocumentPrices from "../components/DocumentPrices";
 import qualityIcon from "../assets/quality_image.webp"
 import NavigationSection from '../components/NavigationSection';
 
@@ -59,8 +60,12 @@ const Pricing = () => {
 
                 </div>
 
-                <Divider style={{marginTop: '4rem'}}/>
-                
+                <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
+
+                <DocumentPrices />
+
+                <Divider style={{marginTop: '3rem'}}/>
+
                 <Section image={qualityIcon} imageClass="second-image" titleTextFirst={t('quality')} titleTextSecond={t('satisfaction')} text="qualityAndHappiness" order={true}/>
                 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
