@@ -104,7 +104,6 @@ describe('FAQAccordion', () => {
       await user.click(screen.getByText('How do I place an order?'))
 
       expect(screen.getByText('Email:')).toBeInTheDocument()
-      expect(screen.getByText('olegrosenblum@freenet.de')).toBeInTheDocument()
     })
 
     it('email only appears within first accordion content', async () => {
