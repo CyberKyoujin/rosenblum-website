@@ -4,7 +4,6 @@ import { GrContactInfo } from "react-icons/gr";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import teamIcon from "../assets/team_icon.webp"
-import goalIcon from "../assets/goal_icon.webp"
 import questionIcon from "../assets/question_icon.webp"
 import planeIcon from "../assets/planet_icon.webp"
 import NavigationSection from "../components/NavigationSection";

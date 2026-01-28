@@ -11,7 +11,9 @@ export const useIsAtTop = (threshold: number = 10) => {
     handleScroll();
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+    
   }, [threshold]);
+
 
   return isAtTop;
 };

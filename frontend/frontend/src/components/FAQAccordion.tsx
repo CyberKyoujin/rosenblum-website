@@ -13,17 +13,18 @@ interface AccordionItem{
     text: string;
     secondaryText?: boolean | false;
     link?: string;
+    linkText?: string; 
 }
 
 const accordionItems: AccordionItem[] = [
-    {title: "accordionTitleFirst", text: "accordionTextFirst", secondaryText: true, link: "order"},
+    {title: "accordionTitleFirst", text: "accordionTextFirst", secondaryText: true, link: "order", linkText: "offer"},
     {title: "accordionTitleSecond", text: "accordionTextSecond"},
-    {title: "accordionTitleThird", text: "accordionTextThird", link: "languages"},
-    {title: "accordionTitleFourth", text: "accordionTextFourth", link: "pricing"},
-    {title: "accordionTitleFifth", text: "accordionTextFifth", link: "sworn-translations"},
+    {title: "accordionTitleThird", text: "accordionTextThird", link: "languages", linkText:"languages"},
+    {title: "accordionTitleFourth", text: "accordionTextFourth", link: "pricing", linkText: "prices"},
+    {title: "accordionTitleFifth", text: "accordionTextFifth", link: "sworn-translations", linkText: "swornTranslations"},
     {title: "accordionTitleSixth", text: "accordionTextSixth"},
-    {title: "accordionTitleSeventh", text: "accordionTextSeventh", link: "sworn-translations"},
-    {title: "accordionTitleEights", text: "accordionTextEights", link: "contact-us"},
+    {title: "accordionTitleSeventh", text: "accordionTextSeventh", link: "sworn-translations", linkText: "verbalTranslations"},
+    {title: "accordionTitleEights", text: "accordionTextEights", link: "contact-us", linkText: "contactUsFull"},
     {title: "accordionTitleNinth", text: "accordionTextNinth"},
 ]
 
@@ -68,13 +69,13 @@ const FAQAccordion: React.FC = () => {
                             {item.secondaryText && (
                                 
 
-                                    <p style={{marginTop: '1rem'}}><span style={{fontWeight: 'bold'}}>Email:</span> olegrosenblum@freenet.de</p>
+                                    <p style={{marginTop: '1rem'}}><span style={{fontWeight: 'bold'}}>Email:</span>rosenblum.uebersetzungsbuero@gmail.com</p>
                                     
                                 
                                 
                             )}
 
-                            {item.link && <Link to={item.link} className="accordion-btn hover-btn"><MdLocalOffer size={25}/>{t('offer')}</Link>}
+                            {item.link && <Link to={`/${item.link}`} className="accordion-btn hover-btn">{item.linkText ? t(item.linkText) : t('learnMore')}</Link>}
 
                         </Typography>
 

@@ -122,20 +122,21 @@ test.describe("Homepage", () => {
         test("should display address", async ({ page }) => {
             await page.goto("/");
 
-            await expect(page.locator(".contacts-container").getByText(/sutthauser/i)).toBeVisible();
+            await expect(page.locator(".contacts-container").getByText(/altepost/i)).toBeVisible();
             await expect(page.locator(".contacts-container").getByText(/osnabrück/i)).toBeVisible();
         });
 
         test("should display phone number", async ({ page }) => {
             await page.goto("/");
 
-            await expect(page.locator(".contacts-container").getByText(/\+49 179/)).toBeVisible();
+            // Phone number is displayed in footer
+            await expect(page.locator("footer").getByText(/0176/)).toBeVisible();
         });
 
         test("should display Google Maps iframe", async ({ page }) => {
             await page.goto("/");
 
-            const iframe = page.locator(".map-container iframe[src*='google.com/maps']");
+            const iframe = page.locator(".cu__map-embed iframe[src*='google.com/maps']");
             await expect(iframe).toBeVisible();
         });
 

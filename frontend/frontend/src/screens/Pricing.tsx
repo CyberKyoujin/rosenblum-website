@@ -70,7 +70,7 @@ const Pricing = () => {
                 
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
-                <ContactSection text="pricingContact"/>
+                <ContactSection order={false} text="pricingContact"/>
 
             </div>
             

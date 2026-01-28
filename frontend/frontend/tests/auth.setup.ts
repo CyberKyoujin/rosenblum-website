@@ -74,6 +74,17 @@ export async function setupAuth(page: Page) {
             sameSite: "Lax"
         }
     ]);
+
+    // Pre-set cookie consent in localStorage to avoid banner blocking interactions
+    await page.addInitScript(() => {
+        localStorage.setItem('cookie_consent', 'true');
+        localStorage.setItem('cookie_preferences', JSON.stringify({
+            essential: true,
+            functional: true,
+            analytics: true,
+            marketing: true
+        }));
+    });
 }
 
 /**
