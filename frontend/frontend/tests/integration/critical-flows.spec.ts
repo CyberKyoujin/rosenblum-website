@@ -175,7 +175,7 @@ test.describe("Contact Form (Real Backend)", () => {
         await page.goto("/contact-us");
 
         // Wait for form
-        await expect(page.locator("form.contact-form")).toBeVisible({ timeout: 10000 });
+        await expect(page.locator("form.cu__form")).toBeVisible({ timeout: 10000 });
 
         // Fill form - contact form has 4 TextField components
         // Use the form's input elements in order: name, email, phone, message
