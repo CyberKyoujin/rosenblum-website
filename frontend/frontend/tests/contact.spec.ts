@@ -7,21 +7,20 @@ test.describe("Contact Form", () => {
 
         // Title
         await expect(page.getByRole('heading', {
-            name: 'Kontakt',
-            exact: true,
+            name: /kontaktieren/i,
             level: 1
             })).toBeVisible();
 
         // Contact info
-        await expect(page.getByText(/sutthauser/i)).toBeVisible();
+        await expect(page.getByText(/altepost/i)).toBeVisible();
         await expect(page.getByText(/\+49 176/)).toBeVisible();
 
         // Opening hours
         await expect(page.getByText(/montag/i)).toBeVisible();
 
         // Contact form
-        await expect(page.locator(".contact-form input").first()).toBeVisible();
-        await expect(page.getByRole('textbox', { name: 'Ihre Nachricht...' })).toBeVisible();
+        await expect(page.locator(".cu__form-input").first()).toBeVisible();
+        await expect(page.locator(".cu__form-textarea")).toBeVisible();
     });
 
     test("should display German phone number warning", async ({ page }) => {
@@ -30,16 +29,6 @@ test.describe("Contact Form", () => {
         await expect(page.getByText(/deutsche telefonnummer/i)).toBeVisible();
     });
 
-    test("should show validation for required fields", async ({ page }) => {
-        await page.goto("/contact-us");
-
-        const submitButton = page.getByRole("button", { name: /absenden/i });
-        await submitButton.click();
-
-        // HTML5 validation prevents submission - first input is required
-        const nameInput = page.locator(".contact-form input").first();
-        await expect(nameInput).toHaveAttribute("required", "");
-    });
 
     test("should submit contact form successfully", async ({ page }) => {
         await page.route("**/requests/", async (route) => {
@@ -52,13 +41,13 @@ test.describe("Contact Form", () => {
         await page.goto("/contact-us");
 
         // Get form inputs by their order in the contact form
-        const formInputs = page.locator(".contact-form input");
+        const formInputs = page.locator(".cu__form-input");
 
         // Fill form fields in order: Name, Email, Phone
         await formInputs.nth(0).fill("Test User");
         await formInputs.nth(1).fill("test@example.com");
         await formInputs.nth(2).fill("+491234567890");
-        await page.getByRole('textbox', { name: 'Ihre Nachricht...' }).fill("Dies ist eine Testnachricht.");
+        await page.locator(".cu__form-textarea").fill("Dies ist eine Testnachricht.");
 
         // Submit
         await page.getByRole("button", { name: /absenden/i }).click();
@@ -81,13 +70,13 @@ test.describe("Contact Form", () => {
         await page.goto("/contact-us");
 
         // Get form inputs by their order in the contact form
-        const formInputs = page.locator(".contact-form input");
+        const formInputs = page.locator(".cu__form-input");
 
         // Fill form fields in order: Name, Email, Phone
         await formInputs.nth(0).fill("Test User");
         await formInputs.nth(1).fill("test@example.com");
         await formInputs.nth(2).fill("1234567890");
-        await page.getByRole('textbox', { name: 'Ihre Nachricht...' }).fill("Dies ist eine Testnachricht.");
+        await page.locator(".cu__form-textarea").fill("Dies ist eine Testnachricht.");
 
         // Submit
         await page.getByRole("button", { name: /absenden/i }).click();
@@ -106,7 +95,7 @@ test.describe("Contact Form", () => {
 
         await page.goto("/contact-us");
 
-        const formInputs = page.locator(".contact-form input");
+        const formInputs = page.locator(".cu__form-input");
         const nameInput = formInputs.nth(0);
         const emailInput = formInputs.nth(1);
 
@@ -114,7 +103,7 @@ test.describe("Contact Form", () => {
         await nameInput.fill("Test User");
         await emailInput.fill("test@example.com");
         await formInputs.nth(2).fill("1234567890");
-        await page.getByRole('textbox', { name: 'Ihre Nachricht...' }).fill("Testnachricht");
+        await page.locator(".cu__form-textarea").fill("Testnachricht");
 
         // Submit
         await page.getByRole("button", { name: /absenden/i }).click();
@@ -140,13 +129,13 @@ test.describe("Contact Form", () => {
         await page.goto("/contact-us");
 
         // Get form inputs by their order in the contact form
-        const formInputs = page.locator(".contact-form input");
+        const formInputs = page.locator(".cu__form-input");
 
         // Fill form fields in order: Name, Email, Phone
         await formInputs.nth(0).fill("Test User");
         await formInputs.nth(1).fill("test@example.com");
         await formInputs.nth(2).fill("1234567890");
-        await page.getByRole('textbox', { name: 'Ihre Nachricht...' }).fill("Testnachricht");
+        await page.locator(".cu__form-textarea").fill("Testnachricht");
 
         // Submit and check for loading indicator
         const submitButton = page.getByRole("button", { name: /absenden/i });

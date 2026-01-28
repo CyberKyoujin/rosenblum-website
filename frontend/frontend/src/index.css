@@ -8,7 +8,7 @@
 
 html, body {
   width: 100%;
-  height: 100%;
+  height: auto;
   background-color: rgb(253, 253, 253);
   font-family: "Rubik", sans-serif;
   margin: 0;
@@ -48,6 +48,7 @@ html, body {
 }
 
 .main-app-container{
+  height: auto;
   min-height: calc(100vh - 80px);
   padding: 0rem 0rem 7rem 0rem;
 
@@ -445,11 +446,6 @@ html, body {
   }
 }
 
-/* @media (max-width: 455px){
-  .messages-dropdown{
-    width: 150px;
-  }
-} */
 
 
 
@@ -3917,6 +3913,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   gap: 3rem;
+  padding: 1rem;
 }
 
 .first-image{
@@ -3943,7 +3940,7 @@ html, body {
   display: flex;
   max-width: 650px;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   line-height: 40px;
 }
 
@@ -4004,6 +4001,7 @@ html, body {
   letter-spacing: 2px;
   display: flex;
   justify-content: center;
+  border-radius: 5px;
   align-items: center;
   gap: 0.5rem;
 }
@@ -4017,7 +4015,8 @@ html, body {
 
 .process-title-cont{
   display: flex;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  text-align: center;
 }
 
 .translations-contact-text{
@@ -4038,10 +4037,10 @@ html, body {
 
 @media (max-width: 1150px){
   .first-image{
-    width: 280px;
+    width: 380px;
   }
-  .second-image{
-    width: 500px;
+  .third-image{
+    display: none;
   }
   .contact-image{
     width: 400px;
@@ -4065,6 +4064,9 @@ html, body {
   .contact-image{
     order: -1;
   }
+  .translations-process-title{
+  justify-content: center;
+}
 }
 
 @media (max-width: 920px){
@@ -4075,6 +4077,16 @@ html, body {
   }
   .translations-section-title{
     gap: 0;
+  }
+  .process-title-cont{
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 640px){
+  .translations-section{
+    padding: 0rem;
   }
 
 }
@@ -4116,7 +4128,7 @@ html, body {
     justify-content: center;
   }
   .third-image{
-    width: 350px;
+    display: none;
   }
   .translations-contact-title{
     font-size: 13px;
@@ -4147,9 +4159,7 @@ html, body {
   .second-image{
     width: 350px;
   }
-  .third-image{
-    width: 300px;
-  }
+
 }
 
 /* VERBAL TRANSLATIONS */
@@ -4359,13 +4369,13 @@ html, body {
 
 .pricing-container{
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .pricing-item{
-  width: 300px;
+  width: 275px;
   height: 500px;
-  padding: 2rem;
+  padding: 1rem;
   border: 2px solid rgb(76, 121, 212);
   border-radius: 15px;
   display: flex;
@@ -4492,7 +4502,7 @@ html, body {
 .doc-prices {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1rem;
 }
 
 .doc-prices__header {
@@ -4523,7 +4533,8 @@ html, body {
   align-items: center;
   gap: 1rem;
   padding: 1.25rem;
-  background: #fafafa;
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(76, 121, 212, 0.2);
   border-radius: 12px;
   transition: all 0.2s ease;
 }
@@ -4686,7 +4697,8 @@ html, body {
 .areas-main-container{
   max-width: 1200px;
   margin: auto;
-  margin-top: 5rem;
+  margin-top: 2rem;
+  padding: 1rem;
 }
 
 .areas-title{
@@ -4709,9 +4721,6 @@ html, body {
   gap: 5rem;
 }
 
-.areas-main-section img{
-  width: 500px;
-}
 
 .areas-text-section{
   display: flex;
@@ -4732,6 +4741,10 @@ html, body {
   font-size: 17px;
 }
 
+.area-image{
+  width: 530px;
+}
+
 .areas-item span{
   font-weight: bold;
 }
@@ -4742,14 +4755,18 @@ html, body {
   }
 }
 
+@media (max-width:570px){
+  .area-image{
+    width: 300px;
+    order: -1;
+  }
+}
+
+
 @media (max-width:1050px){
   .areas-main-section{
     flex-direction: column;
     gap: 2rem;
-  }
-  .areas-main-section img{
-    width: 450px;
-    order: -1;
   }
   .areas-section-title{
     display: flex;
@@ -4757,19 +4774,15 @@ html, body {
   }
 }
 
-@media (max-width: 400px){
-  .areas-main-section img{
-    width: 350px;
-    
-  }
-}
+
 
 /* FAQ */
 
 .main-faq-container{
   max-width: 1200px;
   margin: auto;
-  margin-top: 5rem;
+  margin-top: 1rem;
+  padding: 1rem;
 }
 
 .faq-title{
@@ -4817,7 +4830,9 @@ html, body {
   border: none;
   color: white;
   font-size: 16px;
+  border-radius: 5px;
   letter-spacing: 1px;
+  text-align: center;
   display: flex;
   gap: 0.5rem;
   align-items: center;
@@ -4857,7 +4872,8 @@ html, body {
     width: 90%;
   }
   .main-faq-container{
-    margin-top: 3rem;
+    margin-top: 2rem;
+    padding: 0;
   }
   .faq-title{
     flex-direction: column;
@@ -4866,6 +4882,7 @@ html, body {
   }
   .faq-title-description{
     font-size: 25px;
+    text-align: center;
   }
   .faq-section-title{
     flex-direction: column;
@@ -5050,13 +5067,15 @@ html, body {
 
 .error-alert-fixed {
   position: fixed;
-  top: 1rem;
+ top: 1rem;
   left: 50%;
   transform: translateX(-50%);
   max-width: 1280px;
+  transition: top 0.3s ease-in-out;
 }
 
 .error-alert-fixed.below-navbar {
+  
   top: calc(var(--navbar-height) + 8px);
 }
 

@@ -48,7 +48,7 @@ const Areas = () => {
 
                 <Divider style={{marginTop: '3rem', marginBottom: '1rem'}}/>
 
-                <ContactSection text="areasContact"/>
+                <ContactSection order={false} text="areasContact"/>
 
             </div>
         </div>

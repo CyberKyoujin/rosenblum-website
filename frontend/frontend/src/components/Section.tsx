@@ -1,5 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import AuthoritiesSection from "./AuthoritiesSection";
+import { IconType } from "react-icons/lib";
 
 interface SectionProps {
     image: string;
@@ -8,9 +10,12 @@ interface SectionProps {
     titleTextSecond: string;
     text: string;
     order: boolean;
+    authorities?: boolean;
+    badgeText?: string;
+    BadgeIcon?: IconType;
 }
 
-const Section: React.FC<SectionProps> = ({image, imageClass, titleTextFirst, titleTextSecond, text, order }) => {
+const Section: React.FC<SectionProps> = ({badgeText, BadgeIcon, image, authorities, imageClass, titleTextFirst, titleTextSecond, text, order }) => {
 
     const { t } = useTranslation();
 
@@ -26,7 +31,15 @@ const Section: React.FC<SectionProps> = ({image, imageClass, titleTextFirst, tit
                     <h1 className="header-span">{t(titleTextSecond)}</h1>
                 </div>
 
+                { badgeText && BadgeIcon &&
+                <div className="home-badge" style={{gap: "1rem", padding: "0.5rem 1rem 0.5rem 1.5rem", margin: 0}}>
+                    <p style={{lineHeight: "1.3rem", fontSize: "14px"}}>{t(badgeText)}</p>
+                </div>
+                }
+
                 <p>{t(text)}</p>
+
+                {authorities && <AuthoritiesSection small/>}
 
             </div> 
 

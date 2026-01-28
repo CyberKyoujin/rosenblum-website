@@ -6,9 +6,10 @@ import { GrContactInfo } from "react-icons/gr";
 
 interface ContactSectionProps {
     text: string;
+    order: boolean;
 }
 
-const ContactSection: React.FC<ContactSectionProps> = ({text}) => {
+const ContactSection: React.FC<ContactSectionProps> = ({text, order}) => {
 
     const navigate = useNavigate();
     const { t } = useTranslation();
@@ -16,6 +17,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({text}) => {
 
     return (
         <div className="translations-section">
+
+            {order && <img src={contactIcon} alt="" className="contact-image" loading="lazy"/>}
 
             <div className="translations-section-text">
 
@@ -32,7 +35,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({text}) => {
 
             </div>
 
-            <img src={contactIcon} alt="" className="contact-image" loading="lazy"/>
+            {!order && <img src={contactIcon} alt="" className="contact-image" loading="lazy"/>}
                    
         </div>
     )

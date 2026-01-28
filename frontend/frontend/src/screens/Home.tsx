@@ -24,6 +24,7 @@ import { FaCcApplePay } from "react-icons/fa";
 import { FaGooglePay } from "react-icons/fa";
 import endArrow from "../assets/endArrow.webp"
 import sutthausen1 from "../assets/sutthausen1.webp"
+import AuthoritiesSection from "../components/AuthoritiesSection";
 
 const Home = () => {
 
@@ -33,7 +34,7 @@ const Home = () => {
   const [translations, setTranslations] = useState<number>(0);
   const [languages, setLanguages] = useState<number>(0);
 
-  const isAtTop = useIsAtTop(10);
+  const isAtTop = useIsAtTop();
 
   const { reviews, reviewsLoading, reviewsError } = useReviews();
 
@@ -69,12 +70,13 @@ const Home = () => {
 
   }, []);
 
+
   return(
     <>
 
     <div className="main-app-container">
 
-    <ApiErrorAlert error={reviewsError} belowNavbar={isAtTop} fixed={true} />
+    <ApiErrorAlert error={reviewsError} belowNavbar={isAtTop} fixed />
 
     <div className="home-container">
 
@@ -161,29 +163,7 @@ const Home = () => {
             </div>
         </div>
 
-        <div className="trust-badges-section">
-            <p className="trust-badges-title">{t('trustBadgesTitle')}</p>
-            <div className="trust-badges-container">
-                <div className="trust-badge">
-                    <span className="trust-badge-text">Jobcenter</span>
-                </div>
-                <div className="trust-badge">
-                    <span className="trust-badge-text">Agentur für Arbeit</span>
-                </div>
-                <div className="trust-badge">
-                    <span className="trust-badge-text">BAMF</span>
-                </div>
-                <div className="trust-badge">
-                    <span className="trust-badge-text">Standesamt</span>
-                </div>
-                <div className="trust-badge">
-                    <span className="trust-badge-text">Uni-Assist</span>
-                </div>
-                <div className="trust-badge">
-                    <span className="trust-badge-text">Ausländerbehörde</span>
-                </div>
-            </div>
-        </div>
+        <AuthoritiesSection/>
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
 

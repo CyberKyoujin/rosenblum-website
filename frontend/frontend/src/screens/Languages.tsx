@@ -38,11 +38,11 @@ const Languages = () => {
 
                     <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
-                    <ServiceProcessSteps linkText="" steps={languageSteps} addProcessIcon={false} img={qualityIcon} title="our" titleSpan="responsibility"/>
+                    <ServiceProcessSteps order linkText="" steps={languageSteps} addProcessIcon={false} img={qualityIcon} title="our" titleSpan="responsibility"/>
 
                     <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-                    <ContactSection text="translationsContact"/>
+                    <ContactSection order={false} text="translationsContact"/>
 
                 </div>
             

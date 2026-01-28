@@ -27,7 +27,7 @@ const Faq = () => {
 
                 <Divider style={{marginBottom: '3rem', marginTop: '4rem'}}/>
 
-                <ContactSection text="faqText"/>
+                <ContactSection order={false} text="faqText"/>
 
             </div>
         </div>

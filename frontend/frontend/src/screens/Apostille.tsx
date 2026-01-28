@@ -11,10 +11,11 @@ import timeIcon from "../assets/time_icon.webp"
 import questionIcon from "../assets/question_icon.webp"
 import NavigationSection from "../components/NavigationSection";
 import ServiceProcessSteps from "../components/ServiceProcessSteps";
+import { LuBadgeInfo } from "react-icons/lu";
+
 
 const apostilleSteps = [
     {stepTitle: "rechtsdokumenteTitle", step: "rechtsdokumente"},
-    {stepTitle: "handelsdokumenteTitle", step: "handelsdokumente"},
     {stepTitle: "standesamtsdokumenteTitle", step: "standesamtsdokumente"},
     {stepTitle: "bildungsdokumenteTitle", step: "bildungsdokumente"}
 ]
@@ -41,7 +42,7 @@ const Apostille = () => {
 
             <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
-            <ServiceProcessSteps linkText="" steps={apostilleSteps} addProcessIcon={false} img={timeIcon} title="whenYouNeed" titleSpan="oneApostille"/>
+            <ServiceProcessSteps badgeText="answerApo" BadgeIcon={LuBadgeInfo} order linkText="" steps={apostilleSteps} addProcessIcon={false} img={timeIcon} title="whenYouNeed" titleSpan="oneApostille"/>
 
             <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
@@ -64,7 +65,7 @@ const Apostille = () => {
 
             <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-            <ContactSection text="apostilleContact"/>
+            <ContactSection order={false} text="apostilleContact"/>
 
             </div>
         </div>

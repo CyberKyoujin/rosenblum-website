@@ -38,7 +38,7 @@ test.describe("Profile Page (Authenticated)", () => {
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
             // Contact data section
-            await expect(page.getByText("Kontanktdaten")).toBeVisible();
+            await expect(page.getByText("Kontaktdaten")).toBeVisible();
             await expect(page.getByText(mockUserData.email)).toBeVisible();
         });
 
@@ -56,7 +56,7 @@ test.describe("Profile Page (Authenticated)", () => {
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
             // Order items should be visible
-            const orderItems = page.locator(".profile-order-container");
+            const orderItems = page.locator(".order-item");
             await expect(orderItems.first()).toBeVisible();
         });
 
@@ -65,7 +65,7 @@ test.describe("Profile Page (Authenticated)", () => {
 
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
-            await expect(page.getByText("# ro-1")).toBeVisible();
+            await expect(page.getByText("#ro-1")).toBeVisible();
         });
 
         test("should display edit profile button", async ({ page }) => {
@@ -99,7 +99,7 @@ test.describe("Profile Page (Authenticated)", () => {
 
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
-            await page.locator(".profile-order-container").first().click();
+            await page.locator(".order-item").first().click();
 
             await expect(page).toHaveURL(/\/order\/1/);
         });

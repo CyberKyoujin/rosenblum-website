@@ -7,12 +7,12 @@ import ContactSection from "../components/ContactSection";
 import NavigationSection from "../components/NavigationSection";
 import ServiceProcessSteps from "../components/ServiceProcessSteps";
 import processIcon from "../assets/process_image.webp"
+import { LuBadgeInfo } from "react-icons/lu";
 
 const translationSteps = [
     {stepTitle: "kontaktaufnahmeTitle", step: "kontaktaufnahme"},
     {stepTitle: "planungTitle", step: "planung"},
     {stepTitle: "übersetzungTitle", step: "übersetzung"},
-    {stepTitle: "einsatzTitle", step: "einsatz"},
     {stepTitle: "durchführungTitle", step: "durchführung"},
 ]
 
@@ -30,15 +30,15 @@ const VerbalTranslations = () => {
 
                 <div className="main-translations-container">
 
-                    <Section image={planetIcon} imageClass="first-image" titleTextFirst="" titleTextSecond={t('verbalTranslations')} text="dolmetschen" order={true}/>
+                    <Section badgeText="verbalWarning" BadgeIcon={LuBadgeInfo} image={planetIcon} imageClass="first-image" titleTextFirst="" titleTextSecond={t('verbalTranslations')} text="dolmetschen" order={true}/>
 
                     <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
-                    <ServiceProcessSteps img={processIcon} steps={translationSteps} link="contact-us" linkText="contactUsFull" addProcessIcon title="soWorks" titleSpan="it"/>
+                    <ServiceProcessSteps order= {false} img={processIcon} steps={translationSteps} link="contact-us" linkText="contactUsFull" addProcessIcon title="soWorks" titleSpan="it"/>
 
                     <Divider style={{marginTop: '4rem', marginBottom: '1rem'}}/>
 
-                    <ContactSection text="verbalTranslationsContact"/>
+                    <ContactSection order text="verbalTranslationsContact"/>
                     
                 </div>
 
