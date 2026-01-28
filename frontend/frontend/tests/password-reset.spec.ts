@@ -2,6 +2,19 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Password Reset Flow", () => {
 
+    // Pre-set cookie consent for all tests to avoid banner blocking interactions
+    test.beforeEach(async ({ page }) => {
+        await page.addInitScript(() => {
+            localStorage.setItem('cookie_consent', 'true');
+            localStorage.setItem('cookie_preferences', JSON.stringify({
+                essential: true,
+                functional: true,
+                analytics: true,
+                marketing: true
+            }));
+        });
+    });
+
     test.describe("Send Reset Link", () => {
 
         test("should display send password reset page", async ({ page }) => {
@@ -15,20 +28,27 @@ test.describe("Password Reset Flow", () => {
         test("should show validation error for invalid email", async ({ page }) => {
             await page.goto("/send-reset-password");
 
-            await page.getByLabel("Email").fill("invalid-email");
-            await page.locator(".confirm-btn").click({ force: true });
+            const emailInput = page.getByLabel("Email");
+            await emailInput.fill("invalid-email");
 
-            // Should show email validation error or stay on page
+            // Press Enter to submit the form (avoids navbar overlap issues)
+            await emailInput.press("Enter");
+
+            // Should show email validation error and stay on page
+            await expect(page.getByText(/ungültig/i)).toBeVisible({ timeout: 5000 });
             await expect(page).toHaveURL(/\/send-reset-password/);
         });
 
         test("should have email field required", async ({ page }) => {
             await page.goto("/send-reset-password");
 
-            // Try to submit without filling email
-            await page.locator(".confirm-btn").click({ force: true });
+            const emailInput = page.getByLabel("Email");
 
-            // Should stay on the same page
+            // Focus and try to submit empty form with Enter
+            await emailInput.focus();
+            await emailInput.press("Enter");
+
+            // Should stay on the same page (form won't submit without valid email)
             await expect(page).toHaveURL(/\/send-reset-password/);
         });
 
