@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { styled } from '@mui/system';
 import { useTranslation } from 'react-i18next';
-import { MdLocalOffer } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 interface AccordionItem{

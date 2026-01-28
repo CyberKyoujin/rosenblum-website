@@ -179,7 +179,7 @@ test.describe("Contact Form (Real Backend)", () => {
 
         // Fill form - contact form has 4 TextField components
         // Use the form's input elements in order: name, email, phone, message
-        const formInputs = page.locator("form.contact-form input");
+        const formInputs = page.locator("form.cu__form input");
         await formInputs.nth(0).fill("Integration Test");
         await formInputs.nth(1).fill("integration-test@example.com");
         await formInputs.nth(2).fill("+49301234567");
