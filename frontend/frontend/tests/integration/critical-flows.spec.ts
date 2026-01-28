@@ -177,16 +177,16 @@ test.describe("Contact Form (Real Backend)", () => {
         // Wait for form
         await expect(page.locator("form.cu__form")).toBeVisible({ timeout: 10000 });
 
-        // Fill form - contact form has 4 TextField components
-        // Use the form's input elements in order: name, email, phone, message
-        const formInputs = page.locator("form.cu__form input");
+        // Fill form - contact form has 3 input fields and 1 textarea
+        // Use the form's input elements in order: name, email, phone
+        const formInputs = page.locator("form.cu__form .cu__form-input");
         await formInputs.nth(0).fill("Integration Test");
         await formInputs.nth(1).fill("integration-test@example.com");
         await formInputs.nth(2).fill("+49301234567");
-        await page.getByLabel(/nachricht|message/i).fill("This is an integration test message.");
+        await page.locator("form.cu__form .cu__form-textarea").fill("This is an integration test message.");
 
         // Submit
-        await page.locator("button.contact-btn").click();
+        await page.locator("button.cu__submit-btn").click();
 
         // Should show success message
         await expect(page.getByText(/erfolgreich|success|gesendet/i)).toBeVisible({ timeout: 10000 });
