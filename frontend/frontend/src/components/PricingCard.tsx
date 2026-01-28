@@ -1,42 +1,50 @@
-import { HiBadgeCheck } from "react-icons/hi";
+import { IoCheckmarkCircle } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
-const PricingCard: React.FC<PricingCardProps> = ({title, price, priceDescription, description, features, highlighted=false, linkText}) => {
+const PricingCard: React.FC<PricingCardProps> = ({
+    title,
+    price,
+    priceDescription,
+    description,
+    features,
+    highlighted = false,
+    linkText
+}) => {
+    const { t } = useTranslation();
 
     return (
-        <section className={`pricing-item ${highlighted ? "pricing-item-blue" : ""}`}>
-
-            <header className="pricing-card-header">
+        <div className={`pc ${highlighted ? "pc--highlighted" : ""}`}>
+            <div className="pc__header">
                 {title ? (
-                    <h2>{title}</h2>
-                ): (
-                    <>
-                        <h2>{price}</h2>
-                        <p className="tax">inkl. MwSt.</p>
-                        <p>{`/ ${priceDescription}`}</p>
-                    </>
+                    <span className="pc__title">{title}</span>
+                ) : (
+                    <div className="pc__price-block">
+                        <span className="pc__price">{price}</span>
+                        <div className="pc__price-meta">
+                            <span className="pc__price-desc">/ {priceDescription}</span>
+                            <span className="pc__vat">{t("documents_price.vatIncluded")}</span>
+                        </div>
+                    </div>
                 )}
-            </header>
-
-            <div className="pricing-card-description">
-                <p>{description}</p>
             </div>
 
-            <div className="pricing-card-bottom">
-                <div className="pricing-card-list">
-                    {features?.map((key) => (
-                        <p>
-                            <HiBadgeCheck className="check-icon"></HiBadgeCheck>
-                            <p>{key}</p>
-                        </p>
-                    ))}
-                </div>
-            </div>
-            
-            <Link className="offer-btn hover-btn" to="/order">{linkText}</Link>
+            <p className="pc__description">{description}</p>
 
-        </section>
-    )
-}
+            <ul className="pc__features">
+                {features?.map((feature, idx) => (
+                    <li key={idx} className="pc__feature">
+                        <IoCheckmarkCircle className="pc__feature-icon" />
+                        <span>{feature}</span>
+                    </li>
+                ))}
+            </ul>
+
+            <Link className="pc__btn" to="/order">
+                {linkText}
+            </Link>
+        </div>
+    );
+};
 
 export default PricingCard;
