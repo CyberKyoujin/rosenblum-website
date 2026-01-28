@@ -5,6 +5,7 @@ import ContactSection from "../components/ContactSection";
 import Section from "../components/Section"
 import PricingCard from "../components/PricingCard";
 import DocumentPrices from "../components/DocumentPrices";
+import PricingExamples from "../components/PricingExamples";
 import qualityIcon from "../assets/quality_image.webp"
 import NavigationSection from '../components/NavigationSection';
 
@@ -63,6 +64,10 @@ const Pricing = () => {
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 
                 <DocumentPrices />
+
+                <Divider style={{marginTop: '3rem', marginBottom: '1rem'}}/>
+
+                <PricingExamples />
 
                 <Divider style={{marginTop: '3rem'}}/>
 

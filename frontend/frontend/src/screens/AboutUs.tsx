@@ -3,11 +3,11 @@ import Footer from "../components/Footer";
 import { GrContactInfo } from "react-icons/gr";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import teamIcon from "../assets/team_icon.webp"
 import questionIcon from "../assets/question_icon.webp"
 import planeIcon from "../assets/planet_icon.webp"
 import NavigationSection from "../components/NavigationSection";
 import Section from "../components/Section";
+import TeamSection from "../components/TeamSection";
 
 const AboutUs = () => {
 
@@ -25,7 +25,7 @@ const AboutUs = () => {
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 
-                <Section image={teamIcon} imageClass="first-image" titleTextFirst="teamFirst" titleTextSecond="teamSecond" text="teamText" order={false}/>
+                <TeamSection />
 
                 <Divider style={{marginTop: '3rem', marginBottom: '2rem'}}/>
 

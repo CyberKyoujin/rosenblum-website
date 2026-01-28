@@ -8,6 +8,7 @@ import questionIcon from "../assets/question_icon.webp"
 import NavigationSection from "../components/NavigationSection";
 import ServiceProcessSteps from "../components/ServiceProcessSteps";
 import processIcon from "../assets/process_image.webp"
+import TranslationAnatomy from "../components/TranslationAnatomy";
 
 
 const translationSteps = [
@@ -36,6 +37,10 @@ const Translations = () => {
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
                 <Section image={questionIcon} imageClass="second-image" titleTextFirst={t('whatAre')} titleTextSecond={t('swornTranslations') + '?'} text="whatAreTranslations" order={false}/>
+
+                <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
+
+                <TranslationAnatomy />
 
                 <Divider style={{marginTop: '4rem', marginBottom: '3rem'}}/>
 

@@ -225,8 +225,24 @@
     "aboutUsSecond": "uns",
     "aboutUsText": "Willkommen bei Rosenblum Übersetzungsbüro, Ihrem vertrauenswürdigen Partner für professionelle Sprachdienstleistungen. Seit unserer Gründung im Jahr 2016 haben wir es uns zur Aufgabe gemacht, die Kommunikationsbarrieren zwischen unterschiedlichen Kulturen und Sprachen zu überwinden.",
     "teamFirst": "Unser",
-    "teamSecond": "Team", 
+    "teamSecond": "Team",
     "teamText": "Unser Team besteht aus erfahrenen und qualifizierten Übersetzern und Dolmetschern, die sich durch ihre Leidenschaft für Sprachen und interkulturelle Kommunikation auszeichnen. Alle unsere Fachkräfte sind muttersprachlich und verfügen über branchenspezifische Kenntnisse, um die Genauigkeit und Relevanz jeder Übersetzung zu gewährleisten.",
+    "team": {
+      "sectionTitle": "Unser",
+      "sectionTitleHighlight": "Team",
+      "oleg": {
+        "name": "Oleg Rosenblum",
+        "role": "Vom Landgericht Hannover allgemein beeidigter Dolmetscher und ermächtigter Übersetzer für russische und ukrainische Sprache"
+      },
+      "elana": {
+        "name": "Elana Rosenblum",
+        "role": "Leitung Kundenbetreuung & Finanzen"
+      },
+      "denys": {
+        "name": "Denys Novakov",
+        "role": "Digital Operations & IT Strategy"
+      }
+    },
     "missionFirst": "Unsere",
     "missionSecond": "Mission",
     "missionText": "Unsere Mission ist es, Ihnen präzise und kulturell angepasste Übersetzungen zu bieten, die Ihre Botschaft weltweit verständlich und wirkungsvoll übermitteln. Wir verstehen, dass jede Übersetzung einzigartig ist, und setzen unser Fachwissen ein, um Lösungen zu bieten, die genau auf Ihre Bedürfnisse zugeschnitten sind.",
@@ -373,6 +389,33 @@
     "individualCalc": "Individuelle Berechnung",
     "requestQuote": "Angebot anfordern",
     "vatIncluded": "inkl. MwSt."
+  },
+  "pricing_examples": {
+    "title": "Preisbeispiele",
+    "subtitle": "So setzen sich die Kosten zusammen",
+    "birth_cert": "Geburtsurkunde",
+    "marriage_cert": "Heiratsurkunde",
+    "apostille_trans": "Apostille-Übersetzung",
+    "apostille_cert": "Apostille auf Übersetzung",
+    "complex_docs": "Diplom des Europäischen Musters (Mit Anlage), Arbeitsbücher, Gerichtsurteile und komplexe Dokumente",
+    "individual": "Individuelle Berechnung",
+    "total": "Gesamt"
+  },
+  "translation_sample": {
+    "title": "Anatomie einer",
+    "titleHighlight": "beglaubigten Übersetzung",
+    "subtitle": "So sieht eine offizielle beglaubigte Übersetzung aus",
+    "header": "Kopfzeile",
+    "headerDesc": "Name, Titel und Kontaktdaten des beeidigten Übersetzers",
+    "content": "Übersetzungsinhalt",
+    "contentDesc": "Vollständige, genaue Übersetzung des Originaldokuments",
+    "certification": "Beglaubigungsvermerk",
+    "certificationDesc": "Offizielle Erklärung über die Richtigkeit und Vollständigkeit der Übersetzung",
+    "stamp": "Offizielles Siegel",
+    "stampDesc": "Amtliches Siegel des ermächtigten Übersetzers",
+    "signature": "Unterschrift",
+    "signatureDesc": "Handschriftliche Unterschrift des beeidigten Übersetzers",
+    "privacy": "Hinweis: Das Muster zeigt die Struktur einer beglaubigten Übersetzung. Persönliche Daten werden zum Schutz unkenntlich gemacht."
   },
   "contactPage": {
     "title": "Kontaktieren Sie",
