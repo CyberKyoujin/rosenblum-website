@@ -8,12 +8,12 @@ on:
 
 jobs:
   # ====================================================
-  # STAGE 1: TESTING
+  # JOB 1: BACKEND TESTS
   # ====================================================
-  tests:
-    name: 🧪 Run Tests
+  backend-tests:
+    name: 🐍 Backend Tests
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:16-alpine
@@ -29,26 +29,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      # Separate database for E2E integration tests
-      postgres-e2e:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_DB: rosenblum_e2e
-          POSTGRES_USER: e2e_user
-          POSTGRES_PASSWORD: e2e_password
-        ports:
-          - 5433:5432
-        options: >-
-          --health-cmd "pg_isready -U e2e_user"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # --- Backend Tests ---
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -67,19 +51,27 @@ jobs:
           SECRET_KEY: "test_secret_key_ci"
           DEBUG: "True"
           ALLOWED_HOSTS: "localhost,127.0.0.1"
-          # Mock values for external services (tests mock these)
           GEMINI_API_KEY: "test_key"
           DEEPL_AUTH_KEY: "test_key"
           GOOGLE_PLACES_API_KEY: "test_key"
           GOOGLE_PLACE_ID: "test_place_id"
-          # GS_BUCKET_NAME intentionally empty to use local FileSystemStorage for tests
           GS_BUCKET_NAME: ""
           FRONTEND_URL: "http://localhost:3000"
         run: |
           cd backend/backend
           pytest -q
 
-      # --- Frontend Tests ---
+  # ====================================================
+  # JOB 2: FRONTEND UNIT TESTS
+  # ====================================================
+  frontend-tests:
+    name: ⚛️ Frontend Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -99,29 +91,111 @@ jobs:
           npm ci
           npm run test -- --run
 
-      # --- E2E Tests (Mocked) ---
+  # ====================================================
+  # JOB 3: E2E MOCKED TESTS
+  # ====================================================
+  e2e-mocked:
+    name: 🎭 E2E Tests (Mocked)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install User Frontend
+        run: |
+          cd frontend/frontend
+          npm ci
+
       - name: Install Playwright Browsers
         run: |
           cd frontend/frontend
           npx playwright install --with-deps chromium
 
-      - name: Run E2E Tests (User Frontend - Mocked)
+      - name: Run E2E Tests (User Frontend)
         run: |
           cd frontend/frontend
           npx playwright test --project=chromium --reporter=list
-        continue-on-error: false
 
-      - name: Run E2E Tests (Admin Frontend - Mocked)
+      - name: Install Admin Frontend
+        run: |
+          cd frontend-admin/frontend-admin
+          npm ci
+
+      - name: Install Playwright Browsers (Admin)
+        run: |
+          cd frontend-admin/frontend-admin
+          npx playwright install --with-deps chromium
+
+      - name: Run E2E Tests (Admin Frontend)
+        run: |
+          cd frontend-admin/frontend-admin
+          npx playwright test --project=chromium --reporter=list
+
+  # ====================================================
+  # JOB 4: E2E INTEGRATION TESTS (Real Backend)
+  # ====================================================
+  e2e-integration:
+    name: 🔗 E2E Integration Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres-e2e:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: rosenblum_e2e
+          POSTGRES_USER: e2e_user
+          POSTGRES_PASSWORD: e2e_password
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U e2e_user"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend/backend
+          pip install -r requirements.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install User Frontend & Playwright
+        run: |
+          cd frontend/frontend
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Install Admin Frontend & Playwright
         run: |
           cd frontend-admin/frontend-admin
           npm ci
           npx playwright install --with-deps chromium
-          npx playwright test --project=chromium --reporter=list
-        continue-on-error: false
 
-      # --- E2E Integration Tests (Real Backend) ---
-      # Uses separate postgres-e2e database on port 5433 to avoid conflicts with unit tests
-      - name: Start Backend for Integration Tests
+      - name: Start Backend
         env:
           DATABASE_URL: postgres://e2e_user:e2e_password@localhost:5433/rosenblum_e2e
           SECRET_KEY: "test_secret_key_ci_e2e"
@@ -131,7 +205,6 @@ jobs:
           DEEPL_AUTH_KEY: "test_key"
           GOOGLE_PLACES_API_KEY: "test_key"
           GOOGLE_PLACE_ID: "test_place_id"
-          # GS_BUCKET_NAME intentionally empty to use local FileSystemStorage
           GS_BUCKET_NAME: ""
           FRONTEND_URL: "http://localhost:3000"
           CORS_ALLOWED_ORIGINS: "http://localhost:3000"
@@ -146,26 +219,22 @@ jobs:
           sleep 10
           curl -f http://localhost:8000/api/ || echo "Backend health check"
 
-      - name: Run Integration E2E Tests (User Frontend - Critical Flows)
+      - name: Run Integration E2E Tests (User Frontend)
         run: |
           cd frontend/frontend
           npx playwright test --config=playwright.integration.config.ts
-        continue-on-error: false
 
-      - name: Run Integration E2E Tests (Admin Frontend - Critical Flows)
+      - name: Run Integration E2E Tests (Admin Frontend)
         run: |
           cd frontend-admin/frontend-admin
           npx playwright test --config=playwright.integration.config.ts
-        continue-on-error: false
-
-
 
   # ====================================================
-  # ЭТАП 2: ДЕПЛОЙ НА HETZNER
+  # DEPLOY
   # ====================================================
   deploy:
     name: 🚀 Deploy to Hetzner
-    needs: tests
+    needs: [backend-tests, frontend-tests, e2e-mocked, e2e-integration]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
 
@@ -178,25 +247,24 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # 1. Переходим в папку проекта
-            cd /app 
+            cd /app
 
             # 2. Обновляем код
             git reset --hard
             git pull origin master
 
-            # 3. ГЕНЕРАЦИЯ .ENV ФАЙЛА (Твой полный список)
-            # Мы перезаписываем файл .env с нуля
+            # 3. ГЕНЕРАЦИЯ .ENV ФАЙЛА
             echo "DEBUG=${{ secrets.DEBUG }}" > .env
             echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
             echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
             echo "TIME_ZONE=${{ secrets.TIME_ZONE }}" >> .env
             echo "LANGUAGE_CODE=${{ secrets.LANGUAGE_CODE }}" >> .env
-            
+
             # Database
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
             echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-            
+
             # Email Settings
             echo "EMAIL_HOST=${{ secrets.EMAIL_HOST }}" >> .env
             echo "EMAIL_PORT=${{ secrets.EMAIL_PORT }}" >> .env
@@ -204,32 +272,30 @@ jobs:
             echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
             echo "EMAIL_USE_TLS=${{ secrets.EMAIL_USE_TLS }}" >> .env
             echo "EMAIL_USE_SSL=${{ secrets.EMAIL_USE_SSL }}" >> .env
-            
-            # Superuser Creation (для скрипта init_superuser.py)
+
+            # Superuser Creation
             echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env
             echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env
             echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env
-            
+
             # Google Services & APIs
             echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
             echo "DEEPL_AUTH_KEY=${{ secrets.DEEPL_AUTH_KEY }}" >> .env
             echo "GOOGLE_PLACES_API_KEY=${{ secrets.GOOGLE_PLACES_API_KEY }}" >> .env
             echo "GOOGLE_PLACE_ID=${{ secrets.GOOGLE_PLACE_ID }}" >> .env
-            
+
             # Google Auth (Social)
             echo "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }}" >> .env
             echo "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }}" >> .env
-            
+
             # Google Cloud Storage
             echo "GS_BUCKET_NAME=${{ secrets.GS_BUCKET_NAME }}" >> .env
-            # Важно: имя файла мы задаем жестко, так как сами создадим его ниже
             echo "GOOGLE_SERVICE_ACCOUNT_FILE=service-account.json" >> .env
-            
-            # Frontend URL (для CORS и ссылок)
+
+            # Frontend URL
             echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
             # 4. Создаем файл ключа Google (JSON) из секрета
-            # Используем одинарные кавычки для сохранения формата JSON
             echo '${{ secrets.GOOGLE_CREDENTIALS }}' > backend/backend/service-account.json
 
             # 5. Перезапуск контейнеров
