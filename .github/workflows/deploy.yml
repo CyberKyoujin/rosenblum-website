@@ -64,6 +64,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: backend
 
   # ====================================================
   # JOB 2: FRONTEND UNIT TESTS
@@ -87,17 +88,18 @@ jobs:
         run: |
           cd frontend/frontend
           npm ci
-          npm run test -- --run
+          npm run test -- --run --coverage
 
       - name: Install & Test Frontend (Admin)
         run: |
           cd frontend-admin/frontend-admin
           npm ci
-          npm run test -- --run
+          npm run test -- --run --coverage
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: frontend
 
   # ====================================================
   # JOB 3: E2E MOCKED TESTS
@@ -146,11 +148,6 @@ jobs:
         run: |
           cd frontend-admin/frontend-admin
           npx playwright test --project=chromium --reporter=list
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
 
   # ====================================================
   # JOB 4: E2E INTEGRATION TESTS (Real Backend)
@@ -241,11 +238,6 @@ jobs:
         run: |
           cd frontend-admin/frontend-admin
           npx playwright test --config=playwright.integration.config.ts
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
 
   # ====================================================
   # DEPLOY
