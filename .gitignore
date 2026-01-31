@@ -20,6 +20,14 @@ npm-debug.log*
 yarn-error.log*
 pnpm-lock.yaml
 
+# Coverage reports
+.coverage
+coverage.xml
+htmlcov/
+nosetests.xml
+.tox/
+.cache
+.pytest_cache/
 
 # Secrets
 .env

@@ -188,7 +188,7 @@ DEEPL_AUTH_KEY = config('DEEPL_AUTH_KEY', default='')
 # Sentry init
 
 sentry_sdk.init(
-    dsn="https://43d80d8d368ee0d0d3be49c9f1f1a7f6@o4510766445428736.ingest.de.sentry.io/4510766446870608",
+    dsn="https://35a9e3c540684b8dded6a1efe5fe4c3b@o4510805923856384.ingest.de.sentry.io/4510805938995280",
     # Add data like request headers and IP for users,
     # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
     send_default_pii=True,
