@@ -1,0 +1,21 @@
+test_id,test_name,run1_time_min,run2_time_min,run3_time_min,bugs_found,bug_severity,functions_tested,test_type
+TC001,User Registration,6.2,6.1,7.4,1,High,2,Integration
+TC002,User Login,8.8,7.9,8.6,0,,3,Integration
+TC003,Password Reset,10.1,9.0,10.6,2,Medium,3,Integration
+TC004,Order Creation,9.3,8.6,9.8,0,,3,Integration
+TC005,Order Creation with Files,12.4,11.6,13.1,1,Low,4,Integration
+TC006,Order Status Update,7.9,7.4,8.5,0,,2,Integration
+TC007,Admin Dashboard,7.5,7.4,8.4,0,,3,UI
+TC008,Admin Orders List,9.2,9.4,10.4,1,Medium,2,UI
+TC009,Google Storage,13.3,12.1,13.5,0,,5,Integration
+TC010,Admin Statistics View,9.7,8.9,10.1,2,High,3,UI
+TC011,File Upload Validation,8.4,7.3,7.2,0,,3,Integration
+TC012,Email Verification,12.1,11.4,13.0,1,Medium,6,Integration
+TC013,API Order Endpoints,8.6,7.5,7.9,0,,3,Integration
+TC014,API Authentication Endpoints,12.9,11.0,12.2,0,,3,Integration
+TC015,Frontend Form Validation,6.2,5.1,6.0,1,Low,3,UI
+TC016,Answer User Request,7.3,6.1,6.5,0,,4,Integration
+TC017,User Profile Update,6.8,6.2,6.2,0,,3,Integration
+TC018,Message System,14.4,13.6,14.1,1,Medium,8,Integration
+TC019,Reviews API,12.1,12.4,11.8,0,,6,Integration
+TC020,Mobile Responsive Layout,11.8,12.0,12.7,0,,4,UI
