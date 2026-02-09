@@ -1,0 +1,37 @@
+{
+  "collection_date": "2026-02-06T19:43:18.492449",
+  "total_runs": 42,
+  "successful_runs": 20,
+  "failed_runs": 22,
+  "success_rate": 47.61904761904761,
+  "avg_duration_minutes": 7.61904761904762,
+  "median_duration_minutes": 8.085,
+  "min_duration_minutes": 0.85,
+  "max_duration_minutes": 13.92,
+  "job_statistics": {
+    "\ud83e\uddea Run Tests": {
+      "avg_duration_seconds": 449.26666666666665,
+      "runs": 15
+    },
+    "\ud83d\ude80 Deploy to Hetzner": {
+      "avg_duration_seconds": 160.85,
+      "runs": 20
+    },
+    "\ud83d\udc0d Backend Tests": {
+      "avg_duration_seconds": 132.8,
+      "runs": 5
+    },
+    "\u269b\ufe0f Frontend Unit Tests": {
+      "avg_duration_seconds": 77.0,
+      "runs": 5
+    },
+    "\ud83d\udd17 E2E Integration Tests": {
+      "avg_duration_seconds": 169.0,
+      "runs": 5
+    },
+    "\ud83c\udfad E2E Tests (Mocked)": {
+      "avg_duration_seconds": 268.6,
+      "runs": 5
+    }
+  }
+}
