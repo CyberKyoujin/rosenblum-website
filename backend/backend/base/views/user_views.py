@@ -1,3 +1,4 @@
+import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,7 +22,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from google_maps_reviews import ReviewsClient
 import requests
 from rest_framework import generics
-from base.services.email_verification import verify_email, send_verification_code
+from base.services.email_verification import verify_email, send_verification_code, generate_verification_code
 from django.shortcuts import get_object_or_404
 from base.services.google_reviews import sync_google_reviews
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -40,6 +41,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
 from django.db import transaction
 
+logger = logging.getLogger(__name__)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -47,9 +49,21 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['id', 'email', 'first_name', 'last_name', 'phone_number']
     ordering_fields = ['date_joined', 'first_name', 'last_name', 'orders_count']
+    
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_staff:
+            qs = self.queryset.filter(is_superuser=False)
+        else:
+            qs = self.queryset.filter(id=user.id)
+        
+        if self.action == 'list':
+            qs = qs.annotate(orders_count=Count('order'))
+        
+        return qs
 
     def get_permissions(self):
-        """Управление доступом в одном месте"""
         public_actions = [
             'register', 'verify_email', 'resend_code', 
             'reset_password_link', 'reset_password_confirm', 'google_login'
@@ -65,14 +79,6 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserDataSerializer
         return CustomUserSerializer
     
-    def list(self, request, *args, **kwargs):
-        """Заменяет CustomerListView"""
-        queryset = self.filter_queryset(CustomUser.objects.filter(is_superuser=False).annotate(orders_count=Count('order')))
-        page = self.paginate_queryset(queryset)
-        
-        serializer = self.get_serializer(page, many=True) if page is not None else self.get_serializer(queryset, many=True)
-        
-        return self.get_paginated_response(serializer.data) if page is not None else Response(serializer.data)
 
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
     def me(self, request):
@@ -90,11 +96,13 @@ class UserViewSet(viewsets.ModelViewSet):
     def register(self, request):
         email = request.data.get('email', '').strip()
         if CustomUser.objects.filter(email=email).exists():
+            logger.info(f"[Auth]: Registration failed - user {email} already exists.")
             return Response({"detail": "User already exists"}, status=status.HTTP_409_CONFLICT)
         
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        user = serializer.save()
+        logger.info(f"[Auth]: New user registered: {user.email}")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'], url_path='verify-email')
@@ -102,13 +110,14 @@ class UserViewSet(viewsets.ModelViewSet):
         user_email = request.data.get('email', '')
         verification_code = request.data.get('code', '')
         
-        
         result = verify_email(user_email, verification_code)
         
-        print(user_email, verification_code, result)
-        
         if not result.ok:
+            logger.warning(f"[Auth]: Email verification failed for {user_email}: {result.error}")
             return Response({"detail": result.error, "attempts": result.attempts}, status=status.HTTP_400_BAD_REQUEST)
+        
+        logger.info(f"[Auth]: Email verified successfully for {user_email}")
+        
         return Response({"detail": "Email verified!"})
 
     @action(detail=False, methods=['post'], url_path='resend-code')
@@ -117,13 +126,16 @@ class UserViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(CustomUser, email=email)
         EmailVerification.objects.filter(user=user).delete()
         
-        verification_code = send_verification_code(email, user.first_name, user.last_name)
+        verification_code = generate_verification_code()
+        
+        send_verification_code(email, user.first_name, user.last_name, verification_code=verification_code)
         EmailVerification.objects.create(user=user, code=verification_code)
         return Response({"detail": "New code sent."})
 
     @action(detail=False, methods=['post'], url_path='reset-password-link')
     def reset_password_link(self, request):
         email = request.data.get("email", "").strip()
+        logger.info(f"[Auth]: Password reset requested for {email}")
         try:
             user = CustomUser.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -131,7 +143,8 @@ class UserViewSet(viewsets.ModelViewSet):
             reset_link = f"{settings.FRONTEND_URL}/password-reset/confirm/{uid}/{token}/"
             send_reset_link_email(email, user.first_name, user.last_name, reset_link)
         except CustomUser.DoesNotExist:
-            pass 
+            logger.warning(f"[Auth]: Password reset requested for non-existent email: {email}")
+            return Response({"detail": "If an account with that email exists, a reset link has been sent."}) 
         return Response({"detail": "Link sent."})
 
     @action(detail=False, methods=['post'], url_path='reset-password-confirm')
@@ -141,15 +154,22 @@ class UserViewSet(viewsets.ModelViewSet):
         password = request.data.get('password')
 
         try:
+            
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = CustomUser.objects.get(pk=uid)
+            
             if default_token_generator.check_token(user, token):
                 user.set_password(password)
                 user.save()
+                logger.info(f"[Auth]: Password reset successful for user ID {uid}")
                 return Response({"detail": "Password reset success."})
-        except Exception:
-            pass
-        return Response({"detail": "Invalid link."}, status=400)
+            
+            logger.warning(f"[Auth]: Invalid password reset token for user ID {uid}")
+            return Response({"detail": "Invalid link."}, status=400)
+        
+        except Exception as e:
+            logger.error(f"[Auth]: Password reset failed. Error: {str(e)}")
+            return Response({"detail": "Invalid data."}, status=400)
     
 class UserTokenObtainPairView(TokenObtainPairView):
     serializer_class = UserTokenObtainPairSerializer
@@ -180,8 +200,6 @@ class GoogleLogin(APIView):
                 settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
             )
 
-            print(f"Google Login - User info: {idinfo}")
-
             with transaction.atomic():
                 user, created = CustomUser.objects.get_or_create(email=idinfo['email'])
 
@@ -191,9 +209,9 @@ class GoogleLogin(APIView):
                     user.profile_img_url = idinfo.get('picture', '')
                     user.is_active = True
                     user.save()
-                    print(f"Google Login - Created new user: {user.email}")
+                    logger.info(f"[Google Login]: Created new user from Google: {user.email}")
                 else:
-                    print(f"Google Login - Existing user logged in: {user.email}")
+                    logger.info(f"[Google Login]: Existing user logged in via Google: {user.email}")
 
                 refresh = RefreshToken.for_user(user)
                 access_token = UserTokenObtainPairSerializer.get_token(user)
@@ -204,13 +222,14 @@ class GoogleLogin(APIView):
                 }, status=status.HTTP_200_OK)
 
         except ValueError as e:
-            print(f"Google Login - ValueError: {str(e)}")
+            logger.warning(f"[Google Login]: Token verification failed: {str(e)}")
             return Response({
                 'error': 'Invalid token',
                 'detail': str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
+            
         except Exception as e:
-            print(f"Google Login - Unexpected error: {str(e)}")
+            logger.exception(f"[Google Login]: Unexpected error: {str(e)}")
             import traceback
             traceback.print_exc()
             return Response({
@@ -221,20 +240,7 @@ class GoogleLogin(APIView):
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewSerializer
     pagination_class = None
-    def get_queryset(self):
-        # Sync reviews from Google Places API
-        try:
-            sync_google_reviews()
-        except Exception as e:
-            # Log error but don't fail the request
-            print(f"Failed to sync Google reviews: {e}")
-
-        return (
-            Review.objects
-            .all()
-            .prefetch_related("translations")
-            .order_by("-review_timestamp")
-        )
+    queryset = Review.objects.all().prefetch_related("translations").order_by("-review_timestamp")
 
     def get_serializer_context(self):
         ctx = super().get_serializer_context()

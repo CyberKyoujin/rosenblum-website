@@ -44,7 +44,7 @@ const ServiceProcessSteps: React.FC<ServiceProcessStepsProps> = ({badgeText, Bad
                         </div>
 
                         { badgeText && BadgeIcon &&
-                            <div className="home-badge" style={{gap: "1rem", width: "90%", padding: "0.5rem 1rem 0.5rem 1.5rem", marginTop: "1.5rem"}}>
+                            <div className="home-badge" style={{gap: "1rem", width: "90%", padding: "0.5rem 1rem 0.5rem 1.5rem", marginTop: "1.5rem", borderRadius: "15px"}}>
                                 <p style={{lineHeight: "1.3rem", fontSize: "14px"}}>{t(badgeText)}</p>
                             </div>
                         }

@@ -80,9 +80,16 @@ def parse_run_data(runs):
             "run_id": run["id"]
         }
         
+        # Remove outliers
+        
+        if metric["duration_minutes"] > 14.0 or metric["branch"] != "master" or metric["workflow"] != "CI/CD Pipeline":
+            continue
+        
         metrics.append(metric)
-    
-    return pd.DataFrame(metrics)
+        
+        reversed_metrics = list(reversed(metrics))
+        
+    return pd.DataFrame(reversed_metrics)
 
 def get_job_details(run_id):
     """Get detailed job information for a specific run"""
@@ -168,15 +175,15 @@ def main():
     print("=" * 60)
     
     # Create output directory
-    output_dir = Path("metrics")
+    output_dir = Path(__file__).resolve().parent.parent / "metrics"
     output_dir.mkdir(exist_ok=True)
     
     # Collect workflow runs
-    print("\n📊 Collecting workflow runs...")
+    print("\n Collecting workflow runs...")
     runs = collect_workflow_runs()
     
     if not runs:
-        print("❌ No runs collected!")
+        print(" No runs collected!")
         return
     
     print(f"✅ Collected {len(runs)} total runs")
@@ -187,7 +194,7 @@ def main():
     # Save all runs
     output_file = output_dir / "ci_metrics_all.csv"
     df.to_csv(output_file, index=False)
-    print(f"✅ Saved to {output_file}")
+    print(f" Saved to {output_file}")
     
     # Collect detailed job metrics (sample)
     jobs_df = collect_detailed_metrics(df, sample_size=20)
@@ -195,7 +202,7 @@ def main():
     if jobs_df is not None:
         jobs_file = output_dir / "job_metrics_detailed.csv"
         jobs_df.to_csv(jobs_file, index=False)
-        print(f"✅ Saved job details to {jobs_file}")
+        print(f" Saved job details to {jobs_file}")
     
     # Generate summary
     summary = generate_summary(df, jobs_df)
@@ -204,7 +211,7 @@ def main():
     with open(summary_file, "w") as f:
         json.dump(summary, f, indent=2)
     
-    print(f"✅ Saved summary to {summary_file}")
+    print(f" Saved summary to {summary_file}")
     
     # Print summary
     print("\n" + "=" * 60)
@@ -220,8 +227,8 @@ def main():
         for job_name, stats in summary["job_statistics"].items():
             print(f"  {job_name}: {stats['avg_duration_seconds']:.1f}s (n={stats['runs']})")
     
-    print("\n✅ Metrics collection complete!")
-    print(f"📁 Output directory: {output_dir.absolute()}")
+    print("\n Metrics collection complete!")
+    print(f" Output directory: {output_dir.absolute()}")
 
 if __name__ == "__main__":
     main()

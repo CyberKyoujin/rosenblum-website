@@ -23,10 +23,9 @@ vi.mock('../../zustand/useOrdersStore', () => ({
 }))
 
 // Mock react-icons
-vi.mock('react-icons/fa6', () => ({
-  FaRegFileLines: ({ size, className }: { size: number, className: string }) => (
-    <svg data-testid="file-icon" data-size={size} className={className} />
-  ),
+vi.mock('react-icons/io5', () => ({
+  IoDocumentTextOutline: () => <svg data-testid="file-icon" />,
+  IoChevronForward: () => <svg data-testid="chevron-icon" />,
 }))
 
 describe('Order', () => {
@@ -34,7 +33,7 @@ describe('Order', () => {
     id: 123,
     name: 'John Doe',
     formatted_timestamp: '15.01.2024 10:30',
-    status: 'pending',
+    status: 'review',
     is_new: false,
   }
 
@@ -54,7 +53,7 @@ describe('Order', () => {
     it('renders order container', () => {
       const { container } = renderOrder()
 
-      expect(container.querySelector('.small-order-container')).toBeInTheDocument()
+      expect(container.querySelector('.oi')).toBeInTheDocument()
     })
 
     it('renders file icon', () => {
@@ -63,16 +62,10 @@ describe('Order', () => {
       expect(screen.getByTestId('file-icon')).toBeInTheDocument()
     })
 
-    it('renders file icon with correct size', () => {
-      renderOrder()
-
-      expect(screen.getByTestId('file-icon')).toHaveAttribute('data-size', '45')
-    })
-
     it('renders order ID with prefix', () => {
       renderOrder({ id: 456 })
 
-      expect(screen.getByText('# ro-456')).toBeInTheDocument()
+      expect(screen.getByText('#ro-456')).toBeInTheDocument()
     })
 
     it('renders customer name', () => {
@@ -87,43 +80,30 @@ describe('Order', () => {
       expect(screen.getByText('20.12.2023 14:00')).toBeInTheDocument()
     })
 
-    it('renders order status indicator', () => {
-      const { container } = renderOrder()
+    it('renders status badge', () => {
+      const { container } = renderOrder({ status: 'review' })
 
-      expect(container.querySelector('.order-status')).toBeInTheDocument()
+      expect(container.querySelector('.oi__status-badge')).toBeInTheDocument()
+    })
+
+    it('renders status text', () => {
+      renderOrder({ status: 'review' })
+
+      expect(screen.getByText('Wird überprüft')).toBeInTheDocument()
     })
   })
 
   describe('new order styling', () => {
-    it('applies highlight background when is_new is true', () => {
+    it('applies oi--new class when is_new is true', () => {
       const { container } = renderOrder({ is_new: true })
 
-      const orderContainer = container.querySelector('.small-order-container')
-      expect(orderContainer).toHaveStyle({ backgroundColor: 'rgb(230, 238, 252)' })
+      expect(container.querySelector('.oi--new')).toBeInTheDocument()
     })
 
-    it('does not apply highlight background when is_new is false', () => {
+    it('does not apply oi--new class when is_new is false', () => {
       const { container } = renderOrder({ is_new: false })
 
-      const orderContainer = container.querySelector('.small-order-container')
-      expect(orderContainer).not.toHaveStyle({ backgroundColor: 'rgb(230, 238, 252)' })
-    })
-
-    it('applies blue color to order ID when is_new is true', () => {
-      renderOrder({ is_new: true, id: 789 })
-
-      const orderIdElement = screen.getByText('# ro-789')
-      expect(orderIdElement).toHaveStyle({ fontWeight: 'bold', color: 'RGB(68 113 203)' })
-    })
-
-    it('applies black color to order ID when is_new is false', () => {
-      renderOrder({ is_new: false, id: 789 })
-
-      const orderIdElement = screen.getByText('# ro-789')
-      expect(orderIdElement).toHaveStyle({ fontWeight: 'bold' })
-      // Color can be 'black' or 'rgb(0, 0, 0)' depending on browser
-      const style = window.getComputedStyle(orderIdElement)
-      expect(['black', 'rgb(0, 0, 0)']).toContain(style.color)
+      expect(container.querySelector('.oi--new')).not.toBeInTheDocument()
     })
   })
 
@@ -131,7 +111,7 @@ describe('Order', () => {
     it('navigates to order detail page on click', () => {
       const { container } = renderOrder({ id: 100 })
 
-      fireEvent.click(container.querySelector('.small-order-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockNavigate).toHaveBeenCalledWith('/order/100')
     })
@@ -139,7 +119,7 @@ describe('Order', () => {
     it('calls toggleOrder on click', () => {
       const { container } = renderOrder({ id: 200 })
 
-      fireEvent.click(container.querySelector('.small-order-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockToggleOrder).toHaveBeenCalledWith(200)
     })
@@ -147,7 +127,7 @@ describe('Order', () => {
     it('calls both navigate and toggleOrder on single click', () => {
       const { container } = renderOrder({ id: 300 })
 
-      fireEvent.click(container.querySelector('.small-order-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockNavigate).toHaveBeenCalledTimes(1)
       expect(mockToggleOrder).toHaveBeenCalledTimes(1)
@@ -155,28 +135,28 @@ describe('Order', () => {
   })
 
   describe('structure', () => {
-    it('contains order info container', () => {
+    it('contains icon container', () => {
       const { container } = renderOrder()
 
-      expect(container.querySelector('.order-container-info')).toBeInTheDocument()
+      expect(container.querySelector('.oi__icon')).toBeInTheDocument()
     })
 
-    it('contains order header', () => {
+    it('contains content section', () => {
       const { container } = renderOrder()
 
-      expect(container.querySelector('.order-header')).toBeInTheDocument()
+      expect(container.querySelector('.oi__content')).toBeInTheDocument()
     })
 
-    it('contains order status container', () => {
+    it('contains right section with status', () => {
       const { container } = renderOrder()
 
-      expect(container.querySelector('.order-status-container')).toBeInTheDocument()
+      expect(container.querySelector('.oi__right')).toBeInTheDocument()
     })
 
-    it('contains timestamp text with correct class', () => {
+    it('contains timestamp', () => {
       const { container } = renderOrder()
 
-      expect(container.querySelector('.order-timestamp-text')).toBeInTheDocument()
+      expect(container.querySelector('.oi__timestamp')).toBeInTheDocument()
     })
   })
 })

@@ -1,13 +1,10 @@
 import * as React from 'react';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import { RxHamburgerMenu } from "react-icons/rx";
-import logo from "../assets/logo2.webp"
-import { TbLogout2 } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Divider } from '@mui/material';
+import { IoLogOutOutline } from 'react-icons/io5';
 import NavLinks from './NavLinks';
+import logo from "../assets/logo2.webp";
 
 interface TemporaryDrawerProps {
   userName: string | undefined;
@@ -16,57 +13,63 @@ interface TemporaryDrawerProps {
 
 export default function TemporaryDrawer({userName, logout}: TemporaryDrawerProps) {
   const [open, setOpen] = React.useState(false);
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const DrawerList = (
-
-    <div role="presentation" className='drawer' onClick={toggleDrawer(false)}>
-
-      <section className='drawer-logo-section'>
-
-        <img src={logo} alt="" className='drawer-logo' loading='lazy'/>
-
-        <div className='drawer-profile-section'>
-            <h4>Hallo, {userName}</h4>
-
-            <button 
-              onClick={() => {logout(); navigate('/')}} 
-              className="btn"
-              style={{padding: '0.5rem', width: "100%"}}>
-              <TbLogout2/>
-            </button>
-
-        </div>
-
-      </section>
-
-      <Divider/>
-
-      <List className='drawer-links-container' sx={{pl: 1, pr: 1, mt: 2}}>
-
-        <NavLinks/>
-        
-      </List>
-
-    </div>
-
-  );
+  React.useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
 
   return (
-
     <div className='drawer-main'>
-      
-      <Button onClick={toggleDrawer(true)}>
-        <RxHamburgerMenu size={35} className='app-icon'/>
-      </Button>
 
-      <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
+      <button
+        className={`hamburger ${open ? 'hamburger--active' : ''}`}
+        onClick={() => setOpen(prev => !prev)}
+        aria-label="Menu"
+        type="button"
+      >
+        <span className="hamburger__line" />
+        <span className="hamburger__line" />
+        <span className="hamburger__line" />
+      </button>
+
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{ sx: { borderRadius: '16px 0 0 16px' } }}
+      >
+        <div className='drawer' onClick={() => setOpen(false)}>
+
+          <div className='drawer__header'>
+            <img src={logo} alt="Logo" className='drawer__logo' loading='lazy'/>
+            <div className='drawer__user'>
+              <div className="drawer__avatar">
+                {userName?.charAt(0) || 'A'}
+              </div>
+              <span className="drawer__name">{userName}</span>
+            </div>
+          </div>
+
+          <Divider />
+
+          <nav className='drawer__nav'>
+            <NavLinks />
+          </nav>
+
+          <div className="drawer__footer">
+            <button
+              onClick={() => { logout(); navigate('/'); }}
+              className="drawer__logout-btn"
+              type="button"
+            >
+              <IoLogOutOutline />
+              Abmelden
+            </button>
+          </div>
+
+        </div>
       </Drawer>
 
     </div>

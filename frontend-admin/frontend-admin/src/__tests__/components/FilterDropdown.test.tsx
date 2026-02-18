@@ -35,14 +35,14 @@ describe('FilterDropdown', () => {
       expect(screen.getByTestId('filter-icon')).toBeInTheDocument()
     })
 
-    it('renders filter icon with correct size', () => {
+    it('renders filter button', () => {
       render(
         <FilterDropdown>
           <div>Filter content</div>
         </FilterDropdown>
       )
 
-      expect(screen.getByTestId('filter-icon')).toHaveAttribute('data-size', '25')
+      expect(screen.getByRole('button')).toBeInTheDocument()
     })
 
     it('does not show popover initially', () => {
@@ -180,7 +180,7 @@ describe('FilterDropdown', () => {
       )
 
       const button = screen.getByRole('button')
-      expect(button).toHaveClass('btn')
+      expect(button).toHaveClass('ds__filter-btn')
     })
   })
 })

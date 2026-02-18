@@ -2,77 +2,55 @@ import { Message } from "../types/message"
 import defaultAvatar from "../assets/default_avatar.webp"
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "../zustand/useAuthStore";
-import { IoCheckmarkDoneSharp } from "react-icons/io5";
-import { IoCheckmarkSharp } from "react-icons/io5";
+import { IoCheckmarkDoneSharp, IoCheckmarkSharp, IoChevronForward } from "react-icons/io5";
 
 
 const MessageItem = ({formatted_timestamp, message, partner_data, viewed, sender, receiver}: Message) => {
-    
-    
+
     const user = useAuthStore(s => s.user);
-
     const isNewMessage = receiver === user?.id && !viewed;
-
-    const profileImg = partner_data?.image_url || partner_data?.profile_img_url || defaultAvatar
-
+    const profileImg = partner_data?.image_url || partner_data?.profile_img_url || defaultAvatar;
     const navigate = useNavigate();
+    const messageText = message?.length > 50 ? message.slice(0, 48) + "..." : message;
 
-    const messageText = message?.length > 50 ? message.slice(0, 48) + "..." : message
-    
     return (
-        <div className="message-item-container" style={isNewMessage ? { backgroundColor: "#e7efffff" } : {}} onClick={() => navigate(`/user/${partner_data?.id}/messages`)}>
+        <div
+            className={`oi ${isNewMessage ? 'oi--new' : ''}`}
+            onClick={() => navigate(`/user/${partner_data?.id}/messages`)}
+        >
+            <img
+                src={profileImg}
+                alt=""
+                className="oi__avatar"
+                referrerPolicy="no-referrer"
+            />
 
-            <div className="message-item__info">
-
-                <img src={profileImg} alt="" className="message-item-avatar" referrerPolicy="no-referrer"/>
-
-                <div className="message-item__message-info">
-
-                    <h3>{partner_data?.first_name} {partner_data?.last_name}</h3>
-                    
-                    <div className="message-item__message-text">
-                        
-
-                        <p className="message-item__message-text-info">
-
-                            {sender === 46 && !viewed ? (
-                                <>
-                                
-                                <IoCheckmarkSharp className="app-icon" size={25}/>
-                                Sie: {messageText}
-
-                                </>
-
-                            ) : sender === 46 && viewed ? (
-                                <>
-
-                                <IoCheckmarkDoneSharp className="app-icon" size={25}/>
-                                Sie: {messageText}
-
-                                </>
-
-                            ) : (
-
-                                <>
-                                    {messageText}
-                                </>
-
-                            )}
-                            
-                        </p>
-
-                    </div>
-                </div>
-
+            <div className="oi__content">
+                <span className="oi__id">{partner_data?.first_name} {partner_data?.last_name}</span>
+                <span className="oi__name oi__message-preview">
+                    {sender === user?.id && !viewed ? (
+                        <>
+                            <IoCheckmarkSharp className="oi__check-icon" />
+                            Sie: {messageText}
+                        </>
+                    ) : sender === user?.id && viewed ? (
+                        <>
+                            <IoCheckmarkDoneSharp className="oi__check-icon" />
+                            Sie: {messageText}
+                        </>
+                    ) : (
+                        messageText
+                    )}
+                </span>
             </div>
 
-            <div className="timestamp-container">
-                <p>{formatted_timestamp}</p>
+            <div className="oi__right">
+                <span className="oi__timestamp">{formatted_timestamp}</span>
             </div>
-            
-            
+
+            <IoChevronForward className="oi__chevron" />
         </div>
-    )
-}
+    );
+};
 
-export default MessageItem
+export default MessageItem;

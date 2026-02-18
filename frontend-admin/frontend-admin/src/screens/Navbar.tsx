@@ -2,7 +2,7 @@ import logo from "../assets/logo.webp";
 import useAuthStore from "../zustand/useAuthStore";
 import logo2 from "../assets/logo2.webp"
 import { useNavigate } from "react-router-dom";
-import { TbLogout2 } from "react-icons/tb";
+import { IoLogOutOutline } from "react-icons/io5";
 import NavLinks from "../components/NavLinks";
 import TemporaryDrawer from "../components/Drawer";
 
@@ -15,47 +15,44 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="main-nav-container">
+        <nav className="nav">
+            <div className="nav__inner">
 
-            <section className="nav-content">
+                <div className="nav__logo-container">
+                    <img src={logo} alt="" className="nav__logo" onClick={() => navigate('/dashboard')}/>
+                    <img src={logo2} alt="" className="nav__logo--small" onClick={() => navigate('/dashboard')}/>
+                </div>
 
-                <div className="nav-logo-container">
-                <img src={logo} alt="" className="logo" onClick={() => navigate('/dashboard')}/>
-                <img src={logo2} alt="" className="small-logo" onClick={() => navigate('/dashboard')}/>
-                
+                {isAuthenticated &&
+                <>
+                    <div className="nav__links">
+                        <NavLinks/>
+                    </div>
+
+                    <div className="nav__user">
+                        <div className="nav__user-info">
+                            <div className="nav__avatar">
+                                {user?.first_name?.charAt(0) || 'A'}
+                            </div>
+                            <span className="nav__greeting">{user?.first_name}</span>
+                        </div>
+
+                        <button
+                            onClick={() => {logoutUser(); navigate('/')}}
+                            className="nav__logout-btn"
+                            title="Abmelden"
+                        >
+                            <IoLogOutOutline />
+                        </button>
+                    </div>
+                </>
+                }
+
+                <TemporaryDrawer userName={user?.first_name} logout={logoutUser}/>
+
             </div>
-
-
-            {isAuthenticated && 
-            <>
-                <div className="nav-links-container">
-                    
-                    <NavLinks/>
-
-                </div>
-
-                <div className="navbar-user-container">
-
-                    <p>Hallo, {user?.first_name}</p>
-
-                    <button 
-                    onClick={() => {logoutUser(); navigate('/')}} 
-                    className="btn"
-                    style={{padding: '0.5rem'}}>
-                    <TbLogout2 size={25}/>
-                    </button>
-
-                </div>
-            </>
-            }
-
-            <TemporaryDrawer userName={user?.first_name} logout={logoutUser}/>
-
-            </section>
-
-        </div>
+        </nav>
     )
 }
-
 
 export default Navbar;

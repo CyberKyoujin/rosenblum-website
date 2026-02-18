@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
-import axios from 'axios'
 
 // Mock axiosInstance
 vi.mock('../../axios/axiosInstance', () => ({
@@ -85,17 +84,15 @@ describe('useEmailVerification', () => {
     })
 
     it('updates attempts on failed verification', async () => {
-      const axiosError = {
-        isAxiosError: true,
-        response: {
-          data: {
-            attempts: 2,
-            message: 'Invalid code',
-          },
+      // Hook accesses err?.errors.detail and err?.errors.attempts
+      const error = {
+        errors: {
+          detail: 'invalid_verification_code',
+          attempts: 2,
         },
+        message: 'Invalid code',
       }
-      vi.mocked(axiosInstance.post).mockRejectedValueOnce(axiosError)
-      vi.spyOn(axios, 'isAxiosError').mockReturnValue(true)
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce(error)
 
       const { result } = renderHook(() => useEmailVerification())
 
@@ -105,21 +102,18 @@ describe('useEmailVerification', () => {
 
       await waitFor(() => {
         expect(result.current.attempts).toBe(2)
-        expect(result.current.error).toBe('Invalid code')
+        expect(result.current.error).toBe('Der Code ist nicht korrekt')
       })
     })
 
-    it('sets error message from response detail', async () => {
-      const axiosError = {
-        isAxiosError: true,
-        response: {
-          data: {
-            detail: 'Code expired',
-          },
+    it('sets error message from errorMessages map', async () => {
+      const error = {
+        errors: {
+          detail: 'verification_code_expired',
         },
+        message: undefined,
       }
-      vi.mocked(axiosInstance.post).mockRejectedValueOnce(axiosError)
-      vi.spyOn(axios, 'isAxiosError').mockReturnValue(true)
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce(error)
 
       const { result } = renderHook(() => useEmailVerification())
 
@@ -128,19 +122,36 @@ describe('useEmailVerification', () => {
       })
 
       await waitFor(() => {
-        expect(result.current.error).toBe('Code expired')
+        expect(result.current.error).toBe('Der Code ist abgelaufen')
+      })
+    })
+
+    it('falls back to err.message when detail not in errorMessages', async () => {
+      const error = {
+        errors: {
+          detail: 'some_unknown_code',
+        },
+        message: 'Custom error message',
+      }
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce(error)
+
+      const { result } = renderHook(() => useEmailVerification())
+
+      await act(async () => {
+        await result.current.verifyEmail('123456', 'test@example.com')
+      })
+
+      await waitFor(() => {
+        expect(result.current.error).toBe('Custom error message')
       })
     })
 
     it('sets default error message when no specific message', async () => {
-      const axiosError = {
-        isAxiosError: true,
-        response: {
-          data: {},
-        },
+      // No errors property, no response → falls through to network/default error
+      const error = {
+        response: { status: 500 },
       }
-      vi.mocked(axiosInstance.post).mockRejectedValueOnce(axiosError)
-      vi.spyOn(axios, 'isAxiosError').mockReturnValue(true)
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce(error)
 
       const { result } = renderHook(() => useEmailVerification())
 
@@ -153,9 +164,9 @@ describe('useEmailVerification', () => {
       })
     })
 
-    it('sets network error message for non-axios errors', async () => {
-      vi.mocked(axiosInstance.post).mockRejectedValueOnce(new Error('Network failed'))
-      vi.spyOn(axios, 'isAxiosError').mockReturnValue(false)
+    it('sets network error message when no response', async () => {
+      const error = {} // no errors, no response, no message
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce(error)
 
       const { result } = renderHook(() => useEmailVerification())
 
@@ -174,12 +185,14 @@ describe('useEmailVerification', () => {
       const { result } = renderHook(() => useEmailVerification())
 
       // First simulate failed verification to reduce attempts
-      const axiosError = {
-        isAxiosError: true,
-        response: { data: { attempts: 1, message: 'Wrong code' } },
+      const error = {
+        errors: {
+          detail: 'invalid_verification_code',
+          attempts: 1,
+        },
+        message: 'Wrong code',
       }
-      vi.mocked(axiosInstance.post).mockRejectedValueOnce(axiosError)
-      vi.spyOn(axios, 'isAxiosError').mockReturnValue(true)
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce(error)
 
       await act(async () => {
         await result.current.verifyEmail('wrong', 'test@example.com')

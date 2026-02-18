@@ -5,6 +5,9 @@ import os
 from google.oauth2 import service_account
 from corsheaders.defaults import default_headers
 import sentry_sdk
+import logging
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'social_django',
     'django_filters',
     'storages',
+    'django_q',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +77,7 @@ CORS_ALLOWED_ORIGINS = [
     # Production - admin panel (port 3001)
     "http://rosenblum-uebersetzungen.de:3001",
     "http://46.224.229.147:3001",
-    "https://admin.rosenblum-uebersetzungen.de"
+    "https://admin.rosenblum-uebersetzungen.de",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -85,7 +89,8 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.rosenblum-uebersetzungen.de",
     "http://rosenblum-uebersetzungen.de:3001",
     "http://46.224.229.147:3001",
-    "https://admin.rosenblum-uebersetzungen.de"
+    "https://admin.rosenblum-uebersetzungen.de",
+    "https://supersolar-unerupted-jaleesa.ngrok-free.dev/"
 ]
 
 SIMPLE_JWT = {
@@ -143,6 +148,15 @@ AUTHENTICATION_BACKENDS = [
 
 AUTH_USER_MODEL = 'base.CustomUser'
 
+Q_CLUSTER = {
+    'name': 'Rosenblum Tasks Cluster',
+    'workers': 4,
+    'recycle': 500,
+    'timeout': 60,
+    'retry': 120,    
+    'orm': 'default', 
+}
+
 # Secrets
 
 #GOOGLE AUTH
@@ -185,16 +199,62 @@ else:
 
 DEEPL_AUTH_KEY = config('DEEPL_AUTH_KEY', default='')
 
-# Sentry init
+# SENTRY & LOGGING SETTINGS
 
-sentry_sdk.init(
-    dsn="https://35a9e3c540684b8dded6a1efe5fe4c3b@o4510805923856384.ingest.de.sentry.io/4510805938995280",
-    # Add data like request headers and IP for users,
-    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
-    send_default_pii=True,
-    # Enable sending logs to Sentry
-    enable_logs=True,
+sentry_logging = LoggingIntegration(
+    level=logging.INFO,        # Capture info and above as breadcrumbs
+    event_level=logging.ERROR  # Send errors as events
 )
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn=config('SENTRY_DSN'),
+        integrations=[DjangoIntegration(), sentry_logging],
+        send_default_pii=True,
+        enable_logs=True,
+        traces_sample_rate=0.3,
+        profiles_sample_rate=0.1,
+        environment="production",
+    )
+
+# Logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "base": {
+            "handlers": ["console"],
+            "level": "DEBUG" if DEBUG else "INFO",
+            "propagate": False,
+        },
+    },
+}
 
 # Use Google Cloud Storage if GS_BUCKET_NAME is set, otherwise use local storage
 if GS_BUCKET_NAME:

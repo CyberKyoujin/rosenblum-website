@@ -34,12 +34,14 @@ export default function useEmailVerification () {
 
         } catch (err: any) {
 
-            // Handle axios error response structure
-            const responseData = err?.response?.data;
+            console.error(err);
 
-            const errorCode = responseData?.detail;
-            const attemptsValue = responseData?.attempts;
-            const errorMessage = responseData?.message;
+
+            const errorCode = err?.errors?.detail;
+            const attemptsValue = err?.errors?.attempts;
+            const errorMessage = err?.message;
+
+            console.log(errorCode, attemptsValue, errorMessage)
 
             if (attemptsValue !== undefined) {
                 setAttempts(attemptsValue === null ? 0 : attemptsValue);

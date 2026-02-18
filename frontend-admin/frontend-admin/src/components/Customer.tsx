@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { IoChevronForward } from "react-icons/io5";
 import default_avatar from "../assets/default_avatar.png"
 
 interface CustomerProps {
@@ -17,34 +18,29 @@ const Customer = ({id, profile_img_url, profile_img, first_name, last_name, emai
 
     return (
         <div
-            className="customer-container"
-            key={id}
+            className="oi"
             onClick={() => navigate(`/user/${id}`)}
-            >
-            <div className="customer-main">
+        >
+            <img
+                src={profile_img_url || profile_img || default_avatar}
+                alt=""
+                className="oi__avatar"
+                referrerPolicy="no-referrer"
+            />
 
-                <div className="customer-top-section">
-                    <img
-                    src={profile_img_url || profile_img || default_avatar}
-                    className="customer-avatar"
-                    referrerPolicy="no-referrer"
-                    /> 
-                </div>
-
-                <div className="customer-content">
-                    <h3>{first_name} {last_name}</h3>
-                    <p className="order-customer-name">{email}</p>
-                </div>
-
+            <div className="oi__content">
+                <span className="oi__id">{first_name} {last_name}</span>
+                <span className="oi__name">{email}</span>
             </div>
 
-            <div className="customer-bottom">
-                <p>{orders}</p>
-                <p className="customer-orders">Aufträge</p>
+            <div className="oi__right">
+                <span className="oi__order-count">{orders} Aufträge</span>
             </div>
+
+            <IoChevronForward className="oi__chevron" />
         </div>
-    )
-}
+    );
+};
 
 
 export default Customer;

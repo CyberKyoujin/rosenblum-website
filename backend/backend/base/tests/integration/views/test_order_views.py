@@ -1,8 +1,8 @@
 import pytest
 from rest_framework import status
-from base.models import Order, File
+from base.models import Order, File, Document
 from django.core.files.uploadedfile import SimpleUploadedFile
-
+from decimal import Decimal
 
 @pytest.mark.django_db
 class TestOrderList:
@@ -80,25 +80,16 @@ class TestOrderCreate:
             'street': 'Main St 123',
             'zip': '12345',
             'message': 'Test order message',
-            'order_type': 'order'
+            'order_type': 'order',
+            'order_docs': ['{"type": "Geburtsurkunde", "language": "ua", "price": 10.2}']
         }
 
         response = authenticated_client.post('/api/orders/', data)
 
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['name'] == 'John Doe'
-        assert response.data['email'] == 'john@example.com'
-        assert response.data['status'] == 'review'  # Default status
-        # is_new might be True or might not be in response depending on serializer
-        if 'is_new' in response.data:
-            # Model default is True, but serializer behavior may vary
-            assert response.data['is_new'] in [True, False]
-
-        # Verify created in database
-        assert Order.objects.filter(
-            email='john@example.com',
-            user=authenticated_user
-        ).exists()
+        assert Order.objects.filter(user=authenticated_user, email='john@example.com').exists()
+        
+        assert response.data['id'] == Order.objects.get(user=authenticated_user).pk
 
     def test_create_order_anonymous(self, api_client):
         """Test anonymous user can create order"""
@@ -110,18 +101,13 @@ class TestOrderCreate:
             'street': 'Side St 456',
             'zip': '54321',
             'message': 'Anonymous order',
-            'order_type': 'costs_estimate'
+            'order_docs': ['{"type": "Geburtsurkunde", "language": "ua", "price": 10.2}']
         }
 
         response = api_client.post('/api/orders/', data)
 
-        # Depending on your business logic
-        if response.status_code == status.HTTP_401_UNAUTHORIZED:
-            pytest.skip("Anonymous order creation not allowed")
-
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.data['name'] == 'Anonymous User'
-        assert response.data['order_type'] == 'costs_estimate'
+        assert Order.objects.filter(name="Anonymous User").exists()
 
     def test_create_order_missing_required_fields(self, authenticated_client):
         """Test order creation fails without required fields"""
@@ -233,23 +219,18 @@ class TestOrderUpdate:
         """Test user can update their own order"""
         order = create_order(
             user=authenticated_user,
-            status='review',
-            message='Original message'
         )
 
         data = {
-            'message': 'Updated message',
-            'status': 'in_progress'
+            "payment_type": "stripe",
+            "documents": [{"type": "Geburtsurkunde", "language": "ua", "price": "100"}]
         }
 
-        response = authenticated_client.patch(f'/api/orders/{order.id}/', data)
-
-        # Check if users can update or only admins
-        if response.status_code == status.HTTP_403_FORBIDDEN:
-            pytest.skip("Users cannot update orders")
+        response = authenticated_client.patch(f'/api/orders/{order.id}/', data=data, format='json')
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['message'] == 'Updated message'
+        assert Order.objects.get(user=authenticated_user).payment_type == "stripe"
+        assert Document.objects.get(type="Geburtsurkunde").price == Decimal('35.30')
 
     def test_admin_can_update_any_order(self, admin_client, create_user, create_order):
         """Test admin can update any order"""

@@ -81,7 +81,7 @@ const Home = () => {
     <div className="home-container">
 
         <div className="home-header">
-        <img src={planetIcon} alt="" fetchPriority="high"/>
+        <img src={planetIcon} alt="trnaslate" fetchPriority="high"/>
             <div className="home-header-text">
                 
                 <h1 data-testid="we-translate">{t('weTranslate')}</h1>

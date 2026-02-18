@@ -1,7 +1,37 @@
 import pytest
+from unittest.mock import MagicMock
 from django.core.files.uploadedfile import SimpleUploadedFile
 from base.serializers import OrderSerializer, FileSerializer
-from base.models import Order, File
+from base.models import Order, File, Document
+
+
+def _make_request(user=None):
+    """Create a mock request with the given user (or AnonymousUser)."""
+    request = MagicMock()
+    if user:
+        request.user = user
+        request.user.is_staff = user.is_staff
+        request.user.is_authenticated = True
+    else:
+        request.user.is_staff = False
+        request.user.is_authenticated = False
+    return request
+
+
+def _valid_order_data(**overrides):
+    """Return minimal valid order data with order_docs."""
+    data = {
+        'name': 'John Doe',
+        'email': 'john@example.com',
+        'phone_number': '1234567890',
+        'city': 'Berlin',
+        'street': 'Main St 123',
+        'zip': '12345',
+        'message': 'Test order message',
+        'order_docs': ['{"type": "Geburtsurkunde", "language": "ua"}'],
+    }
+    data.update(overrides)
+    return data
 
 
 @pytest.mark.django_db
@@ -10,39 +40,18 @@ class TestOrderSerializerValidation:
 
     def test_valid_order_data(self):
         """Test serializer accepts valid order data"""
-        data = {
-            'name': 'John Doe',
-            'email': 'john@example.com',
-            'phone_number': '1234567890',
-            'city': 'Berlin',
-            'street': 'Main St 123',
-            'zip': '12345',
-            'message': 'Test order message'
-        }
-        serializer = OrderSerializer(data=data)
+        serializer = OrderSerializer(data=_valid_order_data())
         assert serializer.is_valid(), serializer.errors
 
     def test_invalid_email_rejected(self):
         """Test serializer rejects invalid email"""
-        data = {
-            'name': 'John Doe',
-            'email': 'not-an-email',
-            'phone_number': '1234567890',
-            'city': 'Berlin',
-            'street': 'Main St',
-            'zip': '12345',
-            'message': 'Test'
-        }
-        serializer = OrderSerializer(data=data)
+        serializer = OrderSerializer(data=_valid_order_data(email='not-an-email'))
         assert not serializer.is_valid()
         assert 'email' in serializer.errors
 
     def test_missing_required_fields_rejected(self):
         """Test serializer rejects missing required fields"""
-        data = {
-            'name': 'John Doe'
-            # Missing email, phone_number, etc.
-        }
+        data = {'name': 'John Doe'}
         serializer = OrderSerializer(data=data)
         assert not serializer.is_valid()
         assert 'email' in serializer.errors
@@ -51,52 +60,22 @@ class TestOrderSerializerValidation:
         """Test serializer accepts valid status choices"""
         valid_statuses = ['review', 'in_progress', 'completed', 'ready_pick_up', 'sent', 'canceled']
 
-        for status in valid_statuses:
-            data = {
-                'name': 'Test User',
-                'email': 'test@example.com',
-                'phone_number': '1234567890',
-                'city': 'City',
-                'street': 'Street',
-                'zip': '12345',
-                'message': 'Message',
-                'status': status
-            }
-            serializer = OrderSerializer(data=data)
-            assert serializer.is_valid(), f"Status '{status}' should be valid: {serializer.errors}"
+        for s in valid_statuses:
+            serializer = OrderSerializer(data=_valid_order_data(status=s))
+            assert serializer.is_valid(), f"Status '{s}' should be valid: {serializer.errors}"
 
     def test_invalid_status_rejected(self):
         """Test serializer rejects invalid status"""
-        data = {
-            'name': 'Test User',
-            'email': 'test@example.com',
-            'phone_number': '1234567890',
-            'city': 'City',
-            'street': 'Street',
-            'zip': '12345',
-            'message': 'Message',
-            'status': 'invalid_status'
-        }
-        serializer = OrderSerializer(data=data)
+        serializer = OrderSerializer(data=_valid_order_data(status='invalid_status'))
         assert not serializer.is_valid()
         assert 'status' in serializer.errors
 
     def test_valid_order_type_choices(self):
         """Test serializer accepts valid order_type choices"""
-        valid_types = ['costs_estimate', 'order']
+        valid_types = ['kostenvoranschlag', 'order']
 
         for order_type in valid_types:
-            data = {
-                'name': 'Test User',
-                'email': 'test@example.com',
-                'phone_number': '1234567890',
-                'city': 'City',
-                'street': 'Street',
-                'zip': '12345',
-                'message': 'Message',
-                'order_type': order_type
-            }
-            serializer = OrderSerializer(data=data)
+            serializer = OrderSerializer(data=_valid_order_data(order_type=order_type))
             assert serializer.is_valid(), f"Order type '{order_type}' should be valid: {serializer.errors}"
 
 
@@ -106,61 +85,37 @@ class TestOrderSerializerCreate:
 
     def test_create_order_with_minimal_data(self):
         """Test creating order with minimal required data"""
-        data = {
-            'name': 'John Doe',
-            'email': 'john@example.com',
-            'phone_number': '1234567890',
-            'city': 'Berlin',
-            'street': 'Main St',
-            'zip': '12345',
-            'message': 'Test message'
-        }
-        serializer = OrderSerializer(data=data)
-        assert serializer.is_valid()
+        request = _make_request()
+        serializer = OrderSerializer(data=_valid_order_data(), context={'request': request})
+        assert serializer.is_valid(), serializer.errors
 
         order = serializer.save()
 
         assert order.name == 'John Doe'
         assert order.email == 'john@example.com'
-        assert order.status == 'review'  # Default status
+        assert order.status == 'review'
         assert Order.objects.filter(id=order.id).exists()
+        assert Document.objects.filter(order=order).count() == 1
 
     def test_create_order_with_uploaded_files(self):
         """Test creating order with uploaded files"""
         file1 = SimpleUploadedFile("doc1.pdf", b"content1", content_type="application/pdf")
         file2 = SimpleUploadedFile("doc2.pdf", b"content2", content_type="application/pdf")
 
-        data = {
-            'name': 'John Doe',
-            'email': 'john@example.com',
-            'phone_number': '1234567890',
-            'city': 'Berlin',
-            'street': 'Main St',
-            'zip': '12345',
-            'message': 'Test message',
-            'uploaded_files': [file1, file2]
-        }
-        serializer = OrderSerializer(data=data)
+        request = _make_request()
+        data = _valid_order_data(uploaded_files=[file1, file2])
+        serializer = OrderSerializer(data=data, context={'request': request})
         assert serializer.is_valid(), serializer.errors
 
         order = serializer.save()
 
-        # Verify files were created
         assert order.files.count() == 2
 
     def test_create_order_default_status_is_review(self):
         """Test order is created with 'review' status by default"""
-        data = {
-            'name': 'John Doe',
-            'email': 'john@example.com',
-            'phone_number': '1234567890',
-            'city': 'Berlin',
-            'street': 'Main St',
-            'zip': '12345',
-            'message': 'Test message'
-        }
-        serializer = OrderSerializer(data=data)
-        assert serializer.is_valid()
+        request = _make_request()
+        serializer = OrderSerializer(data=_valid_order_data(), context={'request': request})
+        assert serializer.is_valid(), serializer.errors
 
         order = serializer.save()
 
@@ -168,21 +123,39 @@ class TestOrderSerializerCreate:
 
     def test_create_order_default_type_is_order(self):
         """Test order is created with 'order' type by default"""
-        data = {
-            'name': 'John Doe',
-            'email': 'john@example.com',
-            'phone_number': '1234567890',
-            'city': 'Berlin',
-            'street': 'Main St',
-            'zip': '12345',
-            'message': 'Test message'
-        }
-        serializer = OrderSerializer(data=data)
-        assert serializer.is_valid()
+        request = _make_request()
+        serializer = OrderSerializer(data=_valid_order_data(), context={'request': request})
+        assert serializer.is_valid(), serializer.errors
 
         order = serializer.save()
 
         assert order.order_type == 'order'
+
+    def test_create_order_anonymous_gets_guest_uuid(self):
+        """Test anonymous order gets a guest_uuid"""
+        request = _make_request()
+        serializer = OrderSerializer(data=_valid_order_data(), context={'request': request})
+        assert serializer.is_valid(), serializer.errors
+
+        order = serializer.save()
+
+        assert order.guest_uuid is not None
+        assert len(order.guest_uuid) > 0
+
+    def test_create_order_non_staff_price_from_utils(self):
+        """Test non-staff user gets price from get_doc_price, not from request"""
+        request = _make_request()
+        data = _valid_order_data(
+            order_docs=['{"type": "Geburtsurkunde", "language": "ua", "price": 999}']
+        )
+        serializer = OrderSerializer(data=data, context={'request': request})
+        assert serializer.is_valid(), serializer.errors
+
+        order = serializer.save()
+
+        doc = Document.objects.get(order=order)
+        from decimal import Decimal
+        assert doc.price == Decimal('35.30')  # from utils, not 999
 
 
 @pytest.mark.django_db
@@ -194,17 +167,15 @@ class TestOrderSerializerOutput:
         order = create_order()
         serializer = OrderSerializer(order)
 
-        # Should be in format DD.MM.YYYY HH:MM
         formatted = serializer.data['formatted_timestamp']
         assert formatted is not None
-        assert '.' in formatted  # Contains date separators
-        assert ':' in formatted  # Contains time separator
+        assert '.' in formatted
+        assert ':' in formatted
 
     def test_files_included_in_output(self, create_order):
         """Test files are included in serialized output"""
         order = create_order()
 
-        # Add a file
         uploaded_file = SimpleUploadedFile("test.pdf", b"content", content_type="application/pdf")
         File.objects.create(order=order, file=uploaded_file)
 

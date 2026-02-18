@@ -1,5 +1,4 @@
-import { RiContactsFill } from "react-icons/ri";
-import { MdCircle } from "react-icons/md";
+import { IoPersonOutline, IoMailOutline, IoCallOutline } from "react-icons/io5";
 import { RequestData } from '../types/request';
 
 interface RequestDetailsContactsSectionProps {
@@ -9,44 +8,33 @@ interface RequestDetailsContactsSectionProps {
 const RequestDetailsContactsSection = ({request}: RequestDetailsContactsSectionProps) => {
 
     return (
-
-        <div className="request-details-content-container">
-
-                        <section className="request-details-contact-info">
-
-                            <div className="request-details-item-title-container">
-
-                                <RiContactsFill size={25} className="app-icon"/>
-
-                                <h2>Kontaktdaten</h2>
-
-                            </div>
-
-                            <dl className="request-details-contact-items-grid">
-                            
-                                <div className="dl-item">
-                                    <dt><MdCircle className="app-icon" aria-hidden="true"/> Name:</dt>
-                                    <dd>{request?.name}</dd>
-                                </div>
-
-                                <div className="dl-item">
-                                    <dt><MdCircle className="app-icon" aria-hidden="true"/> Email:</dt>
-                                    <dd>{request?.email}</dd>
-                                </div>
-
-                                <div className="dl-item">
-                                    <dt><MdCircle className="app-icon" aria-hidden="true"/> Tel:</dt>
-                                    <dd>{request?.phone_number}</dd>
-                                </div>
-
-                            </dl>
-
-                        </section>
-
-
+        <div className="od__card">
+            <h3 className="od__card-title">Kontaktdaten</h3>
+            <div className="od__info-list">
+                <div className="od__info-item">
+                    <IoPersonOutline className="od__info-icon" />
+                    <div className="od__info-content">
+                        <span className="od__info-label">Name</span>
+                        <span className="od__info-value">{request?.name}</span>
+                    </div>
+                </div>
+                <div className="od__info-item">
+                    <IoMailOutline className="od__info-icon" />
+                    <div className="od__info-content">
+                        <span className="od__info-label">E-Mail</span>
+                        <span className="od__info-value">{request?.email}</span>
+                    </div>
+                </div>
+                <div className="od__info-item">
+                    <IoCallOutline className="od__info-icon" />
+                    <div className="od__info-content">
+                        <span className="od__info-label">Telefon</span>
+                        <span className="od__info-value">{request?.phone_number}</span>
+                    </div>
+                </div>
+            </div>
         </div>
-
     );
-}
+};
 
 export default RequestDetailsContactsSection;

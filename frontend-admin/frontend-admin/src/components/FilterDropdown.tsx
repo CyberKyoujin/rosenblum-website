@@ -35,15 +35,13 @@ export const FilterDropdown = ({title="Filters", onReset, children}: FilterDropd
 
   return (
     <>
-      <Button
+      <button
         aria-describedby={id}
-        variant="contained"
         onClick={handleClick}
-        sx={{ display: "flex", alignItems: "center" }}
-        className='btn'
+        className='ds__filter-btn'
       >
-        <IoFilter size={25}/>
-      </Button>
+        <IoFilter />
+      </button>
 
 
       <Popover

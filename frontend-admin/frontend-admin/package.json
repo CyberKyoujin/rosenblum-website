@@ -25,6 +25,7 @@
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/material": "^5.18.0",
     "@mui/x-charts": "^8.22.0",
+    "@sentry/react": "^10.38.0",
     "axios": "^1.7.2",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",

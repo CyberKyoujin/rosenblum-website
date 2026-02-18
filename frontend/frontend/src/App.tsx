@@ -18,6 +18,7 @@ const Login = lazy(() => import('./screens/Login'));
 const Register = lazy(() => import('./screens/Register'));
 const Profile = lazy(() => import('./screens/Profile'));
 const Order = lazy(() => import('./screens/Order'));
+const GuestPayment = lazy(() => import('./screens/GuestPayment'));
 const OrderDetails = lazy(() => import('./screens/OrderDetails'));
 const EditProfile = lazy(() => import('./screens/EditProfile'));
 const AboutUs = lazy(() => import('./screens/AboutUs'));
@@ -37,6 +38,10 @@ const PasswordReset = lazy(() => import("./components/PasswordReset"));
 const Impressum = lazy(() => import("./screens/Impressum"));
 const Datenschutz = lazy(() => import("./screens/Datenschutz"));
 const AGB = lazy(() => import("./screens/AGB"));
+const NotFound = lazy(() => import("./screens/NotFound"));
+const PaymentPage = lazy(() => import('./screens/Payment'));
+const PaymentSuccess = lazy(() => import('./screens/PaymentSuccess'));
+const OrderSuccess = lazy(() => import('./screens/OrderSuccess'));
 
 function App() {
   
@@ -129,6 +134,12 @@ function App() {
         <Route path='/login' element={
           <Suspense fallback={<AppSkeleton />}>
             <Login/>
+          </Suspense>
+        }/>
+
+        <Route path='/guest/:orderId/:orderUUID' element={
+          <Suspense fallback={<AppSkeleton />}>
+            <GuestPayment/>
           </Suspense>
         }/>
 
@@ -239,6 +250,30 @@ function App() {
         <Route path="/terms" element={
           <Suspense fallback={<AppSkeleton/>}>
             <AGB/>
+          </Suspense>
+        }/>
+
+        <Route path="/payment" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <PaymentPage/>
+          </Suspense>
+        }/>
+
+        <Route path="/success" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <PaymentSuccess/>
+          </Suspense>
+        }/>
+
+        <Route path="/order-success" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <OrderSuccess/>
+          </Suspense>
+        }/>
+
+        <Route path="*" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <NotFound/>
           </Suspense>
         }/>
       </Routes>

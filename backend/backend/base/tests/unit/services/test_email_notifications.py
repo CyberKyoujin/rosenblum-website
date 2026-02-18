@@ -10,47 +10,41 @@ from base.services.email_notifications import (
     send_request_answered_email
 )
 
+PATCH_TARGET = 'base.services.email_notifications._send_html_email'
+
 
 class TestSendSimpleEmail:
     """Tests for send_simple_email function"""
 
-    @patch('base.services.email_notifications.send_mail')
-    @patch('base.services.email_notifications.settings')
-    def test_sends_email_with_correct_parameters(self, mock_settings, mock_send_mail):
+    @patch(PATCH_TARGET)
+    def test_sends_email_with_correct_parameters(self, mock_send):
         """Test email is sent with correct parameters"""
-        mock_settings.EMAIL_HOST_USER = 'sender@example.com'
-
         send_simple_email(
             subject='Test Subject',
             message='Test message content',
             recipient_email='recipient@example.com'
         )
 
-        mock_send_mail.assert_called_once_with(
-            subject='Test Subject',
-            message='Test message content',
-            from_email='sender@example.com',
-            recipient_list=['recipient@example.com'],
-            fail_silently=False
-        )
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
+        assert kwargs['subject'] == 'Test Subject'
+        assert kwargs['plain_text'] == 'Test message content'
+        assert kwargs['recipient_email'] == 'recipient@example.com'
 
-    @patch('base.services.email_notifications.send_mail')
-    @patch('base.services.email_notifications.settings')
-    def test_uses_settings_email_host_user(self, mock_settings, mock_send_mail):
-        """Test from_email comes from settings"""
-        mock_settings.EMAIL_HOST_USER = 'custom@sender.com'
+    @patch(PATCH_TARGET)
+    def test_message_is_in_body_lines(self, mock_send):
+        """Test message text is passed in context body_lines"""
+        send_simple_email('Subject', 'My message', 'to@example.com')
 
-        send_simple_email('Subject', 'Message', 'to@example.com')
-
-        call_kwargs = mock_send_mail.call_args[1]
-        assert call_kwargs['from_email'] == 'custom@sender.com'
+        kwargs = mock_send.call_args.kwargs
+        assert 'My message' in kwargs['context']['body_lines']
 
 
 class TestSendResetLinkEmail:
     """Tests for send_reset_link_email function"""
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_sends_reset_email_with_link(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_sends_reset_email_with_link(self, mock_send):
         """Test password reset email contains reset link"""
         send_reset_link_email(
             receiver_email='user@example.com',
@@ -59,18 +53,18 @@ class TestSendResetLinkEmail:
             reset_link='https://example.com/reset/abc123'
         )
 
-        mock_send_simple.assert_called_once()
-        call_args = mock_send_simple.call_args[0]
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
 
-        assert call_args[0] == 'Passwort-Reset Link'  # subject
-        assert 'John' in call_args[1]  # message contains name
-        assert 'Doe' in call_args[1]
-        assert 'https://example.com/reset/abc123' in call_args[1]  # contains link
-        assert call_args[2] == 'user@example.com'  # recipient
+        assert kwargs['subject'] == 'Passwort-Reset Link'
+        assert 'John' in kwargs['plain_text']
+        assert 'Doe' in kwargs['plain_text']
+        assert 'https://example.com/reset/abc123' in kwargs['plain_text']
+        assert kwargs['recipient_email'] == 'user@example.com'
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_reset_email_is_in_german(self, mock_send_simple):
-        """Test reset email is in German"""
+    @patch(PATCH_TARGET)
+    def test_reset_email_has_button_url(self, mock_send):
+        """Test reset email has CTA button with reset link"""
         send_reset_link_email(
             receiver_email='user@example.com',
             receiver_first_name='Test',
@@ -78,18 +72,17 @@ class TestSendResetLinkEmail:
             reset_link='https://example.com/reset/xyz'
         )
 
-        call_args = mock_send_simple.call_args[0]
-        message = call_args[1]
-
-        assert 'Hallo' in message
-        assert 'Rosenblum' in message
+        kwargs = mock_send.call_args.kwargs
+        assert kwargs['context']['button_url'] == 'https://example.com/reset/xyz'
+        assert 'Hallo' in kwargs['plain_text']
+        assert 'Rosenblum' in kwargs['plain_text']
 
 
 class TestSendMessageAccountCreated:
     """Tests for send_message_account_created function"""
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_sends_welcome_email(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_sends_welcome_email(self, mock_send):
         """Test welcome email is sent"""
         send_message_account_created(
             receiver_email='newuser@example.com',
@@ -97,16 +90,16 @@ class TestSendMessageAccountCreated:
             receiver_last_name='Smith'
         )
 
-        mock_send_simple.assert_called_once()
-        call_args = mock_send_simple.call_args[0]
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
 
-        assert 'Willkommen' in call_args[0]  # subject
-        assert 'Jane' in call_args[1]  # message contains name
-        assert 'Smith' in call_args[1]
-        assert call_args[2] == 'newuser@example.com'
+        assert 'Willkommen' in kwargs['subject']
+        assert 'Jane' in kwargs['plain_text']
+        assert 'Smith' in kwargs['plain_text']
+        assert kwargs['recipient_email'] == 'newuser@example.com'
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_welcome_email_mentions_registration(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_welcome_email_mentions_registration(self, mock_send):
         """Test welcome email mentions successful registration"""
         send_message_account_created(
             receiver_email='user@example.com',
@@ -114,74 +107,68 @@ class TestSendMessageAccountCreated:
             receiver_last_name='User'
         )
 
-        call_args = mock_send_simple.call_args[0]
-        message = call_args[1]
-
-        assert 'registriert' in message or 'Konto' in message
+        kwargs = mock_send.call_args.kwargs
+        assert 'registriert' in kwargs['plain_text'] or 'Konto' in kwargs['plain_text']
 
 
 class TestSendNewMessageEmail:
     """Tests for send_new_message_email function"""
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_sends_new_message_notification(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_sends_new_message_notification(self, mock_send):
         """Test new message notification is sent"""
         send_new_message_email(receiver_email='user@example.com')
 
-        mock_send_simple.assert_called_once()
-        call_args = mock_send_simple.call_args[0]
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
 
-        assert 'Nachricht' in call_args[0]  # subject contains "message" in German
-        assert call_args[2] == 'user@example.com'
+        assert 'Nachricht' in kwargs['subject']
+        assert kwargs['recipient_email'] == 'user@example.com'
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_new_message_email_contains_link(self, mock_send_simple):
-        """Test new message email contains link to messages"""
+    @patch(PATCH_TARGET)
+    def test_new_message_email_mentions_nachricht(self, mock_send):
+        """Test new message email mentions message"""
         send_new_message_email(receiver_email='user@example.com')
 
-        call_args = mock_send_simple.call_args[0]
-        message = call_args[1]
-
-        assert 'messages' in message or 'Nachricht' in message
+        kwargs = mock_send.call_args.kwargs
+        assert 'Nachricht' in kwargs['plain_text']
 
 
 class TestSendOrderReadyEmail:
     """Tests for send_order_ready_email function"""
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_sends_order_ready_notification(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_sends_order_ready_notification(self, mock_send):
         """Test order ready notification is sent"""
         send_order_ready_email(
             user_email='customer@example.com',
             order_id=12345
         )
 
-        mock_send_simple.assert_called_once()
-        call_args = mock_send_simple.call_args[0]
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
 
-        assert 'fertig' in call_args[0]  # subject contains "ready" in German
-        assert '12345' in call_args[1]  # message contains order ID
-        assert call_args[2] == 'customer@example.com'
+        assert 'fertig' in kwargs['subject']
+        assert '12345' in kwargs['plain_text']
+        assert kwargs['recipient_email'] == 'customer@example.com'
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_order_ready_email_contains_order_number(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_order_ready_email_contains_order_number(self, mock_send):
         """Test order ready email mentions order number"""
         send_order_ready_email(
             user_email='customer@example.com',
             order_id=99999
         )
 
-        call_args = mock_send_simple.call_args[0]
-        message = call_args[1]
-
-        assert '99999' in message
+        kwargs = mock_send.call_args.kwargs
+        assert '99999' in kwargs['plain_text']
 
 
 class TestSendRequestCreated:
     """Tests for send_request_created function"""
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_sends_request_confirmation(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_sends_request_confirmation(self, mock_send):
         """Test request creation confirmation is sent"""
         send_request_created(
             user_email='requester@example.com',
@@ -189,16 +176,16 @@ class TestSendRequestCreated:
             requester_name='John Doe'
         )
 
-        mock_send_simple.assert_called_once()
-        call_args = mock_send_simple.call_args[0]
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
 
-        assert 'Anfrage' in call_args[0]  # subject contains "request" in German
-        assert '100' in call_args[1] or '#100' in call_args[1]  # message contains request ID
-        assert 'John Doe' in call_args[1]  # message contains requester name
-        assert call_args[2] == 'requester@example.com'
+        assert 'Anfrage' in kwargs['subject']
+        assert '100' in kwargs['plain_text'] or '#100' in kwargs['plain_text']
+        assert 'John Doe' in kwargs['plain_text']
+        assert kwargs['recipient_email'] == 'requester@example.com'
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_request_created_email_confirms_receipt(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_request_created_email_confirms_receipt(self, mock_send):
         """Test request created email confirms receipt"""
         send_request_created(
             user_email='user@example.com',
@@ -206,17 +193,15 @@ class TestSendRequestCreated:
             requester_name='Test User'
         )
 
-        call_args = mock_send_simple.call_args[0]
-        message = call_args[1]
-
-        assert 'eingegangen' in message or 'erfolgreich' in message
+        kwargs = mock_send.call_args.kwargs
+        assert 'eingegangen' in kwargs['plain_text'] or 'erfolgreich' in kwargs['plain_text']
 
 
 class TestSendRequestAnsweredEmail:
     """Tests for send_request_answered_email function"""
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_sends_request_answer_notification(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_sends_request_answer_notification(self, mock_send):
         """Test request answer notification is sent"""
         send_request_answered_email(
             user_email='requester@example.com',
@@ -225,17 +210,17 @@ class TestSendRequestAnsweredEmail:
             requester_name='Jane Smith'
         )
 
-        mock_send_simple.assert_called_once()
-        call_args = mock_send_simple.call_args[0]
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
 
-        assert 'Antwort' in call_args[0]  # subject contains "answer" in German
-        assert '200' in call_args[1] or '#200' in call_args[1]  # contains request ID
-        assert 'This is the answer to your request.' in call_args[1]  # contains answer text
-        assert 'Jane Smith' in call_args[1]  # contains requester name
-        assert call_args[2] == 'requester@example.com'
+        assert 'Antwort' in kwargs['subject']
+        assert '200' in kwargs['plain_text'] or '#200' in kwargs['plain_text']
+        assert 'This is the answer to your request.' in kwargs['plain_text']
+        assert 'Jane Smith' in kwargs['plain_text']
+        assert kwargs['recipient_email'] == 'requester@example.com'
 
-    @patch('base.services.email_notifications.send_simple_email')
-    def test_request_answer_includes_full_answer_text(self, mock_send_simple):
+    @patch(PATCH_TARGET)
+    def test_request_answer_includes_full_answer_text(self, mock_send):
         """Test answer email includes the full answer text"""
         long_answer = 'This is a longer answer that explains everything in detail. ' * 5
 
@@ -246,7 +231,5 @@ class TestSendRequestAnsweredEmail:
             requester_name='User'
         )
 
-        call_args = mock_send_simple.call_args[0]
-        message = call_args[1]
-
-        assert long_answer in message
+        kwargs = mock_send.call_args.kwargs
+        assert long_answer in kwargs['plain_text']

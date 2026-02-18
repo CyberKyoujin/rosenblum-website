@@ -145,7 +145,7 @@ function OTP({
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }} >
+    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'center' }}>
       {new Array(length).fill(null).map((_, index) => (
         <React.Fragment key={index}>
           <BaseInput
@@ -154,7 +154,7 @@ function OTP({
             }}
 
             data-testid="otp-input"
-            
+
             aria-label={`Digit ${index + 1} of OTP`}
             slotProps={{
               input: {
@@ -171,7 +171,7 @@ function OTP({
               },
             }}
           />
-          {index === length - 1 ? null : separator}
+          {index === 2 ? <span className="otp-separator">—</span> : null}
         </React.Fragment>
       ))}
     </Box>
@@ -185,74 +185,51 @@ interface OTPInputProps {
 
 export default function OTPInput({value, onChange}: OTPInputProps) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} className="otp-input-container">
-      <OTP separator={<span>-</span>} value={value} onChange={onChange} length={6}/>
-    </Box>
+    <div className="otp-input-container">
+      <OTP separator={null} value={value} onChange={onChange} length={6}/>
+    </div>
   );
 }
 
-const blue = {
-  100: '#DAECFF',
-  200: '#80BFFF',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-  700: '#0059B2',
-};
-
-const grey = {
-  50: '#F3F6F9',
-  100: '#E5EAF2',
-  200: '#DAE2ED',
-  300: '#C7D0DD',
-  400: '#B0B8C4',
-  500: '#9DA8B7',
-  600: '#6B7A90',
-  700: '#434D5B',
-  800: '#303740',
-  900: '#1C2025',
-};
-
-const InputElement = styled('input')(
-  ({ theme }) => `
-  width: 70px;
-  height: 70px;
-  font-family: 'IBM Plex Sans', sans-serif;
+const InputElement = styled('input')`
+  width: 52px;
+  height: 60px;
   font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 1.5;
-  padding: 8px 0;
-  border-radius: 8px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0;
+  border-radius: 12px;
   text-align: center;
-  color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-  background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-  border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-  box-shadow: 0 2px 4px ${
-    theme.palette.mode === 'dark' ? 'rgba(0,0,0, 0.5)' : 'rgba(0,0,0, 0.05)'
-  };
+  color: #1f2937;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
 
-  @media(max-width: 575px){
-  width: 50px;
-  height: 50px;
+  @media (max-width: 480px) {
+    width: 44px;
+    height: 52px;
+    font-size: 1.25rem;
+    border-radius: 10px;
   }
 
-  @media(max-width: 400px){
-  width: 40px;
-  height: 50px;
+  @media (max-width: 360px) {
+    width: 38px;
+    height: 46px;
+    font-size: 1.125rem;
   }
 
   &:hover {
-    border-color: ${blue[400]};
+    border-color: #4C79D4;
   }
 
   &:focus {
-    border-color: ${blue[400]};
-    box-shadow: 0 0 0 3px ${theme.palette.mode === 'dark' ? blue[600] : blue[200]};
+    border-color: #4C79D4;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(76, 121, 212, 0.15);
   }
 
-  /* firefox */
   &:focus-visible {
     outline: 0;
   }
-`,
-);
+`;

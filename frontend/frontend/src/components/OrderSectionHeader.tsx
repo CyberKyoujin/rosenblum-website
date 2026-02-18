@@ -10,7 +10,7 @@ const OrderSectionHeader: React.FC<OrderSectionHeaderProps> = ({Icon, headerText
         <div className="oreder-contacts-header">
         
             <div className="step-number">
-                <Icon style={{fontSize: '30px', marginTop: '3px'}}/>
+                <Icon size={20}/>
             </div>
                            
             <h1>{headerText}</h1>

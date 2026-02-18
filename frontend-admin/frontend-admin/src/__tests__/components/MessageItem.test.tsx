@@ -28,11 +28,14 @@ vi.mock('../../assets/default_avatar.webp', () => ({
 
 // Mock react-icons
 vi.mock('react-icons/io5', () => ({
-  IoCheckmarkDoneSharp: ({ size, className }: { size: number, className: string }) => (
-    <svg data-testid="checkmark-done-icon" data-size={size} className={className} />
+  IoCheckmarkDoneSharp: ({ className }: { className: string }) => (
+    <svg data-testid="checkmark-done-icon" className={className} />
   ),
-  IoCheckmarkSharp: ({ size, className }: { size: number, className: string }) => (
-    <svg data-testid="checkmark-icon" data-size={size} className={className} />
+  IoCheckmarkSharp: ({ className }: { className: string }) => (
+    <svg data-testid="checkmark-icon" className={className} />
+  ),
+  IoChevronForward: ({ className }: { className: string }) => (
+    <svg data-testid="chevron-icon" className={className} />
   ),
 }))
 
@@ -82,7 +85,7 @@ describe('MessageItem', () => {
     it('renders message item container', () => {
       const { container } = renderMessageItem()
 
-      expect(container.querySelector('.message-item-container')).toBeInTheDocument()
+      expect(container.querySelector('.oi')).toBeInTheDocument()
     })
 
     it('renders partner name', () => {
@@ -103,7 +106,6 @@ describe('MessageItem', () => {
       const longMessage = 'This is a very long message that should be truncated because it exceeds fifty characters'
       renderMessageItem({ message: longMessage })
 
-      // Message is truncated at 48 chars + "..."
       expect(screen.getByText('This is a very long message that should be trunc...')).toBeInTheDocument()
     })
 
@@ -164,7 +166,7 @@ describe('MessageItem', () => {
       renderMessageItem()
 
       const avatar = screen.getByRole('img')
-      expect(avatar).toHaveClass('message-item-avatar')
+      expect(avatar).toHaveClass('oi__avatar')
     })
 
     it('has no-referrer policy', () => {
@@ -176,42 +178,39 @@ describe('MessageItem', () => {
   })
 
   describe('new message styling', () => {
-    it('applies highlight background for unviewed message received by current user', () => {
+    it('applies oi--new class for unviewed message received by current user', () => {
       const { container } = renderMessageItem({
-        receiver: 1, // current user id
+        receiver: 1,
         viewed: false,
       })
 
-      const messageContainer = container.querySelector('.message-item-container')
-      expect(messageContainer).toHaveStyle({ backgroundColor: '#e7efffff' })
+      expect(container.querySelector('.oi--new')).toBeInTheDocument()
     })
 
-    it('does not apply highlight for viewed messages', () => {
+    it('does not apply oi--new class for viewed messages', () => {
       const { container } = renderMessageItem({
         receiver: 1,
         viewed: true,
       })
 
-      const messageContainer = container.querySelector('.message-item-container')
-      expect(messageContainer).not.toHaveStyle({ backgroundColor: '#e7efffff' })
+      expect(container.querySelector('.oi--new')).not.toBeInTheDocument()
     })
 
-    it('does not apply highlight when sender is current user', () => {
+    it('does not apply oi--new when sender is current user', () => {
       const { container } = renderMessageItem({
         sender: 1,
         receiver: 2,
         viewed: false,
       })
 
-      const messageContainer = container.querySelector('.message-item-container')
-      expect(messageContainer).not.toHaveStyle({ backgroundColor: '#e7efffff' })
+      expect(container.querySelector('.oi--new')).not.toBeInTheDocument()
     })
   })
 
   describe('sent message indicators', () => {
     it('shows single checkmark for unviewed sent message', () => {
       renderMessageItem({
-        sender: 46, // admin user id in component
+        sender: 1, // current user id (mocked as 1)
         viewed: false,
         message: 'Sent message',
       })
@@ -222,7 +221,7 @@ describe('MessageItem', () => {
 
     it('shows double checkmark for viewed sent message', () => {
       renderMessageItem({
-        sender: 46, // admin user id in component
+        sender: 1, // current user id
         viewed: true,
         message: 'Sent message',
       })
@@ -233,7 +232,7 @@ describe('MessageItem', () => {
 
     it('shows "Sie:" prefix for sent messages', () => {
       renderMessageItem({
-        sender: 46,
+        sender: 1,
         viewed: true,
         message: 'Test message',
       })
@@ -258,36 +257,29 @@ describe('MessageItem', () => {
         partner_data: { ...defaultProps.partner_data, id: 42 },
       })
 
-      fireEvent.click(container.querySelector('.message-item-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockNavigate).toHaveBeenCalledWith('/user/42/messages')
     })
   })
 
   describe('structure', () => {
-    it('contains message-item__info section', () => {
+    it('contains content section', () => {
       const { container } = renderMessageItem()
 
-      expect(container.querySelector('.message-item__info')).toBeInTheDocument()
+      expect(container.querySelector('.oi__content')).toBeInTheDocument()
     })
 
-    it('contains message-item__message-info section', () => {
+    it('contains right section', () => {
       const { container } = renderMessageItem()
 
-      expect(container.querySelector('.message-item__message-info')).toBeInTheDocument()
+      expect(container.querySelector('.oi__right')).toBeInTheDocument()
     })
 
-    it('contains timestamp-container section', () => {
+    it('contains timestamp', () => {
       const { container } = renderMessageItem()
 
-      expect(container.querySelector('.timestamp-container')).toBeInTheDocument()
-    })
-
-    it('renders name in h3 heading', () => {
-      renderMessageItem()
-
-      const heading = screen.getByRole('heading', { level: 3 })
-      expect(heading).toHaveTextContent('John Doe')
+      expect(container.querySelector('.oi__timestamp')).toBeInTheDocument()
     })
   })
 })

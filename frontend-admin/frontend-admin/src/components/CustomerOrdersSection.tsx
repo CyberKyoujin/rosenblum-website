@@ -1,60 +1,58 @@
-
 import { useNavigate } from "react-router-dom";
+import { IoDocumentTextOutline, IoChevronForward } from "react-icons/io5";
 import { MdOutlineStickyNote2 } from "react-icons/md";
-import { FaRegFileLines } from "react-icons/fa6";
 import useCustomersStore from "../zustand/useCustomers";
+import { getStatusConfig } from "../types/order";
 
 const CustomerOrdersSection = () => {
 
     const orders = useCustomersStore(s => s.customerOrders);
-
     const navigate = useNavigate();
- 
+
+    if (!orders || orders.length === 0) {
+        return (
+            <div className="od__empty-state">
+                <MdOutlineStickyNote2 className="od__empty-icon" />
+                <p className="od__empty-text">Der Nutzer hat noch keine Aufträge</p>
+            </div>
+        );
+    }
+
     return (
-        <section className="profile-section-container profile__user-orders-section">
-
-                    {orders && orders.length > 0 ? (
-                        <>
-                            {orders.map((order) => (
-
-                                <div
-                                key={order.id}
-                                className="profile-order-container"
-                                onClick={() => navigate(`/order/${order.id}`)}>
-
-                                    <FaRegFileLines size={45} className="app-icon"/>
-
-                                    <div className="order-info">
-                                        <h4>{`# ro-${order.id}`}</h4>
-
-                                        <div className="order-date">
-                                            <p className="order-date-header">Bestellt am: </p>
-                                            {order.formatted_timestamp}
-                                        </div>
-                                    </div>
-
-                                    <div className="order-status-container">
-                                        <p className="order-status-text">{order.status === 'review' ? "wird bearbeitet..." : ''}</p>
-                                        <div className="order-status" />
-                                    </div>
-
-                                </div>
-
-                            ))}
-                        </>
-                    ) : (
-                        
-                        <div className="no-orders-container">
-
-                            <MdOutlineStickyNote2 style={{ fontSize: '100px' }} />
-
-                            <h3>Der Nutzer hat noch keine Aufträge</h3>
-
+        <div className="od__orders-list">
+            {orders.map((order) => {
+                const statusConfig = getStatusConfig(order.status);
+                return (
+                    <div
+                        key={order.id}
+                        className="oi"
+                        onClick={() => navigate(`/order/${order.id}`)}
+                    >
+                        <div className="oi__icon">
+                            <IoDocumentTextOutline />
                         </div>
-                    )}
-
-        </section>
-    )
-}
+                        <div className="oi__content">
+                            <span className="oi__id">#ro-{order.id}</span>
+                            <span className="oi__name">Bestellt am {order.formatted_timestamp}</span>
+                        </div>
+                        <div className="oi__right">
+                            <div
+                                className="oi__status-badge"
+                                style={{ backgroundColor: statusConfig.bg, color: statusConfig.color }}
+                            >
+                                <span
+                                    className="oi__status-dot"
+                                    style={{ backgroundColor: statusConfig.color }}
+                                />
+                                <span className="oi__status-text">{statusConfig.label}</span>
+                            </div>
+                        </div>
+                        <IoChevronForward className="oi__chevron" />
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
 
 export default CustomerOrdersSection;

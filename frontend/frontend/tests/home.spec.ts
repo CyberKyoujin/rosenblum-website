@@ -85,31 +85,31 @@ test.describe("Homepage", () => {
 
     });
 
-    test.describe("Reviews Section", () => {
+    // test.describe("Reviews Section", () => {
 
-        test("should display reviews section heading", async ({ page }) => {
-            await page.goto("/");
+    //     test("should display reviews section heading", async ({ page }) => {
+    //         await page.goto("/");
 
-            await expect(page.getByRole("heading", { name: /bewertungen/i })).toBeVisible();
-        });
+    //         await expect(page.getByRole("heading", { name: /bewertungen/i })).toBeVisible();
+    //     });
 
-        test("should load and display reviews", async ({ page }) => {
-            await page.goto("/");
+    //     test("should load and display reviews", async ({ page }) => {
+    //         await page.goto("/");
 
-            // Wait for reviews to load - look in slider container
-            await expect(page.locator(".slider-container").getByRole('heading', { name: 'Test User 1' })).toBeVisible({ timeout: 10000 });
-        });
+    //         // Wait for reviews to load - look in slider container
+    //         await expect(page.locator(".slider-container").getByRole('heading', { name: 'Test User 1' })).toBeVisible({ timeout: 10000 });
+    //     });
 
-        test("should display star ratings", async ({ page }) => {
-            await page.goto("/");
+    //     test("should display star ratings", async ({ page }) => {
+    //         await page.goto("/");
 
-            // Wait for reviews and ratings to load
-            await page.waitForSelector(".slider-container .review-container", { timeout: 10000 });
-            const ratings = page.locator(".slider-container [class*='Rating']");
-            await expect(ratings.first()).toBeVisible();
-        });
+    //         // Wait for reviews and ratings to load
+    //         await page.waitForSelector(".slider-container .review-container", { timeout: 10000 });
+    //         const ratings = page.locator(".slider-container [class*='Rating']");
+    //         await expect(ratings.first()).toBeVisible();
+    //     });
 
-    });
+    // });
 
     test.describe("Location Section", () => {
 

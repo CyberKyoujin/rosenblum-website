@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 18mm 22mm 18mm;
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            color: #1f2937;
+            line-height: 1.5;
+        }
+
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #4C79D4;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header-left {
+            width: 40%; 
+            vertical-align: top; 
+            text-align: left;
+        }
+
+        .header-right {
+            width: 60%; 
+            vertical-align: top; 
+            text-align: right; 
+        }
+
+
+        .header-table td {
+            vertical-align: top;
+            padding: 0;
+        }
+
+        .logo {
+            height: 100px;
+            width: auto;
+            margin-bottom: 4px;
+        }
+
+        .company-name {
+            font-size: 13pt;
+            font-weight: bold;
+            color: #4C79D4;
+            margin: 0;
+        }
+
+        .company-details {
+            font-size: 7.5pt;
+            color: #374151;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .company-right {
+            text-align: right;
+            font-size: 7.5pt;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .company-person {
+            font-size: 7pt;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 4px 0 0 0;
+            text-align: right;
+        }
+
+        /* ── Title ── */
+        .doc-title {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #1f2937;
+            margin: 0 0 2px 0;
+        }
+
+        .doc-subtitle {
+            font-size: 9pt;
+            color: #6b7280;
+            margin: 0 0 18px 0;
+        }
+
+        /* ── Info grid ── */
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .info-table td {
+            vertical-align: top;
+            padding: 0;
+            width: 50%;
+        }
+
+        .info-label {
+            font-size: 7pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af;
+            margin: 0 0 4px 0;
+        }
+
+        .info-text {
+            font-size: 9pt;
+            color: #374151;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .info-text strong {
+            color: #1f2937;
+        }
+
+        /* ── Section title ── */
+        .section-title {
+            font-size: 7pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af;
+            margin: 0 0 6px 0;
+        }
+
+        /* ── Documents table ── */
+        .docs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 14px;
+        }
+
+        .docs-table th {
+            text-align: left;
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            padding: 5px 6px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .docs-table th.right {
+            text-align: right;
+        }
+
+        .docs-table th.center {
+            text-align: center;
+        }
+
+        .docs-table td {
+            padding: 7px 6px;
+            font-size: 9pt;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        .docs-table td.right {
+            text-align: right;
+        }
+
+        .docs-table td.center {
+            text-align: center;
+        }
+
+        .lang-badge {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 1px 6px;
+            font-size: 7.5pt;
+            font-weight: bold;
+        }
+
+        .individual-tag {
+            font-style: italic;
+            color: #9ca3af;
+            font-size: 8pt;
+        }
+
+        /* ── Totals ── */
+        .totals-table {
+            width: 250px;
+            margin-left: auto;
+            margin-bottom: 18px;
+        }
+
+        .totals-table td {
+            padding: 3px 0;
+            font-size: 9pt;
+            color: #374151;
+        }
+
+        .totals-table td.right {
+            text-align: right;
+        }
+
+        .totals-table tr.subtotal td {
+            font-size: 8.5pt;
+            color: #6b7280;
+        }
+
+        .totals-table tr.total td {
+            border-top: 2px solid #1f2937;
+            padding-top: 6px;
+            font-weight: bold;
+            font-size: 11pt;
+            color: #1f2937;
+        }
+
+        .totals-note {
+            font-size: 7pt;
+            color: #9ca3af;
+            text-align: right;
+            margin: 2px 0 0 0;
+        }
+
+        /* ── Validity ── */
+        .validity {
+            font-size: 8pt;
+            color: #6b7280;
+            margin: 0 0 20px 0;
+        }
+
+        .validity strong {
+            color: #374151;
+        }
+
+        /* ── Signature ── */
+        .signature-line {
+            width: 180px;
+            border-top: 1px solid #374151;
+            padding-top: 4px;
+            font-size: 8pt;
+            color: #6b7280;
+            margin-top: 30px;
+        }
+
+        /* ── Footer / Impressum ── */
+        .footer-table {
+            width: 100%;
+            border-top: 1px solid #d1d5db;
+            padding-top: 8px;
+            margin-top: 24px;
+        }
+
+        .footer-table td {
+            vertical-align: top;
+            padding: 0 6px;
+            font-size: 6.5pt;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .footer-label {
+            font-weight: bold;
+            color: #374151;
+            font-size: 6.5pt;
+            margin: 0 0 2px 0;
+        }
+
+        .footer-text {
+            margin: 0;
+            font-size: 6.5pt;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <table class="header-table">
+        <tr>
+            <td class="header-left">
+                <img src="{{ logo_url }}" class="logo" alt="Logo"/>
+            </td>
+            <td class="header-right">
+                <p class="company-name">Rosenblum &Uuml;bersetzungsb&uuml;ro</p>
+                <p class="company-details">
+                    Alte Poststra&szlig;e 25, 49074 Osnabr&uuml;ck<br/>
+                    Tel: 0176 7735 3978<br/>
+                    rosenblum-uebersetzungsbuero@gmail.com<br/>
+                    www.rosenblum-uebersetzungen.de
+                </p>
+                <br/>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Title -->
+    <p class="doc-title">Kostenvoranschlag #ro-{{ order.id }}</p>
+    <p class="doc-subtitle">Erstellt am {{ order.formatted_timestamp }}</p>
+
+    <!-- Customer / Order Info -->
+    <table class="info-table">
+        <tr>
+            <td style="padding-right: 20px;">
+                <p class="info-label">Kundeninformationen</p>
+                <p class="info-text">
+                    <strong>{{ order.name }}</strong><br/>
+                    {{ order.street }}<br/>
+                    {{ order.zip }} {{ order.city }}<br/>
+                    Tel: {{ order.phone_number }}<br/>
+                    {% if order.email %}E-Mail: {{ order.email }}{% endif %}
+                </p>
+            </td>
+            <td>
+                <p class="info-label">Auftragsdaten</p>
+                <p class="info-text">
+                    Auftragsnr.: <strong>#ro-{{ order.id }}</strong><br/>
+                    Datum: {{ order.formatted_timestamp }}<br/>
+                    Auftragsart: Kostenvoranschlag
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Documents Table -->
+    <p class="section-title">Unterlagen</p>
+    <table class="docs-table">
+        <thead>
+            <tr>
+                <th style="width: 5%;">Nr.</th>
+                <th style="width: 12%;">Sprache</th>
+                <th style="width: 38%;">Dokument</th>
+                <th class="center" style="width: 10%;">Menge</th>
+                <th class="right" style="width: 10%;">MwSt</th>
+                <th class="right" style="width: 18%;">Netto</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in order.documents.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <span class="lang-badge">{% if doc.language == 'ua' %}UKR{% elif doc.language == 'ru' %}RUS{% elif doc.language == 'de' %}DEU{% else %}{{ doc.language|upper }}{% endif %}</span>
+                </td>
+                <td>{{ doc.type }}</td>
+                <td class="center">1</td>
+                <td class="right">19%</td>
+                <td class="right">
+                    {% if doc.individual_price %}
+                        <span class="individual-tag">Individuell</span>
+                    {% else %}
+                        {{ doc.price|floatformat:2 }} &euro;
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #9ca3af;">Keine Unterlagen</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Totals -->
+    <table class="totals-table">
+        {% if has_individual_docs %}
+        <tr class="subtotal">
+            <td>Zwischensumme</td>
+            <td class="right">{{ docs_total }} &euro;</td>
+        </tr>
+        <tr class="subtotal">
+            <td>Individuell</td>
+            <td class="right"><span class="individual-tag">nach Bewertung</span></td>
+        </tr>
+        {% endif %}
+        <tr class="subtotal">
+            <td>inkl. MwSt (19%)</td>
+            <td class="right">enthalten</td>
+        </tr>
+        <tr class="total">
+            <td>Gesamt</td>
+            <td class="right">{{ docs_total }} &euro;{% if has_individual_docs %} *{% endif %}</td>
+        </tr>
+    </table>
+    {% if has_individual_docs %}
+    <p class="totals-note">* zzgl. individuell berechneter Dokumente</p>
+    {% endif %}
+
+    <!-- Validity -->
+     <br/>
+    <p class="validity">
+        Dieser Kostenvoranschlag ist <strong>60 Tage</strong> ab Erstellungsdatum g&uuml;ltig.
+        Die Preise verstehen sich inklusive 19% MwSt.
+    </p>
+
+    <!-- Footer / Impressum -->
+    <table class="footer-table">
+        <tr>
+            <td style="width: 33%;">
+                <br/>
+                <p class="footer-label">Rosenblum &Uuml;bersetzungsb&uuml;ro</p>
+                <p class="footer-text">
+                    Alte Poststra&szlig;e 25<br/>
+                    49074 Osnabr&uuml;ck<br/>
+                    Tel: 0176 7735 3978<br/>
+                    rosenblum-uebersetzungsbuero@gmail.com
+                </p>
+            </td>
+            <td style="width: 33%;">
+                <br/>
+                <p class="footer-label">Zust&auml;ndige Person</p>
+                <p class="footer-text">
+                    Oleg Rosenblum<br/>
+                    Beeidigter Dolmetscher und<br/>
+                    erm&auml;chtigter &Uuml;bersetzer<br/>
+                    vom Landgericht Hannover<br/>
+                    St.-Id.-Nr.: 66/037/17135
+                </p>
+            </td>
+            <td style="width: 33%;">
+                <br/>
+                <p class="footer-label">Bankverbindung</p>
+                <p class="footer-text">
+                    Oleg Rosenblum<br/>
+                    IBAN: DE11 2657 0024 0033 4060 00<br/>
+                    BIC: DEUTDEDB265
+                </p>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

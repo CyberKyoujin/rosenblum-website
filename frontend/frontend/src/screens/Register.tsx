@@ -27,14 +27,7 @@ const Register = () => {
 
   return (
     <>
-      <div className='main-app-container'>
-        <ApiErrorAlert 
-          error={error} 
-          belowNavbar={isAtTop} 
-          fixed 
-          duration={10} 
-          action={error?.status === 409 ? loginButton : null}
-        />
+      
 
         <div className="register-container">
           <NavigationSection first_link='Register'/>
@@ -45,6 +38,14 @@ const Register = () => {
                 <h1 data-testid="register-title">{t('joinUs')}</h1>
                 <h1 className="register-title-span">{t('join')}</h1>
               </div>
+
+                  <ApiErrorAlert 
+              error={error} 
+              belowNavbar={isAtTop} 
+              fixed 
+              duration={10} 
+              action={error?.status === 409 ? loginButton : null}
+            />
 
               <RegisterForm 
                 form={form}
@@ -67,7 +68,7 @@ const Register = () => {
             </div>
           </div>
         </div>
-      </div>
+
       <Footer/>
     </>
   );

@@ -1,35 +1,22 @@
 import React from "react";
 import { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import IconButton from '@mui/material/IconButton';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import useAuthStore from "../zustand/useAuthStore";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import { CircularProgress } from "@mui/material";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Home = () => {
 
     const error = useAuthStore(s => s.loginError);
     const loginUser = useAuthStore(s => s.loginUser);
     const loading = useAuthStore(s => s.loading);
-    
+
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const isAtTop = useIsAtTop(5);
-
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-    const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -40,58 +27,68 @@ const Home = () => {
     }
 
     return (
-        <div className="main-container" style={{padding: '0rem 2rem'}}>
+        <div className="login">
 
             <ApiErrorAlert error={error} belowNavbar={isAtTop} fixed/>
 
-            <form className="main-form-container" onSubmit={handleSubmit}>
-                
-                <div className="home-title-container">
-                    <h1>Melden Sie sich an</h1>
+            <div className="login__card">
+
+                <div className="login__header">
+                    <div className="login__icon-circle">
+                        <FaLock />
+                    </div>
+                    <h1 className="login__title">Willkommen zurück</h1>
+                    <p className="login__subtitle">Melden Sie sich in Ihrem Admin-Konto an</p>
                 </div>
 
-                <TextField fullWidth required 
-                id="outlined-basic1" 
-                label="Email" 
-                variant="outlined" 
-                value={email} 
-                onChange={(e) => {setEmail(e.target.value)}}/>
+                <form className="login__form" onSubmit={handleSubmit}>
 
-                <FormControl fullWidth variant="outlined" required>
+                    <div className="login__field">
+                        <label className="login__label" htmlFor="login-email">E-Mail-Adresse</label>
+                        <div className="login__input-wrapper">
+                            <FaEnvelope className="login__input-icon" />
+                            <input
+                                id="login-email"
+                                className="login__input"
+                                type="email"
+                                placeholder="admin@beispiel.de"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
 
-                    <InputLabel htmlFor="outlined-adornment-password">Passwort</InputLabel>
-
-                    <OutlinedInput
-                    id="outlined-adornment-password"
-                    value={password}
-                    type={showPassword ? 'text' : 'password'}
-                    onChange={(e) => {
-                        const newPassword = e.target.value;
-                        setPassword(newPassword); 
-                    }}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
+                    <div className="login__field">
+                        <label className="login__label" htmlFor="login-password">Passwort</label>
+                        <div className="login__input-wrapper">
+                            <FaLock className="login__input-icon" />
+                            <input
+                                id="login-password"
+                                className="login__input"
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Passwort eingeben"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="login__toggle-pw"
+                                onClick={() => setShowPassword(prev => !prev)}
+                                tabIndex={-1}
                             >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Password"
-                    />
-                    
-                </FormControl>
+                                {showPassword ? <FaEye /> : <FaEyeSlash />}
+                            </button>
+                        </div>
+                    </div>
 
-                <button type="submit" className="btn">
-                    {loading ? <CircularProgress sx={{color: "white"}}/> : "WEITER"}
-                </button>
-                
-            </form>
+                    <button type="submit" className="login__submit" disabled={loading}>
+                        {loading ? <CircularProgress size={22} sx={{color: "white"}}/> : "Anmelden"}
+                    </button>
 
+                </form>
+            </div>
         </div>
     )
 }

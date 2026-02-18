@@ -17,9 +17,9 @@ describe('OTPInput', () => {
       const onChange = vi.fn()
       render(<OTPInput value="" onChange={onChange} />)
 
-      // Check for dash separators (5 dashes between 6 inputs)
-      const separators = screen.getAllByText('-')
-      expect(separators).toHaveLength(5)
+      // Em-dash separator only after the 3rd input (index 2)
+      const separators = screen.getAllByText('—')
+      expect(separators).toHaveLength(1)
     })
 
     it('displays current value in inputs', () => {

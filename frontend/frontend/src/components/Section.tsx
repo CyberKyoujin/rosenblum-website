@@ -32,7 +32,7 @@ const Section: React.FC<SectionProps> = ({badgeText, BadgeIcon, image, authoriti
                 </div>
 
                 { badgeText && BadgeIcon &&
-                <div className="home-badge" style={{gap: "1rem", padding: "0.5rem 1rem 0.5rem 1.5rem", margin: 0}}>
+                <div className="home-badge" style={{gap: "1rem", padding: "0.5rem 1rem 0.5rem 1.5rem", margin: 0, borderRadius: "15px"}}>
                     <p style={{lineHeight: "1.3rem", fontSize: "14px"}}>{t(badgeText)}</p>
                 </div>
                 }

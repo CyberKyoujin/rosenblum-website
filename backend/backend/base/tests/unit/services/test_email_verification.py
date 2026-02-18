@@ -46,52 +46,53 @@ class TestGenerateVerificationCode:
 class TestSendVerificationCode:
     """Tests for send_verification_code function"""
 
-    @patch('base.services.email_verification.send_simple_email')
+    @patch('base.services.email_verification._send_html_email')
     @patch('base.services.email_verification.generate_verification_code')
     def test_sends_email_with_code(self, mock_generate, mock_send_email):
+        
+        
+        code = generate_verification_code()
         """Test verification email is sent with generated code"""
-        mock_generate.return_value = '123456'
+        mock_generate.return_value = code
 
-        result = send_verification_code(
+        send_verification_code(
             receiver_email='user@example.com',
             receiver_first_name='John',
-            receiver_last_name='Doe'
+            receiver_last_name='Doe',
+            verification_code=code
         )
 
-        assert result == '123456'
         mock_send_email.assert_called_once()
 
-        call_args = mock_send_email.call_args
-        assert call_args[0][0] == 'Ihr Verifizierungscode'  # subject
-        assert '123456' in call_args[0][1]  # message contains code
-        assert 'user@example.com' == call_args[0][2]  # recipient
+        kwargs = mock_send_email.call_args.kwargs
+        assert kwargs['subject'] == 'Ihr Verifizierungscode'
+        assert str(code) in kwargs['plain_text']
+        assert kwargs['recipient_email'] == 'user@example.com'
 
-    @patch('base.services.email_verification.send_simple_email')
+    @patch('base.services.email_verification._send_html_email')
     @patch('base.services.email_verification.generate_verification_code')
     def test_email_contains_user_name(self, mock_generate, mock_send_email):
         """Test email message contains user's name"""
-        mock_generate.return_value = '654321'
+        
+        code = generate_verification_code()
+        
+        mock_generate.return_value = code
 
         send_verification_code(
             receiver_email='user@example.com',
             receiver_first_name='Jane',
-            receiver_last_name='Smith'
+            receiver_last_name='Smith',
+            verification_code=code
         )
 
-        call_args = mock_send_email.call_args
-        message = call_args[0][1]
+        kwargs = mock_send_email.call_args.kwargs
+        assert 'Jane' in kwargs['plain_text']
+        assert 'Smith' in kwargs['plain_text']
 
-        assert 'Jane' in message
-        assert 'Smith' in message
-
-    @patch('base.services.email_verification.send_simple_email')
+    @patch('base.services.email_verification._send_html_email')
     def test_returns_generated_code(self, mock_send_email):
-        """Test function returns the generated code"""
-        code = send_verification_code(
-            receiver_email='user@example.com',
-            receiver_first_name='Test',
-            receiver_last_name='User'
-        )
+        
+        code = generate_verification_code()
 
         assert len(code) == 6
         assert code.isdigit()

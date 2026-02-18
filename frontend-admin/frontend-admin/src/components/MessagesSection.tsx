@@ -92,22 +92,25 @@ const MessagesSection = ({messages, userId, user, customerData, loading} : Messa
 
                                 {message.files.length > 0 && (
 
-                                <div className="small-files-container">
+                                <div className="msg-files">
 
                                     {message.files.map((file) => (
 
-                                    <div className="small-file-container" key={file.id || file.file_name}>
+                                    <div className="msg-file" key={file.id || file.file_name}>
 
-                                        <FaFile style={{ color: 'rgb(76,121,212)', fontSize: '30px' }} />
-                                        <p>
-                                        {file.file_name?.length > 8
-                                            ? file.file_name.slice(0, 7) + '...'
-                                            : file.file_name}
-                                        </p>
+                                        <div className="msg-file__icon">
+                                            <FaFile />
+                                        </div>
+                                        <div className="msg-file__info">
+                                            <span className="msg-file__name">
+                                                {file.file_name?.length > 18
+                                                    ? file.file_name.slice(0, 17) + '...'
+                                                    : file.file_name}
+                                            </span>
+                                            <span className="msg-file__size">{file.file_size} MB</span>
+                                        </div>
 
-                                        <p>{file.file_size} MB</p>
-
-                                        <button className="download-btn-small" onClick={() => window.open(file.file, '_blank')}><IoMdDownload/></button>
+                                        <button className="msg-file__download" onClick={() => window.open(file.file, '_blank')}><IoMdDownload/></button>
 
                                     </div>
 

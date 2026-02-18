@@ -20,6 +20,8 @@ export const OrderFilter = () => {
   const [status, setStatus] = useState('');
   const [ordering, setOrdering] = useState('-timestamp');
   const [isNew, setIsNew] = useState<boolean | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState('');
+  const [paymentType, setPaymentType] = useState('');
 
   const fetchOrders = useOrdersStore(s => s.fetchOrders);
 
@@ -27,18 +29,20 @@ export const OrderFilter = () => {
     setStatus('');
     setOrdering('-timestamp');
     setIsNew(null);
+    setPaymentStatus('');
+    setPaymentType('');
   };
 
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
 
-      setFilters({status, isNew, ordering} as OrderFiltersParams);
+      setFilters({status, isNew, ordering, payment_status: paymentStatus, payment_type: paymentType} as OrderFiltersParams);
 
     }, 1000);
 
     return () => clearTimeout(delayDebounce);
-  }, [setFilters, status, isNew, ordering, fetchOrders]);
+  }, [setFilters, status, isNew, ordering, paymentStatus, paymentType, fetchOrders]);
 
   
 
@@ -72,6 +76,33 @@ export const OrderFilter = () => {
               >
                 <MenuItem value="-timestamp">Datum: Neue</MenuItem>
                 <MenuItem value="timestamp">Datum: Alte</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth size="small">
+              <InputLabel>Zahlungsstatus</InputLabel>
+              <Select
+                value={paymentStatus}
+                label="Zahlungsstatus"
+                onChange={(e) => setPaymentStatus(e.target.value)}
+              >
+                <MenuItem value=""><em>Alle</em></MenuItem>
+                <MenuItem value="paid">Bezahlt</MenuItem>
+                <MenuItem value="not_paid">Nicht bezahlt</MenuItem>
+                <MenuItem value="payment_pending">Ausstehend</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth size="small">
+              <InputLabel>Zahlungsart</InputLabel>
+              <Select
+                value={paymentType}
+                label="Zahlungsart"
+                onChange={(e) => setPaymentType(e.target.value)}
+              >
+                <MenuItem value=""><em>Alle</em></MenuItem>
+                <MenuItem value="rechnung">Rechnung</MenuItem>
+                <MenuItem value="stripe">Online-Zahlung</MenuItem>
               </Select>
             </FormControl>
 

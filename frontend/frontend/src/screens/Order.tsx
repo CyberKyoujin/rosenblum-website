@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { useIsAtTop } from '../hooks/useIsAtTop';
-import NavigationSection from '../components/NavigationSection';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import Footer from "../components/Footer";
-import OrderForm from '../components/OrderForm';
 import { useOrder } from '../hooks/useOrder';
+import OrderStepper from "../components/OrderStepper";
+import { IoInformationCircleOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 const Order = () => {
   const { t } = useTranslation();
@@ -14,8 +15,8 @@ const Order = () => {
   return (
     <>
       <div className="main-app-container">
+
         <ApiErrorAlert error={logic.error} belowNavbar={isAtTop} fixed />
-        <NavigationSection first_link="Auftrag" />
 
         <div className="order-title">
           <div className="order-title-text">
@@ -24,7 +25,17 @@ const Order = () => {
           </div>
         </div>
 
-        <OrderForm logic={logic} />
+        <div className="order-info-banner">
+          <IoInformationCircleOutline className="order-info-banner__icon" />
+          <p className="order-info-banner__text">
+            Dieses Formular ist für die Bestellung von Übersetzungen oder Kostenvoranschlägen gedacht.
+            Haben Sie allgemeine Fragen? Besuchen Sie unsere <Link to="/pricing" className="order-info-banner__link">Preise</Link> oder <Link to="/faq" className="order-info-banner__link">FAQ</Link> Seite.
+            Für individuelle Anfragen nutzen Sie bitte unser <Link to="/contact" className="order-info-banner__link">Kontaktformular</Link>.
+          </p>
+        </div>
+
+        <OrderStepper logic={logic}/>
+
       </div>
       <Footer />
     </>

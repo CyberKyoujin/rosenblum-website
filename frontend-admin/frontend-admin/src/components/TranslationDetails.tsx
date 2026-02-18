@@ -8,7 +8,7 @@ import ApiErrorAlert from './ApiErrorAlert';
 import ErrorView from './ErrorView';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 import OrderDeleteNotification from './OrderDeleteNotification';
-import { FaRegTrashAlt } from 'react-icons/fa';
+import { IoTrashOutline } from 'react-icons/io5';
 import TranslationDetailsContent from './TranslationDetailsContent';
 
 const TranslationDetails = () => {
@@ -60,8 +60,8 @@ const TranslationDetails = () => {
 
                     </div>
 
-                    <button className='order-action-btn red-btn' onClick={() => setNotificationOpen(!notificationOpen)}>
-                        <FaRegTrashAlt size={15}/>
+                    <button className='od__btn od__btn--danger' type="button" onClick={() => setNotificationOpen(!notificationOpen)}>
+                        <IoTrashOutline />
                         Löschen
                     </button>
                     

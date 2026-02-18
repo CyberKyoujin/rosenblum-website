@@ -77,6 +77,13 @@ services:
 
       # Google Gemini
       GEMINI_API_KEY: ${GEMINI_API_KEY}
+
+      # Stripe
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+
+      # LexOffice
+      LEX_OFFICE_AUTH_TOKEN: ${LEX_OFFICE_AUTH_TOKEN}
     volumes:
       - backend_static:/app/static
       - backend_media:/app/media
@@ -106,6 +113,7 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL:-}
+        VITE_STRIPE_PUBLIC_KEY: ${VITE_STRIPE_PUBLIC_KEY:-}
     container_name: rosenblum-frontend
     restart: unless-stopped
     expose:
@@ -140,6 +148,36 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    networks:
+      - rosenblum-network
+
+  # ==========================================
+  # Django-Q Async Task Worker
+  # ==========================================
+  django-q-worker:
+    build:
+      context: ./backend/backend
+      dockerfile: Dockerfile
+    container_name: rosenblum-django-q
+    restart: unless-stopped
+    command: python manage.py qcluster
+    environment:
+      DEBUG: ${DEBUG:-False}
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
+      DATABASE_URL: postgres://${POSTGRES_USER:-rosenblum}:${POSTGRES_PASSWORD:-rosenblum_secret}@db:5432/${POSTGRES_DB:-rosenblum}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      LEX_OFFICE_AUTH_TOKEN: ${LEX_OFFICE_AUTH_TOKEN}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      GS_BUCKET_NAME: ${GS_BUCKET_NAME}
+      GOOGLE_SERVICE_ACCOUNT_FILE: ${GOOGLE_SERVICE_ACCOUNT_FILE:-service-account-file.json}
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - rosenblum-network
 

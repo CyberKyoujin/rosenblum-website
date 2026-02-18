@@ -2,10 +2,10 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from base.models import CustomUser, Order, RequestAnswer, RequestObject
+from base.models import CustomUser, Order, RequestAnswer, RequestObject, CostEstimate
 from django.db import transaction
 from base.models import Message
-from base.services.email_notifications import send_request_created, send_request_answered_email, send_new_message_email, send_order_ready_email, send_message_account_created
+from base.services.email_notifications import send_cost_estimate_email, send_request_created, send_request_answered_email, send_new_message_email, send_order_ready_email, send_message_account_created
 
 
 @receiver(post_save, sender=CustomUser)
@@ -13,7 +13,7 @@ def user_created_handler(sender, instance: CustomUser, created: bool, **kwargs):
     if not created:
         return
     
-    send_message_account_created(instance.email, instance.first_name, instance.last_name)
+    transaction.on_commit(lambda: send_message_account_created(instance.email, instance.first_name, instance.last_name))
 
 
 @receiver(post_save, sender=Message)
@@ -25,7 +25,7 @@ def message_created_handler(sender, instance: Message, created: bool, **kwargs):
     if not instance.receiver or not instance.receiver.email:
         return
     
-    send_new_message_email(instance.receiver.email)
+    transaction.on_commit(lambda: send_new_message_email(instance.receiver.email))
     
     
 @receiver(pre_save, sender=Order)
@@ -62,7 +62,7 @@ def request_created_handler(sender, instance: RequestObject, created: bool, **kw
     if not instance.email or not instance.name:
         return
     
-    send_request_created(instance.email, instance.pk, instance.name)
+    transaction.on_commit(lambda: send_request_created(instance.email, instance.pk, instance.name))
             
     
 @receiver(post_save, sender=RequestAnswer)
@@ -74,4 +74,23 @@ def request_answer_created_handler(sender, instance: RequestAnswer, created: boo
     if not instance.request.email or not instance.request.name:
         return
     
-    send_request_answered_email(instance.request.email, instance.request.pk, instance.answer_text, instance.request.name)
+    transaction.on_commit(lambda: send_request_answered_email(instance.request.email, instance.request.pk, instance.answer_text, instance.request.name))
+    
+@receiver(post_save, sender=CostEstimate)
+def cost_estimate_created_handler(sender, instance: CostEstimate, created: bool, **kwargs):
+    
+    if not created: 
+        return
+    
+    if not instance.order.email or not instance.order.name:
+        return
+    
+    order = instance.order
+    email = None
+    if order.user and order.user.email:
+        email = order.user.email
+    elif order.email:
+        email = order.email
+
+    if email:
+        transaction.on_commit(lambda: send_cost_estimate_email(email, order.pk))

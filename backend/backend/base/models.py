@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
@@ -6,6 +7,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import timedelta
+from django.db.models import Sum
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -79,12 +81,23 @@ class Order(models.Model):
         PICK_UP_READY = "ready_pick_up"
         SENT = "sent"
         CANCELED = "canceled"
+        WAITING_FOR_PAYMENT = "waiting_for_payment"
         
     class OrderType(models.TextChoices):
-        COSTS_ESTIMATE = 'costs_estimate'
+        COSTS_ESTIMATE = 'kostenvoranschlag'
         ORDER = 'order'
         
-    
+    class PaymentType(models.TextChoices):
+        INVOICE = 'rechnung'
+        STRIPE = 'stripe'
+        
+    class PaymentStatus(models.TextChoices):
+        PAID = 'paid'
+        NOT_PAID = 'not_paid'
+        PAYMENT_PENDING = 'payment_pending'
+        PAYMENT_CANCELED = 'payment_canceled'
+        
+    guest_uuid = models.UUIDField(null=True, blank=True, unique=True)    
     user = models.ForeignKey(CustomUser,models.CASCADE,null=True,blank=True)
     name = models.CharField(max_length = 264)
     email = models.EmailField(max_length = 264)
@@ -97,7 +110,11 @@ class Order(models.Model):
     status = models.CharField(max_length=40, choices=Status.choices, default=Status.REVIEW)
     order_type = models.CharField(max_length=40, choices=OrderType.choices, default=OrderType.ORDER)
     timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    is_new = models.BooleanField(default=True, null=True, blank=True)
+    is_new = models.BooleanField(default=True)
+    payment_type = models.CharField(max_length=40, choices=PaymentType.choices, null=True, blank=True)
+    payment_status = models.CharField(max_length=40, choices=PaymentStatus.choices, default=PaymentStatus.NOT_PAID)
+    lexoffice_id = models.CharField(max_length=64, null=True, blank=True)
+    stripe_payment_intent_id = models.CharField(max_length=128, null=True, blank=True)
 
     def __str__(self):
         return f'Order number {self.pk}'
@@ -105,6 +122,30 @@ class Order(models.Model):
     def formatted_timestamp(self) -> str:
         local_timestamp = timezone.localtime(self.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
+    
+    @property
+    def total_price(self):
+        total_data = self.documents.aggregate(total=Sum('price'))
+        total_price = total_data['total']
+        return total_price if total_price is not None else 0
+    
+    
+class Document(models.Model):
+    
+    class Status(models.TextChoices):
+        UA = 'ua'
+        RU = 'ru'
+        DE = 'de'
+        
+    order = models.ForeignKey(Order,models.CASCADE, related_name='documents', blank=True, null=True)
+    language = models.CharField(max_length=40, choices=Status.choices, default=Status.UA)
+    type = models.CharField(max_length=255, default="Sonstiges Dokument")
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    individual_price = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Document {self.pk} to {self.order}'
+    
     
 class Message(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_messages', on_delete=models.CASCADE, blank=True, null=True)
@@ -116,10 +157,6 @@ class Message(models.Model):
     def formatted_timestamp(self) -> str:
         local_timestamp = timezone.localtime(self.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
-
-class Chat(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    pass
 
 
 class File(models.Model):
@@ -139,6 +176,20 @@ class File(models.Model):
             return f'File {self.pk} to {self.order}'
         else: 
             return f'File {self.pk} to {self.message}'
+        
+class CostEstimate(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='cost_estimate')
+    file = models.FileField(upload_to='cost_estimates/')
+    
+    def __str__(self):
+        return f'Cost estimate for {self.order}'
+    
+class Invoice(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='invoice')
+    file = models.FileField(upload_to='invoices/')
+    
+    def __str__(self):
+        return f'Invoice for {self.order}'
         
 class RequestObject(models.Model):
     name = models.CharField(max_length=255)

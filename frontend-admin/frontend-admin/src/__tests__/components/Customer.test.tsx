@@ -42,16 +42,17 @@ describe('Customer', () => {
   }
 
   describe('rendering', () => {
-    it('renders customer container', () => {
+    it('renders customer container with oi class', () => {
       const { container } = renderCustomer()
 
-      expect(container.querySelector('.customer-container')).toBeInTheDocument()
+      expect(container.querySelector('.oi')).toBeInTheDocument()
     })
 
     it('renders customer full name', () => {
       renderCustomer({ first_name: 'Jane', last_name: 'Smith' })
 
-      expect(screen.getByText('Jane Smith')).toBeInTheDocument()
+      expect(screen.getByText(/Jane/)).toBeInTheDocument()
+      expect(screen.getByText(/Smith/)).toBeInTheDocument()
     })
 
     it('renders customer email', () => {
@@ -60,16 +61,16 @@ describe('Customer', () => {
       expect(screen.getByText('test@example.com')).toBeInTheDocument()
     })
 
-    it('renders order count', () => {
+    it('renders order count with label', () => {
       renderCustomer({ orders: '10' })
 
-      expect(screen.getByText('10')).toBeInTheDocument()
+      expect(screen.getByText('10 Aufträge')).toBeInTheDocument()
     })
 
     it('renders orders label in German', () => {
       renderCustomer()
 
-      expect(screen.getByText('Aufträge')).toBeInTheDocument()
+      expect(screen.getByText('5 Aufträge')).toBeInTheDocument()
     })
   })
 
@@ -95,11 +96,11 @@ describe('Customer', () => {
       expect(avatar).toHaveAttribute('src', 'default-avatar-path.png')
     })
 
-    it('has customer-avatar class', () => {
+    it('has oi__avatar class', () => {
       renderCustomer()
 
       const avatar = screen.getByRole('img')
-      expect(avatar).toHaveClass('customer-avatar')
+      expect(avatar).toHaveClass('oi__avatar')
     })
 
     it('has no-referrer policy', () => {
@@ -114,7 +115,7 @@ describe('Customer', () => {
     it('navigates to customer detail page on click', () => {
       const { container } = renderCustomer({ id: 42 })
 
-      fireEvent.click(container.querySelector('.customer-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockNavigate).toHaveBeenCalledWith('/user/42')
     })
@@ -122,54 +123,43 @@ describe('Customer', () => {
     it('uses correct id in navigation path', () => {
       const { container } = renderCustomer({ id: 999 })
 
-      fireEvent.click(container.querySelector('.customer-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockNavigate).toHaveBeenCalledWith('/user/999')
     })
   })
 
   describe('structure', () => {
-    it('contains customer-main section', () => {
+    it('contains oi__content section', () => {
       const { container } = renderCustomer()
 
-      expect(container.querySelector('.customer-main')).toBeInTheDocument()
+      expect(container.querySelector('.oi__content')).toBeInTheDocument()
     })
 
-    it('contains customer-top-section', () => {
+    it('contains oi__right section', () => {
       const { container } = renderCustomer()
 
-      expect(container.querySelector('.customer-top-section')).toBeInTheDocument()
+      expect(container.querySelector('.oi__right')).toBeInTheDocument()
     })
 
-    it('contains customer-content section', () => {
-      const { container } = renderCustomer()
-
-      expect(container.querySelector('.customer-content')).toBeInTheDocument()
-    })
-
-    it('contains customer-bottom section', () => {
-      const { container } = renderCustomer()
-
-      expect(container.querySelector('.customer-bottom')).toBeInTheDocument()
-    })
-
-    it('renders name in h3 heading', () => {
+    it('renders name in oi__id span', () => {
       renderCustomer({ first_name: 'Test', last_name: 'User' })
 
-      const heading = screen.getByRole('heading', { level: 3 })
-      expect(heading).toHaveTextContent('Test User')
+      const nameEl = document.querySelector('.oi__id')
+      expect(nameEl).toBeInTheDocument()
+      expect(nameEl).toHaveTextContent('Test User')
     })
 
-    it('has order-customer-name class on email', () => {
+    it('has oi__name class on email', () => {
       const { container } = renderCustomer()
 
-      expect(container.querySelector('.order-customer-name')).toBeInTheDocument()
+      expect(container.querySelector('.oi__name')).toBeInTheDocument()
     })
 
-    it('has customer-orders class on orders label', () => {
+    it('has oi__order-count class on orders label', () => {
       const { container } = renderCustomer()
 
-      expect(container.querySelector('.customer-orders')).toBeInTheDocument()
+      expect(container.querySelector('.oi__order-count')).toBeInTheDocument()
     })
   })
 })

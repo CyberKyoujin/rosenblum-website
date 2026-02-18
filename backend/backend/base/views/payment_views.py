@@ -1,0 +1,134 @@
+import logging
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+from decouple import config
+import stripe
+from django.db import IntegrityError, transaction
+from base.models import Order
+from django_q.tasks import async_task
+from base.services.tasks import create_lex_office_invoice
+import sentry_sdk
+from decimal import Decimal
+
+stripe.api_key = config('STRIPE_SECRET_KEY')
+
+logger = logging.getLogger(__name__)
+
+class CreatePaymentIntent(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        order_id = request.data.get('order_id') 
+        
+        if not order_id:
+            logger.warning("[Stripe PaymentIntent]: Invalid or missing order_id=%s in request.", order_id)
+            return Response({'error': 'order_id is required'}, status=400)
+        
+        logger.info("[Stripe PaymentIntent]: Payment intent triggered, order_id=%s", order_id)
+
+        try:
+            
+            order = Order.objects.get(pk=order_id)
+            
+            if order.payment_status == Order.PaymentStatus.PAID:
+                logger.warning("[Stripe PaymentIntent]: Attempt to create payment intent for already paid order_id=%s", order_id)
+                return Response({'error': 'Order already paid'}, status=400)
+            
+            total_price = order.total_price
+            
+            if total_price <= 0:
+                logger.warning("[Stripe PaymentIntent]: Total price is zero or None for order_id=%s. Cannot create payment intent.", order_id)
+                return Response({'error': 'No documents found for this order'}, status=400)
+             
+            amount = int(total_price * Decimal('100'))
+            
+            intent = stripe.PaymentIntent.create(
+                amount=amount,
+                currency='eur',
+                automatic_payment_methods={
+                    'enabled': True,
+                },
+                metadata={'order_id': str(order_id) if order_id else ''}
+            )
+            
+            logger.info("[Stripe PaymentIntent]: Payment intent created successfully for order_id=%s, amount=%s", order_id, amount)    
+
+            return Response({
+                'clientSecret': intent['client_secret']
+            }, status=200)
+                
+        except Exception as e:
+            logger.exception("[Stripe PaymentIntent]: Unexpected error creating payment intent for order_id=%s: %s", order_id, e)
+            return Response({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    endpoint_secret = config('STRIPE_WEBHOOK_SECRET', default='')
+
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        logger.error("[Stripe Webhook] ValueError: %s", e)
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        logger.error("[Stripe Webhook] SignatureVerificationError: %s", e)
+        return HttpResponse(status=400)
+
+    logger.info("[Stripe Webhook] Stripe Event Received: %s", event['type'])
+    
+    # 1. Extract event type (succeeded)
+
+    if event['type'] == 'payment_intent.succeeded':
+        
+        payment_intent = event['data']['object']
+        order_id = payment_intent['metadata'].get('order_id')
+        
+        # Assigning sentry tag for better error tracking
+        sentry_sdk.set_tag("order_id", order_id)
+        
+        logger.info("[Stripe Webhook] PaymentIntent succeeded for order_id: %s", order_id)
+        
+        try:
+            
+            with transaction.atomic():
+            
+                order = Order.objects.select_for_update().get(pk=order_id)
+                
+                if order.payment_status != 'paid':
+                        
+                    order.payment_status = 'paid'
+                    order.stripe_payment_intent_id = payment_intent['id']
+                    
+                    order.save(update_fields=['payment_status', 'stripe_payment_intent_id'])
+                    
+                    # Async lex office task only on successfull DB commit
+                    transaction.on_commit(lambda: async_task(create_lex_office_invoice, order_id))
+                    
+                    logger.info("[Stripe Webhook]: Order %s successfully processed via webhook.", order_id)
+                    return HttpResponse(status=200)
+                else:
+                    logger.info("[Stripe Webhook]: Order %s already marked as paid, skipping.", order_id)
+                    return HttpResponse(status=200)
+            
+        except Order.DoesNotExist:
+            logger.error("[Stripe Webhook]: Order with id %s does not exist or not found.", order_id)
+            sentry_sdk.capture_message(f"[Stripe Webhook] Error: Order with id {order_id} not found", level='error')
+            return HttpResponse(status=200)
+            
+        except Exception as e:
+            logger.exception("[Stripe Webhook]: Unexpected error in webhook for order %s: %s", order_id, e)
+            return HttpResponse(status=500)
+    else:
+        logger.debug("[Stripe Webhook] Unknown event type: %s", event['type'])
+
+    return HttpResponse(status=200)

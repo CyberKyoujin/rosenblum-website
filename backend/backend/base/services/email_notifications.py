@@ -1,77 +1,297 @@
+import logging
 from django.conf import settings
-from django.core.mail import send_mail
+
+logger = logging.getLogger(__name__)
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+from base.models import CostEstimate, Order
+
+
+def _send_html_email(subject: str, plain_text: str, recipient_email: str, context: dict, file_content=None, file_name=None):
+    html_body = render_to_string('emails/base_email.html', context)
+
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body=plain_text,
+        from_email=settings.EMAIL_HOST_USER,
+        to=[recipient_email],
+    )
+    
+    msg.attach_alternative(html_body, 'text/html')
+    
+    if file_content:
+        attachment_name = f'{file_name}.pdf' if file_name else 'Dokument.pdf'
+        msg.attach(attachment_name, file_content, 'application/pdf')
+        
+    try:
+        msg.send(fail_silently=False)
+    except Exception as e:
+        logger.error("[EMAIL] Failed to send email to %s: %s", recipient_email, e)
 
 
 def send_simple_email(subject: str, message: str, recipient_email: str):
-    send_mail(
+    _send_html_email(
         subject=subject,
-        message=message,
-        from_email=settings.EMAIL_HOST_USER,
-        recipient_list=[recipient_email],
-        fail_silently=False
+        plain_text=message,
+        recipient_email=recipient_email,
+        context={
+            'body_lines': [message],
+        },
     )
-    
+
+
 def send_reset_link_email(receiver_email: str, receiver_first_name: str, receiver_last_name: str, reset_link: str):
     subject = "Passwort-Reset Link"
-    message = (
+    plain = (
         f"Hallo, {receiver_first_name} {receiver_last_name}\n"
         f"Hier ist Ihr Link zum Passwort-Reset: {reset_link}\n"
+        "Mit freundlichen Grüßen,\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )
-    
-    send_simple_email(subject, message, receiver_email)
-    
+
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=receiver_email,
+        context={
+            'title': 'Passwort zurücksetzen',
+            'greeting': f'Hallo, {receiver_first_name} {receiver_last_name}',
+            'body_lines': [
+                'Sie haben eine Anfrage zum Zurücksetzen Ihres Passworts gestellt.',
+                'Klicken Sie auf den Button unten, um ein neues Passwort festzulegen.',
+            ],
+            'button_url': reset_link,
+            'button_text': 'Passwort zurücksetzen',
+        },
+    )
+
+
 def send_message_account_created(receiver_email: str, receiver_first_name: str, receiver_last_name: str):
     subject = "Willkommen bei Rosenblum Übersetzungsbüro!"
-    message = (
+    plain = (
         f"Hallo, {receiver_first_name} {receiver_last_name}\n"
         "Ihr Konto wurde erfolgreich registriert.\n"
+        "Mit freundlichen Grüßen,\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )
 
-    send_simple_email(subject, message, receiver_email)
-    
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=receiver_email,
+        context={
+            'title': 'Willkommen!',
+            'greeting': f'Hallo, {receiver_first_name} {receiver_last_name}',
+            'body_lines': [
+                'Ihr Konto wurde erfolgreich registriert.',
+                'Sie können sich jetzt anmelden und unsere Dienstleistungen nutzen.',
+            ],
+        },
+    )
+
+
 def send_new_message_email(receiver_email: str):
     subject = "Sie haben eine neue Nachricht!"
-    message = (
+    plain = (
         "Eine neue Nachricht wurde für Sie zugestellt.\n\n"
-        "Sie können die Nachricht unter folgendem Link einsehen: "
-        "localhost:3000/messages\n"
+        "Mit freundlichen Grüßen,\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )
 
-    send_simple_email(subject, message, receiver_email)
-    
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=receiver_email,
+        context={
+            'title': 'Neue Nachricht',
+            'body_lines': [
+                'Eine neue Nachricht wurde für Sie zugestellt.',
+                'Melden Sie sich in Ihrem Konto an, um die Nachricht einzusehen.',
+            ],
+        },
+    )
+
+
 def send_order_ready_email(user_email: str, order_id: int):
     subject = "Ihre Übersetzung ist fertig!"
-    message = (
+    plain = (
         f"Ihre Bestellung Nr. {order_id} ist fertiggestellt.\n\n"
         "Sie können die Dokumente jetzt in Ihrem Profil einsehen oder abholen.\n\n"
         "Mit freundlichen Grüßen,\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )
-    
-    send_simple_email(subject, message, user_email)
-    
+
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        context={
+            'title': 'Ihre Übersetzung ist fertig!',
+            'body_lines': [
+                'Wir freuen uns, Ihnen mitteilen zu können, dass Ihre Übersetzung abgeschlossen ist.',
+                'Sie können die Dokumente jetzt in Ihrem Profil einsehen oder abholen.',
+            ],
+            'info_box_lines': [
+                f'Bestellnr.: #ro-{order_id}',
+            ],
+        },
+    )
+
+
 def send_request_created(user_email: str, request_id: int, requester_name: str):
     subject = "Ihre Anfrage ist erfolgreich versandt!"
-    message = (
+    plain = (
         f"Hallo, {requester_name}\n\n"
-        f"Ihre Anfrage #{request_id} ist erfolgreich bei uns eingegangen, wir bearbeiten die schnellstmöglich\n\n"
+        f"Ihre Anfrage #{request_id} ist erfolgreich bei uns eingegangen, "
+        "wir bearbeiten die schnellstmöglich.\n\n"
         "Mit freundlichen Grüßen,\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )
-    
-    send_simple_email(subject, message, user_email)
-    
+
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        context={
+            'title': 'Anfrage eingegangen',
+            'greeting': f'Hallo, {requester_name}',
+            'body_lines': [
+                f'Ihre Anfrage #{request_id} ist erfolgreich bei uns eingegangen.',
+                'Wir bearbeiten Ihre Anfrage schnellstmöglich und melden uns bei Ihnen.',
+            ],
+        },
+    )
+
 def send_request_answered_email(user_email: str, request_id: int, answer_text: str, requester_name: str):
     subject = "Antwort zu Ihrer Anfrage!"
-    message = (
-        f"Antwort zum Anfrage #{request_id}.\n\n"
+    plain = (
         f"Hallo, {requester_name}\n\n"
+        f"Antwort zur Anfrage #{request_id}:\n\n"
         f"{answer_text}\n\n"
         "Mit freundlichen Grüßen,\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )
+
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        context={
+            'title': f'Antwort zu Anfrage #{request_id}',
+            'greeting': f'Hallo, {requester_name}',
+            'body_lines': [
+                'Wir haben auf Ihre Anfrage geantwortet:',
+            ],
+            'info_box_lines': [answer_text],
+        },
+    )
     
-    send_simple_email(subject, message, user_email)
+def _send_invoice_email(order, pdf_bytes):
+    subject = "Ihre Rechnung — Übersetzungsbüro Rosenblum"
+    plain = (
+        f"Hallo {order.name},\n\n"
+        f"anbei erhalten Sie die Rechnung zu Ihrer Bestellung #{order.pk}.\n\n"
+        "Mit freundlichen Grüßen,\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=order.email,
+        file_name=f'Rechnung_{order.pk}',
+        context={
+            'title': 'Ihre Rechnung',
+            'greeting': f'Hallo {order.name}',
+            'body_lines': [
+                f'Anbei erhalten Sie die Rechnung zu Ihrer Bestellung #ro-{order.pk}.',
+                'Bei Fragen stehen wir Ihnen gerne zur Verfügung.',
+            ],
+            'info_box_lines': [
+                f'Bestellnr.: #ro-{order.pk}',
+            ],
+        },
+        file_content=pdf_bytes,
+    )
+
+    logger.info("[EMAIL] Invoice email sent to %s for order %s", order.email, order.pk)
+    
+def send_cost_estimate_email(user_email: str, order_id: int):
+    try:
+        order = Order.objects.get(pk=order_id)
+    except Order.DoesNotExist:
+        logger.error("[EMAIL] Order %s not found, cannot send cost estimate.", order_id)
+        return
+
+    subject = "Ihr Kostenvoranschlag ist bereit!"
+    
+    # TODO: Вынести URL фронтенда в настройки и брать оттуда, с фоллбеком на localhost для разработки
+    
+    # Берем URL из настроек или фоллбэк на локалхост для разработки
+    frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+
+    if order.guest_uuid:
+        payment_link = f"{frontend_url}/guest/{order_id}/{order.guest_uuid}"
+        plain = (
+            f"Hallo, {order.name}\n\n"
+            f"Ihr Kostenvoranschlag für die Bestellung #{order_id} ist jetzt verfügbar.\n"
+            f"Sie können ihre Bestellung unter folgendem Link bezahlen: {payment_link}\n\n"
+            "Mit freundlichen Grüßen,\n"
+            "Ihr Übersetzungsbüro Rosenblum"
+        )
+        context = {
+            'title': f'Kostenvoranschlag für Bestellung #{order_id}',
+            'body_lines': [
+                f'Hallo, {order.name}\n\n'
+                'Ihr Kostenvoranschlag ist jetzt verfügbar.',
+                'Sie können ihre Bestellung unter folgendem Link bezahlen und den Status Ihrer Bestellung verfolgen:',
+            ],
+            'button_url': payment_link,
+            'button_text': 'Auftrag bezahlen und verfolgen',
+        }
+    else:
+        payment_link = f"{frontend_url}/order/{order_id}"
+        plain = (
+            f"Hallo, {order.name}\n\n"
+            f"Ihr Kostenvoranschlag für die Bestellung #{order_id} ist jetzt verfügbar.\n"
+            f"Sie können ihn im Anhang oder in Ihrem Profil einsehen und unter folgendem Link bezahlen: {payment_link}\n\n"
+            "Mit freundlichen Grüßen,\n"
+            "Ihr Übersetzungsbüro Rosenblum"
+        )
+        context = {
+            'title': f'Kostenvoranschlag für Bestellung #{order_id}',
+            'body_lines': [
+                f"Hallo, {order.name}\n\n",
+                'Ihr Kostenvoranschlag ist jetzt verfügbar.',
+                'Sie können ihn im Anhang oder in Ihrem Profil einsehen.',
+            ],
+            'button_url': payment_link,
+            'button_text': 'Zum Auftrag',
+            'info_box_lines': [f'Bestellnr.: #ro-{order_id}'],
+        }
+
+    file_content = None
+    cost_estimate = CostEstimate.objects.filter(order=order).first()
+    
+    logger.info(f"[EMAIL]: Payment link for order {order_id} to user {user_email}: {payment_link}, Anonymous: {order.guest_uuid}")
+
+    if cost_estimate and cost_estimate.file:
+        try:
+            with cost_estimate.file.open(mode='rb') as f:
+                file_content = f.read()
+        except Exception as e:
+            logger.error(f"[EMAIL] Error reading cost estimate file for order {order_id}: {e}")
+    else:
+        logger.warning(f"[EMAIL] No CostEstimate found for order {order_id}, sending email without attachment.")
+
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        file_content=file_content,
+        file_name=f'Kostenvoranschlag_{order_id}',
+        context=context
+    )
+    
+    logger.info("[EMAIL] Cost estimate email sent to %s for order %s", user_email, order_id)

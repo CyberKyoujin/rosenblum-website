@@ -3,19 +3,18 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import AppSkeleton from "./Skeleton";
 import ErrorView from "./ErrorView";
-import Divider from '@mui/material/Divider';
 import { IconType } from "react-icons/lib";
-import TextField from '@mui/material/TextField';
 import { ApiErrorResponse } from "../types/error";
 import { OrderFiltersParams } from "../types/order";
 import { RequestFiltersParams } from "../types/request";
 import { LuSearchX } from "react-icons/lu";
+import { IoSearchOutline } from "react-icons/io5";
 
 
 interface PaginatedData<T> {
     count: number;
     results: T[];
-    new_count?: number; 
+    new_count?: number;
 }
 
 interface DashboardSectionProps<T extends {id: number}> {
@@ -31,8 +30,8 @@ interface DashboardSectionProps<T extends {id: number}> {
 }
 
 const DashboardSection = <T extends { id: number }> ({
-    data, 
-    fetchData, 
+    data,
+    fetchData,
     ItemComponent,
     title,
     Icon,
@@ -44,16 +43,16 @@ const DashboardSection = <T extends { id: number }> ({
 
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
-    
+
     const pageCount = useMemo(() => {
         const totalCount = data?.count ?? 0;
-        return Math.ceil(totalCount / 8); 
+        return Math.ceil(totalCount / 8);
     }, [data?.count]);
 
     const handleChange = (e: React.ChangeEvent<unknown>, value: number) => {
         e.preventDefault();
         setPage(value);
-        fetchData(value); 
+        fetchData(value);
     }
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,71 +65,62 @@ const DashboardSection = <T extends { id: number }> ({
         const delayDebounce = setTimeout(() => {
             setFilters({search: search});
 
-            if (search) setPage(1); 
-            
+            if (search) setPage(1);
+
         }, 1000)
 
         return () => clearTimeout(delayDebounce);
 
     }, [search, setFilters, fetchData]);
 
-    useEffect(() => {
-
-    })
-    
-
     return (
 
-        <section className="dashboard__orders-container">
+        <section className="ds">
 
-
-            <div className="dashboard-title-orders">
-
-                    <div className="dashboard-title-info">
-
-                        <Icon className="app-icon" size={40}/>
-                        <h1 style={{marginTop: '0.1rem'}}> {title} </h1>
-
-
-                        {data?.new_count &&
-
-                        <div className="new-items-counter">
-                            {data.new_count}
+            <div className="ds__header">
+                <div className="ds__title-row">
+                    <div className="ds__title-group">
+                        <div className="ds__icon">
+                            <Icon />
                         </div>
-
-                        }
-
+                        <h2 className="ds__title">{title}</h2>
+                        {data?.new_count ? (
+                            <span className="ds__badge">{data.new_count}</span>
+                        ) : null}
                     </div>
-
-                    <div className="dashboard-title-search">
-                        
+                    <div className="ds__actions">
                         <Filter/>
-
-                        <TextField onChange={handleSearchChange} value={search} id="outlined-basic" label="Suche" variant="outlined" />
-                        
                     </div>
-                    
+                </div>
+                <div className="ds__search">
+                    <IoSearchOutline className="ds__search-icon" />
+                    <input
+                        type="text"
+                        className="ds__search-input"
+                        placeholder="Suche..."
+                        value={search}
+                        onChange={handleSearchChange}
+                    />
+                </div>
             </div>
-
-            <Divider style={{marginTop: '1.5rem'}}/> 
 
             {error && <ErrorView/>}
 
             {loading && <AppSkeleton/>}
 
-            <div className="dashboard-orders-container"> 
+            <div className="ds__list">
 
-                {data?.count === 0 && 
+                {data?.count === 0 &&
 
-                    <div className="error-view-container">
-                        <LuSearchX className="app-icon" size={120}/>
-                        <h2>Keine {title} gefunden.</h2>
+                    <div className="ds__empty">
+                        <LuSearchX className="ds__empty-icon" />
+                        <p className="ds__empty-text">Keine {title} gefunden.</p>
                     </div>
-                
+
                 }
 
-                { data && data?.results.map((item) => 
-                                
+                { data && data?.results.map((item) =>
+
                     <ItemComponent key={item.id} {...item} />
 
                 )}
@@ -143,7 +133,7 @@ const DashboardSection = <T extends { id: number }> ({
 
                 }
 
-            </div>  
+            </div>
 
         </section>
 

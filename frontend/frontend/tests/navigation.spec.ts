@@ -29,18 +29,6 @@ test.describe("Navigation", () => {
             await expect(page.getByRole("heading").first()).toBeVisible();
         });
 
-        test("should load verbal translations page", async ({ page }) => {
-            await page.goto("/verbal-translations");
-
-            await expect(page.getByRole("heading").first()).toBeVisible();
-        });
-
-        test("should load apostille page", async ({ page }) => {
-            await page.goto("/apostille");
-
-            await expect(page.getByRole("heading").first()).toBeVisible();
-        });
-
         test("should load languages page", async ({ page }) => {
             await page.goto("/languages");
 

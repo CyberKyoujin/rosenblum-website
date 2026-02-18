@@ -57,15 +57,14 @@ class TestCustomUserSerializerValidation:
         assert 'email' in serializer.errors
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 class TestCustomUserSerializerCreate:
     """Tests for CustomUserSerializer create method"""
 
     @patch('base.serializers.send_verification_code')
-    def test_create_user_sends_verification_email(self, mock_send_verification):
-        """Test create() sends verification email"""
-        mock_send_verification.return_value = '123456'
-
+    @patch('base.serializers.generate_verification_code', return_value='123456')
+    def test_create_user_sends_verification_email(self, _mock_generate, mock_send_verification):
+        """Test create() sends verification email via on_commit"""
         data = {
             'email': 'newuser@example.com',
             'password': 'SecurePass123!',
@@ -82,17 +81,17 @@ class TestCustomUserSerializerCreate:
         assert user.first_name == 'John'
         assert user.last_name == 'Doe'
 
-        # Verify verification email was sent
+        # Verify verification email was sent with 4 args (email, first_name, last_name, code)
         mock_send_verification.assert_called_once_with(
-            'newuser@example.com', 'John', 'Doe'
+            'newuser@example.com', 'John', 'Doe', '123456'
         )
 
-    @patch('base.serializers.send_verification_code')
+    @patch('base.serializers.generate_verification_code')
     def test_create_user_creates_email_verification_record(self, mock_send_verification):
         """Test create() creates EmailVerification record"""
         from base.models import EmailVerification
-
-        mock_send_verification.return_value = '654321'
+    
+        mock_send_verification.return_value = "123456"
 
         data = {
             'email': 'verify@example.com',
@@ -107,7 +106,7 @@ class TestCustomUserSerializerCreate:
 
         # Verify EmailVerification record created
         verification = EmailVerification.objects.get(user=user)
-        assert verification.code == '654321'
+        assert verification.code == "123456"
         assert verification.used is False
 
     @patch('base.serializers.send_verification_code')

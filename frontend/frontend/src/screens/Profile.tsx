@@ -7,11 +7,15 @@ import ApiErrorView from '../components/ApiErrorView';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import NavigationSection from '../components/NavigationSection';
+
+import useOrderStore from "../zustand/useOrderStore";
 
 const Profile = () => {
 
     const { userDataLoading, userDataError } = useAuthStore();
+    const { fetchOrders } = useOrderStore();
 
     const [showOrderSuccessAlert, setShowOrderSuccessAlert] = useState(false);
     const [showUpdateSuccessAlert, setShowUpdateSuccessAlert] = useState(false);
@@ -19,6 +23,7 @@ const Profile = () => {
     const isAtTop = useIsAtTop(10);
     const location = useLocation();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     if (userDataLoading) {
         return <ProfileSkeleton/>
@@ -34,26 +39,30 @@ const Profile = () => {
             navigate(location.pathname, { replace: true, state: {} });
         }
     }, [location.state, navigate, location.pathname])
+
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders])
     
 
     return (
         <>
         {userDataError && <ApiErrorAlert error={userDataError} belowNavbar={isAtTop} fixed={true}/>}
 
-        {showOrderSuccessAlert && <ApiErrorAlert successMessage={"Der Auftrag erfolgreich bearbeitet"} belowNavbar={isAtTop} fixed/>}
+        {showOrderSuccessAlert && <ApiErrorAlert successMessage={t('orderSuccessMessage')} belowNavbar={isAtTop} fixed/>}
 
-        {showUpdateSuccessAlert && <ApiErrorAlert successMessage={"Profil erfolgreich bearbeitet"} belowNavbar={isAtTop} fixed/>}
+        {showUpdateSuccessAlert && <ApiErrorAlert successMessage={t('profileUpdateSuccess')} belowNavbar={isAtTop} fixed/>}
 
 
             <main className="main-app-container">
 
-                <NavigationSection first_link='Profil'/>
+                <NavigationSection first_link={t('profileBreadcrumb')}/>
 
                 <article className="profile__main-section">
 
                     {userDataError ? (
 
-                        <ApiErrorView message='"Es ist ein technisches Fehler aufgetreten. Versuchen Sie es bitte später."'/>
+                        <ApiErrorView message={t('technicalError')}/>
 
                     ) : (
 

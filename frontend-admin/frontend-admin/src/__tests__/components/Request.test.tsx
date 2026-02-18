@@ -23,10 +23,9 @@ vi.mock('../../zustand/useRequests', () => ({
 }))
 
 // Mock react-icons
-vi.mock('react-icons/bi', () => ({
-  BiMessageDetail: ({ size, className }: { size: number, className: string }) => (
-    <svg data-testid="message-icon" data-size={size} className={className} />
-  ),
+vi.mock('react-icons/io5', () => ({
+  IoChatbubbleOutline: () => <svg data-testid="message-icon" />,
+  IoChevronForward: () => <svg data-testid="chevron-icon" />,
 }))
 
 describe('Request', () => {
@@ -56,25 +55,13 @@ describe('Request', () => {
     it('renders request container', () => {
       const { container } = renderRequest()
 
-      expect(container.querySelector('.small-order-container')).toBeInTheDocument()
+      expect(container.querySelector('.oi')).toBeInTheDocument()
     })
 
     it('renders message icon', () => {
       renderRequest()
 
       expect(screen.getByTestId('message-icon')).toBeInTheDocument()
-    })
-
-    it('renders message icon with correct size', () => {
-      renderRequest()
-
-      expect(screen.getByTestId('message-icon')).toHaveAttribute('data-size', '45')
-    })
-
-    it('renders message icon with correct class', () => {
-      renderRequest()
-
-      expect(screen.getByTestId('message-icon')).toHaveClass('app-icon')
     })
 
     it('renders customer name', () => {
@@ -97,18 +84,16 @@ describe('Request', () => {
   })
 
   describe('new request styling', () => {
-    it('applies highlight background when is_new is true', () => {
+    it('applies oi--new class when is_new is true', () => {
       const { container } = renderRequest({ is_new: true })
 
-      const requestContainer = container.querySelector('.small-order-container')
-      expect(requestContainer).toHaveStyle({ backgroundColor: 'rgb(230, 238, 252)' })
+      expect(container.querySelector('.oi--new')).toBeInTheDocument()
     })
 
-    it('does not apply highlight background when is_new is false', () => {
+    it('does not apply oi--new class when is_new is false', () => {
       const { container } = renderRequest({ is_new: false })
 
-      const requestContainer = container.querySelector('.small-order-container')
-      expect(requestContainer).not.toHaveStyle({ backgroundColor: 'rgb(230, 238, 252)' })
+      expect(container.querySelector('.oi--new')).not.toBeInTheDocument()
     })
   })
 
@@ -116,7 +101,7 @@ describe('Request', () => {
     it('navigates to request detail page on click', () => {
       const { container } = renderRequest({ id: 100 })
 
-      fireEvent.click(container.querySelector('.small-order-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockNavigate).toHaveBeenCalledWith('/request/100')
     })
@@ -124,7 +109,7 @@ describe('Request', () => {
     it('calls toggleRequest on click', () => {
       const { container } = renderRequest({ id: 200 })
 
-      fireEvent.click(container.querySelector('.small-order-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockToggleRequest).toHaveBeenCalledWith(200)
     })
@@ -132,7 +117,7 @@ describe('Request', () => {
     it('calls both navigate and toggleRequest on single click', () => {
       const { container } = renderRequest({ id: 300 })
 
-      fireEvent.click(container.querySelector('.small-order-container')!)
+      fireEvent.click(container.querySelector('.oi')!)
 
       expect(mockNavigate).toHaveBeenCalledTimes(1)
       expect(mockToggleRequest).toHaveBeenCalledTimes(1)
@@ -140,35 +125,28 @@ describe('Request', () => {
   })
 
   describe('structure', () => {
-    it('contains order-container-info section', () => {
+    it('contains icon container', () => {
       const { container } = renderRequest()
 
-      expect(container.querySelector('.order-container-info')).toBeInTheDocument()
+      expect(container.querySelector('.oi__icon')).toBeInTheDocument()
     })
 
-    it('contains order-header section', () => {
+    it('contains content section', () => {
       const { container } = renderRequest()
 
-      expect(container.querySelector('.order-header')).toBeInTheDocument()
+      expect(container.querySelector('.oi__content')).toBeInTheDocument()
     })
 
-    it('renders name with bold font weight', () => {
-      renderRequest({ name: 'Test Name' })
-
-      const nameElement = screen.getByText('Test Name')
-      expect(nameElement).toHaveStyle({ fontWeight: 'bold' })
-    })
-
-    it('has order-customer-name class on email', () => {
+    it('contains right section', () => {
       const { container } = renderRequest()
 
-      expect(container.querySelector('.order-customer-name')).toBeInTheDocument()
+      expect(container.querySelector('.oi__right')).toBeInTheDocument()
     })
 
-    it('contains timestamp text with correct class', () => {
+    it('contains timestamp', () => {
       const { container } = renderRequest()
 
-      expect(container.querySelector('.order-timestamp-text')).toBeInTheDocument()
+      expect(container.querySelector('.oi__timestamp')).toBeInTheDocument()
     })
   })
 })

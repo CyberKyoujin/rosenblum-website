@@ -1,37 +1,43 @@
 import verificationSuccess from "../assets/verification_success.json"
 import Lottie from "lottie-react"
-import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
+import { IoLogInOutline, IoHomeOutline } from "react-icons/io5";
 
 const EmailVerificationSuccess = () => {
 
     const location = useLocation();
-    
+
     const state = location.state as {successMessage?: string} | null;
-    const message = state?.successMessage;
+    const message = state?.successMessage || "Ihr Konto wurde erfolgreich verifiziert";
 
     return (
+        <div className="pay-success">
+            <div className="pay-success__card">
 
-        <div className="verification_success__page">
+                <Lottie
+                    animationData={verificationSuccess}
+                    loop={false}
+                    className="pay-success__animation"
+                />
 
-            <div className="verification_success__container">
-                
-                <Lottie animationData={verificationSuccess} loop={false} className="verification_success__icon"/>
+                <h1 className="pay-success__title">{message}!</h1>
+                <p className="pay-success__subtitle">
+                    Willkommen bei Übersetzungsbüro Rosenblum. Sie können sich jetzt anmelden.
+                </p>
 
-                <div className="verification_success__details">
-                    <h1>{message}</h1>
-                    <p>Willkomen bei Übersetzungsbüro Rosenblum.</p>
-                    <Link to="/login" className="verification_success__btn" data-testid="success-btn">Anmelden</Link>
-                </div> 
+                <div className="pay-success__actions">
+                    <Link to="/login" className="pay-success__btn pay-success__btn--primary" data-testid="success-btn">
+                        <IoLogInOutline />
+                        Anmelden
+                    </Link>
+                    <Link to="/" className="pay-success__btn pay-success__btn--ghost">
+                        <IoHomeOutline />
+                        Zur Startseite
+                    </Link>
+                </div>
 
             </div>
-
-            <Footer/>
-
         </div>
-        
     )
 }
 

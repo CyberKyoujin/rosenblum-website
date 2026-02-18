@@ -3,13 +3,13 @@ import OTPInput from '../components/OTPInput'
 import Footer from '../components/Footer'
 import { useLocation, useNavigate } from 'react-router-dom';
 import useEmailVerification from '../hooks/useEmailVerification';
-import Alert from '@mui/material/Alert';
 import { CircularProgress } from '@mui/material';
+import { FaEnvelope } from 'react-icons/fa';
 
 const EmailVerification = () => {
 
   const [code, setCode] = useState("");
-  
+
   const { attempts, error, loading, verifyEmail, resendVerification } = useEmailVerification();
 
   const navigate = useNavigate();
@@ -19,13 +19,12 @@ const EmailVerification = () => {
   const email = state?.email;
 
   useEffect(() => {
-
     if (!email) {
-    navigate('/register');
+      navigate('/register');
     }
-
   }, [email, navigate])
-  
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await verifyEmail(code, email);
@@ -34,61 +33,76 @@ const EmailVerification = () => {
   const handleResendVerificationClick = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await resendVerification(email);
-  } 
+  }
+
+  const needsResend = error === "Es gibt kein Verifizierungscode"
+    || error === "Der Code ist abgelaufen"
+    || error === "Sie haben keine Versuche übrig";
 
   return (
     <>
-    <div className="page">
+      <div className="ev">
 
-      {!loading ? (
+          <div className="ev__card">
+            <div className="ev__icon-circle">
+              <FaEnvelope />
+            </div>
 
-        <div className="page">
-
-        <form className="otp-form__container" onSubmit={handleSubmit}>
-
-          <div className="otp-form__header">
-
-            <h1>Email <span className="otp-form__span">Verifizierung</span></h1>
+            <h1 className="ev__title">E-Mail Verifizierung</h1>
+            <p className="ev__desc">
+              Wir haben einen 6-stelligen Code an <strong>{email}</strong> gesendet.
+              Geben Sie ihn unten ein.
+            </p>
 
             {error && (
-              <Alert severity="error">{error}</Alert>
+              <div className="ev__error">
+                {error}
+              </div>
             )}
 
-            {(error === "Es gibt kein Verifizierungscode" || error === "Der Code ist abgelaufen" || error === "Sie haben keine Versuche übrig") && (
+            <form className="ev__form" onSubmit={handleSubmit}>
+              <OTPInput value={code} onChange={setCode} />
+
+              <div className="ev__attempts">
+                Verbleibende Versuche: <strong>{attempts}</strong>
+              </div>
+
               <button
-                className="otp-form__resend-code"
-                onClick={handleResendVerificationClick}
+                type="submit"
+                className="ev__submit"
+                disabled={code.length < 6}
+                data-testid="otp-submit"
               >
-                Code erneut senden
+                {loading ? <CircularProgress sx={{ color: 'white' }} /> : "Bestätigen"}    
               </button>
-            )}
+            </form>
 
+            <div className="ev__footer">
+              {needsResend ? (
+                <button
+                  className="ev__resend ev__resend--error"
+                  onClick={handleResendVerificationClick}
+                >
+                  Neuen Code senden
+                </button>
+              ) : (
+                <p className="ev__resend-text">
+                  Keinen Code erhalten?{' '}
+                  <button
+                    className="ev__resend"
+                    onClick={handleResendVerificationClick}
+                  >
+                    Erneut senden
+                  </button>
+                </p>
+              )}
+            </div>
           </div>
 
-          <div className='otp-form__data'>
-            <p>Wir haben den Verifizierungscode auf <span className="otp-form__span">{email}</span> gesendet</p>
-            <p>Sie haben noch <span className="otp-form__span">{attempts}</span> versuche</p>
-          </div>
+        
 
-            <OTPInput value={code} onChange={setCode}/>
-            <button style={{display: "block"}}type="submit" className='order-btn otp_btn' data-testid="otp-submit">Code Senden</button>
-
-        </form>
-
-        </div>
-
-      ) : (
-        <div className='loading-container page'>
-          <CircularProgress/>
-        </div>
-      )
-      }
-
-      
-
-        <Footer />
-
-    </div>
+      </div>
+      <Footer />
     </>
   )
 }

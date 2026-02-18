@@ -1,5 +1,6 @@
+import uuid
 from rest_framework import serializers
-from .models import CustomUser,Order,File, Message, RequestObject, Review, EmailVerification, RequestAnswer, Translation
+from .models import CustomUser, Order, File, Message, RequestObject, Review, EmailVerification, RequestAnswer, Translation, Document, CostEstimate, Invoice
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
@@ -7,10 +8,16 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
 from django.utils import timezone
 from .models import Order
-from base.services.email_verification import send_verification_code
+from base.services.email_verification import send_verification_code, generate_verification_code
 from django.db import transaction
 from rest_framework import exceptions
+import json
+from django_q.tasks import async_task
+from base.services.tasks import create_lex_office_invoice
+from .utils import get_doc_price
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CustomUserSerializer(serializers.ModelSerializer):
     
@@ -26,8 +33,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
         
         with transaction.atomic():
             user = CustomUser.objects.create_user(**validated_data)
-            verification_code = send_verification_code(user.email, user.first_name, user.last_name)
-            EmailVerification.objects.create(user=user, code=verification_code)
+            
+            code = generate_verification_code()
+        
+            EmailVerification.objects.create(user=user, code=code)
+
+            transaction.on_commit(lambda: send_verification_code(user.email, user.first_name, user.last_name, code))
         
         return user
      
@@ -141,14 +152,59 @@ class FileSerializer(serializers.ModelSerializer):
         model = File
         fields = '__all__'
         
+class DocumentSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(required=False, allow_null=True)
+    class Meta:
+        model = Document
+        fields = '__all__'
+
+    def validate_language(self, value):
+        valid = [c[0] for c in Document.Status.choices]
+        if value not in valid:
+            raise serializers.ValidationError(f"Invalid language '{value}'. Must be one of: {valid}")
+        return value
+
+    def validate_type(self, value):
+        if not isinstance(value, str):
+            raise serializers.ValidationError("Type must be a string.")
+        return value
+
+    def validate_price(self, value):
+        from decimal import Decimal, InvalidOperation
+        try:
+            d = Decimal(str(value))
+            if d < 0:
+                raise serializers.ValidationError("Price must be non-negative.")
+            return d
+        except (InvalidOperation, TypeError, ValueError):
+            raise serializers.ValidationError(f"Invalid price value: '{value}'.")
         
+class CostEstimateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CostEstimate
+        fields = '__all__'  
+           
+class InvoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invoice
+        fields = '__all__'
+
 class OrderSerializer(serializers.ModelSerializer):
     files = FileSerializer(many=True, read_only=True)
+    documents = DocumentSerializer(many=True, read_only=True)
+    cost_estimate = CostEstimateSerializer(read_only=True)
+    invoice = InvoiceSerializer(read_only=True)
     uploaded_files = serializers.ListField(
         child=serializers.FileField(),
         write_only=True,
         required=False
     )
+    order_docs = serializers.ListField(
+        child=serializers.JSONField(),
+        write_only=True,
+        required=True
+    )
+    password = serializers.CharField(write_only=True, required=False, min_length=8)
     formatted_timestamp = serializers.SerializerMethodField()
 
     class Meta:
@@ -160,13 +216,155 @@ class OrderSerializer(serializers.ModelSerializer):
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
 
     def create(self, validated_data):
-        uploaded_files = validated_data.pop('uploaded_files', [])
-     
-        order = Order.objects.create(**validated_data)
         
-        for file in uploaded_files:
-            File.objects.create(order=order, file=file)
+        uploaded_files = validated_data.pop('uploaded_files', [])
+        order_docs = validated_data.pop('order_docs', [])
+        password = validated_data.pop('password', None) 
+        
+        user = validated_data.get('user')
+
+        with transaction.atomic():
+            
+            if not user and password:
+                email = validated_data.get('email')
+                
+                user = CustomUser.objects.filter(email=email).first()
+                
+                if not user:
+                    name = validated_data.get('name', '')
+                    parts = name.split(' ', 1)
+                    first_name = parts[0]
+                    last_name = parts[1] if len(parts) > 1 else ''
+
+                    user = CustomUser.objects.create_user(
+                        email=email,
+                        first_name=first_name,
+                        last_name=last_name,
+                        password=password,
+                        phone_number=validated_data.get('phone_number'),
+                        city=validated_data.get('city'),
+                        street=validated_data.get('street'),
+                        zip=validated_data.get('zip'),
+                    )
+                    
+                    code = generate_verification_code()
+                    EmailVerification.objects.create(user=user, code=code)
+
+                    transaction.on_commit(lambda: send_verification_code(user.email, user.first_name, user.last_name, code))
+                    
+                    logger.info("[ORDER] Created new user %s with order (email=%s)", user.id, email)
+
+                validated_data['user'] = user
+
+            if not validated_data.get('user'):
+                 validated_data['guest_uuid'] = str(uuid.uuid4())
+            
+            order = Order.objects.create(**validated_data)
+            
+            logger.info("[ORDER] Order %s created in serializer (type=%s, user=%s)", order.id, order.order_type, order.user_id or "anonymous")
+
+            for file in uploaded_files:
+                File.objects.create(order=order, file=file)
+
+            for doc in order_docs:
+                if isinstance(doc, str):
+                    doc = json.loads(doc)
+                
+                if self.context['request'].user.is_staff:
+                    price = doc.get('price')
+                else:
+                    price = get_doc_price(doc.get('type', 'Sonstige'))
+                
+                Document.objects.create(
+                    order=order,
+                    type=doc.get("type", "Sonstige"), 
+                    language=doc.get("language", "ua"),
+                    price=price,
+                    individual_price=doc.get("individualPrice", False),
+                )
+                
+            if validated_data.get('payment_type') == 'rechnung':
+                transaction.on_commit(lambda: create_lex_office_invoice(order.pk))
+
         return order
+    
+class DocumentUpdateInputSerializer(serializers.Serializer):
+    id = serializers.CharField(required=False, allow_null=True)
+    type = serializers.CharField(required=False, default='Sonstige')
+    language = serializers.CharField(required=False, default='ua')
+    price = serializers.DecimalField(max_digits=10, decimal_places=2)
+    individual_price = serializers.BooleanField(required=False, default=False)
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    documents = DocumentUpdateInputSerializer(many=True, required=False)
+    class Meta:
+        model = Order
+        fields = ['status', 'is_new', 'order_type', 'payment_status', 'payment_type', 'documents']
+        
+    def update(self, instance, validated_data):
+
+        order_docs_data = validated_data.pop('documents', None)
+        old_payment_type = instance.payment_type
+        new_payment_type = validated_data.get('payment_type')
+
+        with transaction.atomic():
+
+            instance = super().update(instance, validated_data)
+
+            # Trigger invoice creation when payment_type is set to rechnung
+            if new_payment_type == 'rechnung' and old_payment_type != 'rechnung' and not instance.lexoffice_id:
+                transaction.on_commit(lambda: create_lex_office_invoice(instance.pk))
+                
+            logger.info("[ORDER] Order %s updated in serializer (status=%s, order_type=%s, payment_status=%s, payment_type=%s)", instance.id, instance.status, instance.order_type, instance.payment_status, instance.payment_type)
+
+            # Delete docs from DB which aren't present in the request
+
+            if order_docs_data is not None:
+                
+                keep_ids = []
+                for d in order_docs_data:
+                    did = d.get('id')
+                    if isinstance(did, int):
+                        keep_ids.append(did)
+                    elif isinstance(did, str) and did.isdigit():
+                        keep_ids.append(int(did))
+
+                instance.documents.exclude(id__in=keep_ids).delete()
+                
+                # Creating docs
+                
+                for doc_data in order_docs_data:
+                    doc_id = doc_data.get('id')
+                    
+                    if self.context['request'].user.is_staff:
+                        price  = doc_data.get('price')
+                    else:
+                        price = get_doc_price(doc_data.get('type', 'Sonstige'))
+
+                    doc_serializer = DocumentSerializer(data={
+                        'order': instance.pk,
+                        'price': price,
+                        'individual_price': doc_data.get('individual_price', False),
+                        'language': doc_data.get('language', 'ua'),
+                        'type': doc_data.get('type', 'Sonstige'),
+                    })
+                    doc_serializer.is_valid(raise_exception=True)
+
+                    fields = {
+                        'price': doc_serializer.validated_data['price'],
+                        'individual_price': doc_serializer.validated_data['individual_price'],
+                        'language': doc_serializer.validated_data['language'],
+                        'type': doc_serializer.validated_data['type'],
+                    }
+
+                    is_numeric = str(doc_id).isdigit() if doc_id is not None else False
+
+                    if is_numeric:
+                        Document.objects.filter(id=int(doc_id), order=instance).update(**fields)
+                    else:
+                        Document.objects.create(order=instance, **fields)
+            
+        return instance
     
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -202,12 +400,13 @@ class MessageSerializer(serializers.ModelSerializer):
         return UserDataSerializer(obj.sender, context=self.context).data
     
     def create(self, validated_data):
-        uploaded_files = validated_data.pop('uploaded_files', [])
-     
-        message = Message.objects.create(**validated_data)
+        with transaction.atomic():
+            uploaded_files = validated_data.pop('uploaded_files', [])
         
-        for file in uploaded_files:
-            File.objects.create(message=message, file=file)
+            message = Message.objects.create(**validated_data)
+            
+            for file in uploaded_files:
+                File.objects.create(message=message, file=file)
         return message
     
     

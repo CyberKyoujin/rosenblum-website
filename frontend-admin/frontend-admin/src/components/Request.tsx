@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BiMessageDetail } from "react-icons/bi";
+import { IoChatbubbleOutline, IoChevronForward } from "react-icons/io5";
 import useRequestsStore from "../zustand/useRequests";
 
 
@@ -16,36 +16,30 @@ interface RequestProps {
 const Request = ({id, name, email, formatted_timestamp, is_new}: RequestProps) => {
 
     const navigate = useNavigate();
-
     const toggleRequest = useRequestsStore(s => s.toggleRequest);
 
     return (
-
-        <div 
-        className="small-order-container" 
-        key={id} 
-        onClick={() => {navigate(`/request/${id}`); toggleRequest(id)}}
-        style={{ backgroundColor: is_new ? "rgb(230, 238, 252)" : undefined }}>
-            
-            <div className="order-container-info">
-                <BiMessageDetail size={45} className="app-icon"/>
-                
-                <div className="order-header">
-
-                    <p style={{fontWeight: 'bold'}}>{name}</p>
-                    <p className="order-customer-name">{email}</p>
-
-                </div>
+        <div
+            className={`oi ${is_new ? 'oi--new' : ''}`}
+            onClick={() => { navigate(`/request/${id}`); toggleRequest(id); }}
+        >
+            <div className="oi__icon">
+                <IoChatbubbleOutline />
             </div>
 
-            <div>
-                <p className="order-timestamp-text">{formatted_timestamp}</p>
+            <div className="oi__content">
+                <span className="oi__id">{name}</span>
+                <span className="oi__name">{email}</span>
             </div>
 
+            <div className="oi__right">
+                <span className="oi__timestamp">{formatted_timestamp}</span>
+            </div>
 
+            <IoChevronForward className="oi__chevron" />
         </div>
-    )
-}
+    );
+};
 
 
-export default Request
+export default Request;

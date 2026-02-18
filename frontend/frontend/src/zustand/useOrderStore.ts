@@ -15,15 +15,17 @@ const useOrderStore = create<OrderState>((set, get) => ({
 
         try{
         
-            await axiosInstance.post('/orders/', formData, {
+            const response = await axiosInstance.post('/orders/', formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data', 
+                    'Content-Type': 'multipart/form-data',
                 }
             });
 
             set({successfullyCreated: true})
 
             await get().fetchOrders();
+
+            return response.data;
 
         } catch (err: any) {
             set({successfullyCreated: false});

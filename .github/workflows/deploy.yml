@@ -56,6 +56,9 @@ jobs:
           GOOGLE_PLACES_API_KEY: "test_key"
           GOOGLE_PLACE_ID: "test_place_id"
           GS_BUCKET_NAME: ""
+          STRIPE_SECRET_KEY: "test_key"
+          STRIPE_WEBHOOK_SECRET: "test_secret"
+          LEX_OFFICE_AUTH_TOKEN: "test_key"
           FRONTEND_URL: "http://localhost:3000"
         run: |
           cd backend/backend
@@ -301,6 +304,20 @@ jobs:
             # Google Cloud Storage
             echo "GS_BUCKET_NAME=${{ secrets.GS_BUCKET_NAME }}" >> .env
             echo "GOOGLE_SERVICE_ACCOUNT_FILE=service-account.json" >> .env
+
+            # Stripe
+            echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
+            echo "STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> .env
+
+            # LexOffice
+            echo "LEX_OFFICE_AUTH_TOKEN=${{ secrets.LEX_OFFICE_AUTH_TOKEN }}" >> .env
+
+            # Sentry
+            echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env
+            echo "VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}" >> .env
+
+            # Frontend Stripe public key
+            echo "VITE_STRIPE_PUBLIC_KEY=${{ secrets.VITE_STRIPE_PUBLIC_KEY }}" >> .env
 
             # Frontend URL
             echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env

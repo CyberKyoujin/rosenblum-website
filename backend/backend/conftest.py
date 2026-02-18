@@ -1,6 +1,7 @@
 """
 Root conftest.py for Django pytest configuration
 """
+import json
 import os
 import sys
 import django
@@ -19,8 +20,8 @@ django.setup()
 
 import pytest
 from rest_framework.test import APIClient
-from base.models import CustomUser, Order
-
+from base.models import CustomUser, Order, Document
+from base.utils import get_doc_price
 
 @pytest.fixture
 def api_client():
@@ -76,9 +77,12 @@ def create_order(db):
         zip="1234",
         message="Test Message",
         status="review",
+        payment_type="rechnung",
         order_type="order",
         is_new=True,
+        order_docs=['{"type": "Geburtsurkunde", "language": "ua"}']
     ):
+        
         order = Order.objects.create(
             user=user,
             name=name,
@@ -87,11 +91,19 @@ def create_order(db):
             city=city,
             street=street,
             zip=zip,
+            payment_type=payment_type,
             message=message,
             status=status,
             order_type=order_type,
             is_new=is_new,
         )
+        
+        for doc in order_docs:
+            doc_data = json.loads(doc)
+            doc_type = doc_data.get("type")
+            doc_price = get_doc_price(doc_type)
+            Document.objects.create(order=order, price=doc_price, **doc_data)
+        
         return order
     return _create_order
 

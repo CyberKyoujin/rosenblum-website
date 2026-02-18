@@ -22,7 +22,7 @@ describe('useOrdersStore', () => {
       order: null,
       loading: false,
       error: null,
-      filters: { search: '', ordering: '-timestamp' },
+      filters: { search: '', ordering: '-timestamp', order_type: 'order' },
     })
   })
 
@@ -34,7 +34,7 @@ describe('useOrdersStore', () => {
       expect(state.order).toBe(null)
       expect(state.loading).toBe(false)
       expect(state.error).toBe(null)
-      expect(state.filters).toEqual({ search: '', ordering: '-timestamp' })
+      expect(state.filters).toEqual({ search: '', ordering: '-timestamp', order_type: 'order' })
     })
   })
 
@@ -120,7 +120,7 @@ describe('useOrdersStore', () => {
 
     it('passes filter params to API', async () => {
       useOrdersStore.setState({
-        filters: { search: 'test', ordering: '-timestamp', status: 'pending', isNew: true },
+        filters: { search: 'test', ordering: '-timestamp', status: 'pending', isNew: true, order_type: 'order' },
       })
       vi.mocked(axiosInstance.get).mockResolvedValueOnce({ data: { results: [] } })
 
@@ -129,13 +129,14 @@ describe('useOrdersStore', () => {
       })
 
       expect(axiosInstance.get).toHaveBeenCalledWith('/orders', {
-        params: {
+        params: expect.objectContaining({
           page: 2,
           search: 'test',
           ordering: '-timestamp',
           status: 'pending',
           is_new: true,
-        },
+          order_type: 'order',
+        }),
       })
     })
   })
@@ -193,16 +194,18 @@ describe('useOrdersStore', () => {
   })
 
   describe('updateOrder', () => {
-    it('updates order status and type', async () => {
+    it('updates order status, type and payment_status', async () => {
       vi.mocked(axiosInstance.patch).mockResolvedValueOnce({ data: {} })
 
       await act(async () => {
-        await useOrdersStore.getState().updateOrder(1, 'completed', 'translation')
+        await useOrdersStore.getState().updateOrder(1, 'completed', 'order', 'paid')
       })
 
       expect(axiosInstance.patch).toHaveBeenCalledWith('/orders/1/', {
         status: 'completed',
-        order_type: 'translation',
+        order_type: 'order',
+        payment_status: 'paid',
+        documents: undefined,
       })
     })
 
@@ -212,9 +215,9 @@ describe('useOrdersStore', () => {
         response: { status: 400, data: { detail: 'Invalid status' } },
       })
 
-      await act(async () => {
-        await useOrdersStore.getState().updateOrder(1, 'invalid', 'type')
-      })
+      await expect(
+        useOrdersStore.getState().updateOrder(1, 'invalid', 'type', 'not_paid')
+      ).rejects.toBeDefined()
 
       expect(useOrdersStore.getState().error).not.toBe(null)
     })

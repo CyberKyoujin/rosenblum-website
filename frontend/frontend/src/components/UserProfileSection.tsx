@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaUserEdit } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 import useAuthStore from "../zustand/useAuthStore";
 import defaultAvatar from "../assets/default_avatar.webp"
 import useOrderStore from "../zustand/useOrderStore";
@@ -10,6 +11,7 @@ const UserProfileSection = () => {
 
     const {user, userData} = useAuthStore();
     const {orders} = useOrderStore();
+    const { t } = useTranslation();
 
     const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
 
@@ -42,12 +44,12 @@ const UserProfileSection = () => {
                     <div className="profile-card__stat">
                         <IoDocumentTextOutline className="profile-card__stat-icon" />
                         <span className="profile-card__stat-value">{orders?.length || 0}</span>
-                        <span className="profile-card__stat-label">Aufträge</span>
+                        <span className="profile-card__stat-label">{t('orders')}</span>
                     </div>
                     <div className="profile-card__stat-divider" />
                     <div className="profile-card__stat">
                         <IoCalendarOutline className="profile-card__stat-icon" />
-                        <span className="profile-card__stat-label">Mitglied seit</span>
+                        <span className="profile-card__stat-label">{t('memberSince')}</span>
                         <span className="profile-card__stat-value">{userData?.date_joined?.slice(0,10)}</span>
                     </div>
                 </div>
@@ -56,39 +58,39 @@ const UserProfileSection = () => {
             {/* Contact Card */}
             <div className="profile-card profile-card--contact">
                 <div className="profile-card__header">
-                    <h3 className="profile-card__title">Kontaktdaten</h3>
-                    <button className="profile-card__delete-btn">Konto löschen</button>
+                    <h3 className="profile-card__title">{t('contactDetails')}</h3>
+                    <button className="profile-card__delete-btn">{t('deleteAccount')}</button>
                 </div>
 
                 <div className="profile-card__info-list">
                     <div className="profile-card__info-item">
                         <HiOutlineMail className="profile-card__info-icon" />
                         <div className="profile-card__info-content">
-                            <span className="profile-card__info-label">E-Mail</span>
-                            <span className="profile-card__info-value">{user?.email || "Nicht angegeben"}</span>
+                            <span className="profile-card__info-label">{t('email')}</span>
+                            <span className="profile-card__info-value">{user?.email || t('notSpecified')}</span>
                         </div>
                     </div>
 
                     <div className="profile-card__info-item">
                         <HiOutlineLocationMarker className="profile-card__info-icon" />
                         <div className="profile-card__info-content">
-                            <span className="profile-card__info-label">Anschrift</span>
-                            <span className="profile-card__info-value">{address || "Nicht angegeben"}</span>
+                            <span className="profile-card__info-label">{t('address')}</span>
+                            <span className="profile-card__info-value">{address || t('notSpecified')}</span>
                         </div>
                     </div>
 
                     <div className="profile-card__info-item">
                         <HiOutlinePhone className="profile-card__info-icon" />
                         <div className="profile-card__info-content">
-                            <span className="profile-card__info-label">Telefon</span>
-                            <span className="profile-card__info-value">{userData?.phone_number || "Nicht angegeben"}</span>
+                            <span className="profile-card__info-label">{t('phone')}</span>
+                            <span className="profile-card__info-value">{userData?.phone_number || t('notSpecified')}</span>
                         </div>
                     </div>
                 </div>
 
                 <Link to="/edit-profile" className="profile-card__edit-btn">
                     <FaUserEdit />
-                    Profil bearbeiten
+                    {t('editProfile')}
                 </Link>
             </div>
 

@@ -16,7 +16,7 @@ const OrderInfoAccordion = () => {
 
         <div className="info-container">
 
-            <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '0px', display: 'flex', flexDirection:'column', }}>
+            <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '5px', display: 'flex', flexDirection:'column'}}>
                 
                 <AccordionSummary
                 expandIcon={<ArrowDownwardIcon className="app-icon"/>}

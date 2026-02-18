@@ -65,7 +65,7 @@ describe('useOrder', () => {
       expect(result.success).toBe(true)
     })
 
-    it('validates order without optional message', () => {
+    it('rejects order without message (message is required)', () => {
       const result = orderSchema.safeParse({
         name: 'John Doe',
         email: 'john@example.com',
@@ -75,7 +75,21 @@ describe('useOrder', () => {
         zip: '12345',
       })
 
-      expect(result.success).toBe(true)
+      expect(result.success).toBe(false)
+    })
+
+    it('rejects empty message', () => {
+      const result = orderSchema.safeParse({
+        name: 'John Doe',
+        email: 'john@example.com',
+        phone_number: '+491234567890',
+        city: 'Berlin',
+        street: 'Main Street 1',
+        zip: '12345',
+        message: '',
+      })
+
+      expect(result.success).toBe(false)
     })
 
     it('rejects missing name', () => {
@@ -86,6 +100,7 @@ describe('useOrder', () => {
         city: 'Berlin',
         street: 'Main Street 1',
         zip: '12345',
+        message: 'Test',
       })
 
       expect(result.success).toBe(false)
@@ -99,6 +114,7 @@ describe('useOrder', () => {
         city: 'Berlin',
         street: 'Main Street 1',
         zip: '12345',
+        message: 'Test',
       })
 
       expect(result.success).toBe(false)
@@ -112,6 +128,7 @@ describe('useOrder', () => {
         city: 'Berlin',
         street: 'Main Street 1',
         zip: '12345',
+        message: 'Test',
       })
 
       expect(result.success).toBe(false)
@@ -125,6 +142,7 @@ describe('useOrder', () => {
         city: '',
         street: 'Main Street 1',
         zip: '12345',
+        message: 'Test',
       })
 
       expect(result.success).toBe(false)
@@ -138,6 +156,7 @@ describe('useOrder', () => {
         city: 'Berlin',
         street: '',
         zip: '12345',
+        message: 'Test',
       })
 
       expect(result.success).toBe(false)
@@ -151,6 +170,7 @@ describe('useOrder', () => {
         city: 'Berlin',
         street: 'Main Street 1',
         zip: '',
+        message: 'Test',
       })
 
       expect(result.success).toBe(false)
@@ -183,42 +203,10 @@ describe('useOrder', () => {
       expect(values.zip).toBe('12345')
     })
 
-    describe('phone validation', () => {
-      it('returns false for valid phone number', async () => {
-        const { result } = renderHook(() => useOrder())
+    it('exposes canSubmit as false initially (no consent, no payment method)', () => {
+      const { result } = renderHook(() => useOrder())
 
-        act(() => {
-          result.current.methods.setValue('phone_number', '+491234567890')
-        })
-
-        await waitFor(() => {
-          expect(result.current.isPhoneInvalid).toBe(false)
-        })
-      })
-
-      it('returns true for invalid phone number', async () => {
-        const { result } = renderHook(() => useOrder())
-
-        act(() => {
-          result.current.methods.setValue('phone_number', 'invalid')
-        })
-
-        await waitFor(() => {
-          expect(result.current.isPhoneInvalid).toBe(true)
-        })
-      })
-
-      it('returns true for empty phone number', async () => {
-        const { result } = renderHook(() => useOrder())
-
-        act(() => {
-          result.current.methods.setValue('phone_number', '')
-        })
-
-        await waitFor(() => {
-          expect(result.current.isPhoneInvalid).toBe(true)
-        })
-      })
+      expect(result.current.canSubmit).toBe(false)
     })
 
     describe('file handling', () => {
@@ -287,9 +275,10 @@ describe('useOrder', () => {
 
     describe('form submission', () => {
       it('creates order and navigates on success', async () => {
-        mockCreateOrder.mockResolvedValueOnce(undefined)
+        mockCreateOrder.mockResolvedValueOnce({ id: '123' })
         const { result } = renderHook(() => useOrder())
 
+        // Set all required form fields
         act(() => {
           result.current.methods.setValue('name', 'John Doe')
           result.current.methods.setValue('email', 'john@example.com')
@@ -297,6 +286,11 @@ describe('useOrder', () => {
           result.current.methods.setValue('city', 'Berlin')
           result.current.methods.setValue('street', 'Main St')
           result.current.methods.setValue('zip', '12345')
+          result.current.methods.setValue('message', 'Test message')
+          // Enable consent and payment method so canSubmit = true
+          result.current.consent.setAgb(true)
+          result.current.consent.setDatenschutz(true)
+          result.current.payment.setMethod('rechnung')
         })
 
         await act(async () => {
@@ -305,14 +299,14 @@ describe('useOrder', () => {
 
         await waitFor(() => {
           expect(mockCreateOrder).toHaveBeenCalled()
-          expect(mockNavigate).toHaveBeenCalledWith('/profile', {
-            state: { orderCreateSuccess: true },
+          expect(mockNavigate).toHaveBeenCalledWith('/order-success', {
+            state: { orderId: '123', type: 'rechnung' },
           })
         })
       })
 
       it('includes files in FormData', async () => {
-        mockCreateOrder.mockResolvedValueOnce(undefined)
+        mockCreateOrder.mockResolvedValueOnce({ id: '456' })
         const { result } = renderHook(() => useOrder())
 
         const mockFile = new File(['test'], 'test.pdf', { type: 'application/pdf' })
@@ -330,6 +324,10 @@ describe('useOrder', () => {
           result.current.methods.setValue('city', 'Berlin')
           result.current.methods.setValue('street', 'Main St')
           result.current.methods.setValue('zip', '12345')
+          result.current.methods.setValue('message', 'Test message')
+          result.current.consent.setAgb(true)
+          result.current.consent.setDatenschutz(true)
+          result.current.payment.setMethod('rechnung')
         })
 
         await act(async () => {
@@ -360,6 +358,10 @@ describe('useOrder', () => {
           result.current.methods.setValue('city', 'Berlin')
           result.current.methods.setValue('street', 'Main St')
           result.current.methods.setValue('zip', '12345')
+          result.current.methods.setValue('message', 'Test message')
+          result.current.consent.setAgb(true)
+          result.current.consent.setDatenschutz(true)
+          result.current.payment.setMethod('rechnung')
         })
 
         await act(async () => {

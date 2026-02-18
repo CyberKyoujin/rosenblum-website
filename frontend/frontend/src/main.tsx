@@ -9,7 +9,8 @@ import i18next from 'i18next';
 const t = (key: string) => i18next.t(key);
 
 Sentry.init({
-  dsn: "https://c9e529fc1ce19beed4677e9a7d2180bf@o4510805923856384.ingest.de.sentry.io/4510805925429328",
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  enabled: import.meta.env.PROD,
   sendDefaultPii: true,
   integrations: [
     Sentry.feedbackIntegration({

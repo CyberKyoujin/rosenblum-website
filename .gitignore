@@ -45,3 +45,7 @@ rosenblum-key.json
 
 # OS
 .DS_Store
+nul
+
+# Coverage HTML reports
+coverage/

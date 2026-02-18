@@ -7,23 +7,22 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 
 from base.views.message_views import MessageViewSet, RequestViewSet
-from base.views.order_views import OrderViewSet
+from base.views.order_views import CreateCostEstimateViewSet, OrderViewSet
 
 router = DefaultRouter()
 
 router.register(r'messages', MessageViewSet, basename='message')
 router.register(r'requests', RequestViewSet, basename='request')
 router.register(r'orders', OrderViewSet, basename='order')
-
-def trigger_error(request):
-    division_by_zero = 1 / 0
+router.register(r'cost-estimate', CreateCostEstimateViewSet, basename='cost-estimate')
 
 urlpatterns = [
     
     path('admin/', admin.site.urls),
-    path('sentry-debug/', trigger_error),
     path('api/', include([
-        path('', include(router.urls)), 
+        path('', include(router.urls)),
+        path('buro/', include('base.urls.buro_urls')),
+        path('payments/', include('base.urls.payment_urls')), 
         path('user/', include('base.urls.user_urls')), 
         path('admin-user/', include('base.urls.admin_urls')),
         path('statistics/', include('base.urls.statistics_urls')),

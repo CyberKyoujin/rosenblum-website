@@ -200,12 +200,9 @@ class TestUserProfile:
 
         response = authenticated_client.get(f'/api/user/users/{other_user.id}/')
 
-        # Based on UserViewSet permissions, retrieve action requires admin for non-staff users
-        # But the logic allows retrieve if `not self.request.user.is_staff` returns IsAuthenticated
-        # So authenticated users can retrieve individual profiles
         assert response.status_code in [
-            status.HTTP_200_OK,  # If retrieve is allowed for authenticated users
-            status.HTTP_403_FORBIDDEN  # If admin only
+            status.HTTP_404_NOT_FOUND,
+            status.HTTP_403_FORBIDDEN  
         ]
 
     def test_unauthenticated_cannot_access_profile(self, api_client, create_user):

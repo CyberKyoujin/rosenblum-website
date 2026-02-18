@@ -1,12 +1,15 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import  {zodResolver} from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../zustand/useAuthStore';
 import useOrderStore from '../zustand/useOrderStore';
-import { parsePhoneNumber } from 'libphonenumber-js';
 import { ApiErrorResponse } from '../types/error';
+import { SelectChangeEvent } from '@mui/material';
+import uaFlag from '../assets/ua.svg';
+import ruFlag from '../assets/ru.svg';
+import deFlag from '../assets/de.svg';
 
 export const orderSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -15,8 +18,29 @@ export const orderSchema = z.object({
   city: z.string().min(1, "City is required"),
   street: z.string().min(1, "Street is required"),
   zip: z.string().min(1, "ZIP is required"),
-  message: z.string().optional(),
+  message: z.string().min(1, "Message is required"),
 });
+
+export interface DocsType {
+    type: string;
+    price: number;
+    language: string;
+    individualPrice: boolean;
+}
+
+export const languages: { code: string; label: string; flag: string }[] = [
+  { code: 'ua', label: 'UKR', flag: uaFlag },
+  { code: 'ru', label: 'RU', flag: ruFlag },
+  { code: 'de', label: 'DE', flag: deFlag },
+];
+
+const DocTemplates: Omit<DocsType, 'language'>[] = [
+    {type: "Geburtsurkunde", price: 35.30, individualPrice: false},
+    {type: "Heiratsurkunde", price: 35.30, individualPrice: false},
+    {type: "Sterbeurkunde", price: 35.30, individualPrice: false},
+    {type: "Scheidungsurkunde", price: 35.30, individualPrice: false},
+    {type: "Sonstiges Dokument mit komplexem Inhalt (Diplom, Arbeitsbuch, Gerichtsurteil)", price: 0, individualPrice: true},
+]
 
 export type OrderFormValues = z.infer<typeof orderSchema>;
 
@@ -25,10 +49,49 @@ export const useOrder = () => {
   const { createOrder, createOrderLoading } = useOrderStore();
   const navigate = useNavigate();
 
+  const [orderId, setOrderId] = useState<string | null>(null);
+
   const [error, setError] = useState<ApiErrorResponse | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [dragging, setDragging] = useState(false);
+
+  const [docs, setDocs] = useState<DocsType[]>([]);
+  const [total, setTotal] = useState(0);
+  const [specialDocs, setSpecialDocs] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const [agbAccepted, setAgbAccepted] = useState(false);
+  const [datenschutzAccepted, setDatenschutzAccepted] = useState(false);
+
+  // Registration state
+  const [wantsAccount, setWantsAccount] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const passwordChecks = {
+    length: password.length > 7,
+    number: /\d/.test(password),
+    uppercase: /[A-Z]/.test(password),
+  };
+  const isPasswordValid = Object.values(passwordChecks).every(Boolean);
+  const passwordsMatch = password === passwordConfirm;
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const specialCount = docs.filter(doc => doc.individualPrice).length;
+
+    setSpecialDocs(specialCount);
+
+    const totalPrice = docs.reduce((sum, doc) => sum + doc.price, 0);
+
+    setTotal(totalPrice);
+
+    if (specialCount > 0) {
+      setPaymentMethod('kostenvoranschlag');
+    }
+  }, [docs]);
+
 
   const methods = useForm<OrderFormValues>({
     resolver: zodResolver(orderSchema),
@@ -43,14 +106,6 @@ export const useOrder = () => {
     }
   });
 
-  const phoneValue = methods.watch('phone_number');
-  const isPhoneInvalid = (() => {
-    try {
-      const parsed = parsePhoneNumber(phoneValue, 'DE');
-      return !parsed || !parsed.isValid();
-    } catch { return true; }
-  })();
-
   const handleFiles = (newFiles: File[]) => setUploadedFiles(prev => [...prev, ...newFiles]);
   const removeFile = (index: number) => setUploadedFiles(prev => prev.filter((_, i) => i !== index));
 
@@ -60,15 +115,70 @@ export const useOrder = () => {
     if (e.dataTransfer.files) handleFiles(Array.from(e.dataTransfer.files));
   };
 
+  const handleChange = (event: SelectChangeEvent) => {
+    const selectedType = event.target.value as string;
+    const template = DocTemplates.find(d => d.type === selectedType);
+    if (template) {
+      setDocs(prev => [...prev, { ...template, language: 'ua' }]);
+    }
+  };
+
+  const handleRemoveDoc = (index: number) => {
+    setDocs(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleLanguageChange = (index: number, language: string) => {
+    setDocs(prev => {
+      const doc = prev[index];
+      const duplicate = prev.some(
+        (d, i) => i !== index && d.type === doc.type && d.language === language
+      );
+      if (duplicate) return prev;
+      return prev.map((d, i) => i === index ? { ...d, language } : d);
+    });
+  };
+
+  const canSubmit = (() => {
+    if (!agbAccepted || !datenschutzAccepted) return false;
+    if (!paymentMethod) return false;
+    if (wantsAccount && (!isPasswordValid || !passwordsMatch)) return false;
+    return true;
+  })();
+
   const onSubmit = async (data: OrderFormValues) => {
     setError(null);
+
+    if (!canSubmit) return;
+
     const formData = new FormData();
     uploadedFiles.forEach(file => formData.append('uploaded_files', file));
+    docs.forEach(doc => formData.append('order_docs', JSON.stringify(doc)));
     Object.entries(data).forEach(([key, value]) => formData.append(key, value || ''));
 
+    if (paymentMethod === "kostenvoranschlag") {
+      formData.append('order_type', 'kostenvoranschlag');
+    } else {
+      formData.append('payment_type', paymentMethod);
+    }
+
+    if (wantsAccount && !user) {
+      formData.append('password', password);
+    }
+
     try {
-      await createOrder(formData);
-      navigate("/profile", { state: { orderCreateSuccess: true } });
+      const data = await createOrder(formData);
+
+      setOrderId(data.id);
+
+      if (wantsAccount && !user) {
+        navigate("/email-verification", { state: { email: methods.getValues('email') } });
+      } else if (paymentMethod === "stripe") {
+        navigate("/payment", { state: { orderId: data.id, total: total } });
+      } else if (paymentMethod === "kostenvoranschlag") {
+        navigate("/order-success", { state: { orderId: data.id, type: 'kostenvoranschlag' } });
+      } else {
+        navigate("/order-success", { state: { orderId: data.id, type: 'rechnung' } });
+      }
     } catch (err) {
       setError(err as ApiErrorResponse);
     }
@@ -77,6 +187,7 @@ export const useOrder = () => {
   return {
     methods,
     loading: createOrderLoading,
+    orderId: orderId,
     error,
     files: {
       list: uploadedFiles,
@@ -89,7 +200,40 @@ export const useOrder = () => {
         if (e.target.files) handleFiles(Array.from(e.target.files));
       }
     },
-    isPhoneInvalid,
+    docs: {
+      list: docs,
+      templates: DocTemplates,
+      removeDoc: handleRemoveDoc,
+      changeLanguage: handleLanguageChange,
+      handleInputChange: handleChange,
+      total: total,
+      specialDocs: specialDocs
+    },
+    payment: {
+      method: paymentMethod,
+      setMethod: setPaymentMethod,
+    },
+    consent: {
+      agb: agbAccepted,
+      setAgb: setAgbAccepted,
+      datenschutz: datenschutzAccepted,
+      setDatenschutz: setDatenschutzAccepted,
+    },
+    registration: {
+      wantsAccount,
+      setWantsAccount,
+      password,
+      setPassword,
+      passwordConfirm,
+      setPasswordConfirm,
+      showPassword,
+      togglePassword: () => setShowPassword(prev => !prev),
+      passwordChecks,
+      isPasswordValid,
+      passwordsMatch,
+      isLoggedIn: !!user,
+    },
+    canSubmit,
     onSubmit: methods.handleSubmit(onSubmit)
   };
 };

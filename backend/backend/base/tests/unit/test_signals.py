@@ -1,49 +1,41 @@
 import pytest
-from unittest.mock import patch, MagicMock
-from django.db.models.signals import post_save, pre_save
+from unittest.mock import patch
 from base.models import CustomUser, Message, Order, RequestObject, RequestAnswer
-from base.signals import (
-    user_created_handler,
-    message_created_handler,
-    order_status_changed_handler,
-    request_created_handler,
-    request_answer_created_handler
-)
 
 
-@pytest.mark.django_db
+
+@pytest.mark.django_db(transaction=True)
 class TestUserCreatedHandler:
-    """Tests for user_created_handler signal"""
-
+    
     @patch('base.signals.send_message_account_created')
-    def test_sends_welcome_email_on_user_creation(self, mock_send_email, db):
-        """Test welcome email is sent when user is created"""
-        user = CustomUser.objects.create_user(
-            email='newuser@example.com',
-            password='testpass123',
-            first_name='John',
-            last_name='Doe'
-        )
+    def test_sends_welcome_email_on_user_creation(self, mock_send_email):
+            """Test welcome email is sent when user is created"""
+            CustomUser.objects.create_user(
+                email='newuser@example.com',
+                password='testpass123',
+                first_name='John',
+                last_name='Doe'
+            )
 
-        mock_send_email.assert_called_once_with(
-            'newuser@example.com',
-            'John',
-            'Doe'
-        )
+            mock_send_email.assert_called_once_with(
+                'newuser@example.com',
+                'John',
+                'Doe'
+            )
 
     @patch('base.signals.send_message_account_created')
     def test_does_not_send_email_on_user_update(self, mock_send_email, create_user):
-        """Test email is not sent when user is updated"""
-        user = create_user(email='existing@example.com')
-        mock_send_email.reset_mock()
+            """Test email is not sent when user is updated"""
+            user = create_user(email='existing@example.com')
+            mock_send_email.reset_mock()
 
-        user.first_name = 'Updated'
-        user.save()
+            user.first_name = 'Updated'
+            user.save()
 
-        mock_send_email.assert_not_called()
+            mock_send_email.assert_not_called()
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 class TestMessageCreatedHandler:
     """Tests for message_created_handler signal"""
 
@@ -222,7 +214,7 @@ class TestOrderStatusChangedHandler:
             assert call_args[0] == 'order@example.com'
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 class TestRequestCreatedHandler:
     """Tests for request_created_handler signal"""
 
@@ -283,7 +275,7 @@ class TestRequestCreatedHandler:
         mock_send_email.assert_not_called()
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 class TestRequestAnswerCreatedHandler:
     """Tests for request_answer_created_handler signal"""
 
@@ -297,7 +289,7 @@ class TestRequestAnswerCreatedHandler:
             message='Test request'
         )
 
-        answer = RequestAnswer.objects.create(
+        RequestAnswer.objects.create(
             request=request,
             answer_text='Here is your answer'
         )

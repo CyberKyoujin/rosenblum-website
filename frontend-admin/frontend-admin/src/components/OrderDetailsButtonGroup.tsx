@@ -1,8 +1,4 @@
-
-import { FaCheck } from "react-icons/fa";
-import { RxCross2 } from "react-icons/rx";
-import { MdEditSquare } from "react-icons/md";
-import { FaRegTrashAlt } from "react-icons/fa";
+import { IoCheckmark, IoCreateOutline, IoCloseOutline, IoTrashOutline } from "react-icons/io5";
 import { SetStateAction } from "react";
 
 interface OrderDetailsButtonGroupProps {
@@ -12,62 +8,49 @@ interface OrderDetailsButtonGroupProps {
 }
 
 const OrderDetailsButtonGroup = ({
-
     formActive,
     setFormActive,
     setNotificationOpen
-
-    }: OrderDetailsButtonGroupProps) => {
-
+}: OrderDetailsButtonGroupProps) => {
 
     return (
-        <div className="order-btn-container">
+        <div className="od__btn-group">
+            {formActive ? (
+                <>
+                    <button key="save" className="od__btn od__btn--primary" type="submit">
+                        <IoCheckmark /> Speichern
+                    </button>
+                    <button
+                        key="cancel"
+                        className="od__btn od__btn--ghost"
+                        type="button"
+                        onClick={() => setFormActive(false)}
+                    >
+                        <IoCloseOutline /> Abbrechen
+                    </button>
+                </>
+            ) : (
+                <>
+                    <button
+                        key="edit"
+                        className="od__btn od__btn--primary"
+                        type="button"
+                        onClick={() => setFormActive(true)}
+                    >
+                        <IoCreateOutline /> Bearbeiten
+                    </button>
+                    <button
+                        key="delete"
+                        className="od__btn od__btn--danger"
+                        type="button"
+                        onClick={() => setNotificationOpen(true)}
+                    >
+                        <IoTrashOutline /> Löschen
+                    </button>
+                </>
+            )}
+        </div>
+    );
+};
 
-                        <button
-                            className="order-action-btn green-btn"
-                            type="submit"
-                            style={{display: formActive ? "flex" : "none"}}
-                            >
-                            
-                            <FaCheck style={{ fontSize: '18px' }} /> Speichern
-                                
-                        </button>
-
-                        <button
-                            className="order-action-btn green-btn"
-                            onClick={() => setFormActive(true)}
-                            type="button"
-                            style={{display: formActive ? "none" : "flex"}}
-                            >
-                            
-                            <MdEditSquare style={{ fontSize: '18px' }} /> Bearbeiten
-                                
-                        </button>
-
-                        <button 
-                            className="order-action-btn red-btn"
-                            onClick={() => {
-                                if (formActive) {
-                                    setFormActive(false);
-                                } else {
-                                    setNotificationOpen(true);
-                                }
-                            }}
-                            type="button"
-                            >
-                            {formActive ? (
-                                <>
-                                <RxCross2 style={{fontSize: '18px'}}/> Abbrechen
-                                </>
-                            ) : (
-                                <>
-                                <FaRegTrashAlt style={{fontSize: '18px'}}/> Löschen
-                                </>
-                            )}
-                        </button>
-                    
-                    </div>
-    )
-}
-
-export default OrderDetailsButtonGroup
+export default OrderDetailsButtonGroup;

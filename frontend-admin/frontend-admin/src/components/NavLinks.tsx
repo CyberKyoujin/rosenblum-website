@@ -1,41 +1,45 @@
-
 import { IconType } from 'react-icons/lib';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MdGTranslate } from 'react-icons/md';
-import { FaUser } from 'react-icons/fa';
-import { BiSolidMessageSquareDetail } from 'react-icons/bi';
-import { FaChartBar } from 'react-icons/fa';
+import { IoPersonOutline, IoChatbubbleOutline, IoStatsChartOutline } from 'react-icons/io5';
 
 const navLinks = [
     { name: "Übersetzer", link: "/translator", Icon: MdGTranslate },
-    { name: "Kunden", link: "/customers", Icon: FaUser },
-    { name: "Nachrichten", link: "/messages", Icon: BiSolidMessageSquareDetail },
-    { name: "Statistik", link: "/statistics", Icon: FaChartBar },
+    { name: "Kunden", link: "/customers", Icon: IoPersonOutline },
+    { name: "Nachrichten", link: "/messages", Icon: IoChatbubbleOutline },
+    { name: "Statistik", link: "/statistics", Icon: IoStatsChartOutline },
 ]
 
 interface NavLinkProps {
     redirectLink: string;
     Icon: IconType;
     linkName: string;
+    isActive: boolean;
 }
 
-const NavbarLink = ({redirectLink, Icon, linkName}: NavLinkProps) => {
+const NavbarLink = ({redirectLink, Icon, linkName, isActive}: NavLinkProps) => {
     return (
-        <Link to={redirectLink} className="nav-link-container">
-            <Icon size={20}/>
-            <p className="nav-link">{linkName}</p>
+        <Link to={redirectLink} className={`nav__link ${isActive ? 'nav__link--active' : ''}`}>
+            <Icon />
+            <span className="nav__link-text">{linkName}</span>
         </Link>
     )
 }
 
 const NavLinks = () => {
+    const location = useLocation();
+
     return (
         <>
-            
             {navLinks.map((item) => (
-                <NavbarLink key={item.name} redirectLink={item.link} linkName={item.name} Icon={item.Icon}/>
+                <NavbarLink
+                    key={item.name}
+                    redirectLink={item.link}
+                    linkName={item.name}
+                    Icon={item.Icon}
+                    isActive={location.pathname.startsWith(item.link)}
+                />
             ))}
-
         </>
     );
 }
