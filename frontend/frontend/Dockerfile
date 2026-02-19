@@ -23,9 +23,12 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build argument for API URL (empty = use relative /api path for same-origin requests)
+# Build arguments
 ARG VITE_API_URL=
 ENV VITE_API_URL=$VITE_API_URL
+
+ARG VITE_STRIPE_PUBLIC_KEY=
+ENV VITE_STRIPE_PUBLIC_KEY=$VITE_STRIPE_PUBLIC_KEY
 
 # Build the application
 RUN npm run build
