@@ -259,7 +259,7 @@ function App() {
           </Suspense>
         }/>
 
-        <Route path="/success" element={
+        <Route path="/payment-success" element={
           <Suspense fallback={<AppSkeleton/>}>
             <PaymentSuccess/>
           </Suspense>
