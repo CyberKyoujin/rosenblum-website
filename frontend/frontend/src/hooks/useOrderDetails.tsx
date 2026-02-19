@@ -4,7 +4,6 @@ import { OrderData } from "../types/orders";
 import axiosInstance from "../axios/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { set } from "zod";
 
 
 export const useOrderDetails = (orderId?: string, uuid?: string) => {

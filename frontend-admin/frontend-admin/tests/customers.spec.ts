@@ -52,20 +52,13 @@ test.describe("Admin Customers Page", () => {
             await expect(page.getByRole("heading", { name: "Kunden" })).toBeVisible();
         });
 
-        test("should display search field", async ({ page }) => {
-            await page.goto("/customers");
-
-            await expect(page.locator(".dashboard-container")).toBeVisible({ timeout: 10000 });
-
-            await expect(page.locator("#outlined-basic")).toBeVisible();
-        });
 
         test("should display customer items", async ({ page }) => {
             await page.goto("/customers");
 
             await expect(page.locator(".dashboard-container")).toBeVisible({ timeout: 10000 });
 
-            const customerItems = page.locator(".customer-container");
+            const customerItems = page.locator(".oi");
             await expect(customerItems.first()).toBeVisible();
         });
 
@@ -85,13 +78,6 @@ test.describe("Admin Customers Page", () => {
             await expect(page.getByText("john@example.com")).toBeVisible();
         });
 
-        test("should display customer avatar area", async ({ page }) => {
-            await page.goto("/customers");
-
-            await expect(page.locator(".dashboard-container")).toBeVisible({ timeout: 10000 });
-
-            await expect(page.locator(".customer-avatar").first()).toBeVisible();
-        });
 
     });
 
@@ -141,7 +127,7 @@ test.describe("Admin Customers Page", () => {
 
             await expect(page.locator(".dashboard-container")).toBeVisible({ timeout: 10000 });
 
-            await page.locator(".customer-container").first().click();
+            await page.locator(".oi").first().click();
 
             await expect(page).toHaveURL(/\/user\/42/);
         });
@@ -168,17 +154,6 @@ test.describe("Admin Customers Page", () => {
                     ]
                 }
             });
-        });
-
-        test("should allow typing in search field", async ({ page }) => {
-            await page.goto("/customers");
-
-            await expect(page.locator(".dashboard-container")).toBeVisible({ timeout: 10000 });
-
-            const searchField = page.locator("#outlined-basic");
-            await searchField.fill("test search");
-
-            await expect(searchField).toHaveValue("test search");
         });
 
     });

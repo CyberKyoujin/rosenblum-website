@@ -35,6 +35,8 @@ describe('Order', () => {
     formatted_timestamp: '15.01.2024 10:30',
     status: 'review',
     is_new: false,
+    payment_status: "not paid",
+    payment_type: "stripe"
   }
 
   beforeEach(() => {

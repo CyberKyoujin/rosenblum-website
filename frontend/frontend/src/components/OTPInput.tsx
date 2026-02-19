@@ -3,7 +3,6 @@ import { Input as BaseInput } from '@mui/base/Input';
 import { Box, styled } from '@mui/system';
 
 function OTP({
-  separator,
   length,
   value,
   onChange,

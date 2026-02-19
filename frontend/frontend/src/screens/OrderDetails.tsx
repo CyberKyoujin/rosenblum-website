@@ -1,9 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axiosInstance from "../axios/axiosInstance";
 import { useTranslation } from "react-i18next";
 import OrderDetailsSkeleton from "../components/OrderDetailsSkeleton";
-import { ApiErrorResponse } from "../types/error";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import ApiErrorView from "../components/ApiErrorView";

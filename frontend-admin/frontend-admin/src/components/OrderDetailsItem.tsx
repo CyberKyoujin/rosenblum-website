@@ -46,7 +46,7 @@ interface OrderDetailsItemProps {
     documentPrices: DocumentEdit[];
     setDocumentPrices: React.Dispatch<SetStateAction<DocumentEdit[]>>;
     addDocument: () => void;
-    removeDocument: (id: number) => void;
+    removeDocument: (id: number | string) => void;
 }
 
 const orderTypeLabels: Record<string, string> = {

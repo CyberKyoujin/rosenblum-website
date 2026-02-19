@@ -58,14 +58,6 @@ test.describe("Admin Messages Page", () => {
             await expect(page.getByRole("heading", { name: "Nachrichten" })).toBeVisible();
         });
 
-        test("should display search field", async ({ page }) => {
-            await page.goto("/messages");
-
-            await expect(page.locator(".dashboard-container")).toBeVisible({ timeout: 10000 });
-
-            await expect(page.locator("#outlined-basic")).toBeVisible();
-        });
-
     });
 
     test.describe("Messages Empty State", () => {

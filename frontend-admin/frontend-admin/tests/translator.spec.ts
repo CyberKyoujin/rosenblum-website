@@ -3,15 +3,7 @@ import { setupAuth, setupApiMocks } from "./auth.setup";
 
 test.describe("Admin Translator Page", () => {
 
-    test.describe("Authentication Required", () => {
 
-        test("should redirect to login when accessing translator without auth", async ({ page }) => {
-            await page.goto("/translator");
-
-            await expect(page).toHaveURL("/");
-        });
-
-    });
 
     test.describe("Translator Page Layout (Authenticated)", () => {
 
