@@ -232,7 +232,7 @@ def send_cost_estimate_email(user_email: str, order_id: int):
     frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
 
     if order.guest_uuid:
-        payment_link = f"{frontend_url}/guest/{order_id}/{order.guest_uuid}"
+        payment_link = f"https://rosenblum-uebersetzungen.de/guest/{order_id}/{order.guest_uuid}"
         plain = (
             f"Hallo, {order.name}\n\n"
             f"Ihr Kostenvoranschlag für die Bestellung #{order_id} ist jetzt verfügbar.\n"

@@ -1898,7 +1898,9 @@ html, body {
   border: 1px solid #bfdbfe;
   border-radius: 10px;
   padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
+  max-width: 1280px;
+  width: calc(100% - 2rem);
+  margin: 0 auto 1rem;
 }
 
 .order-info-banner__icon {
