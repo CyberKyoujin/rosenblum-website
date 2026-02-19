@@ -84,6 +84,9 @@ services:
 
       # LexOffice
       LEX_OFFICE_AUTH_TOKEN: ${LEX_OFFICE_AUTH_TOKEN}
+
+      # Sentry
+      SENTRY_DSN: ${SENTRY_DSN}
     volumes:
       - backend_static:/app/static
       - backend_media:/app/media
