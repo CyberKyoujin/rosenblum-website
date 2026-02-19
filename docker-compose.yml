@@ -178,6 +178,7 @@ services:
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
       GS_BUCKET_NAME: ${GS_BUCKET_NAME}
       GOOGLE_SERVICE_ACCOUNT_FILE: ${GOOGLE_SERVICE_ACCOUNT_FILE:-service-account-file.json}
+      SENTRY_DSN: ${SENTRY_DSN}
     depends_on:
       db:
         condition: service_healthy
