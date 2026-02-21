@@ -17,12 +17,7 @@ import ApiErrorAlert from "../components/ApiErrorAlert";
 import ApiErrorView from "../components/ApiErrorView";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import deFlag from "../assets/de.svg"
-import stepArrow from "../assets/stepArrow1.png"
-import { FaCcVisa } from "react-icons/fa";
-import { FaCcMastercard } from "react-icons/fa";
-import { FaCcApplePay } from "react-icons/fa";
-import { FaGooglePay } from "react-icons/fa";
-import endArrow from "../assets/endArrow.webp"
+import { FaCcVisa, FaCcMastercard, FaCcApplePay, FaGooglePay } from "react-icons/fa";
 import sutthausen1 from "../assets/sutthausen1.webp"
 import AuthoritiesSection from "../components/AuthoritiesSection";
 
@@ -168,30 +163,37 @@ const Home = () => {
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
 
 
-        <div className="action-steps-container">
+        <div className="how-it-works">
 
-            <div className="action-steps-content">
+            <div className="how-it-works__header">
+                <h1>{t('thisWay')}</h1>
+                <h1 className="header-span">{t('itWorks')}</h1>
+            </div>
 
-                <div className="action-steps-title">
-                    <h1>{t('thisWay')}</h1>
-                    <h1 className="header-span">{t('itWorks')}</h1>
-                </div>
+            <div className="how-it-works__timeline">
 
-                <div className="action-steps-items">
-                    
-                    {/* ШАГ 1 */}
-                    <div className="action-steps-item">
+                {/* Step 1 */}
+                <div className="how-it-works__entry">
+                    <div className="how-it-works__num-col">
+                        <div className="how-it-works__badge">1</div>
+                        <div className="how-it-works__line" />
+                    </div>
+                    <div className="how-it-works__card">
                         <h4>{t('how_it_works.step1.title')}</h4>
                         <p>{t('how_it_works.step1.text')}</p>
                         <Link className="action-link-btn" to="/pricing">
                             {t('how_it_works.step1.btn')}
                         </Link>
                     </div>
+                </div>
 
-                    <img src={stepArrow} alt="" className="step-arrow"/>
-
-                    {/* ШАГ 2 */}
-                    <div className="action-steps-item">
+                {/* Step 2 */}
+                <div className="how-it-works__entry">
+                    <div className="how-it-works__num-col">
+                        <div className="how-it-works__badge">2</div>
+                        <div className="how-it-works__line" />
+                    </div>
+                    <div className="how-it-works__card">
                         <h4>{t('how_it_works.step2.title')}</h4>
                         <p>
                             {t('how_it_works.step2.text_part1')}
@@ -204,11 +206,15 @@ const Home = () => {
                             {t('how_it_works.step2.btn')}
                         </Link>
                     </div>
+                </div>
 
-                    <img src={stepArrow} alt="" className="step-arrow"/>
-
-                    {/* ШАГ 3 */}
-                    <div className="action-steps-item">
+                {/* Step 3 */}
+                <div className="how-it-works__entry">
+                    <div className="how-it-works__num-col">
+                        <div className="how-it-works__badge">3</div>
+                        <div className="how-it-works__line" />
+                    </div>
+                    <div className="how-it-works__card">
                         <h4>{t('how_it_works.step3.title')}</h4>
                         <ul className="action-steps-list">
                             <li>
@@ -220,29 +226,27 @@ const Home = () => {
                             </li>
                             <li>{t('how_it_works.step3.individual')}</li>
                         </ul>
-
                         <div className="action-pay-badge">
-                            <FaCcVisa size={40} className="app-icon" />
-                            <FaCcMastercard size={40} className="app-icon" />
-                            <FaGooglePay size={40} className="app-icon" />
-                            <FaCcApplePay size={40} className="app-icon" />
+                            <FaCcVisa size={38} className="app-icon" />
+                            <FaCcMastercard size={38} className="app-icon" />
+                            <FaGooglePay size={38} className="app-icon" />
+                            <FaCcApplePay size={38} className="app-icon" />
                         </div>
                     </div>
+                </div>
 
-                    <img src={endArrow} alt="" className="end-arrow"/>
-
-                    {/* ШАГ 4 */}
-                    <div className="action-steps-item">
+                {/* Step 4 */}
+                <div className="how-it-works__entry">
+                    <div className="how-it-works__num-col">
+                        <div className="how-it-works__badge">4</div>
+                    </div>
+                    <div className="how-it-works__card">
                         <h4>{t('how_it_works.step4.title')}</h4>
                         <p>{t('how_it_works.step4.text')}</p>
                     </div>
-
                 </div>
 
             </div>
-            
-
-
 
         </div>
 

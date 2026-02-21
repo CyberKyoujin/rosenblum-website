@@ -3,6 +3,7 @@ import Divider from '@mui/material/Divider';
 import Footer from "../components/Footer";
 import FAQAccordion from "../components/FAQAccordion";
 import ContactSection from "../components/ContactSection";
+import { IoHelpCircleOutline } from "react-icons/io5";
 
 
 const Faq = () => {
@@ -15,9 +16,13 @@ const Faq = () => {
 
             <div className="main-faq-container">
 
-                <div className="faq-title">
-                    <h1 className="header-span">FAQ</h1>
-                    <h1 className="faq-title-description">{"(" + t('questions') + ")"}</h1>
+                <div className="faq-header">
+                    <div className="faq-header__badge">
+                        <IoHelpCircleOutline />
+                        {t('faqBadge')}
+                    </div>
+                    <h1 className="faq-header__title">FAQ</h1>
+                    <p className="faq-header__subtitle">{t('faqSubtitle')}</p>
                 </div>
 
                 <FAQAccordion/>
