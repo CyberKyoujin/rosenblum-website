@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import NavigationSection from '../components/NavigationSection';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import GoogleLoginBtn from '../components/GoogleLoginBtn';
 import LoginForm from '../components/LoginForm';
@@ -22,8 +21,6 @@ const Login = () => {
   return (
     <>
     <div className="register-container">
-
-      <NavigationSection first_link={t('login')}/>
 
       <div className="login-title-container">
         <div className="login-title-header">

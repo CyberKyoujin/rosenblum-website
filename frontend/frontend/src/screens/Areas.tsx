@@ -8,7 +8,6 @@ import { FaBook } from "react-icons/fa6";
 import medicineIcon from "../assets/medicine_icon.webp"
 import lawIcon from "../assets/law_icon.webp"
 import educationIcon from "../assets/education_icon.webp"
-import NavigationSection from "../components/NavigationSection";
 import AreaSection from "../components/AreaSection";
 
 const Areas = () => {
@@ -18,8 +17,6 @@ const Areas = () => {
     return (
         <>
         <div className="main-app-container">
-
-            <NavigationSection first_link="Fachgebiete"/>
 
             <div className="areas-main-container">
 

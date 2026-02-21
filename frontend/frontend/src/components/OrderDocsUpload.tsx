@@ -1,29 +1,33 @@
 import { Box, Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { t } from 'i18next';
+import { useState, useEffect } from 'react';
 import { FaFile } from 'react-icons/fa6';
 import { PiUploadFill } from 'react-icons/pi';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
+import { Link } from 'react-router-dom';
 import OrderSectionHeader from './OrderSectionHeader';
 import { IoDocuments } from "react-icons/io5";
-import { Link } from 'react-router-dom';
 import { DocsType, languages } from '../hooks/useOrder';
 
 
 const OrderDocsUpload = ({logic}: {logic: any}) => {
 
   const { docs } = logic;
+  const [selectOpen, setSelectOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setSelectOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
 
-      <OrderSectionHeader Icon={IoDocuments} headerText="Wählen Sie Ihre Unterlagen" />
+      <OrderSectionHeader Icon={IoDocuments} headerText={t('selectYourDocuments')}/>
 
       <div className="docs-warning">
-        <p>
-          Bitte wählen Sie den Dokumententyp sorgfältig aus. Falls Sie unsicher sind,
-          wählen Sie <strong>Sonstiges Dokument</strong> — wir prüfen Ihre Bestellung und Sie können bequem
-          in Ihrem Profil bezahlen. Weitere Infos finden Sie auf unserer <Link to="/pricing" className="docs-warning-link">Preise & Dokumente</Link> Seite.
-        </p>
+        <p>{t('docsWarningPre')}<Link to="/pricing" className="docs-warning-link">{t('docsWarningLinkText')}</Link>{t('docsWarningPost')}</p>
       </div>
 
       <Box sx={{ minWidth: 120 }} className="docs-select">
@@ -35,10 +39,17 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
             value=""
             label="Unterlagen"
             onChange={docs.handleInputChange}
+            open={selectOpen}
+            onOpen={() => setSelectOpen(true)}
+            onClose={() => setSelectOpen(false)}
+            MenuProps={{
+              disableScrollLock: true,
+              PaperProps: { style: { maxHeight: 280, overflowY: 'auto' } }
+            }}
             >
-            {docs.templates.map((doc: { type: string; price: number; individualPrice: boolean }, idx: number) => (
+            {docs.templates.map((doc: { type: string; label: string; price: number; individualPrice: boolean }, idx: number) => (
               <MenuItem key={idx} value={doc.type}>
-                {doc.type} - {doc.individualPrice ? 'Individuelle Berechnung' : `${doc.price}€`}
+                {doc.label} - {doc.individualPrice ? 'Individuelle Berechnung' : `${doc.price}€`}
               </MenuItem>
             ))}
             </Select>
@@ -50,7 +61,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
                 <div className='doc-item' key={index}>
 
                     <div className='doc-item-info'>
-                        <p className='doc-name'>{doc.type}</p>
+                        <p className='doc-name'>{doc.label}</p>
                         <p className='doc-price'>
                           {doc.individualPrice ? 'Individuelle Berechnung' : `${doc.price.toFixed(2)} €`}
                         </p>
@@ -58,7 +69,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
 
                     <div className='doc-actions'>
                         <div className="doc-language-wrapper">
-                          <span className="doc-language-label">Zielsprache</span>
+                          <span className="doc-language-label">{t('targetLanguage')}</span>
                           <FormControl size="small" className="doc-language-select">
                             <Select
                               value={doc.language}
@@ -97,7 +108,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
       <Divider style={{ height: '32px', marginTop: '1rem' }} />
 
       <OrderSectionHeader Icon={PiUploadFill} headerText={t('uploadDocuments')} />
-      <p className="docs-upload-hint">Laden Sie alle oben ausgewählten Dokumente hoch.</p>
+      <p className="docs-upload-hint">{t('uploadAllSelectedDocuments')}</p>
 
         <div
           className={`file-upload ${logic.files.dragging ? 'dragging' : ''}`}

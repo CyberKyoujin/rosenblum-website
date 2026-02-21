@@ -7,8 +7,6 @@ import PricingCard from "../components/PricingCard";
 import DocumentPrices from "../components/DocumentPrices";
 import PricingExamples from "../components/PricingExamples";
 import qualityIcon from "../assets/quality_image.webp"
-import NavigationSection from '../components/NavigationSection';
-
 const Pricing = () => {
 
     const { t } = useTranslation();
@@ -42,8 +40,6 @@ const Pricing = () => {
     return (
         <>
         <div className='main-app-container'>
-
-            <NavigationSection first_link='Preise'/>
 
             <div className="main-pricing-container">
 

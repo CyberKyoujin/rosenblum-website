@@ -11,11 +11,15 @@ import { OrderContactsSection } from './OrderContactsSection';
 import { OrderFormValues } from '../hooks/useOrder';
 import { AiFillMessage } from "react-icons/ai";
 import OrderMessageSection from './OrderMessageSection';
-import { IoDocuments, IoCard } from "react-icons/io5";
+import { IoDocuments, IoCard, IoArrowBack, IoInformationCircleOutline } from "react-icons/io5";
 import OrderDocsUpload from './OrderDocsUpload';
-import { IoArrowBack } from "react-icons/io5";
+import { Link } from 'react-router-dom';
 import OrderSummary from './OrderSummary';
 import { CircularProgress } from '@mui/material';
+import ApiErrorAlert from './ApiErrorAlert';
+import { ApiErrorResponse } from '../types/error';
+import { useIsAtTop } from '../hooks/useIsAtTop';
+import { t } from 'i18next';
 
 interface Step {
     icon: IconType;
@@ -24,25 +28,9 @@ interface Step {
     complete: boolean;
 }
 
-const steps: Step[] = [
-    {
-        icon: FaUserCircle, label: "Kontaktdaten", stepElement: OrderContactsSection, complete: false
-    },
-    {
-        icon: AiFillMessage, label: "Nachricht", stepElement: OrderMessageSection, complete: false
-    },
-    {
-        icon: IoDocuments, label: "Unterlagen", stepElement: OrderDocsUpload, complete: false
-    },
-    {
-        icon: IoCard, label: "Bestellübersicht", stepElement: OrderSummary, complete: false
-    },
-];
-
 const stepFields: Record<number, (keyof OrderFormValues)[]> = {
   0: ['name', 'email', 'phone_number', 'city', 'street', 'zip'],
   1: ['message'],
-  //  2 — файлы (без полей формы)
 };
 
 
@@ -50,8 +38,26 @@ const stepFields: Record<number, (keyof OrderFormValues)[]> = {
 export default function OrderStepper({logic}: {logic?: any}) {
   const [activeStep, setActiveStep] = React.useState(0);
 
+  const steps: Step[] = [
+    {
+        icon: FaUserCircle, label: t('contactDetails'), stepElement: OrderContactsSection, complete: false
+    },
+    {
+        icon: AiFillMessage, label: t('stepMessage'), stepElement: OrderMessageSection, complete: false
+    },
+    {
+        icon: IoDocuments, label: t('stepDocuments'), stepElement: OrderDocsUpload, complete: false
+    },
+    {
+        icon: IoCard, label: t('stepOrderSummary'), stepElement: OrderSummary, complete: false
+    },
+  ];
+
   const StepComponent = steps[activeStep]?.stepElement;
 
+  const [docsError, setDocsError] = React.useState<ApiErrorResponse | null>(null);
+
+  const isAtTop = useIsAtTop(5);
 
   const isStepOptional = (_step: number) => {
     return false;
@@ -63,19 +69,19 @@ export default function OrderStepper({logic}: {logic?: any}) {
 
   if (method === "kostenvoranschlag") {
     return <button onClick={logic.onSubmit} disabled={disabled} className='step-next-btn quote-btn'>
-      {logic.loading ? <CircularProgress sx={{color: "white"}}/> : "KOSTENVORANSCHLAG ANFORDERN"}
+      {logic.loading ? <CircularProgress sx={{color: "white"}}/> : t('requestQuoteButton')}
       </button>;
   }
 
   if (method === "rechnung") {
     return <button onClick={logic.onSubmit} disabled={disabled} className='step-next-btn invoice-btn'>
-      {logic.loading ? <CircularProgress sx={{color: "white"}}/> : "BESTELLEN UND MIT RECHNUNG BEZAHLEN"}
+      {logic.loading ? <CircularProgress sx={{color: "white"}}/> : t('orderAndPayByInvoiceButton')}
       </button>;
   }
 
   if (method === "stripe") {
     return <button onClick={logic.onSubmit} disabled={disabled} className='step-next-btn stripe-btn'>
-      {logic.loading ? <CircularProgress sx={{color: "white"}}/> : "MIT STRIPE BEZAHLEN"}
+      {logic.loading ? <CircularProgress sx={{color: "white"}}/> : t('payWithStripeButton')}
       </button>;
   }
 
@@ -83,13 +89,22 @@ export default function OrderStepper({logic}: {logic?: any}) {
   };
 
 
-  const handleNext = async () =>{ 
+  const handleNext = async () =>{
 
     const fields = stepFields[activeStep];
 
     if (fields) {
         const valid = await logic.methods.trigger(fields);
         if (!valid) return;
+    }
+
+    if (activeStep == 2){
+
+      if (logic.files.list.length <= 0 || logic.docs.list.length <= 0) {
+        setDocsError({status: 200, code: "", message: t('addDocumentsRequired')});
+        return;
+      }
+      setDocsError(null);
     }
 
     steps[activeStep].complete = true;
@@ -108,6 +123,8 @@ export default function OrderStepper({logic}: {logic?: any}) {
 
   return (
     <Box sx={{ width: '100%' }} className="order-stepper-container">
+
+      <ApiErrorAlert error={docsError} fixed belowNavbar={isAtTop}/>
 
       <Stepper activeStep={activeStep} className='stepper'>
         {steps.map((step, index) => {
@@ -136,6 +153,13 @@ export default function OrderStepper({logic}: {logic?: any}) {
           );
         })}
       </Stepper>
+
+      <div className="order-info-banner">
+        <IoInformationCircleOutline className="order-info-banner__icon" />
+        <p className="order-info-banner__text">
+          {t('orderBannerText1')} <Link to="/pricing" className="order-info-banner__link">{t('orderBannerPrices')}</Link> {t('orderBannerOr')} <Link to="/faq" className="order-info-banner__link">{t('orderBannerFaq')}</Link> {t('orderBannerText2')} <Link to="/contact-us" className="order-info-banner__link">{t('orderBannerContact')}</Link>.
+        </p>
+      </div>
 
       {activeStep === steps.length ? (
         <React.Fragment>

@@ -6,7 +6,6 @@ import sutthausen1 from "../assets/sutthausen1.webp"
 import useMessageStore from "../zustand/useMessageStore";
 import ApiErrorAlert from "../components/ApiErrorAlert";
 import { ApiErrorResponse } from "../types/error";
-import NavigationSection from "../components/NavigationSection";
 import {
     IoLocationOutline,
     IoCallOutline,
@@ -57,8 +56,6 @@ const ContactUs = () => {
     return (
         <>
             <div className="main-app-container">
-                <NavigationSection first_link="Kontakt"/>
-
                 <div className="cu">
                     {/* Page Header */}
                     <div className="cu__header">

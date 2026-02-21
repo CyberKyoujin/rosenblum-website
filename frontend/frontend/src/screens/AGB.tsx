@@ -1,12 +1,9 @@
 import Footer from "../components/Footer";
-import NavigationSection from "../components/NavigationSection";
 
 const AGB = () => {
     return (
         <>
             <div className="main-app-container">
-                <NavigationSection first_link="AGB" />
-
                 <div className="legal-container">
                     <h1 className="legal-title">Allgemeine Geschäftsbedingungen (AGB)</h1>
 

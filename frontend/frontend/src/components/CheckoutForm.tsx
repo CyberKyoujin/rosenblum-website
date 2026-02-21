@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { IoLockClosedOutline } from "react-icons/io5";
+import { t } from 'i18next';
 
 export default function CheckoutForm({total}: {total: number}) {
   const stripe = useStripe();
@@ -26,7 +27,7 @@ export default function CheckoutForm({total}: {total: number}) {
     });
 
     if (error) {
-      setErrorMessage(error.message || "Ein Fehler ist aufgetreten.");
+      setErrorMessage(error.message || t('paymentError'));
     }
 
     setIsProcessing(false);
@@ -34,7 +35,7 @@ export default function CheckoutForm({total}: {total: number}) {
 
   return (
     <form onSubmit={handleSubmit} className="checkout-form">
-      <h2 className="checkout-form__title">Zahlung</h2>
+      <h2 className="checkout-form__title">{t('paymentTitle')}</h2>
 
       <PaymentElement />
 

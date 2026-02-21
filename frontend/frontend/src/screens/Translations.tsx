@@ -5,7 +5,6 @@ import Section from "../components/Section"
 import ContactSection from "../components/ContactSection";
 import planetIcon from "../assets/planet_icon.webp"
 import questionIcon from "../assets/question_icon.webp"
-import NavigationSection from "../components/NavigationSection";
 import ServiceProcessSteps from "../components/ServiceProcessSteps";
 import processIcon from "../assets/process_image.webp"
 import TranslationAnatomy from "../components/TranslationAnatomy";
@@ -27,8 +26,6 @@ const Translations = () => {
         <>
 
         <div className="main-app-container">
-
-            <NavigationSection first_link="Beglaubigte Übersetzungen"/>
 
             <div className="main-translations-container">
 

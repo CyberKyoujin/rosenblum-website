@@ -9,10 +9,6 @@ import { useTranslation } from 'react-i18next';
 import { ApiErrorResponse } from '../types/error';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import { useIsAtTop } from '../hooks/useIsAtTop';
-import NavigationSection from '../components/NavigationSection';
-
-
-
 const EditProfile = () => {
   const user = useAuthStore(s => s.user);
   const userData = useAuthStore(s => s.userData);
@@ -76,8 +72,6 @@ const EditProfile = () => {
 
     <ApiErrorAlert error={profileUpdateError} belowNavbar={isAtTop} fixed/>
 
-    <NavigationSection first_link='Profil' second_link='Profil bearbeiten'/>
- 
       <div className="profile-edit-container">
         <div className="profile-title-container">
           <div style={{display: 'flex', gap: '0.5rem'}}>

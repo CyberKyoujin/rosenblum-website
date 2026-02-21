@@ -3,6 +3,7 @@ import Lottie from "lottie-react"
 import { Link, useSearchParams } from "react-router-dom";
 import { IoReceiptOutline, IoHomeOutline } from "react-icons/io5";
 import useAuthStore from "../zustand/useAuthStore";
+import { t } from 'i18next';
 
 const PaymentSuccess = () => {
 
@@ -20,27 +21,27 @@ const PaymentSuccess = () => {
                     className="pay-success__animation"
                 />
 
-                <h1 className="pay-success__title">Zahlung erfolgreich!</h1>
+                <h1 className="pay-success__title">{t('paymentSuccessful')}</h1>
                 <p className="pay-success__subtitle">
-                    Vielen Dank! Ihre Zahlung wurde erfolgreich verarbeitet.
+                    {t('paymentProcessedThankYou')}
                 </p>
 
                 {paymentIntent && (
                     <div className="pay-success__ref">
                         <IoReceiptOutline />
-                        <span>Referenz: {paymentIntent.slice(-8).toUpperCase()}</span>
+                        <span>{t('paymentReference')} {paymentIntent.slice(-8).toUpperCase()}</span>
                     </div>
                 )}
 
                 <div className="pay-success__actions">
                     {isAuthenticated && (
                         <Link to="/profile" className="pay-success__btn pay-success__btn--primary">
-                            Meine Auftr&auml;ge
+                            {t('myOrders')}
                         </Link>
                     )}
                     <Link to="/" className="pay-success__btn pay-success__btn--ghost">
                         <IoHomeOutline />
-                        Zur Startseite
+                        {t('backToHome')}
                     </Link>
                 </div>
 

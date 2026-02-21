@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import questionIcon from "../assets/question_icon.webp"
 import planeIcon from "../assets/planet_icon.webp"
-import NavigationSection from "../components/NavigationSection";
 import Section from "../components/Section";
 import TeamSection from "../components/TeamSection";
 
@@ -16,8 +15,6 @@ const AboutUs = () => {
     return(
         <>
         <div className="main-app-container">
-
-            <NavigationSection first_link="Über Uns"/>
 
             <div className="about-main-container">
 

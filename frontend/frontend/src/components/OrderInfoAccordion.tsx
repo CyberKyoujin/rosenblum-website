@@ -16,8 +16,8 @@ const OrderInfoAccordion = () => {
 
         <div className="info-container">
 
-            <Accordion style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '5px', display: 'flex', flexDirection:'column'}}>
-                
+            <Accordion defaultExpanded style={{border: '1px solid rgb(76, 121, 212)', boxShadow:"none", backgroundColor: 'rgb(234, 241, 253)', borderRadius: '5px', display: 'flex', flexDirection:'column'}}>
+
                 <AccordionSummary
                 expandIcon={<ArrowDownwardIcon className="app-icon"/>}
                 aria-controls="panel1-content"
@@ -25,7 +25,7 @@ const OrderInfoAccordion = () => {
                 >
 
                     <Typography style={{display: 'flex', color: 'rgb(49, 97, 192)', alignItems: 'center', gap: '1rem'}}>
-                        <IoWarningOutline className="warning-icon"/> 
+                        <IoWarningOutline className="warning-icon"/>
                         <p>{t('spelling')}</p>
                     </Typography>
 
@@ -34,7 +34,14 @@ const OrderInfoAccordion = () => {
                 <AccordionDetails style={{padding: '1rem 3rem 2rem 3rem'}}>
 
                     <Typography className="pass-info">
-                        Die richtige Schreibwiesen können Sie in ihrem <span style={{color: 'rgb(49, 97, 192)', fontWeight: '600'}}>Reisepass</span> finden.
+                        {t('passportNameInfo')}
+                    </Typography>
+
+                    <Typography className="pass-info" style={{marginTop: '0.75rem'}}>
+                        <span style={{fontWeight: '600'}}>{t('examples')}</span><br/>
+                        Іван Петренко → Ivan Petrenko<br/>
+                        Олена Коваль → Olena Koval<br/>
+                        Михайло Шевченко → Mykhailo Shevchenko
                     </Typography>
 
                     <div className="pass-container">

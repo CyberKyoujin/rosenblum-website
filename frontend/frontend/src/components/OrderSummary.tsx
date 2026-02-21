@@ -6,22 +6,23 @@ import { MdPayment } from 'react-icons/md';
 import { Divider, Checkbox } from '@mui/material';
 import OrderSectionHeader from './OrderSectionHeader';
 import { DocsType, languages } from '../hooks/useOrder';
+import { t } from 'i18next';
 
-const paymentOptions = [
+const getPaymentOptions = () => [
   {
     id: 'kostenvoranschlag',
-    title: 'Kostenvoranschlag',
-    description: 'Für Jobcenter, Sozialamt, andere Träger oder sonstige Dokumente',
+    title: t('costEstimate'),
+    description: t('quoteDescription'),
   },
   {
     id: 'rechnung',
-    title: 'Rechnung',
-    description: 'Zahlung per Überweisung nach Erhalt der Rechnung',
+    title: t('invoiceLabel'),
+    description: t('invoiceDesc'),
   },
   {
     id: 'stripe',
-    title: 'Sofortzahlung',
-    description: 'Sofort online bezahlen (Karte, PayPal, etc.)',
+    title: t('instantPayment'),
+    description: t('instantPaymentDesc'),
   },
 ];
 
@@ -112,7 +113,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
         <>
           <Divider sx={{ my: 2 }} />
 
-          <OrderSectionHeader Icon={PiUploadFill} headerText="Hochgeladene Dateien" />
+          <OrderSectionHeader Icon={PiUploadFill} headerText={t('uploadedFiles')} />
 
           <div className="summary-section">
             <div className="summary-files">
@@ -134,12 +135,12 @@ export default function OrderSummary({ logic }: { logic: any }) {
 
       {hasIndividualDocs && (
         <div className="payment-hint">
-          <p>Ihre Bestellung enthält Dokumente mit individueller Preisberechnung. In diesem Fall ist nur die Option <strong>Kostenvoranschlag</strong> verfügbar.</p>
+          <p>{t('individualDocsPaymentHint')}</p>
         </div>
       )}
 
       <div className="payment-options">
-        {paymentOptions.map((option) => {
+        {getPaymentOptions().map((option) => {
           const disabled = hasIndividualDocs && option.id !== 'kostenvoranschlag';
           return (
             <label
@@ -176,8 +177,8 @@ export default function OrderSummary({ logic }: { logic: any }) {
                 <FaShieldAlt />
               </div>
               <div>
-                <h3 className="order-register-promo-title">Kostenloses Konto erstellen</h3>
-                <p className="order-register-promo-desc">Nur ein Passwort entfernt von diesen Vorteilen:</p>
+                <h3 className="order-register-promo-title">{t('createFreeAccount')}</h3>
+                <p className="order-register-promo-desc">{t('onePasswordAway')}</p>
               </div>
             </div>
             <button
@@ -192,15 +193,15 @@ export default function OrderSummary({ logic }: { logic: any }) {
           <div className="order-register-benefits">
             <div className="order-register-benefit">
               <FaHistory className="order-register-benefit-icon" />
-              <span>Bestellstatus jederzeit verfolgen</span>
+              <span>{t('trackOrderStatus')}</span>
             </div>
             <div className="order-register-benefit">
               <FaBell className="order-register-benefit-icon" />
-              <span>Benachrichtigungen per E-Mail erhalten</span>
+              <span>{t('receiveEmailNotifications')}</span>
             </div>
             <div className="order-register-benefit">
               <FaUserCircle className="order-register-benefit-icon" />
-              <span>Kontaktdaten bei zukünftigen Bestellungen vorausfüllen</span>
+              <span>{t('prefillContactDataFuture')}</span>
             </div>
           </div>
 
@@ -213,7 +214,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
                   <input
                     type={reg.showPassword ? 'text' : 'password'}
                     className="order-pw-input"
-                    placeholder="Passwort eingeben"
+                    placeholder={t('enterPassword')}
                     value={reg.password}
                     onChange={(e) => reg.setPassword(e.target.value)}
                   />
@@ -230,7 +231,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
                   <input
                     type={reg.showPassword ? 'text' : 'password'}
                     className="order-pw-input"
-                    placeholder="Passwort wiederholen"
+                    placeholder={t('repeatPassword')}
                     value={reg.passwordConfirm}
                     onChange={(e) => reg.setPasswordConfirm(e.target.value)}
                   />
@@ -242,9 +243,9 @@ export default function OrderSummary({ logic }: { logic: any }) {
 
               <div className="order-pw-checks">
                 {[
-                  { key: 'length', label: 'Mindestens 8 Zeichen' },
-                  { key: 'uppercase', label: 'Eine Großbuchstabe' },
-                  { key: 'number', label: 'Eine Zahl' },
+                  { key: 'length', label: t('minimumEightChars') },
+                  { key: 'uppercase', label: t('oneCapitalLetter') },
+                  { key: 'number', label: t('oneNumber') },
                 ].map(({ key, label }) => (
                   <div key={key} className={`order-pw-check ${reg.passwordChecks[key] ? 'order-pw-check--pass' : ''}`}>
                     {reg.passwordChecks[key] ? <FaCheck /> : <FaTimes />}
@@ -265,7 +266,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
             sx={{ color: '#999', '&.Mui-checked': { color: 'var(--blue)' }, padding: '4px' }}
           />
           <span className="consent-text">
-            Ich stimme den <a href="/agb" target="_blank" className="consent-link">AGB</a> zu.
+            {t('agreeToAGB')}
           </span>
         </label>
         <label className="consent-row">
@@ -275,7 +276,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
             sx={{ color: '#999', '&.Mui-checked': { color: 'var(--blue)' }, padding: '4px' }}
           />
           <span className="consent-text">
-            Ich habe die <a href="/datenschutz" target="_blank" className="consent-link">Datenschutzerklärung</a> gelesen und stimme zu.
+            {t('agreeToPrivacyPolicy')}
           </span>
         </label>
       </div>

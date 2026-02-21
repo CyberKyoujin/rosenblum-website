@@ -1,12 +1,9 @@
 import Footer from "../components/Footer";
-import NavigationSection from "../components/NavigationSection";
 
 const Impressum = () => {
     return (
         <>
             <div className="main-app-container">
-                <NavigationSection first_link="Impressum" />
-
                 <div className="legal-container">
                     <h1 className="legal-title">Impressum</h1>
 

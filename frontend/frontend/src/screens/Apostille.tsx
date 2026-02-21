@@ -9,7 +9,6 @@ import ContactSection from "../components/ContactSection";
 import apoIcon from "../assets/apo_icon.webp"
 import timeIcon from "../assets/time_icon.webp"
 import questionIcon from "../assets/question_icon.webp"
-import NavigationSection from "../components/NavigationSection";
 import ServiceProcessSteps from "../components/ServiceProcessSteps";
 import { LuBadgeInfo } from "react-icons/lu";
 
@@ -29,8 +28,6 @@ const Apostille = () => {
 
         <div className="main-app-container">
 
-
-            <NavigationSection first_link="Apostille"/>
 
             <div className="main-translations-container">
 

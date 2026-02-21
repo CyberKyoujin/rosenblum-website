@@ -8,8 +8,6 @@ import { useIsAtTop } from '../hooks/useIsAtTop';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import NavigationSection from '../components/NavigationSection';
-
 import useOrderStore from "../zustand/useOrderStore";
 
 const Profile = () => {
@@ -55,8 +53,6 @@ const Profile = () => {
 
 
             <main className="main-app-container">
-
-                <NavigationSection first_link={t('profileBreadcrumb')}/>
 
                 <article className="profile__main-section">
 

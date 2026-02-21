@@ -23,7 +23,7 @@ export default function OrderMessageSection({logic}: {logic: any}) {
           label={t('yourMessage')}
           fullWidth
           error={!!errors.message}
-          placeholder={'z.B. Ich benötige eine beglaubigte Übersetzung meiner Geburtsurkunde aus dem Ukrainischen ins Deutsche.\n\nBitte teilen Sie mir die voraussichtliche Bearbeitungszeit und die Kosten mit.'}
+          placeholder={t('messagePlaceholder')}
         />
       </div>
     </>

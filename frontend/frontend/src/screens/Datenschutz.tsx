@@ -1,12 +1,9 @@
 import Footer from "../components/Footer";
-import NavigationSection from "../components/NavigationSection";
 
 const Datenschutz = () => {
     return (
         <>
             <div className="main-app-container">
-                <NavigationSection first_link="Datenschutz" />
-
                 <div className="legal-container">
                     <h1 className="legal-title">Datenschutzerklärung</h1>
 

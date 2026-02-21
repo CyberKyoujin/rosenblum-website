@@ -3,6 +3,7 @@ import Lottie from "lottie-react"
 import { Link, useLocation } from "react-router-dom";
 import { IoHomeOutline, IoReceiptOutline } from "react-icons/io5";
 import useAuthStore from "../zustand/useAuthStore";
+import { t } from 'i18next';
 
 interface OrderSuccessState {
     orderId?: number;
@@ -15,12 +16,12 @@ const OrderSuccess = () => {
     const isAuthenticated = useAuthStore(s => s.isAuthenticated);
 
     const title = type === 'kostenvoranschlag'
-        ? 'Kostenvoranschlag angefordert!'
-        : 'Bestellung erfolgreich!';
+        ? t('quoteRequested')
+        : t('orderSuccessful');
 
     const subtitle = type === 'kostenvoranschlag'
-        ? 'Wir erstellen Ihren Kostenvoranschlag und senden ihn per E-Mail.'
-        : 'Ihre Bestellung wurde erfolgreich aufgenommen. Sie erhalten die Rechnung per E-Mail.';
+        ? t('quoteCreationMessage')
+        : t('orderReceivedMessage');
 
     return (
         <div className="pay-success">
@@ -38,19 +39,19 @@ const OrderSuccess = () => {
                 {orderId && (
                     <div className="pay-success__ref">
                         <IoReceiptOutline />
-                        <span>Bestellnr.: #ro-{orderId}</span>
+                        <span>{t('orderNumberPrefix')}{orderId}</span>
                     </div>
                 )}
 
                 <div className="pay-success__actions">
                     {isAuthenticated && (
                         <Link to="/profile" className="pay-success__btn pay-success__btn--primary">
-                            Meine Auftr&auml;ge
+                            {t('myOrders')}
                         </Link>
                     )}
                     <Link to="/" className="pay-success__btn pay-success__btn--ghost">
                         <IoHomeOutline />
-                        Zur Startseite
+                        {t('backToHome')}
                     </Link>
                 </div>
 

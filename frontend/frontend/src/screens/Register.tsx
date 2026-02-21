@@ -6,8 +6,6 @@ import Footer from "../components/Footer";
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 import GoogleLoginBtn from '../components/GoogleLoginBtn';
-import NavigationSection from '../components/NavigationSection';
-
 import RegisterForm from '../components/RegisterForm';
 import { useRegister } from '../hooks/useRegister';
 
@@ -30,8 +28,6 @@ const Register = () => {
       
 
         <div className="register-container">
-          <NavigationSection first_link='Register'/>
-
           <div className="register-form">
             <div>
               <div className="register-title-container">

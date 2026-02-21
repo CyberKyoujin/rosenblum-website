@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
 import Footer from "../components/Footer";
-import NavigationSection from "../components/NavigationSection";
 import FAQAccordion from "../components/FAQAccordion";
 import ContactSection from "../components/ContactSection";
 
@@ -13,8 +12,6 @@ const Faq = () => {
     return (
         <>
         <div className="main-app-container">
-
-            <NavigationSection first_link="FAQ"/>
 
             <div className="main-faq-container">
 

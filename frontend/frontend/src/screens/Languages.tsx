@@ -5,7 +5,6 @@ import Divider from '@mui/material/Divider';
 import Footer from "../components/Footer";
 import ContactSection from "../components/ContactSection";
 import qualityIcon from "../assets/quality_image.webp"
-import NavigationSection from "../components/NavigationSection";
 import LanguageCardsSection from "../components/LanguageCard";
 import ServiceProcessSteps from "../components/ServiceProcessSteps";
 
@@ -29,8 +28,6 @@ const Languages = () => {
         <>
 
             <div className="main-app-container">
-
-                <NavigationSection first_link="Sprachen"/>
 
                 <div className="languages-main-container">
 
