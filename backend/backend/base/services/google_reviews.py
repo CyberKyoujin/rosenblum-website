@@ -29,8 +29,10 @@ def sync_google_reviews():
     google_reviews = fetch_google_reviews()
 
     for r in google_reviews:
-        google_review_id = r.get("time") 
-        if google_review_id is None:
+        google_review_id = r.get("time")
+        review_rating = r.get("rating")
+        
+        if google_review_id is None or review_rating is None or review_rating < 4:
             continue
 
         review_time = datetime.fromtimestamp(r["time"], tz=timezone.utc)
@@ -41,7 +43,7 @@ def sync_google_reviews():
                 "place_id": GOOGLE_PLACE_ID,
                 "author_name": r.get("author_name", "Anonymous"),
                 "profile_photo_url": r.get("profile_photo_url"),
-                "rating": r.get("rating", 0),
+                "rating": r.get("rating", 5),
                 "original_language": r.get("language", "en"),
                 "original_text": r.get("text", ""),
                 "review_timestamp": review_time,

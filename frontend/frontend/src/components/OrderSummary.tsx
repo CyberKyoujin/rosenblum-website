@@ -36,32 +36,32 @@ export default function OrderSummary({ logic }: { logic: any }) {
 
   return (
     <>
-      <OrderSectionHeader Icon={FaUserCircle} headerText="Kontaktdaten" />
+      <OrderSectionHeader Icon={FaUserCircle} headerText={t('contactDetails')} />
 
       <div className="summary-section">
         <div className="summary-grid">
           <div className="summary-field">
-            <span className="summary-label">Name</span>
+            <span className="summary-label">{t('name')}</span>
             <span className="summary-value">{values.name}</span>
           </div>
           <div className="summary-field">
-            <span className="summary-label">E-Mail</span>
+            <span className="summary-label">{t('email')}</span>
             <span className="summary-value">{values.email}</span>
           </div>
           <div className="summary-field">
-            <span className="summary-label">Telefon</span>
+            <span className="summary-label">{t('phone')}</span>
             <span className="summary-value">+49 {values.phone_number}</span>
           </div>
           <div className="summary-field">
-            <span className="summary-label">Stadt</span>
+            <span className="summary-label">{t('city')}</span>
             <span className="summary-value">{values.city}</span>
           </div>
           <div className="summary-field">
-            <span className="summary-label">Straße</span>
+            <span className="summary-label">{t('street')}</span>
             <span className="summary-value">{values.street}</span>
           </div>
           <div className="summary-field">
-            <span className="summary-label">PLZ</span>
+            <span className="summary-label">{t('zip')}</span>
             <span className="summary-value">{values.zip}</span>
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
 
       <Divider sx={{ my: 2 }} />
 
-      <OrderSectionHeader Icon={AiFillMessage} headerText="Nachricht" />
+      <OrderSectionHeader Icon={AiFillMessage} headerText={t('stepMessage')} />
 
       <div className="summary-section">
         <p className="summary-message">{values.message}</p>
@@ -79,7 +79,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
         <>
           <Divider sx={{ my: 2 }} />
 
-          <OrderSectionHeader Icon={IoDocuments} headerText="Unterlagen" />
+          <OrderSectionHeader Icon={IoDocuments} headerText={t('stepDocuments')} />
 
           <div className="summary-section">
             <div className="summary-docs">
@@ -90,19 +90,19 @@ export default function OrderSummary({ logic }: { logic: any }) {
                     {' '}{doc.type}
                   </span>
                   <span className="summary-doc-price">
-                    {doc.individualPrice ? 'Individuelle Berechnung' : `${doc.price.toFixed(2)} €`}
+                    {doc.individualPrice ? t('individualCalculation') : `${doc.price.toFixed(2)} €`}
                   </span>
                 </div>
               ))}
             </div>
 
             <div className="summary-doc-total">
-              <span>Gesamt</span>
+              <span>{t('total')}</span>
               <span className="summary-doc-total-value">{logic.docs.total.toFixed(2)} €</span>
             </div>
             {logic.docs.specialDocs > 0 && (
               <p className="summary-doc-note">
-                + {logic.docs.specialDocs} individuell berechnete{logic.docs.specialDocs === 1 ? 's' : ''} Dokument{logic.docs.specialDocs === 1 ? '' : 'e'}
+                {t('specialDocsNote', { count: logic.docs.specialDocs })}
               </p>
             )}
           </div>
@@ -131,7 +131,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
 
       <Divider sx={{ my: 2 }} />
 
-      <OrderSectionHeader Icon={MdPayment} headerText="Zahlungsmethode" />
+      <OrderSectionHeader Icon={MdPayment} headerText={t('paymentMethod')} />
 
       {hasIndividualDocs && (
         <div className="payment-hint">
@@ -186,7 +186,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
               className={`order-register-toggle-btn ${reg.wantsAccount ? 'order-register-toggle-btn--active' : ''}`}
               onClick={() => reg.setWantsAccount(!reg.wantsAccount)}
             >
-              {reg.wantsAccount ? 'Aktiviert' : 'Aktivieren'}
+              {reg.wantsAccount ? t('accountActivated') : t('activateAccount')}
             </button>
           </div>
 
@@ -208,7 +208,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
           <div className={`order-register-fields ${reg.wantsAccount ? 'order-register-fields--open' : ''}`}>
             <div className="order-register-fields-inner">
               <div className="order-pw-field">
-                <label className="order-pw-label">Passwort</label>
+                <label className="order-pw-label">{t('password')}</label>
                 <div className="order-pw-input-wrapper">
                   <FaLock className="order-pw-icon" />
                   <input
@@ -225,7 +225,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
               </div>
 
               <div className="order-pw-field">
-                <label className="order-pw-label">Passwort bestätigen</label>
+                <label className="order-pw-label">{t('confirmPassword')}</label>
                 <div className="order-pw-input-wrapper">
                   <FaLock className="order-pw-icon" />
                   <input
@@ -237,7 +237,7 @@ export default function OrderSummary({ logic }: { logic: any }) {
                   />
                 </div>
                 {reg.passwordConfirm && !reg.passwordsMatch && (
-                  <span className="order-pw-error">Passwörter stimmen nicht überein</span>
+                  <span className="order-pw-error">{t('passwordMismatch')}</span>
                 )}
               </div>
 

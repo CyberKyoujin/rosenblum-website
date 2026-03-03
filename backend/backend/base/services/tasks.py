@@ -5,7 +5,6 @@ from decouple import config
 from base.models import Order, Invoice
 from base.services.email_notifications import _send_invoice_email
 from django.db import transaction
-from decimal import Decimal, ROUND_HALF_UP
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +23,22 @@ def create_lex_office_invoice(order_id):
             logger.error("[LexOffice]: Order with ID %s not found in database.", order_id)
             return None
 
+        if order.lexoffice_id:
+            logger.info("[LexOffice]: Invoice already exists for order %s (lexoffice_id=%s), skipping.", order_id, order.lexoffice_id)
+            return None
+
+        # All prices in DB are stored as gross (VAT inclusive).
+        # Always use taxType "gross" so LexOffice shows "davon 19% MwSt enthalten"
+        # and avoids 1-cent rounding errors from gross→net→gross conversion.
         line_items = []
-        
+
         for doc in order.documents.all():
             gross_price = doc.price
-            net_amount = (gross_price / Decimal('1.19')).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            unit_price = {
+                "currency": "EUR",
+                "grossAmount": float(gross_price),
+                "taxRatePercentage": 19,
+            }
 
             line_items.append({
                 "type": "custom",
@@ -36,25 +46,42 @@ def create_lex_office_invoice(order_id):
                 "description": f"Übersetzung — {doc.type} ({doc.language.upper()})",
                 "quantity": 1,
                 "unitName": "Stück",
-                "unitPrice": {
-                    "currency": "EUR",
-                    "netAmount": float(net_amount),
-                    "taxRatePercentage": 19,
-                },
+                "unitPrice": unit_price,
                 "discountPercentage": 0,
             })
 
         # --- Payment conditions based on payment type ---
         if order.payment_type == 'rechnung':
             payment_conditions = {
-                "paymentTermLabel": "Zahlbar innerhalb von 14 Tagen",
-                "paymentTermDuration": 14,
+                "paymentTermLabel": "Zahlbar innerhalb von 10 Tagen",
+                "paymentTermDuration": 10,
             }
         else:
             payment_conditions = {
                 "paymentTermLabel": "Zahlung bereits erhalten",
                 "paymentTermDuration": 0,
             }
+
+        # --- Remark: bank details for Rechnung; Stripe TX ID for Stripe ---
+        if order.payment_type == 'rechnung':
+            remark = (
+                "Bitte überweisen Sie den Betrag innerhalb von 10 Tagen unter Angabe der "
+                "Rechnungsnummer als Verwendungszweck auf folgendes Konto:\n\n"
+                "Kontoinhaber: Oleg Rosenblum\n"
+                "IBAN: DE11 2657 0024 0033 4060 00\n"
+                "BIC: DEUTDEDB265\n\n"
+                "Vielen Dank für Ihren Auftrag!\n"
+                "Übersetzungsbüro Rosenblum"
+            )
+        elif order.payment_type == 'stripe' and order.stripe_payment_intent_id:
+            remark = (
+                f"Zahlung erhalten via Stripe.\n"
+                f"Transaktions-ID: {order.stripe_payment_intent_id}\n\n"
+                "Vielen Dank für Ihren Auftrag!\n"
+                "Übersetzungsbüro Rosenblum"
+            )
+        else:
+            remark = "Vielen Dank für Ihren Auftrag!\nÜbersetzungsbüro Rosenblum"
 
         payload = {
             "voucherDate": order.date.strftime('%Y-%m-%dT00:00:00.000+01:00'),
@@ -70,7 +97,7 @@ def create_lex_office_invoice(order_id):
                 "currency": "EUR",
             },
             "taxConditions": {
-                "taxType": "net",
+                "taxType": "gross",
             },
             "paymentConditions": payment_conditions,
             "shippingConditions": {
@@ -79,11 +106,12 @@ def create_lex_office_invoice(order_id):
             },
             "title": "Rechnung",
             "introduction": "Ihre bestellten Positionen stellen wir Ihnen hiermit in Rechnung.",
-            "remark": "Vielen Dank für Ihren Auftrag!\nÜbersetzungsbüro Rosenblum",
+            "remark": remark,
         }
         
         try:
-            logger.info("[LexOffice]: Trigger Lexofice invoice for %s: sum=%s", order.name, net_amount)
+            total = sum(doc.price for doc in order.documents.all())
+            logger.info("[LexOffice]: Trigger LexOffice invoice for %s: gross_total=%s", order.name, total)
             # --- Create invoice (finalized) ---
             response = requests.post(
                 f"{LEXOFFICE_BASE}/invoices",
@@ -102,14 +130,20 @@ def create_lex_office_invoice(order_id):
         
         # --- Download Invoice PDF ---
         pdf_bytes = _download_invoice_pdf(invoice_id)
-        
+
         with transaction.atomic():
-            order.refresh_from_db()  # Ensure we have the latest data before updating      
+            # select_for_update prevents two concurrent workers from both saving
+            order = Order.objects.select_for_update().get(id=order_id)
+
+            # Double-check: another worker may have saved first while we were calling the API
+            if order.lexoffice_id:
+                logger.warning("[LexOffice]: Concurrent execution: order %s already has lexoffice_id=%s, discarding duplicate.", order_id, order.lexoffice_id)
+                return None
 
             # --- Save lexoffice ID to order ---
             order.lexoffice_id = invoice_id
             order.save(update_fields=["lexoffice_id"])
-            
+
             if pdf_bytes:
                 invoice_obj, _ = Invoice.objects.get_or_create(order=order)
                 invoice_obj.file.save(
@@ -117,7 +151,7 @@ def create_lex_office_invoice(order_id):
                     ContentFile(pdf_bytes),
                     save=True
                 )
-            
+
             logger.info("[LexOffice]: Invoice created for order %s with LexOffice ID %s", order_id, invoice_id)
 
         # --- Send Invoice to client ---

@@ -4,6 +4,7 @@ import random
 from base.models import CustomUser
 from dataclasses import dataclass
 import logging
+from django.db import transaction
 
 
 logger = logging.getLogger(__name__)
@@ -50,36 +51,37 @@ def send_verification_code(receiver_email: str, receiver_first_name: str, receiv
     return verification_code
 
 def verify_email(user_email: str, verification_code: str) -> VerificationResult:
-    
+
     try:
         user = CustomUser.objects.get(email=user_email)
     except CustomUser.DoesNotExist:
         logger.warning(f"[Email Verification]: Email verification failed: user with email {user_email} not found.")
         return VerificationResult(ok=False, error="user_not_found")
-    
-    try:
-        ev = EmailVerification.objects.get(user=user, used=False)
-    except EmailVerification.DoesNotExist:
-        logger.warning(f"[Email Verification]: Email verification failed: no active verification found for user with email {user_email}.")
-        return VerificationResult(ok=False, error="no_active_verification")
-    
-    if ev.is_expired():
-        return VerificationResult(ok=False, error="verification_code_expired")
-    
-    if ev.has_no_attempts_left():
-        return VerificationResult(ok=False, error="no_verification_attempts")
-    
-    if ev.code != verification_code:
-        new_attempts_value = ev.attempts - 1
-        ev.attempts = new_attempts_value
+
+    with transaction.atomic():
+        try:
+            ev = EmailVerification.objects.select_for_update().get(user=user, used=False)
+        except EmailVerification.DoesNotExist:
+            logger.warning(f"[Email Verification]: Email verification failed: no active verification found for user with email {user_email}.")
+            return VerificationResult(ok=False, error="no_active_verification")
+
+        if ev.is_expired():
+            return VerificationResult(ok=False, error="verification_code_expired")
+
+        if ev.has_no_attempts_left():
+            return VerificationResult(ok=False, error="no_verification_attempts")
+
+        if ev.code != verification_code:
+            new_attempts_value = ev.attempts - 1
+            ev.attempts = new_attempts_value
+            ev.save()
+            return VerificationResult(ok=False, error="invalid_verification_code", attempts=new_attempts_value)
+
+        ev.used = True
         ev.save()
-        return VerificationResult(ok=False, error="invalid_verification_code", attempts=new_attempts_value)
-    
-    ev.used=True
-    ev.save()
-    user.is_active = True
-    user.save()
-    
+        user.is_active = True
+        user.save()
+
     return VerificationResult(ok=True)
     
     

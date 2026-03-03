@@ -6,15 +6,15 @@ class Command(BaseCommand):
     help = 'Sets up scheduled tasks for the application'
 
     def handle(self, *args, **kwargs):
-        # Create or update the schedule for syncing Google reviews hourly
+        # Create or update the schedule for syncing Google reviews daily
         
         func_path = 'base.services.google_reviews.sync_google_reviews'
         
         schedule, created = Schedule.objects.update_or_create(
             func=func_path,
             defaults={
-                'name': "Sync Google Reviews Hourly",
-                'schedule_type': Schedule.HOURLY,
+                'name': "Sync Google Reviews Daily",
+                'schedule_type': Schedule.DAILY,
                 'repeats': -1,
                 'next_run': timezone.now(),
             }

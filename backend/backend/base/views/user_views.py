@@ -13,7 +13,7 @@ from google.auth.transport import requests as google_requests
 from base.models import CustomUser, Message, File, RequestObject, Review, EmailVerification
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
@@ -98,10 +98,14 @@ class UserViewSet(viewsets.ModelViewSet):
         if CustomUser.objects.filter(email=email).exists():
             logger.info(f"[Auth]: Registration failed - user {email} already exists.")
             return Response({"detail": "User already exists"}, status=status.HTTP_409_CONFLICT)
-        
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        try:
+            user = serializer.save()
+        except IntegrityError:
+            logger.warning(f"[Auth]: Registration race condition - user {email} already exists (IntegrityError).")
+            return Response({"detail": "User already exists"}, status=status.HTTP_409_CONFLICT)
         logger.info(f"[Auth]: New user registered: {user.email}")
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -124,12 +128,13 @@ class UserViewSet(viewsets.ModelViewSet):
     def resend_code(self, request):
         email = request.data.get("email", "").strip()
         user = get_object_or_404(CustomUser, email=email)
-        EmailVerification.objects.filter(user=user).delete()
-        
-        verification_code = generate_verification_code()
-        
-        send_verification_code(email, user.first_name, user.last_name, verification_code=verification_code)
-        EmailVerification.objects.create(user=user, code=verification_code)
+
+        with transaction.atomic():
+            EmailVerification.objects.filter(user=user).delete()
+            verification_code = generate_verification_code()
+            EmailVerification.objects.create(user=user, code=verification_code)
+            transaction.on_commit(lambda: send_verification_code(email, user.first_name, user.last_name, verification_code=verification_code))
+
         return Response({"detail": "New code sent."})
 
     @action(detail=False, methods=['post'], url_path='reset-password-link')

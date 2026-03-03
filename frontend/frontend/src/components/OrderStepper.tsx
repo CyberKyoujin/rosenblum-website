@@ -183,13 +183,13 @@ export default function OrderStepper({logic}: {logic?: any}) {
               disabled={activeStep === 0}
               onClick={handleBack}
             >
-              <IoArrowBack /> ZURÜCK
+              <IoArrowBack /> {t('back').toUpperCase()}
             </button>
             <Box sx={{ flex: '1 1 auto' }} />
-            
+
 
               { activeStep === steps.length - 1 ? renderSubmitButton() : (
-                <button onClick={handleNext} className='step-next-btn'>WEITER</button>
+                <button onClick={handleNext} className='step-next-btn'>{t('next')}</button>
               )}
 
 

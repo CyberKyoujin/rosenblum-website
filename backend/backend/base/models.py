@@ -77,7 +77,6 @@ class Order(models.Model):
     class Status(models.TextChoices):
         REVIEW = 'review'
         IN_PROGRESS = "in_progress"
-        COMPLETED = "completed"
         PICK_UP_READY = "ready_pick_up"
         SENT = "sent"
         CANCELED = "canceled"

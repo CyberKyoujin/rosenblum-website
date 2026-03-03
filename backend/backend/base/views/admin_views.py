@@ -35,13 +35,10 @@ class AdminLoginView(TokenObtainPairView):
 # MESSAGE VIEWS
 
 class GlobalMessagesView(generics.ListAPIView):
-    
-    permission_classes = [IsAdminUser]
-    
     '''
     Returns messages in chat format
     '''
-    
+
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
     permission_classes = [IsAuthenticated]

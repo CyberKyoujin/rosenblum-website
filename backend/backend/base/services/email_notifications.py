@@ -7,6 +7,8 @@ from django.template.loader import render_to_string
 
 from base.models import CostEstimate, Order
 
+ADMIN_EMAIL = 'rosenblum-uebersetzungsbuero@gmail.com'
+
 
 def _send_html_email(subject: str, plain_text: str, recipient_email: str, context: dict, file_content=None, file_name=None):
     html_body = render_to_string('emails/base_email.html', context)
@@ -139,6 +141,34 @@ def send_order_ready_email(user_email: str, order_id: int):
     )
 
 
+def send_order_received_email(user_email: str, order_id: int, customer_name: str):
+    subject = "Ihre Bestellung ist eingegangen!"
+    plain = (
+        f"Hallo, {customer_name}\n\n"
+        f"Ihre Bestellung #{order_id} wurde erfolgreich bei uns aufgenommen.\n"
+        "Wir werden Ihnen schnellstmöglich einen Kostenvoranschlag zusenden.\n\n"
+        "Mit freundlichen Grüßen,\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        context={
+            'title': 'Bestellung eingegangen',
+            'greeting': f'Hallo, {customer_name}',
+            'body_lines': [
+                f'Ihre Bestellung wurde erfolgreich bei uns aufgenommen.',
+                'Wir prüfen Ihre Unterlagen und werden Ihnen schnellstmöglich einen Kostenvoranschlag zusenden.',
+            ],
+            'info_box_lines': [
+                f'Bestellnr.: #ro-{order_id}',
+            ],
+        },
+    )
+
+
 def send_request_created(user_email: str, request_id: int, requester_name: str):
     subject = "Ihre Anfrage ist erfolgreich versandt!"
     plain = (
@@ -217,6 +247,141 @@ def _send_invoice_email(order, pdf_bytes):
 
     logger.info("[EMAIL] Invoice email sent to %s for order %s", order.email, order.pk)
     
+def send_order_sent_email(user_email: str, order_id: int):
+    """Sent when admin marks order as 'sent' (Versendet)."""
+    subject = "Ihre Übersetzung ist unterwegs!"
+    plain = (
+        f"Hallo,\n\n"
+        f"Ihre Bestellung #{order_id} wurde versendet und ist auf dem Weg zu Ihnen.\n\n"
+        "Mit freundlichen Grüßen,\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        context={
+            'title': 'Ihre Übersetzung ist unterwegs!',
+            'body_lines': [
+                'Wir freuen uns, Ihnen mitteilen zu können, dass Ihre Übersetzung versendet wurde.',
+                'Die Dokumente sind auf dem Weg zu Ihnen.',
+            ],
+            'info_box_lines': [f'Bestellnr.: #ro-{order_id}'],
+        },
+    )
+
+
+def send_order_pickup_ready_email(user_email: str, order_id: int):
+    """Sent when admin marks order as 'ready_pick_up' (Abholbereit)."""
+    subject = "Ihre Übersetzung liegt zur Abholung bereit!"
+    plain = (
+        f"Hallo,\n\n"
+        f"Ihre Bestellung #{order_id} liegt in unserem Büro zur Abholung bereit.\n\n"
+        "Mit freundlichen Grüßen,\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        context={
+            'title': 'Abholung bereit!',
+            'body_lines': [
+                'Ihre Übersetzung ist fertiggestellt und liegt in unserem Büro zur Abholung bereit.',
+                'Bitte holen Sie die Dokumente zu unseren Öffnungszeiten ab.',
+            ],
+            'info_box_lines': [f'Bestellnr.: #ro-{order_id}'],
+        },
+    )
+
+
+def send_order_canceled_email(user_email: str, order_id: int):
+    """Sent when admin marks order as 'canceled' (Storniert)."""
+    subject = "Ihre Bestellung wurde storniert"
+    plain = (
+        f"Hallo,\n\n"
+        f"Ihre Bestellung #{order_id} wurde storniert.\n"
+        "Bei Fragen wenden Sie sich bitte an uns.\n\n"
+        "Mit freundlichen Grüßen,\n"
+        "Ihr Übersetzungsbüro Rosenblum"
+    )
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=user_email,
+        context={
+            'title': 'Bestellung storniert',
+            'body_lines': [
+                f'Ihre Bestellung #ro-{order_id} wurde leider storniert.',
+                'Falls Sie Fragen haben, kontaktieren Sie uns bitte — wir helfen Ihnen gerne weiter.',
+            ],
+            'info_box_lines': [f'Bestellnr.: #ro-{order_id}'],
+        },
+    )
+
+
+def send_admin_new_order_notification(order_id: int, customer_name: str, customer_email: str, order_type: str, total: float):
+    """Internal notification to admin when a new order is placed."""
+    type_label = 'Kostenvoranschlag' if order_type == 'kostenvoranschlag' else 'Bestellung'
+    subject = f"[Rosenblum] Neue {type_label} #{order_id} von {customer_name}"
+    plain = (
+        f"Neue {type_label} eingegangen.\n\n"
+        f"Bestellnr.: #ro-{order_id}\n"
+        f"Kunde: {customer_name}\n"
+        f"E-Mail: {customer_email}\n"
+        f"Typ: {type_label}\n"
+        f"Gesamtbetrag: {total:.2f} €\n"
+    )
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=ADMIN_EMAIL,
+        context={
+            'title': f'Neue {type_label} #{order_id}',
+            'body_lines': [f'Eine neue {type_label} ist eingegangen.'],
+            'info_box_lines': [
+                f'Bestellnr.: #ro-{order_id}',
+                f'Kunde: {customer_name}',
+                f'E-Mail: {customer_email}',
+                f'Typ: {type_label}',
+                f'Gesamtbetrag: {total:.2f} €',
+            ],
+        },
+    )
+
+
+def send_admin_dispute_notification(order_id: str, amount_cents: int, reason: str, dispute_id: str):
+    """Internal notification to admin when a Stripe dispute (chargeback) is filed."""
+    amount_eur = amount_cents / 100
+    subject = f"[DRINGEND] Stripe Dispute für Bestellung #{order_id}"
+    plain = (
+        f"Ein Kunde hat einen Stripe-Dispute (Rückbuchung) eingereicht.\n\n"
+        f"Dispute-ID: {dispute_id}\n"
+        f"Bestellnr.: {order_id}\n"
+        f"Betrag: {amount_eur:.2f} €\n"
+        f"Grund: {reason}\n\n"
+        "Bitte im Stripe-Dashboard überprüfen und reagieren."
+    )
+    _send_html_email(
+        subject=subject,
+        plain_text=plain,
+        recipient_email=ADMIN_EMAIL,
+        context={
+            'title': '⚠ Stripe Dispute eingegangen',
+            'body_lines': [
+                'Ein Kunde hat einen Stripe-Dispute (Rückbuchung) eingereicht.',
+                'Bitte sofort im Stripe-Dashboard überprüfen und innerhalb der Frist reagieren.',
+            ],
+            'info_box_lines': [
+                f'Dispute-ID: {dispute_id}',
+                f'Bestellnr.: #ro-{order_id}',
+                f'Betrag: {amount_eur:.2f} €',
+                f'Grund: {reason}',
+            ],
+        },
+    )
+
+
 def send_cost_estimate_email(user_email: str, order_id: int):
     try:
         order = Order.objects.get(pk=order_id)

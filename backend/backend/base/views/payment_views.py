@@ -11,6 +11,7 @@ from django.db import IntegrityError, transaction
 from base.models import Order
 from django_q.tasks import async_task
 from base.services.tasks import create_lex_office_invoice
+from base.services.email_notifications import send_admin_dispute_notification
 import sentry_sdk
 from decimal import Decimal
 
@@ -31,21 +32,34 @@ class CreatePaymentIntent(APIView):
         logger.info("[Stripe PaymentIntent]: Payment intent triggered, order_id=%s", order_id)
 
         try:
-            
+
             order = Order.objects.get(pk=order_id)
-            
+
+            # IDOR check: authenticated users can only pay for their own orders
+            if request.user.is_authenticated and not request.user.is_staff:
+                if order.user_id and order.user_id != request.user.id:
+                    logger.warning("[Stripe PaymentIntent]: IDOR attempt by user_id=%s for order_id=%s", request.user.id, order_id)
+                    return Response({'error': 'Not found'}, status=404)
+
+            # Guest check: guest_uuid must match if order is anonymous
+            if not request.user.is_authenticated and order.guest_uuid:
+                guest_uuid = request.data.get('guest_uuid')
+                if str(order.guest_uuid) != str(guest_uuid):
+                    logger.warning("[Stripe PaymentIntent]: Invalid guest_uuid for order_id=%s", order_id)
+                    return Response({'error': 'Not found'}, status=404)
+
             if order.payment_status == Order.PaymentStatus.PAID:
                 logger.warning("[Stripe PaymentIntent]: Attempt to create payment intent for already paid order_id=%s", order_id)
                 return Response({'error': 'Order already paid'}, status=400)
-            
+
             total_price = order.total_price
-            
+
             if total_price <= 0:
                 logger.warning("[Stripe PaymentIntent]: Total price is zero or None for order_id=%s. Cannot create payment intent.", order_id)
                 return Response({'error': 'No documents found for this order'}, status=400)
-             
+
             amount = int(total_price * Decimal('100'))
-            
+
             intent = stripe.PaymentIntent.create(
                 amount=amount,
                 currency='eur',
@@ -54,16 +68,19 @@ class CreatePaymentIntent(APIView):
                 },
                 metadata={'order_id': str(order_id) if order_id else ''}
             )
-            
-            logger.info("[Stripe PaymentIntent]: Payment intent created successfully for order_id=%s, amount=%s", order_id, amount)    
+
+            logger.info("[Stripe PaymentIntent]: Payment intent created successfully for order_id=%s, amount=%s", order_id, amount)
 
             return Response({
                 'clientSecret': intent['client_secret']
             }, status=200)
-                
+
+        except Order.DoesNotExist:
+            logger.warning("[Stripe PaymentIntent]: Order not found order_id=%s", order_id)
+            return Response({'error': 'Not found'}, status=404)
         except Exception as e:
             logger.exception("[Stripe PaymentIntent]: Unexpected error creating payment intent for order_id=%s: %s", order_id, e)
-            return Response({'error': str(e)}, status=500)
+            return Response({'error': 'Internal server error'}, status=500)
 
 
 @csrf_exempt
@@ -128,7 +145,35 @@ def stripe_webhook(request):
         except Exception as e:
             logger.exception("[Stripe Webhook]: Unexpected error in webhook for order %s: %s", order_id, e)
             return HttpResponse(status=500)
+    elif event['type'] == 'charge.dispute.created':
+        dispute = event['data']['object']
+        dispute_id = dispute.get('id', '')
+        amount_cents = dispute.get('amount', 0)
+        reason = dispute.get('reason', 'unbekannt')
+        payment_intent_id = dispute.get('payment_intent', '')
+
+        # Resolve order_id from our DB via the stored payment intent ID
+        order_id = payment_intent_id  # fallback
+        try:
+            order = Order.objects.filter(stripe_payment_intent_id=payment_intent_id).first()
+            if order:
+                order_id = str(order.pk)
+        except Exception as e:
+            logger.error("[Stripe Webhook] Error resolving order for dispute %s: %s", dispute_id, e)
+
+        logger.warning("[Stripe Webhook] Dispute created — order_id=%s, dispute_id=%s, reason=%s, amount=%s cents",
+                       order_id, dispute_id, reason, amount_cents)
+        sentry_sdk.capture_message(f"[Stripe Webhook] Dispute created for order {order_id}", level='warning')
+        send_admin_dispute_notification(order_id, amount_cents, reason, dispute_id)
+
+    elif event['type'] == 'payment_intent.payment_failed':
+        payment_intent = event['data']['object']
+        order_id = payment_intent['metadata'].get('order_id')
+        error = payment_intent.get('last_payment_error', {}) or {}
+        logger.warning("[Stripe Webhook] PaymentIntent failed — order_id=%s, error=%s",
+                       order_id, error.get('message', 'unknown'))
+
     else:
-        logger.debug("[Stripe Webhook] Unknown event type: %s", event['type'])
+        logger.debug("[Stripe Webhook] Unhandled event type: %s", event['type'])
 
     return HttpResponse(status=200)

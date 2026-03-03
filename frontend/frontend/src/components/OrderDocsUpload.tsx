@@ -1,13 +1,13 @@
-import { Box, Divider, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, Divider, FormControl, InputLabel, ListSubheader, MenuItem, Select } from '@mui/material';
 import { t } from 'i18next';
 import { useState, useEffect } from 'react';
-import { FaFile } from 'react-icons/fa6';
+import { FaFile, FaCircleQuestion } from 'react-icons/fa6';
 import { PiUploadFill } from 'react-icons/pi';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import OrderSectionHeader from './OrderSectionHeader';
 import { IoDocuments } from "react-icons/io5";
-import { DocsType, languages } from '../hooks/useOrder';
+import { DocsType, DocTemplate, CATEGORY_ORDER } from '../hooks/useOrder';
 
 
 const OrderDocsUpload = ({logic}: {logic: any}) => {
@@ -21,6 +21,16 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const templates: DocTemplate[] = docs.templates;
+  const sonstigesTemplate = templates.find((d: DocTemplate) => d.individualPrice);
+  const regularTemplates = templates.filter((d: DocTemplate) => !d.individualPrice);
+  const sonstigesAlreadyAdded = docs.list.some((d: DocsType) => d.individualPrice);
+
+  const groupedTemplates = CATEGORY_ORDER.map(cat => ({
+    ...cat,
+    items: regularTemplates.filter((d: DocTemplate) => d.category === cat.key),
+  })).filter(g => g.items.length > 0);
+
   return (
     <>
 
@@ -30,28 +40,63 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
         <p>{t('docsWarningPre')}<Link to="/pricing" className="docs-warning-link">{t('docsWarningLinkText')}</Link>{t('docsWarningPost')}</p>
       </div>
 
+      {/* Sonstiges — prominent card, shown before the regular select */}
+      {sonstigesTemplate && (
+        <div
+          className={`docs-sonstiges-card ${sonstigesAlreadyAdded ? 'docs-sonstiges-card--added' : ''}`}
+          onClick={() => !sonstigesAlreadyAdded && docs.addDoc(sonstigesTemplate.type)}
+        >
+          <div className="docs-sonstiges-card__icon">
+            <FaCircleQuestion />
+          </div>
+          <div className="docs-sonstiges-card__content">
+            <span className="docs-sonstiges-card__title">{t('docSonstigesCardTitle')}</span>
+            <span className="docs-sonstiges-card__desc">{t('docSonstigesCardDesc')}</span>
+          </div>
+          <button
+            type="button"
+            className={`docs-sonstiges-card__btn ${sonstigesAlreadyAdded ? 'docs-sonstiges-card__btn--added' : ''}`}
+            disabled={sonstigesAlreadyAdded}
+            onClick={(e) => { e.stopPropagation(); if (!sonstigesAlreadyAdded) docs.addDoc(sonstigesTemplate.type); }}
+          >
+            {sonstigesAlreadyAdded ? t('docSonstigesCardAdded') : t('docSonstigesCardBtn')}
+          </button>
+        </div>
+      )}
+
+      {/* Grouped document selector */}
       <Box sx={{ minWidth: 120 }} className="docs-select">
         <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Unterlagen</InputLabel>
+            <InputLabel id="docs-select-label">{t('documents')}</InputLabel>
             <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
+            labelId="docs-select-label"
+            id="docs-select"
             value=""
-            label="Unterlagen"
+            label={t('documents')}
             onChange={docs.handleInputChange}
             open={selectOpen}
             onOpen={() => setSelectOpen(true)}
             onClose={() => setSelectOpen(false)}
             MenuProps={{
               disableScrollLock: true,
-              PaperProps: { style: { maxHeight: 280, overflowY: 'auto' } }
+              PaperProps: { style: { maxHeight: 320, overflowY: 'auto' } }
             }}
             >
-            {docs.templates.map((doc: { type: string; label: string; price: number; individualPrice: boolean }, idx: number) => (
-              <MenuItem key={idx} value={doc.type}>
-                {doc.label} - {doc.individualPrice ? 'Individuelle Berechnung' : `${doc.price}€`}
+            {sonstigesTemplate && (
+              <MenuItem value={sonstigesTemplate.type} className="docs-select-sonstiges">
+                ⚙ {t('docSonstigesCardTitle')} — {t('individualCalculation')}
               </MenuItem>
-            ))}
+            )}
+            {groupedTemplates.map(group => [
+              <ListSubheader key={group.key} className="docs-select-category">
+                {t(group.labelKey)}
+              </ListSubheader>,
+              ...group.items.map((doc: DocTemplate, idx: number) => (
+                <MenuItem key={idx} value={doc.type}>
+                  {doc.label} — {`${doc.price}€`}
+                </MenuItem>
+              ))
+            ])}
             </Select>
         </FormControl>
       </Box>
@@ -63,7 +108,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
                     <div className='doc-item-info'>
                         <p className='doc-name'>{doc.label}</p>
                         <p className='doc-price'>
-                          {doc.individualPrice ? 'Individuelle Berechnung' : `${doc.price.toFixed(2)} €`}
+                          {doc.individualPrice ? t('individualCalculation') : `${doc.price.toFixed(2)} €`}
                         </p>
                     </div>
 
@@ -75,10 +120,13 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
                               value={doc.language}
                               onChange={(e) => docs.changeLanguage(index, e.target.value)}
                             >
-                              {languages.map((lang) => (
+                              {[
+                                { code: 'ua', flag: '🇺🇦', label: 'UKR' },
+                                { code: 'ru', flag: '🇷🇺', label: 'RU' },
+                                { code: 'de', flag: '🇩🇪', label: 'DE' },
+                              ].map((lang) => (
                                 <MenuItem key={lang.code} value={lang.code}>
-                                  <img src={lang.flag} alt={lang.label} className="doc-lang-flag" />
-                                  {lang.label}
+                                  {lang.flag} {lang.label}
                                 </MenuItem>
                               ))}
                             </Select>
@@ -96,15 +144,15 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
       {docs.list.length > 0 && (
         <div className="docs-total">
           <div className="docs-total-row">
-            <span className="docs-total-label">Gesamt</span>
+            <span className="docs-total-label">{t('total')}</span>
             <span className="docs-total-value">{docs.total.toFixed(2)} €</span>
           </div>
           {docs.specialDocs > 0 && (
-            <p className="docs-total-note">+ {docs.specialDocs} individuell berechnete{docs.specialDocs === 1 ? 's' : ''} Dokument{docs.specialDocs === 1 ? '' : 'e'}</p>
+            <p className="docs-total-note">{t('specialDocsNote', { count: docs.specialDocs })}</p>
           )}
         </div>
       )}
-      
+
       <Divider style={{ height: '32px', marginTop: '1rem' }} />
 
       <OrderSectionHeader Icon={PiUploadFill} headerText={t('uploadDocuments')} />
@@ -121,11 +169,11 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
           <p>{t('uploadArea')}</p>
         </div>
 
-        <input 
-          type="file" multiple accept=".jpg,.png,.pdf,.doc,.docx" 
-          ref={logic.files.inputRef} 
-          style={{ display: 'none' }} 
-          onChange={logic.files.handleInputChange} 
+        <input
+          type="file" multiple accept=".jpg,.png,.pdf,.doc,.docx"
+          ref={logic.files.inputRef}
+          style={{ display: 'none' }}
+          onChange={logic.files.handleInputChange}
         />
 
         <div className="files-container">

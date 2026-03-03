@@ -7,8 +7,14 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
 from django.utils import timezone
-from .models import Order
 from base.services.email_verification import send_verification_code, generate_verification_code
+from base.services.email_notifications import (
+    send_order_received_email,
+    send_order_sent_email,
+    send_order_pickup_ready_email,
+    send_order_canceled_email,
+    send_admin_new_order_notification,
+)
 from django.db import transaction
 from rest_framework import exceptions
 import json
@@ -284,7 +290,15 @@ class OrderSerializer(serializers.ModelSerializer):
                 )
                 
             if validated_data.get('payment_type') == 'rechnung':
-                transaction.on_commit(lambda: create_lex_office_invoice(order.pk))
+                transaction.on_commit(lambda: async_task(create_lex_office_invoice, order.pk))
+
+            order_email = validated_data.get('email', '')
+            order_name = validated_data.get('name', '')
+            order_pk = order.pk
+            order_type = validated_data.get('order_type', '')
+            order_total = float(order.total_price)
+            transaction.on_commit(lambda: send_order_received_email(order_email, order_pk, order_name))
+            transaction.on_commit(lambda: send_admin_new_order_notification(order_pk, order_name, order_email, order_type, order_total))
 
         return order
     
@@ -306,6 +320,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         order_docs_data = validated_data.pop('documents', None)
         old_payment_type = instance.payment_type
         new_payment_type = validated_data.get('payment_type')
+        old_status = instance.status
 
         with transaction.atomic():
 
@@ -313,8 +328,20 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
             # Trigger invoice creation when payment_type is set to rechnung
             if new_payment_type == 'rechnung' and old_payment_type != 'rechnung' and not instance.lexoffice_id:
-                transaction.on_commit(lambda: create_lex_office_invoice(instance.pk))
-                
+                transaction.on_commit(lambda: async_task(create_lex_office_invoice, instance.pk))
+
+            # Send customer email on status change
+            new_status = instance.status
+            if new_status != old_status:
+                customer_email = instance.email
+                order_pk = instance.pk
+                if new_status == Order.Status.SENT:
+                    transaction.on_commit(lambda: send_order_sent_email(customer_email, order_pk))
+                elif new_status == Order.Status.PICK_UP_READY:
+                    transaction.on_commit(lambda: send_order_pickup_ready_email(customer_email, order_pk))
+                elif new_status == Order.Status.CANCELED:
+                    transaction.on_commit(lambda: send_order_canceled_email(customer_email, order_pk))
+
             logger.info("[ORDER] Order %s updated in serializer (status=%s, order_type=%s, payment_status=%s, payment_type=%s)", instance.id, instance.status, instance.order_type, instance.payment_status, instance.payment_type)
 
             # Delete docs from DB which aren't present in the request

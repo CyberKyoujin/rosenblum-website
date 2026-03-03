@@ -16,7 +16,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-rosenblum}
       POSTGRES_USER: ${POSTGRES_USER:-rosenblum}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rosenblum_secret}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -41,7 +41,7 @@ services:
     environment:
       # Django settings
       DEBUG: ${DEBUG:-False}
-      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      SECRET_KEY: ${SECRET_KEY}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
 
       # Superuser
@@ -51,7 +51,7 @@ services:
       DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
 
       # Database
-      DATABASE_URL: postgres://${POSTGRES_USER:-rosenblum}:${POSTGRES_PASSWORD:-rosenblum_secret}@db:5432/${POSTGRES_DB:-rosenblum}
+      DATABASE_URL: postgres://${POSTGRES_USER:-rosenblum}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-rosenblum}
 
       # Google OAuth
       SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: ${SOCIAL_AUTH_GOOGLE_OAUTH2_KEY}
@@ -166,9 +166,9 @@ services:
     command: python manage.py qcluster
     environment:
       DEBUG: ${DEBUG:-False}
-      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      SECRET_KEY: ${SECRET_KEY}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
-      DATABASE_URL: postgres://${POSTGRES_USER:-rosenblum}:${POSTGRES_PASSWORD:-rosenblum_secret}@db:5432/${POSTGRES_DB:-rosenblum}
+      DATABASE_URL: postgres://${POSTGRES_USER:-rosenblum}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-rosenblum}
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
       LEX_OFFICE_AUTH_TOKEN: ${LEX_OFFICE_AUTH_TOKEN}
       EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
@@ -178,6 +178,10 @@ services:
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
       GS_BUCKET_NAME: ${GS_BUCKET_NAME}
       GOOGLE_SERVICE_ACCOUNT_FILE: ${GOOGLE_SERVICE_ACCOUNT_FILE:-service-account-file.json}
+      GOOGLE_PLACES_API_KEY: ${GOOGLE_PLACES_API_KEY}
+      GOOGLE_PLACE_ID: ${GOOGLE_PLACE_ID}
+      DEEPL_AUTH_KEY: ${DEEPL_AUTH_KEY}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
       SENTRY_DSN: ${SENTRY_DSN}
     depends_on:
       db:

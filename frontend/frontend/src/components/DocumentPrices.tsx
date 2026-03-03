@@ -7,7 +7,13 @@ import {
     IoHomeOutline,
     IoRibbonOutline,
     IoDocumentsOutline,
-    IoHelpCircleOutline
+    IoHelpCircleOutline,
+    IoCardOutline,
+    IoShieldCheckmarkOutline,
+    IoKeyOutline,
+    IoReaderOutline,
+    IoBookOutline,
+    IoStarOutline
 } from "react-icons/io5";
 
 interface DocumentPriceItem {
@@ -52,6 +58,36 @@ const DocumentPrices = () => {
             icon: <IoDocumentsOutline />,
             labelKey: "documents_price.otherCerts",
             price: "35,30€"
+        },
+        {
+            icon: <IoCardOutline />,
+            labelKey: "documents_price.passportId",
+            price: "35,30€"
+        },
+        {
+            icon: <IoShieldCheckmarkOutline />,
+            labelKey: "documents_price.criminalRecord",
+            price: "35,30€"
+        },
+        {
+            icon: <IoKeyOutline />,
+            labelKey: "documents_price.residencePermit",
+            price: "35,30€"
+        },
+        {
+            icon: <IoReaderOutline />,
+            labelKey: "documents_price.maturityCertNoGrades",
+            price: "35,30€"
+        },
+        {
+            icon: <IoBookOutline />,
+            labelKey: "documents_price.diplomaNoGrades",
+            price: "35,30€"
+        },
+        {
+            icon: <IoStarOutline />,
+            labelKey: "documents_price.apostilleOnTranslation",
+            price: "35,00€"
         },
         {
             icon: <IoHelpCircleOutline />,

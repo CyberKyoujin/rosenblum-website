@@ -97,7 +97,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Response({'url': url}, status=status.HTTP_200_OK)
 
 class CreateCostEstimateViewSet(viewsets.ViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
     serializer_class = CostEstimateSerializer
 
     def create(self, request):

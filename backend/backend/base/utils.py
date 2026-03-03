@@ -13,7 +13,7 @@ def get_doc_price(doc_type):
         "Namensänderungsurkunde": Decimal('35.30'),
         "Melde-/Negativbescheinigung": Decimal('35.30'),
         "Sonstige Zertifikat/Zeugnis/Bescheinigung (1 Seite)": Decimal('35.30'),
-        "Führungszeugins": Decimal('35.30'),
+        "Führungszeugnis": Decimal('35.30'),
         "Pass, Ausweis": Decimal('35.30'),
         "Aufenthaltserlaubnis": Decimal('35.30'),
         "Reifezeugnis (ohne Notenanlage)": Decimal('35.30'),

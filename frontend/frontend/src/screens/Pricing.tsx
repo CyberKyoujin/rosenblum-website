@@ -7,6 +7,7 @@ import PricingCard from "../components/PricingCard";
 import DocumentPrices from "../components/DocumentPrices";
 import PricingExamples from "../components/PricingExamples";
 import qualityIcon from "../assets/quality_image.webp"
+import PriceCalculator from '../components/PriceCalculator';
 const Pricing = () => {
 
     const { t } = useTranslation();
@@ -67,8 +68,8 @@ const Pricing = () => {
 
                 <Divider style={{marginTop: '3rem'}}/>
 
-                <Section image={qualityIcon} imageClass="second-image" titleTextFirst={t('quality')} titleTextSecond={t('satisfaction')} text="qualityAndHappiness" order={true}/>
-                
+                <PriceCalculator/>     
+
                 <Divider style={{marginTop: '4rem', marginBottom: '2rem'}}/>
 
                 <ContactSection order={false} text="pricingContact"/>

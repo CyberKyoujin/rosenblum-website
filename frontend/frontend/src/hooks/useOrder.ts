@@ -36,24 +36,44 @@ export const languages: { code: string; label: string; flag: string }[] = [
   { code: 'de', label: 'DE', flag: deFlag },
 ];
 
-const getDocTemplates = (): Omit<DocsType, 'language'>[] => [
-    {type: "Sonstiges Dokument mit komplexem Inhalt (Diplom, Arbeitsbuch, Gerichtsurteil, Erklärung)", label: t('docSonstiges'), price: 0, individualPrice: true},
-    {type: "Geburtsurkunde", label: t('docGeburtsurkunde'), price: 35.30, individualPrice: false},
-    {type: "Heiratsurkunde", label: t('docHeiratsurkunde'), price: 35.30, individualPrice: false},
-    {type: "Sterbeurkunde", label: t('docSterbeurkunde'), price: 35.30, individualPrice: false},
-    {type: "Scheidungsurkunde", label: t('docScheidungsurkunde'), price: 35.30, individualPrice: false},
-    {type: "Führerschein", label: t('docFuhrerschein'), price: 30.30, individualPrice: false},
-    {type: "Übersetzung der Appostile", label: t('docUbersetzungAppostile'), price: 10.50, individualPrice: false},
-    {type: "Apostille auf unsere Übersetzung", label: t('docApostilleUbersetzung'), price: 35.00, individualPrice: false},
-    {type: "Namensänderungsurkunde", label: t('docNamensanderung'), price: 35.30, individualPrice: false},
-    {type: "Melde-/Negativbescheinigung", label: t('docMeldeNegativbescheinigung'), price: 35.30, individualPrice: false},
-    {type: "Sonstige Zertifikat/Zeugnis/Bescheinigung (1 Seite)", label: t('docSonstigeZertifikat'), price: 35.30, individualPrice: false},
-    {type: "Führungszeugins", label: t('docFuhrungszeugnis'), price: 35.30, individualPrice: false},
-    {type: "Pass, Ausweis", label: t('docPassAusweis'), price: 35.30, individualPrice: false},
-    {type: "Aufenthaltserlaubnis", label: t('docAufenthaltserlaubnis'), price: 35.30, individualPrice: false},
-    {type: "Reifezeugnis (ohne Notenanlage)", label: t('docReifezeugnis'), price: 35.30, individualPrice: false},
-    {type: "Diplom (ohne Notenanlage)", label: t('docDiplom'), price: 35.30, individualPrice: false},
-    {type: "Reifezeugnis mit Notenanlage", label: t('docReifezeugnisMitNotenanlage'), price: 70.60, individualPrice: false},
+export type DocCategory = 'personenstand' | 'ausweis' | 'bescheinigung' | 'bildung' | 'apostille' | 'sonstiges';
+
+export interface DocTemplate extends Omit<DocsType, 'language'> {
+  category: DocCategory;
+}
+
+export const CATEGORY_ORDER: { key: DocCategory; labelKey: string }[] = [
+  { key: 'personenstand', labelKey: 'docCategoryPersonenstand' },
+  { key: 'ausweis',       labelKey: 'docCategoryAusweis' },
+  { key: 'bescheinigung', labelKey: 'docCategoryBescheinigung' },
+  { key: 'bildung',       labelKey: 'docCategoryBildung' },
+  { key: 'apostille',     labelKey: 'docCategoryApostille' },
+];
+
+const getDocTemplates = (): DocTemplate[] => [
+    // Sonstiges — shown as a separate card in UI, not inside the Select
+    {type: "Sonstiges Dokument mit komplexem Inhalt (Diplom, Arbeitsbuch, Gerichtsurteil, Erklärung)", label: t('docSonstiges'), price: 0, individualPrice: true, category: 'sonstiges'},
+    // Personenstandsurkunden
+    {type: "Geburtsurkunde",        label: t('docGeburtsurkunde'),        price: 35.30, individualPrice: false, category: 'personenstand'},
+    {type: "Heiratsurkunde",        label: t('docHeiratsurkunde'),        price: 35.30, individualPrice: false, category: 'personenstand'},
+    {type: "Sterbeurkunde",         label: t('docSterbeurkunde'),         price: 35.30, individualPrice: false, category: 'personenstand'},
+    {type: "Scheidungsurkunde",     label: t('docScheidungsurkunde'),     price: 35.30, individualPrice: false, category: 'personenstand'},
+    {type: "Namensänderungsurkunde",label: t('docNamensanderung'),        price: 35.30, individualPrice: false, category: 'personenstand'},
+    // Ausweise & Reise
+    {type: "Pass, Ausweis",         label: t('docPassAusweis'),           price: 35.30, individualPrice: false, category: 'ausweis'},
+    {type: "Führerschein",          label: t('docFuhrerschein'),          price: 30.30, individualPrice: false, category: 'ausweis'},
+    {type: "Aufenthaltserlaubnis",  label: t('docAufenthaltserlaubnis'),  price: 35.30, individualPrice: false, category: 'ausweis'},
+    {type: "Führungszeugnis",       label: t('docFuhrungszeugnis'),       price: 35.30, individualPrice: false, category: 'ausweis'},
+    // Bescheinigungen
+    {type: "Melde-/Negativbescheinigung",                       label: t('docMeldeNegativbescheinigung'), price: 35.30, individualPrice: false, category: 'bescheinigung'},
+    {type: "Sonstige Zertifikat/Zeugnis/Bescheinigung (1 Seite)",label: t('docSonstigeZertifikat'),       price: 35.30, individualPrice: false, category: 'bescheinigung'},
+    // Bildung
+    {type: "Reifezeugnis (ohne Notenanlage)", label: t('docReifezeugnis'),                price: 35.30, individualPrice: false, category: 'bildung'},
+    {type: "Reifezeugnis mit Notenanlage",    label: t('docReifezeugnisMitNotenanlage'),  price: 70.60, individualPrice: false, category: 'bildung'},
+    {type: "Diplom (ohne Notenanlage)",       label: t('docDiplom'),                      price: 35.30, individualPrice: false, category: 'bildung'},
+    // Apostille
+    {type: "Übersetzung der Appostile",       label: t('docUbersetzungAppostile'),        price: 10.50, individualPrice: false, category: 'apostille'},
+    {type: "Apostille auf unsere Übersetzung",label: t('docApostilleUbersetzung'),        price: 35.00, individualPrice: false, category: 'apostille'},
 ]
 
 export type OrderFormValues = z.infer<typeof orderSchema>;
@@ -129,12 +149,16 @@ export const useOrder = () => {
     if (e.dataTransfer.files) handleFiles(Array.from(e.dataTransfer.files));
   };
 
-  const handleChange = (event: SelectChangeEvent) => {
-    const selectedType = event.target.value as string;
-    const template = getDocTemplates().find(d => d.type === selectedType);
+  const addDoc = (type: string) => {
+    const template = getDocTemplates().find(d => d.type === type);
     if (template) {
-      setDocs(prev => [...prev, { ...template, language: 'ua' }]);
+      const { category, ...docData } = template;
+      setDocs(prev => [...prev, { ...docData, language: 'ua' }]);
     }
+  };
+
+  const handleChange = (event: SelectChangeEvent) => {
+    addDoc(event.target.value as string);
   };
 
   const handleRemoveDoc = (index: number) => {
@@ -217,6 +241,7 @@ export const useOrder = () => {
     docs: {
       list: docs,
       templates: getDocTemplates(),
+      addDoc,
       removeDoc: handleRemoveDoc,
       changeLanguage: handleLanguageChange,
       handleInputChange: handleChange,
