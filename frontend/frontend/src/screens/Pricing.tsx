@@ -2,11 +2,9 @@ import Divider from '@mui/material/Divider';
 import { useTranslation } from "react-i18next";
 import Footer from "../components/Footer";
 import ContactSection from "../components/ContactSection";
-import Section from "../components/Section"
 import PricingCard from "../components/PricingCard";
 import DocumentPrices from "../components/DocumentPrices";
 import PricingExamples from "../components/PricingExamples";
-import qualityIcon from "../assets/quality_image.webp"
 import PriceCalculator from '../components/PriceCalculator';
 const Pricing = () => {
 
