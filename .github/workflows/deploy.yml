@@ -269,8 +269,8 @@ jobs:
             cd /app
 
             # 2. Обновляем код
-            git reset --hard
-            git pull origin master
+            git fetch origin
+            git reset --hard origin/master
 
             # 3. ГЕНЕРАЦИЯ .ENV ФАЙЛА
             echo "DEBUG=${{ secrets.DEBUG }}" > .env
