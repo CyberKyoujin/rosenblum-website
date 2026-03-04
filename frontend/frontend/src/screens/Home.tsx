@@ -17,7 +17,7 @@ import ApiErrorAlert from "../components/ApiErrorAlert";
 import ApiErrorView from "../components/ApiErrorView";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import deFlag from "../assets/de.svg"
-import { FaCcVisa, FaCcMastercard, FaCcApplePay, FaGooglePay } from "react-icons/fa";
+import { FaCcVisa, FaCcMastercard, FaCcApplePay, FaGooglePay, FaCheck } from "react-icons/fa";
 import sutthausen1 from "../assets/sutthausen1.webp"
 import AuthoritiesSection from "../components/AuthoritiesSection";
 
@@ -88,7 +88,14 @@ const Home = () => {
                 </div>
                 
                 <div className="home-header-content">
-                    <p>{t('excellentTranslations')}</p>
+                    <div className="home-hero-features">
+                        <div className="home-hero-feature"><FaCheck className="home-hero-check" /><span>{t('heroFeature1')}</span></div>
+                        <div className="home-hero-feature"><FaCheck className="home-hero-check" /><span>{t('heroFeature2')}</span></div>
+                        <div className="home-hero-feature"><FaCheck className="home-hero-check" /><span>{t('heroFeature3')}</span></div>
+                        <div className="home-hero-feature"><FaCheck className="home-hero-check" /><span>{t('heroFeature4')}</span></div>
+                        <div className="home-hero-feature"><FaCheck className="home-hero-check" /><div className="home-hero-feature-content"><span>{t('heroFeature5')}</span><Link to="/pricing" className="hero-pricing-link">{t('heroPricingLink')}</Link></div></div>
+                        <div className="home-hero-feature"><FaCheck className="home-hero-check" /><span>{t('heroFeature6')}</span></div>
+                    </div>
                 </div>
                 <div className="btn-overlay"></div>
                 <button className="home-header-btn hover-btn" onClick={() => navigate('/order')}>{t('orderOffer')}<MdLocalOffer/></button>
@@ -131,6 +138,8 @@ const Home = () => {
             <h1 className="header-span">{t('reliable')}.</h1>
         </div>
 
+        <AuthoritiesSection/>
+
         <div className="home-features-grid">
             <div className="home-feature-card">
                 <MdVerified className="feature-card-icon" />
@@ -158,7 +167,7 @@ const Home = () => {
             </div>
         </div>
 
-        <AuthoritiesSection/>
+        
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
 
@@ -296,7 +305,7 @@ const Home = () => {
             <h1>{t('ourr')}</h1>
             <h1 className="header-span">{t('location')}</h1>
             <div className="contacts-container">
-                <p><IoLocationSharp className="contacts-icon"/> Altepoststraße 25, 49074 Osnabrück</p>
+                <p><IoLocationSharp className="contacts-icon"/> Alte Poststraße 25, 49074 Osnabrück</p>
             </div>
         </div>
 

@@ -95,6 +95,7 @@ export const useOrder = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>('');
   const [agbAccepted, setAgbAccepted] = useState(false);
   const [datenschutzAccepted, setDatenschutzAccepted] = useState(false);
+  const [widerrufsrechtAccepted, setWiderrufsrechtAccepted] = useState(false);
 
   // Registration state
   const [wantsAccount, setWantsAccount] = useState(false);
@@ -177,7 +178,7 @@ export const useOrder = () => {
   };
 
   const canSubmit = (() => {
-    if (!agbAccepted || !datenschutzAccepted) return false;
+    if (!agbAccepted || !datenschutzAccepted || !widerrufsrechtAccepted) return false;
     if (!paymentMethod) return false;
     if (wantsAccount && (!isPasswordValid || !passwordsMatch)) return false;
     return true;
@@ -257,6 +258,8 @@ export const useOrder = () => {
       setAgb: setAgbAccepted,
       datenschutz: datenschutzAccepted,
       setDatenschutz: setDatenschutzAccepted,
+      widerrufsrecht: widerrufsrechtAccepted,
+      setWiderrufsrecht: setWiderrufsrechtAccepted,
     },
     registration: {
       wantsAccount,

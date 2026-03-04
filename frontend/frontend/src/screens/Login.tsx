@@ -19,7 +19,7 @@ const Login = () => {
   );
 
   return (
-    <>
+    <div className="page-with-footer">
     <div className="register-container">
 
       <div className="login-title-container">
@@ -38,15 +38,15 @@ const Login = () => {
           </div>
         </div>
 
-        <ApiErrorAlert 
-          error={error} 
-          action={error?.code === 'account_disabled' ? verificationButton : null} 
+        <ApiErrorAlert
+          error={error}
+          action={error?.code === 'account_disabled' ? verificationButton : null}
           duration={10}
         />
 
       </div>
 
-      <LoginForm 
+      <LoginForm
         form={form}
         onSubmit={onSubmit}
         loading={loading}
@@ -69,7 +69,7 @@ const Login = () => {
     </div>
 
     <Footer/>
-    </>
+    </div>
   );
 };
 

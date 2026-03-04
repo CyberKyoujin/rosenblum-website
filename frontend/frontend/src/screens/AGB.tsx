@@ -11,8 +11,8 @@ const AGB = () => {
                         <h2>§ 1 Geltungsbereich</h2>
                         <p>
                             (1) Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge
-                            zwischen Oleg Rosenblum, Übersetzungsbüro Rosenblum, Altepoststraße 25, 49074
-                            Osnabrück (nachfolgend „Auftragnehmer") und dem Auftraggeber über
+                            zwischen Oleg Rosenblum, Übersetzungsbüro Rosenblum, Alte Poststraße 25, 49074
+                            Osnabrück, Deutschland (nachfolgend „Auftragnehmer") und dem Auftraggeber über
                             Übersetzungsleistungen und damit verbundene Dienstleistungen.
                         </p>
                         <p>
@@ -33,18 +33,25 @@ const AGB = () => {
                             bindendes Angebot, sondern eine Aufforderung zur Abgabe eines Angebots dar.
                         </p>
                         <p>
-                            (2) Der Auftraggeber kann ein Angebot über das Kontaktformular, per E-Mail oder
-                            telefonisch abgeben. Die Anfrage des Auftraggebers stellt ein verbindliches
-                            Angebot zum Abschluss eines Vertrages dar.
+                            (2) Der Auftraggeber kann ein Angebot über das Online-Bestellformular auf der
+                            Website, per E-Mail oder telefonisch abgeben. Die Anfrage des Auftraggebers
+                            stellt ein verbindliches Angebot zum Abschluss eines Vertrages dar.
                         </p>
                         <p>
-                            (3) Der Auftragnehmer kann das Angebot innerhalb von 14 Tagen durch Versenden
+                            (3) Bei Bestellungen über das Online-Bestellformular erhält der Auftraggeber
+                            nach Absenden der Bestellung eine automatische Eingangsbestätigung per E-Mail.
+                            Diese Bestätigung stellt noch keine Annahme des Angebots dar. Bei Standarddokumenten
+                            mit Festpreisen gilt die Bestellung als angenommen, sobald der Auftraggeber die
+                            Zahlung abschließt oder die Bestellung zur Bearbeitung freigegeben wird.
+                        </p>
+                        <p>
+                            (4) Der Auftragnehmer kann das Angebot innerhalb von 14 Tagen durch Versenden
                             einer Auftragsbestätigung oder durch Beginn der Ausführung des Auftrags annehmen.
                         </p>
                         <p>
-                            (4) Ein Vertrag kommt erst mit der Annahme durch den Auftragnehmer zustande.
-                            Sofern ein Kostenvoranschlag erstellt wird, ist dieser unverbindlich und gilt
-                            als Schätzung der voraussichtlichen Kosten.
+                            (5) Ein Vertrag kommt erst mit der Annahme durch den Auftragnehmer zustande.
+                            Bei nicht standardisierten Dokumenten wird zunächst ein unverbindlicher
+                            Kostenvoranschlag erstellt, der als Schätzung der voraussichtlichen Kosten gilt.
                         </p>
                     </section>
 
@@ -62,7 +69,9 @@ const AGB = () => {
                         </p>
                         <p>
                             (3) Sofern nicht anders vereinbart, ist der Auftragnehmer berechtigt, zur
-                            Vertragserfüllung Dritte einzusetzen.
+                            Vertragserfüllung geeignete Dritte einzusetzen. Beglaubigte Übersetzungen
+                            werden ausschließlich durch den vereidigten bzw. ermächtigten Übersetzer
+                            persönlich ausgeführt und beglaubigt.
                         </p>
                         <p>
                             (4) Der Auftraggeber ist verpflichtet, alle für die Übersetzung erforderlichen
@@ -95,25 +104,39 @@ const AGB = () => {
                         <h2>§ 5 Preise und Zahlung</h2>
                         <p>
                             (1) Es gelten die zum Zeitpunkt der Auftragserteilung vereinbarten Preise. Alle
-                            Preise verstehen sich in Euro und sind zzgl. der gesetzlichen Mehrwertsteuer,
-                            sofern nicht anders angegeben.
+                            Preise verstehen sich in Euro als Bruttopreise inklusive der gesetzlichen
+                            Mehrwertsteuer (derzeit 19% MwSt).
                         </p>
                         <p>
-                            (2) Die Abrechnung erfolgt nach Normzeilen (55 Anschläge inkl. Leerzeichen),
-                            nach Wörtern oder pauschal, je nach Vereinbarung.
+                            (2) Bei Standarddokumenten mit Festpreisen gilt der ausgewiesene Pauschalpreis.
+                            Bei individuellen Aufträgen und nicht standardisierten Dokumenten erfolgt die
+                            Abrechnung nach Normzeilen (55 Anschläge inkl. Leerzeichen), nach Wörtern oder
+                            pauschal gemäß dem erstellten Kostenvoranschlag.
                         </p>
                         <p>
-                            (3) Die Zahlung ist, sofern nicht anders vereinbart, innerhalb von 14 Tagen
-                            nach Rechnungsstellung ohne Abzug fällig.
+                            (3) Folgende Zahlungsarten stehen zur Verfügung:
+                        </p>
+                        <ul>
+                            <li><strong>Online-Zahlung per Kreditkarte / Debitkarte</strong> über den
+                            Zahlungsdienstleister Stripe (Stripe Payments Europe, Ltd., 1 Grand Canal Street
+                            Lower, Grand Canal Dock, Dublin, D02 H210, Irland). Die Zahlung erfolgt direkt
+                            bei Auftragserteilung über das Online-Formular.</li>
+                            <li><strong>Zahlung per Rechnung (Banküberweisung)</strong>: Die Rechnung wird
+                            nach Auftragserteilung ausgestellt und ist innerhalb von 10 Tagen ohne Abzug
+                            zu begleichen.</li>
+                        </ul>
+                        <p>
+                            (4) Die Zahlung per Rechnung ist, sofern nicht anders vereinbart, innerhalb von
+                            10 Tagen nach Rechnungsstellung ohne Abzug fällig.
                         </p>
                         <p>
-                            (4) Bei Überschreitung des Zahlungsziels ist der Auftragnehmer berechtigt,
+                            (5) Bei Überschreitung des Zahlungsziels ist der Auftragnehmer berechtigt,
                             Verzugszinsen in Höhe von 5 Prozentpunkten über dem Basiszinssatz bei
                             Verbrauchern bzw. 9 Prozentpunkten über dem Basiszinssatz bei Unternehmern zu
                             berechnen.
                         </p>
                         <p>
-                            (5) Bei umfangreichen Aufträgen oder bei Neukunden kann der Auftragnehmer eine
+                            (6) Bei umfangreichen Aufträgen oder bei Neukunden kann der Auftragnehmer eine
                             angemessene Vorauszahlung verlangen.
                         </p>
                     </section>
@@ -179,7 +202,10 @@ const AGB = () => {
                         </p>
                         <p>
                             (2) Der Auftragnehmer ist berechtigt, die Übersetzung oder Teile davon als
-                            Referenz zu verwenden, sofern keine Vertraulichkeit vereinbart wurde.
+                            Referenz zu verwenden, sofern keine Vertraulichkeit vereinbart wurde und es sich
+                            nicht um Dokumente mit personenbezogenen Daten handelt (z.B. Ausweise,
+                            Geburtsurkunden, medizinische Unterlagen). Solche Dokumente werden nach
+                            Auftragsabschluss vertraulich behandelt und nicht als Referenz genutzt.
                         </p>
                         <p>
                             (3) Bis zur vollständigen Bezahlung verbleiben alle Rechte an der Übersetzung
@@ -214,7 +240,8 @@ const AGB = () => {
                         <p>
                             (2) Bei Stornierung nach Beginn der Übersetzungsarbeiten werden mindestens 50%
                             des vereinbarten Honorars fällig, bei Stornierung ab 75% Fertigstellungsgrad
-                            das volle Honorar.
+                            das volle Honorar. Für Verbraucher, die ihr gesetzliches Widerrufsrecht gemäß
+                            § 11 dieser AGB ausüben, gelten abweichend die dort geregelten Bedingungen.
                         </p>
                         <p>
                             (3) Der Auftragnehmer ist berechtigt, vom Vertrag zurückzutreten, wenn der
@@ -238,8 +265,8 @@ const AGB = () => {
                         </p>
                         <p>
                             Um Ihr Widerrufsrecht auszuüben, müssen Sie uns (Oleg Rosenblum,
-                            Altepoststraße 25, 49074 Osnabrück, E-Mail:
-                            rosenblum.uebersetzungsbuero@gmail.com, Telefon: 0176 24137205) mittels einer
+                            Alte Poststraße 25, 49074 Osnabrück, E-Mail:
+                            rosenblum.uebersetzungsbuero@gmail.com, Telefon: 0176 24137205 / 0176 7735 3978) mittels einer
                             eindeutigen Erklärung (z.B. ein mit der Post versandter Brief oder E-Mail)
                             über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren.
                         </p>
@@ -278,6 +305,13 @@ const AGB = () => {
                             gleichzeitig seine Kenntnis davon bestätigt hat, dass er sein Widerrufsrecht
                             bei vollständiger Vertragserfüllung durch den Unternehmer verliert.
                         </p>
+                        <p>
+                            Im Online-Bestellformular bestätigt der Verbraucher durch Aktivierung der
+                            entsprechenden Checkbox ausdrücklich, dass mit der Ausführung der
+                            Dienstleistung sofort nach Vertragsschluss begonnen werden soll, und nimmt
+                            zur Kenntnis, dass er sein Widerrufsrecht mit vollständiger Erbringung der
+                            Dienstleistung verliert (§ 356 Abs. 4 BGB).
+                        </p>
                     </section>
 
                     <section className="legal-section">
@@ -296,11 +330,12 @@ const AGB = () => {
                         </p>
                         <p>
                             (4) Änderungen und Ergänzungen des Vertrages bedürfen zu ihrer Wirksamkeit
-                            der Schriftform. Dies gilt auch für die Abbedingung dieses Schriftformerfordernisses.
+                            der Textform (z.B. E-Mail). Dies gilt auch für die Abbedingung dieses
+                            Textformerfordernisses.
                         </p>
                     </section>
 
-                    <p className="legal-footer">Stand: Januar 2025</p>
+                    <p className="legal-footer">Stand: März 2026</p>
                 </div>
             </div>
             <Footer />

@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 
 from base.models import CostEstimate, Order
 
-ADMIN_EMAIL = 'rosenblum-uebersetzungsbuero@gmail.com'
+ADMIN_EMAIL = 'rosenblum.uebersetzungsbuero@gmail.com'
 
 
 def _send_html_email(subject: str, plain_text: str, recipient_email: str, context: dict, file_content=None, file_name=None):
@@ -219,29 +219,65 @@ def send_request_answered_email(user_email: str, request_id: int, answer_text: s
     
 def _send_invoice_email(order, pdf_bytes):
     subject = "Ihre Rechnung — Übersetzungsbüro Rosenblum"
-    plain = (
-        f"Hallo {order.name},\n\n"
-        f"anbei erhalten Sie die Rechnung zu Ihrer Bestellung #{order.pk}.\n\n"
-        "Mit freundlichen Grüßen,\n"
-        "Ihr Übersetzungsbüro Rosenblum"
-    )
+    is_rechnung = order.payment_type == 'rechnung'
+
+    if is_rechnung:
+        plain = (
+            f"Hallo {order.name},\n\n"
+            f"anbei erhalten Sie die Rechnung zu Ihrer Bestellung #{order.pk}.\n\n"
+            "Bitte überweisen Sie den Rechnungsbetrag innerhalb von 10 Tagen auf folgendes Konto:\n\n"
+            "Kontoinhaber: Oleg Rosenblum\n"
+            "Bank: Deutsche Bank\n"
+            "IBAN: DE11 2657 0024 0033 4060 00\n"
+            "BIC: DEUTDEDB265\n\n"
+            "Bei Fragen stehen wir Ihnen gerne zur Verfügung.\n\n"
+            "Mit freundlichen Grüßen,\n"
+            "Ihr Übersetzungsbüro Rosenblum"
+        )
+        context = {
+            'title': 'Ihre Rechnung',
+            'greeting': f'Hallo {order.name}',
+            'body_lines': [
+                f'Anbei erhalten Sie die Rechnung zu Ihrer Bestellung #ro-{order.pk}.',
+                'Bitte überweisen Sie den Rechnungsbetrag innerhalb von 10 Tagen auf folgendes Konto:',
+            ],
+            'info_box_lines': [
+                f'Bestellnr.: #ro-{order.pk}',
+                'Kontoinhaber: Oleg Rosenblum',
+                'Bank: Deutsche Bank',
+                'IBAN: DE11 2657 0024 0033 4060 00',
+                'BIC: DEUTDEDB265',
+            ],
+            'footer_note': 'Bei Fragen stehen wir Ihnen gerne zur Verfügung.',
+        }
+    else:
+        plain = (
+            f"Hallo {order.name},\n\n"
+            f"anbei erhalten Sie die Rechnung zu Ihrer Bestellung #{order.pk}.\n\n"
+            "Die Zahlung ist bereits erfolgt.\n\n"
+            "Bei Fragen stehen wir Ihnen gerne zur Verfügung.\n\n"
+            "Mit freundlichen Grüßen,\n"
+            "Ihr Übersetzungsbüro Rosenblum"
+        )
+        context = {
+            'title': 'Ihre Rechnung',
+            'greeting': f'Hallo {order.name}',
+            'body_lines': [
+                f'Anbei erhalten Sie die Rechnung zu Ihrer Bestellung #ro-{order.pk}.',
+                'Die Zahlung ist bereits erfolgt.',
+            ],
+            'info_box_lines': [
+                f'Bestellnr.: #ro-{order.pk}',
+            ],
+            'footer_note': 'Bei Fragen stehen wir Ihnen gerne zur Verfügung.',
+        }
 
     _send_html_email(
         subject=subject,
         plain_text=plain,
         recipient_email=order.email,
         file_name=f'Rechnung_{order.pk}',
-        context={
-            'title': 'Ihre Rechnung',
-            'greeting': f'Hallo {order.name}',
-            'body_lines': [
-                f'Anbei erhalten Sie die Rechnung zu Ihrer Bestellung #ro-{order.pk}.',
-                'Bei Fragen stehen wir Ihnen gerne zur Verfügung.',
-            ],
-            'info_box_lines': [
-                f'Bestellnr.: #ro-{order.pk}',
-            ],
-        },
+        context=context,
         file_content=pdf_bytes,
     )
 
@@ -277,6 +313,17 @@ def send_order_pickup_ready_email(user_email: str, order_id: int):
     plain = (
         f"Hallo,\n\n"
         f"Ihre Bestellung #{order_id} liegt in unserem Büro zur Abholung bereit.\n\n"
+        "Bitte holen Sie die Dokumente zu unseren Öffnungszeiten ab:\n\n"
+        "Montag: 09:00–12:00 Uhr\n"
+        "Dienstag: 15:00–18:00 Uhr\n"
+        "Mittwoch: 15:00–18:00 Uhr\n"
+        "Donnerstag: 09:00–12:00 Uhr\n"
+        "Freitag: 09:00–12:00 Uhr\n\n"
+        "Termine nach Vereinbarung auch außerhalb der Öffnungszeiten möglich.\n\n"
+        "Adresse:\n"
+        "Übersetzungsbüro Rosenblum\n"
+        "Alte Poststraße 25\n"
+        "49074 Osnabrück\n\n"
         "Mit freundlichen Grüßen,\n"
         "Ihr Übersetzungsbüro Rosenblum"
     )
@@ -288,9 +335,15 @@ def send_order_pickup_ready_email(user_email: str, order_id: int):
             'title': 'Abholung bereit!',
             'body_lines': [
                 'Ihre Übersetzung ist fertiggestellt und liegt in unserem Büro zur Abholung bereit.',
-                'Bitte holen Sie die Dokumente zu unseren Öffnungszeiten ab.',
+                'Bitte holen Sie die Dokumente zu unseren Öffnungszeiten ab:',
             ],
-            'info_box_lines': [f'Bestellnr.: #ro-{order_id}'],
+            'info_box_lines': [
+                f'Bestellnr.: #ro-{order_id}',
+                'Montag: 09:00–12:00 | Dienstag: 15:00–18:00 | Mittwoch: 15:00–18:00',
+                'Donnerstag: 09:00–12:00 | Freitag: 09:00–12:00',
+                'Termine nach Vereinbarung auch außerhalb der Öffnungszeiten möglich.',
+                'Adresse: Alte Poststraße 25, 49074 Osnabrück',
+            ],
         },
     )
 

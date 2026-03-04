@@ -8,7 +8,9 @@ import { Link } from 'react-router-dom';
 import OrderSectionHeader from './OrderSectionHeader';
 import { IoDocuments } from "react-icons/io5";
 import { DocsType, DocTemplate, CATEGORY_ORDER } from '../hooks/useOrder';
-
+import ruFlag from "../assets/ru.svg"
+import uaFlag from "../assets/ua.svg"
+import deFlag from "../assets/de.svg"
 
 const OrderDocsUpload = ({logic}: {logic: any}) => {
 
@@ -37,7 +39,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
       <OrderSectionHeader Icon={IoDocuments} headerText={t('selectYourDocuments')}/>
 
       <div className="docs-warning">
-        <p>{t('docsWarningPre')}<Link to="/pricing" className="docs-warning-link">{t('docsWarningLinkText')}</Link>{t('docsWarningPost')}</p>
+        <p>{t('docsWarningPre')}<strong>{t('docsWarningBold')}</strong>{t('docsWarningMid')}<Link to="/pricing" className="docs-warning-link">{t('docsWarningLinkText')}</Link>{t('docsWarningPost')}</p>
       </div>
 
       {/* Sonstiges — prominent card, shown before the regular select */}
@@ -84,7 +86,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
             >
             {sonstigesTemplate && (
               <MenuItem value={sonstigesTemplate.type} className="docs-select-sonstiges">
-                ⚙ {t('docSonstigesCardTitle')} — {t('individualCalculation')}
+                {t('docSonstigesSelectLabel')}
               </MenuItem>
             )}
             {groupedTemplates.map(group => [
@@ -119,14 +121,24 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
                             <Select
                               value={doc.language}
                               onChange={(e) => docs.changeLanguage(index, e.target.value)}
+                              renderValue={(value) => {
+                                const langs = [
+                                  { code: 'ua', flag: uaFlag, label: 'UKR' },
+                                  { code: 'ru', flag: ruFlag, label: 'RU' },
+                                  { code: 'de', flag: deFlag, label: 'DE' },
+                                ];
+                                const lang = langs.find(l => l.code === value);
+                                if (!lang) return null;
+                                return <span className="lang-item-select"><img src={lang.flag} className="lang-flag-img" alt="" />{lang.label}</span>;
+                              }}
                             >
                               {[
-                                { code: 'ua', flag: '🇺🇦', label: 'UKR' },
-                                { code: 'ru', flag: '🇷🇺', label: 'RU' },
-                                { code: 'de', flag: '🇩🇪', label: 'DE' },
+                                { code: 'ua', flag: uaFlag, label: 'UKR' },
+                                { code: 'ru', flag: ruFlag, label: 'RU' },
+                                { code: 'de', flag: deFlag, label: 'DE' },
                               ].map((lang) => (
-                                <MenuItem key={lang.code} value={lang.code}>
-                                  {lang.flag} {lang.label}
+                                <MenuItem key={lang.code} value={lang.code} className='lang-item-select'>
+                                  <img src={lang.flag} className="lang-flag-img" alt="" />{lang.label}
                                 </MenuItem>
                               ))}
                             </Select>

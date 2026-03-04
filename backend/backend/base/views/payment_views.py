@@ -41,13 +41,6 @@ class CreatePaymentIntent(APIView):
                     logger.warning("[Stripe PaymentIntent]: IDOR attempt by user_id=%s for order_id=%s", request.user.id, order_id)
                     return Response({'error': 'Not found'}, status=404)
 
-            # Guest check: guest_uuid must match if order is anonymous
-            if not request.user.is_authenticated and order.guest_uuid:
-                guest_uuid = request.data.get('guest_uuid')
-                if str(order.guest_uuid) != str(guest_uuid):
-                    logger.warning("[Stripe PaymentIntent]: Invalid guest_uuid for order_id=%s", order_id)
-                    return Response({'error': 'Not found'}, status=404)
-
             if order.payment_status == Order.PaymentStatus.PAID:
                 logger.warning("[Stripe PaymentIntent]: Attempt to create payment intent for already paid order_id=%s", order_id)
                 return Response({'error': 'Order already paid'}, status=400)

@@ -24,6 +24,8 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+FRONTEND_URL = config('FRONTEND_URL', default='https://rosenblum-uebersetzungen.de')
+
 
 # Application definition
 

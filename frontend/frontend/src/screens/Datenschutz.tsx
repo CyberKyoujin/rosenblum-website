@@ -93,6 +93,34 @@ const Datenschutz = () => {
                                 https://www.cloudflare.com/privacypolicy/
                             </a>
                         </p>
+
+                        <h3>Hetzner (Server-Hosting)</h3>
+                        <p>
+                            Unsere Website und die damit verbundenen Dienste werden auf Servern der Hetzner
+                            Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Deutschland, gehostet.
+                        </p>
+                        <p>
+                            Hetzner verarbeitet in unserem Auftrag alle Daten, die beim Betrieb unserer
+                            Server anfallen, insbesondere IP-Adressen, Zeitstempel und Serveranfragen.
+                            Die Server befinden sich in Deutschland (EU).
+                        </p>
+                        <p>
+                            Die Datenverarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO
+                            (berechtigtes Interesse an einem zuverlässigen und sicheren Betrieb der
+                            Website). Mit Hetzner wurde ein Auftragsverarbeitungsvertrag gemäß Art. 28
+                            DSGVO abgeschlossen.
+                        </p>
+                        <p>
+                            Weitere Informationen finden Sie in der Datenschutzerklärung von Hetzner:{" "}
+                            <a
+                                href="https://www.hetzner.com/de/legal/privacy-policy"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="legal-link"
+                            >
+                                https://www.hetzner.com/de/legal/privacy-policy
+                            </a>
+                        </p>
                     </section>
 
                     <section className="legal-section">
@@ -121,11 +149,14 @@ const Datenschutz = () => {
                         <p>Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
                         <p>
                             Oleg Rosenblum<br />
-                            Altepoststraße 25<br />
-                            49074 Osnabrück
+                            Übersetzungsbüro Rosenblum<br />
+                            Alte Poststraße 25<br />
+                            49074 Osnabrück<br />
+                            Deutschland
                         </p>
                         <p>
                             Telefon: 0176 24137205<br />
+                            Telefon: 0176 7735 3978<br />
                             E-Mail: rosenblum.uebersetzungsbuero@gmail.com
                         </p>
                         <p>
@@ -392,84 +423,35 @@ const Datenschutz = () => {
                     </section>
 
                     <section className="legal-section">
-                        <h2>6. Analyse-Tools und Werbung</h2>
+                        <h2>6. E-Mail-Versand</h2>
 
-                        <h3>Google Analytics</h3>
+                        <h3>Google Gmail (SMTP)</h3>
                         <p>
-                            Diese Website nutzt Funktionen des Webanalysedienstes Google Analytics. Anbieter
-                            ist die Google Ireland Limited („Google"), Gordon House, Barrow Street, Dublin 4,
-                            Irland.
+                            Für den Versand von transaktionalen E-Mails (z.B. Auftragsbestätigungen,
+                            Statusbenachrichtigungen, Rechnungen) nutzen wir den SMTP-Dienst von Google
+                            Gmail. Anbieter ist die Google Ireland Limited, Gordon House, Barrow Street,
+                            Dublin 4, Irland.
                         </p>
                         <p>
-                            Google Analytics ermöglicht es dem Websitebetreiber, das Verhalten der
-                            Websitebesucher zu analysieren. Hierbei erhält der Websitebetreiber verschiedene
-                            Nutzungsdaten, wie z.B. Seitenaufrufe, Verweildauer, verwendete Betriebssysteme
-                            und Herkunft des Nutzers. Diese Daten werden in einem Nutzerprofil
-                            zusammengefasst und dem jeweiligen Endgerät des Websitebesuchers zugeordnet.
+                            Beim Versand einer E-Mail werden Ihre E-Mail-Adresse sowie die im Rahmen des
+                            Auftrags erforderlichen Informationen (z.B. Name, Auftragsnummer) an die
+                            Google-Server übermittelt und zur Zustellung der E-Mail verarbeitet.
                         </p>
                         <p>
-                            Google Analytics verwendet Technologien, die die Wiedererkennung des Nutzers zum
-                            Zwecke der Analyse des Nutzerverhaltens ermöglichen (z.B. Cookies oder
-                            Device-Fingerprinting). Die von Google erfassten Informationen über die
-                            Benutzung dieser Website werden in der Regel an einen Server von Google in den
-                            USA übertragen und dort gespeichert.
+                            Die Datenverarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO
+                            (Vertragserfüllung) sowie Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse
+                            an einer zuverlässigen E-Mail-Zustellung). Die Datenübertragung in die USA
+                            erfolgt auf Grundlage der Standardvertragsklauseln der EU-Kommission.
                         </p>
                         <p>
-                            Die Nutzung dieses Dienstes erfolgt auf Grundlage Ihrer Einwilligung nach Art. 6
-                            Abs. 1 lit. a DSGVO und § 25 Abs. 1 TDDDG. Die Einwilligung ist jederzeit
-                            widerrufbar.
-                        </p>
-                        <p>
-                            Die Datenübertragung in die USA wird auf die Standardvertragsklauseln der
-                            EU-Kommission gestützt. Details finden Sie hier:{" "}
+                            Weitere Informationen finden Sie in der Datenschutzerklärung von Google:{" "}
                             <a
-                                href="https://privacy.google.com/businesses/controllerterms/mccs/"
+                                href="https://policies.google.com/privacy"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="legal-link"
                             >
-                                https://privacy.google.com/businesses/controllerterms/mccs/
-                            </a>
-                        </p>
-
-                        <h3>IP-Anonymisierung</h3>
-                        <p>
-                            Wir haben auf dieser Website die Funktion IP-Anonymisierung aktiviert. Dadurch
-                            wird Ihre IP-Adresse von Google innerhalb von Mitgliedstaaten der Europäischen
-                            Union oder in anderen Vertragsstaaten des Abkommens über den Europäischen
-                            Wirtschaftsraum vor der Übermittlung in die USA gekürzt. Nur in Ausnahmefällen
-                            wird die volle IP-Adresse an einen Server von Google in den USA übertragen und
-                            dort gekürzt. Im Auftrag des Betreibers dieser Website wird Google diese
-                            Informationen benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über
-                            die Websiteaktivitäten zusammenzustellen und um weitere mit der Websitenutzung
-                            und der Internetnutzung verbundene Dienstleistungen gegenüber dem
-                            Websitebetreiber zu erbringen.
-                        </p>
-
-                        <h3>Browser Plugin</h3>
-                        <p>
-                            Sie können die Erfassung und Verarbeitung Ihrer Daten durch Google verhindern,
-                            indem Sie das unter dem folgenden Link verfügbare Browser-Plugin herunterladen
-                            und installieren:{" "}
-                            <a
-                                href="https://tools.google.com/dlpage/gaoptout?hl=de"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="legal-link"
-                            >
-                                https://tools.google.com/dlpage/gaoptout?hl=de
-                            </a>
-                        </p>
-                        <p>
-                            Mehr Informationen zum Umgang mit Nutzerdaten bei Google Analytics finden Sie in
-                            der Datenschutzerklärung von Google:{" "}
-                            <a
-                                href="https://support.google.com/analytics/answer/6004245?hl=de"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="legal-link"
-                            >
-                                https://support.google.com/analytics/answer/6004245?hl=de
+                                https://policies.google.com/privacy
                             </a>
                         </p>
                     </section>
@@ -520,7 +502,43 @@ const Datenschutz = () => {
                     </section>
 
                     <section className="legal-section">
-                        <h2>8. Auftragsverarbeitung</h2>
+                        <h2>8. Zahlungsdienstleister</h2>
+
+                        <h3>Stripe</h3>
+                        <p>
+                            Für die Abwicklung von Online-Zahlungen nutzen wir den Dienst Stripe.
+                            Anbieter ist Stripe Payments Europe, Ltd., 1 Grand Canal Street Lower,
+                            Grand Canal Dock, Dublin, D02 H210, Irland (für Kunden in Europa).
+                        </p>
+                        <p>
+                            Wenn Sie eine Zahlung per Kreditkarte oder Debitkarte vornehmen, werden Ihre
+                            Zahlungsdaten (z.B. Kartennummer, Gültigkeitsdatum, Prüfnummer) direkt an
+                            Stripe übermittelt und dort verarbeitet. Wir selbst speichern keine vollständigen
+                            Zahlungsdaten.
+                        </p>
+                        <p>
+                            Die Datenverarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO
+                            (Vertragserfüllung). Mit Stripe wurde ein Auftragsverarbeitungsvertrag gemäß
+                            Art. 28 DSGVO abgeschlossen. Die Datenübertragung in die USA erfolgt auf
+                            Grundlage der Standardvertragsklauseln der EU-Kommission.
+                        </p>
+                        <p>
+                            Weitere Informationen finden Sie in der Datenschutzerklärung von Stripe:{" "}
+                            <a
+                                href="https://stripe.com/de/privacy"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="legal-link"
+                            >
+                                https://stripe.com/de/privacy
+                            </a>
+                        </p>
+                    </section>
+
+                    <section className="legal-section">
+                        <h2>9. Auftragsverarbeitung</h2>
+
+                        <h3>Verarbeitung Ihrer Auftragsdaten</h3>
                         <p>
                             Für Übersetzungsaufträge verarbeiten wir die von Ihnen übermittelten Dokumente
                             und personenbezogenen Daten ausschließlich zum Zweck der Auftragserfüllung. Die
@@ -532,9 +550,40 @@ const Datenschutz = () => {
                             gesetzlichen Aufbewahrungsfristen gelöscht, sofern Sie nicht ausdrücklich eine
                             längere Speicherung wünschen.
                         </p>
+
+                        <h3>LexOffice (Rechnungserstellung)</h3>
+                        <p>
+                            Zur Erstellung und Verwaltung von Rechnungen nutzen wir den Dienst LexOffice.
+                            Anbieter ist die Haufe-Lexware GmbH &amp; Co. KG, Munzinger Straße 9, 79111
+                            Freiburg, Deutschland.
+                        </p>
+                        <p>
+                            Für die Rechnungserstellung werden folgende personenbezogene Daten an LexOffice
+                            übermittelt: Name, Anschrift sowie Angaben zum erteilten Auftrag. Diese Daten
+                            werden ausschließlich zur Erstellung von Ausgangsrechnungen verarbeitet und
+                            entsprechend den gesetzlichen Aufbewahrungsfristen (10 Jahre gemäß § 147 AO)
+                            gespeichert.
+                        </p>
+                        <p>
+                            Die Datenverarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. c DSGVO
+                            (rechtliche Verpflichtung zur Buchhaltung) sowie Art. 6 Abs. 1 lit. b DSGVO
+                            (Vertragserfüllung). Mit LexOffice wurde ein Auftragsverarbeitungsvertrag gemäß
+                            Art. 28 DSGVO abgeschlossen.
+                        </p>
+                        <p>
+                            Weitere Informationen finden Sie in der Datenschutzerklärung von LexOffice:{" "}
+                            <a
+                                href="https://www.lexoffice.de/datenschutz/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="legal-link"
+                            >
+                                https://www.lexoffice.de/datenschutz/
+                            </a>
+                        </p>
                     </section>
 
-                    <p className="legal-footer">Stand: Januar 2025</p>
+                    <p className="legal-footer">Stand: März 2026</p>
                 </div>
             </div>
             <Footer />

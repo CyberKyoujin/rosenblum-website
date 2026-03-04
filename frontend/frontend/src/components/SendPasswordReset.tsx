@@ -9,6 +9,8 @@ import useAuthStore from "../zustand/useAuthStore";
 import { ApiErrorResponse } from "../types/error";
 import ApiErrorAlert from "./ApiErrorAlert";
 import { useIsAtTop } from "../hooks/useIsAtTop";
+import { MdLockReset } from 'react-icons/md';
+import { FaCircleCheck } from 'react-icons/fa6';
 
 const createSendPasswordSchema = (t: (key: string) => string) => z.object({
   email: z.string().email(t('invalidEmail')),
@@ -34,11 +36,11 @@ const SendPasswordReset = () => {
     const onSubmit = async (data: SendResetFormValues) => {
         setError(null);
         setSuccessfullySent(false);
-        try{
+        try {
             await sendResetLink(data.email);
             setSuccessfullySent(true);
             reset();
-        } catch (err: unknown){
+        } catch (err: unknown) {
             setError(err as ApiErrorResponse);
         }
     }
@@ -48,37 +50,41 @@ const SendPasswordReset = () => {
 
             <ApiErrorAlert error={error} fixed belowNavbar={isAtTop}/>
 
-            <section className="password-reset-container">
+            <div className="auth-card-page">
+                <div className="auth-card">
 
-                <div className="password-reset-info">
+                    <div className="auth-card__icon-wrap">
+                        <MdLockReset className="auth-card__icon" />
+                    </div>
 
-                    <h2>{t('resetPassword')}</h2>
+                    <h2 className="auth-card__title">{t('resetPassword')}</h2>
+                    <p className="auth-card__subtitle">{t('resetPasswordSubtitle')}</p>
 
-                    {successfullySent &&
-                    <p>{t('resetLinkSent')}</p>
-                    }
+                    {successfullySent ? (
+                        <div className="auth-card__success">
+                            <FaCircleCheck className="auth-card__success-icon" />
+                            <p className="auth-card__success-text">{t('resetLinkSent')}</p>
+                        </div>
+                    ) : (
+                        <form className="auth-card__form" onSubmit={handleSubmit(onSubmit)}>
+                            <TextField
+                                {...register('email')}
+                                label="Email"
+                                variant="outlined"
+                                id="email"
+                                fullWidth
+                                error={!!errors.email}
+                                helperText={errors.email?.message}
+                                required
+                            />
+                            <button className="auth-card__btn" type="submit" disabled={loading}>
+                                {loading ? <CircularProgress size={22} sx={{ color: 'white' }}/> : t('next')}
+                            </button>
+                        </form>
+                    )}
 
                 </div>
-
-                 <form action="" className="password-reset-form" onSubmit={handleSubmit(onSubmit)}>
-
-                    <TextField
-                    {...register('email')}
-                    label="Email"
-                    variant="outlined" 
-                    id="email"
-                    error={!!errors.email}
-                    helperText={errors.email?.message}
-                    required
-                    />
-
-                    <button className="confirm-btn" type='submit' disabled={loading}>
-                        {loading ? (<CircularProgress  sx={{ color: 'white' }}/>) : (t('next'))}
-                    </button>
-
-                 </form>
-
-            </section>
+            </div>
 
         </div>
     )

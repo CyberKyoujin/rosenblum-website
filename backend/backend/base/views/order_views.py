@@ -2,6 +2,7 @@ import logging
 from rest_framework.response import Response
 from rest_framework import status
 from base.models import Order
+from django.db.models import Q
 from base.serializers import CostEstimateSerializer, OrderSerializer, OrderUpdateSerializer
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework import viewsets, filters
@@ -39,8 +40,10 @@ class OrderViewSet(viewsets.ModelViewSet):
         if user.is_authenticated and user.is_staff:
             return self.queryset
 
-        # 2. If User is authenticated - return their orders
+        # 2. If User is authenticated - return their orders; also allow uuid access
         if user.is_authenticated:
+            if uuid:
+                return self.queryset.filter(Q(user=user) | Q(guest_uuid=uuid))
             return self.queryset.filter(user=user)
 
         # 3. If uuid is received - return orders for that uuid

@@ -12,8 +12,9 @@ const Impressum = () => {
                         <p>
                             Oleg Rosenblum<br />
                             Übersetzungsbüro Rosenblum<br />
-                            Altepoststraße 25<br />
-                            49074 Osnabrück
+                            Alte Poststraße 25<br />
+                            49074 Osnabrück<br />
+                            Deutschland
                         </p>
                     </section>
 
@@ -26,18 +27,17 @@ const Impressum = () => {
                     </section>
 
                     <section className="legal-section">
-                        <h2>Umsatzsteuer-ID</h2>
+                        <h2>Steuernummer</h2>
                         <p>
-                            Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />
-                            DE 1234567890
+                            Steuernummer: 66/037/17135
                         </p>
                     </section>
 
                     <section className="legal-section">
-                        <h2>Berufsbezeichnung</h2>
+                        <h2>Berufsbezeichnung und berufsrechtliche Regelungen</h2>
                         <p>
-                            Berufsbezeichnung: Übersetzer<br />
-                            Zuständige Kammer: Landgericht Osnabrück<br />
+                            Berufsbezeichnung: Übersetzer / Dolmetscher (vereidigt und ermächtigt)<br />
+                            Zuständiges Gericht: Landgericht Hannover<br />
                             Verliehen in: Deutschland
                         </p>
                     </section>

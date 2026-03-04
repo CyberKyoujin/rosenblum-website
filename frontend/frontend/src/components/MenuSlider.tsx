@@ -5,7 +5,7 @@ import { FaLanguage } from "react-icons/fa6";
 import { TbTools } from "react-icons/tb";
 import { BsTranslate } from "react-icons/bs";
 import { useTranslation } from 'react-i18next'
-import { FaInfo } from "react-icons/fa";
+import { FaInfo, FaShieldAlt, FaFileAlt } from "react-icons/fa";
 import { GrContactInfo } from "react-icons/gr";
 import { MdOutlineTranslate } from "react-icons/md";
 import ruFlag from '../assets/ru.svg';
@@ -63,8 +63,6 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
             <span>{t('offer')}</span>
           </Link>
 
-          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', margin: '0.5rem 0'}}/>
-
           <p className="services-title">{t('services')}</p>
 
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
@@ -90,6 +88,12 @@ const MenuSlider: React.FC<MenuSliderProps> = ({ sliderOpened, setSliderOpened }
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', padding: '0px'}}/>
           <MenuSliderLargeLink link="contact-us" linkText="contact" Icon={GrContactInfo} toggleSlider={setSliderOpened}/>
 
+          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)', marginTop: '1rem'}}/>
+          <MenuSliderLargeLink link="privacy" linkText="datenschutz" Icon={FaShieldAlt} toggleSlider={setSliderOpened}/>
+          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
+          <MenuSliderLargeLink link="terms" linkText="agb" Icon={FaFileAlt} toggleSlider={setSliderOpened}/>
+          <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
+          <MenuSliderLargeLink link="imprint" linkText="impressum" Icon={FaInfo} toggleSlider={setSliderOpened}/>
           <Divider sx={{backgroundColor: 'rgb(235, 235, 235)'}}/>
 
         </div>

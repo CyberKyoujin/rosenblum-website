@@ -279,6 +279,16 @@ export default function OrderSummary({ logic }: { logic: any }) {
             {t('agreeToPrivacyPolicy')}
           </span>
         </label>
+        <label className="consent-row">
+          <Checkbox
+            checked={logic.consent.widerrufsrecht}
+            onChange={(e) => logic.consent.setWiderrufsrecht(e.target.checked)}
+            sx={{ color: '#999', '&.Mui-checked': { color: 'var(--blue)' }, padding: '4px' }}
+          />
+          <span className="consent-text">
+            {t('agreeToWiderrufsrecht')}
+          </span>
+        </label>
       </div>
     </>
   );

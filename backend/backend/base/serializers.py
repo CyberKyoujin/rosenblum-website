@@ -180,9 +180,11 @@ class DocumentSerializer(serializers.ModelSerializer):
         try:
             d = Decimal(str(value))
             if d < 0:
+                logger.error("[ORDER SETRIALIZER]: A negative price recieved.")
                 raise serializers.ValidationError("Price must be non-negative.")
             return d
         except (InvalidOperation, TypeError, ValueError):
+            logger.error(f"[ORDER SETRIALIZER]: An invalid price value recieved: {value}")
             raise serializers.ValidationError(f"Invalid price value: '{value}'.")
         
 class CostEstimateSerializer(serializers.ModelSerializer):
@@ -226,6 +228,7 @@ class OrderSerializer(serializers.ModelSerializer):
         uploaded_files = validated_data.pop('uploaded_files', [])
         order_docs = validated_data.pop('order_docs', [])
         password = validated_data.pop('password', None) 
+    
         
         user = validated_data.get('user')
 
@@ -233,9 +236,9 @@ class OrderSerializer(serializers.ModelSerializer):
             
             if not user and password:
                 email = validated_data.get('email')
-                
+
                 user = CustomUser.objects.filter(email=email).first()
-                
+
                 if not user:
                     name = validated_data.get('name', '')
                     parts = name.split(' ', 1)
@@ -252,18 +255,19 @@ class OrderSerializer(serializers.ModelSerializer):
                         street=validated_data.get('street'),
                         zip=validated_data.get('zip'),
                     )
-                    
+
                     code = generate_verification_code()
                     EmailVerification.objects.create(user=user, code=code)
 
                     transaction.on_commit(lambda: send_verification_code(user.email, user.first_name, user.last_name, code))
-                    
+
                     logger.info("[ORDER] Created new user %s with order (email=%s)", user.id, email)
 
                 validated_data['user'] = user
 
-            if not validated_data.get('user'):
-                 validated_data['guest_uuid'] = str(uuid.uuid4())
+            # Set guest_uuid for guest orders AND newly registered users (not yet verified)
+            if not validated_data.get('user') or password:
+                validated_data['guest_uuid'] = str(uuid.uuid4())
             
             order = Order.objects.create(**validated_data)
             

@@ -24,8 +24,7 @@ const Register = () => {
   );
 
   return (
-    <>
-      
+    <div className="page-with-footer">
 
         <div className="register-container">
           <div className="register-form">
@@ -35,15 +34,15 @@ const Register = () => {
                 <h1 className="register-title-span">{t('join')}</h1>
               </div>
 
-                  <ApiErrorAlert 
-              error={error} 
-              belowNavbar={isAtTop} 
-              fixed 
-              duration={10} 
+                  <ApiErrorAlert
+              error={error}
+              belowNavbar={isAtTop}
+              fixed
+              duration={10}
               action={error?.status === 409 ? loginButton : null}
             />
 
-              <RegisterForm 
+              <RegisterForm
                 form={form}
                 onSubmit={onSubmit}
                 loading={loading}
@@ -66,7 +65,7 @@ const Register = () => {
         </div>
 
       <Footer/>
-    </>
+    </div>
   );
 };
 

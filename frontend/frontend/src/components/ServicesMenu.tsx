@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { IoCloseOutline } from 'react-icons/io5';
 import { BsTranslate } from 'react-icons/bs';
 import { FaLanguage } from 'react-icons/fa';
-import { TbTools } from 'react-icons/tb';
+import { TbTools, TbScale } from 'react-icons/tb';
 import ServicesColumn from './ServicesColumn';
 
 interface Props {
@@ -26,6 +26,11 @@ const servicesColItems = {
         {link: "pricing", linkText: "pricesAndDocuments"},
         {link: "areas", linkText: "expertise"},
         {link: "faq", linkText: "faq"}
+    ],
+    4: [
+        {link: "privacy", linkText: "datenschutz"},
+        {link: "terms", linkText: "agb"},
+        {link: "imprint", linkText: "impressum"}
     ]
 }
 
@@ -48,7 +53,10 @@ const ServicesMenu: React.FC<Props> = ({ isOpened, setOpened }) => {
                 <ServicesColumn Icon={FaLanguage} titleText="languages" items={servicesColItems[2]} setOpened={setOpened}/>
                 
                 <ServicesColumn Icon={TbTools} titleText="expertise" items={servicesColItems[3]} setOpened={setOpened}/>
-                
+
+
+                <ServicesColumn Icon={TbScale} titleText="legalSection" items={servicesColItems[4]} setOpened={setOpened}/>
+
             </div>
         </div>
     );
