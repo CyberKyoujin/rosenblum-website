@@ -237,16 +237,16 @@ class TestOrderUpdate:
         user = create_user(email='user@example.com')
         order = create_order(user=user, status='review')
 
-        data = {'status': 'completed'}
+        data = {'status': 'sent'}
 
         response = admin_client.patch(f'/api/orders/{order.id}/', data)
 
         assert response.status_code == status.HTTP_200_OK
-        assert response.data['status'] == 'completed'
+        assert response.data['status'] == 'sent'
 
         # Verify database updated
         order.refresh_from_db()
-        assert order.status == 'completed'
+        assert order.status == 'sent'
 
     def test_cannot_update_other_user_order(self, authenticated_client, create_user, create_order):
         """Test user cannot update another user's order"""

@@ -38,7 +38,7 @@ test.describe("Profile Page (Authenticated)", () => {
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
             // Contact data section
-            await expect(page.getByText("Kontaktdaten")).toBeVisible();
+            await expect(page.getByRole("heading", { name: "Kontaktdaten" })).toBeVisible();
             await expect(page.getByText(mockUserData.email)).toBeVisible();
         });
 
@@ -128,7 +128,7 @@ test.describe("Profile Page (Authenticated)", () => {
 
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
-            await expect(page.getByText("ANGEBOT ANFORDERN")).toBeVisible();
+            await expect(page.locator(".orders-empty__btn")).toBeVisible();
         });
 
         test("should navigate to order page when clicking request quote", async ({ page }) => {
@@ -136,7 +136,7 @@ test.describe("Profile Page (Authenticated)", () => {
 
             await expect(page.locator(".profile__main-section")).toBeVisible({ timeout: 10000 });
 
-            await page.getByText("ANGEBOT ANFORDERN").click();
+            await page.locator(".orders-empty__btn").click();
 
             await expect(page).toHaveURL(/\/order/);
         });

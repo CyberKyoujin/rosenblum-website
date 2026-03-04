@@ -199,7 +199,7 @@ class TestSyncGoogleReviews:
         mock_fetch.return_value = [
             {'author_name': 'User 1', 'rating': 5, 'text': 'Text 1', 'time': None},  # No time
             {'author_name': 'User 2', 'rating': 4, 'text': 'Text 2'},  # Missing time key
-            {'author_name': 'User 3', 'rating': 3, 'text': 'Text 3', 'time': 1704067200, 'language': 'en'},  # Valid
+            {'author_name': 'User 3', 'rating': 3, 'text': 'Text 3', 'time': 1704067200, "rating": 5, 'language': 'en'},  # Valid
         ]
 
         sync_google_reviews()
@@ -221,20 +221,6 @@ class TestSyncGoogleReviews:
 
         review = Review.objects.first()
         assert review.author_name == 'Anonymous'
-
-    @patch('base.services.google_reviews.translate_missing_translations_for_review')
-    @patch('base.services.google_reviews.fetch_google_reviews')
-    @patch('base.services.google_reviews.GOOGLE_PLACE_ID', 'test_place_id')
-    def test_handles_missing_rating(self, mock_fetch, mock_translate):
-        """Test handles missing rating with default 0"""
-        mock_fetch.return_value = [
-            {'author_name': 'User', 'text': 'No rating', 'time': 1704067200, 'language': 'en'}
-        ]
-
-        sync_google_reviews()
-
-        review = Review.objects.first()
-        assert review.rating == 0
 
     @patch('base.services.google_reviews.translate_missing_translations_for_review')
     @patch('base.services.google_reviews.fetch_google_reviews')

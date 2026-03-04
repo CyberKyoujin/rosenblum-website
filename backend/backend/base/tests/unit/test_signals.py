@@ -128,7 +128,7 @@ class TestOrderStatusChangedHandler:
         # With transaction=True, on_commit callbacks should execute
         mock_send_email.assert_called()
 
-    @patch('base.signals.send_order_ready_email')
+    @patch('base.signals.send_order_pickup_ready_email')
     def test_sends_email_when_status_changes_to_ready_pick_up(self, mock_send_email, db):
         """Test email is sent when order status changes to ready_pick_up"""
         order = Order.objects.create(
@@ -147,7 +147,7 @@ class TestOrderStatusChangedHandler:
 
         mock_send_email.assert_called()
 
-    @patch('base.signals.send_order_ready_email')
+    @patch('base.signals.send_order_sent_email')
     def test_sends_email_when_status_changes_to_sent(self, mock_send_email, db):
         """Test email is sent when order status changes to sent"""
         order = Order.objects.create(

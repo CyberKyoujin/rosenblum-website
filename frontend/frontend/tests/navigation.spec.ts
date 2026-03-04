@@ -8,7 +8,7 @@ test.describe("Navigation", () => {
             await page.goto("/");
 
             await expect(page.getByTestId("we-translate")).toBeVisible();
-            await expect(page.getByRole("button", { name: /angebot anfordern/i })).toBeVisible();
+            await expect(page.getByRole("button", { name: /übersetzung bestellen/i })).toBeVisible();
         });
 
         test("should load about us page", async ({ page }) => {

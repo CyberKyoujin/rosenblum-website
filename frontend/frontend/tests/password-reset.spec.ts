@@ -22,7 +22,7 @@ test.describe("Password Reset Flow", () => {
 
             await expect(page.getByRole("heading").first()).toBeVisible();
             await expect(page.getByLabel("Email")).toBeVisible();
-            await expect(page.locator(".confirm-btn")).toBeVisible();
+            await expect(page.locator(".auth-card__btn")).toBeVisible();
         });
 
         test("should show validation error for invalid email", async ({ page }) => {
@@ -93,7 +93,7 @@ test.describe("Password Reset Flow", () => {
         test("should have submit button", async ({ page }) => {
             await page.goto(resetUrl);
 
-            await expect(page.locator(".confirm-btn")).toBeVisible();
+            await expect(page.locator(".auth-card__btn")).toBeVisible();
         });
 
         test("should have password visibility toggle", async ({ page }) => {

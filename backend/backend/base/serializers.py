@@ -10,8 +10,6 @@ from django.utils import timezone
 from base.services.email_verification import send_verification_code, generate_verification_code
 from base.services.email_notifications import (
     send_order_received_email,
-    send_order_sent_email,
-    send_order_pickup_ready_email,
     send_order_canceled_email,
     send_admin_new_order_notification,
 )
@@ -237,31 +235,33 @@ class OrderSerializer(serializers.ModelSerializer):
             if not user and password:
                 email = validated_data.get('email')
 
-                user = CustomUser.objects.filter(email=email).first()
-
-                if not user:
-                    name = validated_data.get('name', '')
-                    parts = name.split(' ', 1)
-                    first_name = parts[0]
-                    last_name = parts[1] if len(parts) > 1 else ''
-
-                    user = CustomUser.objects.create_user(
-                        email=email,
-                        first_name=first_name,
-                        last_name=last_name,
-                        password=password,
-                        phone_number=validated_data.get('phone_number'),
-                        city=validated_data.get('city'),
-                        street=validated_data.get('street'),
-                        zip=validated_data.get('zip'),
+                if CustomUser.objects.filter(email=email).exists():
+                    raise serializers.ValidationError(
+                        {"email": "Ein Konto mit dieser E-Mail-Adresse existiert bereits."}
                     )
 
-                    code = generate_verification_code()
-                    EmailVerification.objects.create(user=user, code=code)
+                name = validated_data.get('name', '')
+                parts = name.split(' ', 1)
+                first_name = parts[0][:50]
+                last_name = (parts[1] if len(parts) > 1 else '')[:50]
 
-                    transaction.on_commit(lambda: send_verification_code(user.email, user.first_name, user.last_name, code))
+                user = CustomUser.objects.create_user(
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=password,
+                    phone_number=validated_data.get('phone_number'),
+                    city=validated_data.get('city'),
+                    street=validated_data.get('street'),
+                    zip=validated_data.get('zip'),
+                )
 
-                    logger.info("[ORDER] Created new user %s with order (email=%s)", user.id, email)
+                code = generate_verification_code()
+                EmailVerification.objects.create(user=user, code=code)
+
+                transaction.on_commit(lambda: send_verification_code(user.email, user.first_name, user.last_name, code))
+
+                logger.info("[ORDER] Created new user %s with order (email=%s)", user.id, email)
 
                 validated_data['user'] = user
 
@@ -334,17 +334,12 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
             if new_payment_type == 'rechnung' and old_payment_type != 'rechnung' and not instance.lexoffice_id:
                 transaction.on_commit(lambda: async_task(create_lex_office_invoice, instance.pk))
 
-            # Send customer email on status change
+            # Send customer email on cancellation (status-change emails for ready/sent/pickup handled by signal)
             new_status = instance.status
-            if new_status != old_status:
+            if new_status != old_status and new_status == Order.Status.CANCELED:
                 customer_email = instance.email
                 order_pk = instance.pk
-                if new_status == Order.Status.SENT:
-                    transaction.on_commit(lambda: send_order_sent_email(customer_email, order_pk))
-                elif new_status == Order.Status.PICK_UP_READY:
-                    transaction.on_commit(lambda: send_order_pickup_ready_email(customer_email, order_pk))
-                elif new_status == Order.Status.CANCELED:
-                    transaction.on_commit(lambda: send_order_canceled_email(customer_email, order_pk))
+                transaction.on_commit(lambda: send_order_canceled_email(customer_email, order_pk))
 
             logger.info("[ORDER] Order %s updated in serializer (status=%s, order_type=%s, payment_status=%s, payment_type=%s)", instance.id, instance.status, instance.order_type, instance.payment_status, instance.payment_type)
 

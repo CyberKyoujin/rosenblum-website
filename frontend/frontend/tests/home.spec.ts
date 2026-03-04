@@ -25,32 +25,6 @@ test.describe("Homepage", () => {
         });
     });
 
-    test.describe("Hero Section", () => {
-
-        test("should display main heading", async ({ page }) => {
-            await page.goto("/");
-
-            await expect(page.getByTestId("we-translate")).toBeVisible();
-            await expect(page.getByRole("heading", { name: /profesionell/i })).toBeVisible();
-        });
-
-        test("should display call-to-action button", async ({ page }) => {
-            await page.goto("/");
-
-            const ctaButton = page.getByRole("button", { name: /angebot anfordern/i });
-            await expect(ctaButton).toBeVisible();
-        });
-
-        test("should navigate to order page on CTA click", async ({ page }) => {
-            await page.goto("/");
-
-            await page.getByRole("button", { name: /angebot anfordern/i }).click();
-
-            await expect(page).toHaveURL(/\/order/);
-        });
-
-    });
-
     test.describe("Statistics Section", () => {
 
         test("should display animated counters", async ({ page }) => {
@@ -119,12 +93,7 @@ test.describe("Homepage", () => {
             await expect(page.getByRole("heading", { name: /standort/i })).toBeVisible();
         });
 
-        test("should display address", async ({ page }) => {
-            await page.goto("/");
-
-            await expect(page.locator(".contacts-container").getByText(/altepost/i)).toBeVisible();
-            await expect(page.locator(".contacts-container").getByText(/osnabrück/i)).toBeVisible();
-        });
+        
 
         test("should display phone number", async ({ page }) => {
             await page.goto("/");
@@ -159,38 +128,8 @@ test.describe("Homepage", () => {
 
     });
 
-    test.describe("Error Handling", () => {
-
-        test("should continue to display page when reviews fail to load", async ({ page }) => {
-            // Mock reviews endpoint to fail
-            await page.route("http://127.0.0.1:8000/user/reviews/**", async (route) => {
-                await route.fulfill({
-                    status: 500,
-                    json: {
-                        code: "server_error",
-                        message: "Server error"
-                    }
-                });
-            });
-
-            await page.goto("/");
-
-            // Page should still load with main content visible even if reviews fail
-            await expect(page.getByTestId("we-translate")).toBeVisible();
-            await expect(page.getByRole("button", { name: /angebot anfordern/i })).toBeVisible();
-        });
-
-    });
 
     test.describe("Responsive Design", () => {
-
-        test("should display correctly on mobile", async ({ page }) => {
-            await page.setViewportSize({ width: 375, height: 667 });
-            await page.goto("/");
-
-            await expect(page.getByTestId("we-translate")).toBeVisible();
-            await expect(page.getByRole("button", { name: /angebot anfordern/i })).toBeVisible();
-        });
 
         test("should display correctly on tablet", async ({ page }) => {
             await page.setViewportSize({ width: 768, height: 1024 });

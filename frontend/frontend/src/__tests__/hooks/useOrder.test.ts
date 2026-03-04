@@ -290,6 +290,7 @@ describe('useOrder', () => {
           // Enable consent and payment method so canSubmit = true
           result.current.consent.setAgb(true)
           result.current.consent.setDatenschutz(true)
+          result.current.consent.setWiderrufsrecht(true)
           result.current.payment.setMethod('rechnung')
         })
 
@@ -327,6 +328,7 @@ describe('useOrder', () => {
           result.current.methods.setValue('message', 'Test message')
           result.current.consent.setAgb(true)
           result.current.consent.setDatenschutz(true)
+          result.current.consent.setWiderrufsrecht(true)
           result.current.payment.setMethod('rechnung')
         })
 
@@ -361,6 +363,7 @@ describe('useOrder', () => {
           result.current.methods.setValue('message', 'Test message')
           result.current.consent.setAgb(true)
           result.current.consent.setDatenschutz(true)
+          result.current.consent.setWiderrufsrecht(true)
           result.current.payment.setMethod('rechnung')
         })
 

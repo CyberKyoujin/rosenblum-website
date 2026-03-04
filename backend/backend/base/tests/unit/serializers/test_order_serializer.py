@@ -58,7 +58,7 @@ class TestOrderSerializerValidation:
 
     def test_valid_status_choices(self):
         """Test serializer accepts valid status choices"""
-        valid_statuses = ['review', 'in_progress', 'completed', 'ready_pick_up', 'sent', 'canceled']
+        valid_statuses = ['review', 'in_progress', 'ready_pick_up', 'sent', 'canceled']
 
         for s in valid_statuses:
             serializer = OrderSerializer(data=_valid_order_data(status=s))

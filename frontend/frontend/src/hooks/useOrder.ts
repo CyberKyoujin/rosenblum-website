@@ -13,7 +13,7 @@ import deFlag from '../assets/de.svg';
 import { t } from 'i18next';
 
 export const orderSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "Name is required").max(100, "Name is too long"),
   email: z.string().email("Invalid email"),
   phone_number: z.string().min(5, "Invalid phone"),
   city: z.string().min(1, "City is required"),

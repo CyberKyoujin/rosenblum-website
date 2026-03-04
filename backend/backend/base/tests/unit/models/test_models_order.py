@@ -48,7 +48,6 @@ class TestOrderModel:
         valid_statuses = [
             Order.Status.REVIEW,
             Order.Status.IN_PROGRESS,
-            Order.Status.COMPLETED,
             Order.Status.PICK_UP_READY,
             Order.Status.SENT,
             Order.Status.CANCELED
