@@ -90,9 +90,7 @@ services:
     volumes:
       - backend_static:/app/static
       - backend_media:/app/media
-      # Mount service account file (optional - only needed if using Google Cloud Storage)
-      # Uncomment the line below and ensure the file exists if you need GCS
-      # - ./backend/backend/service-account-file.json:/app/service-account-file.json:ro
+      - ./backend/backend/service-account-file.json:/app/service-account-file.json:ro
     ports:
       - "8000:8000"
     depends_on:
