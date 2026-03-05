@@ -38,6 +38,21 @@ const stepFields: Record<number, (keyof OrderFormValues)[]> = {
 export default function OrderStepper({logic}: {logic?: any}) {
   const [activeStep, setActiveStep] = React.useState(0);
 
+  React.useEffect(() => {
+    window.history.pushState(null, '');
+
+    const handlePopState = () => {
+      if (activeStep > 0) {
+        window.history.pushState(null, '');
+        setActiveStep(prev => prev - 1);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [activeStep]);
+
   const steps: Step[] = [
     {
         icon: FaUserCircle, label: t('contactDetails'), stepElement: OrderContactsSection, complete: false
@@ -110,11 +125,13 @@ export default function OrderStepper({logic}: {logic?: any}) {
     steps[activeStep].complete = true;
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-    
+
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleReset = () => {
@@ -138,28 +155,41 @@ export default function OrderStepper({logic}: {logic?: any}) {
             );
           }
           
+          const isClickable = index < activeStep || step.complete;
+
           return (
             <Step key={step.label} {...stepProps}>
 
-                <div className='step-info'>
+                <div
+                  className='step-info'
+                  onClick={() => {
+                    if (isClickable) {
+                      setActiveStep(index);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                  style={{ cursor: isClickable ? 'pointer' : 'default' }}
+                >
                     <div className='step-icon' style={{backgroundColor: index === activeStep || step.complete ? "#4C79D4" : "grey"}}>
                         {step.complete ? <DoneAllIcon sx={{ fontSize: 20 }} /> : <step.icon color='white' size={24} />}
                     </div>
-                    
+
                     <p className='step-info-text'>{step.label}</p>
                 </div>
-              
+
             </Step>
           );
         })}
       </Stepper>
 
-      <div className="order-info-banner">
-        <IoInformationCircleOutline className="order-info-banner__icon" />
-        <p className="order-info-banner__text">
-          {t('orderBannerText1')} <Link to="/pricing" className="order-info-banner__link">{t('orderBannerPrices')}</Link> {t('orderBannerOr')} <Link to="/faq" className="order-info-banner__link">{t('orderBannerFaq')}</Link> {t('orderBannerText2')} <Link to="/contact-us" className="order-info-banner__link">{t('orderBannerContact')}</Link>.
-        </p>
-      </div>
+      {activeStep === 0 && (
+        <div className="order-info-banner">
+          <IoInformationCircleOutline className="order-info-banner__icon" />
+          <p className="order-info-banner__text">
+            {t('orderBannerText1')} <Link to="/pricing" className="order-info-banner__link">{t('orderBannerPrices')}</Link> {t('orderBannerOr')} <Link to="/faq" className="order-info-banner__link">{t('orderBannerFaq')}</Link> {t('orderBannerText2')} <Link to="/contact-us" className="order-info-banner__link">{t('orderBannerContact')}</Link>.
+          </p>
+        </div>
+      )}
 
       {activeStep === steps.length ? (
         <React.Fragment>

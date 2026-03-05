@@ -1,6 +1,6 @@
 import { Box, Divider, FormControl, InputLabel, ListSubheader, MenuItem, Select } from '@mui/material';
 import { t } from 'i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaFile, FaCircleQuestion } from 'react-icons/fa6';
 import { PiUploadFill } from 'react-icons/pi';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
@@ -16,12 +16,23 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
 
   const { docs } = logic;
   const [selectOpen, setSelectOpen] = useState(false);
+  const [newDocIndex, setNewDocIndex] = useState<number | null>(null);
+  const prevLengthRef = useRef(docs.list.length);
 
   useEffect(() => {
     const handleScroll = () => setSelectOpen(false);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (docs.list.length > prevLengthRef.current) {
+      const idx = docs.list.length - 1;
+      setNewDocIndex(idx);
+      setTimeout(() => setNewDocIndex(null), 3000);
+    }
+    prevLengthRef.current = docs.list.length;
+  }, [docs.list.length]);
 
   const templates: DocTemplate[] = docs.templates;
   const sonstigesTemplate = templates.find((d: DocTemplate) => d.individualPrice);
@@ -43,6 +54,48 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
       </div>
 
       {/* Sonstiges — prominent card, shown before the regular select */}
+
+      {/* Grouped document selector */}
+      <Box sx={{ minWidth: 120 }} className="docs-select">
+        <FormControl fullWidth>
+            <InputLabel id="docs-select-label">{t('documents')}</InputLabel>
+            <Select
+            labelId="docs-select-label"
+            id="docs-select"
+            value=""
+            label={t('documents')}
+            onChange={docs.handleInputChange}
+            open={selectOpen}
+            onOpen={() => setSelectOpen(true)}
+            onClose={() => setSelectOpen(false)}
+            MenuProps={{
+              disableScrollLock: true,
+              PaperProps: { style: { maxHeight: 320, overflowY: 'auto' } }
+            }}
+            >
+            {sonstigesTemplate && ([
+              <ListSubheader key="sonstiges-header" className="docs-select-category">
+                {t('docSonstigesCategory')}
+              </ListSubheader>,
+              <MenuItem key="sonstiges-item" value={sonstigesTemplate.type} className="docs-select-sonstiges">
+                <span className="docs-select-sonstiges__label">{t('docSonstigesSelectLabel')}</span>
+                <span className="docs-select-sonstiges__badge">{t('individualCalculation')}</span>
+              </MenuItem>
+            ])}
+            {groupedTemplates.map(group => [
+              <ListSubheader key={group.key} className="docs-select-category">
+                {t(group.labelKey)}
+              </ListSubheader>,
+              ...group.items.map((doc: DocTemplate, idx: number) => (
+                <MenuItem key={idx} value={doc.type}>
+                  {doc.label} — {`${doc.price}€`}
+                </MenuItem>
+              ))
+            ])}
+            </Select>
+        </FormControl>
+      </Box>
+
       {sonstigesTemplate && (
         <div
           className={`docs-sonstiges-card ${sonstigesAlreadyAdded ? 'docs-sonstiges-card--added' : ''}`}
@@ -66,46 +119,9 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
         </div>
       )}
 
-      {/* Grouped document selector */}
-      <Box sx={{ minWidth: 120 }} className="docs-select">
-        <FormControl fullWidth>
-            <InputLabel id="docs-select-label">{t('documents')}</InputLabel>
-            <Select
-            labelId="docs-select-label"
-            id="docs-select"
-            value=""
-            label={t('documents')}
-            onChange={docs.handleInputChange}
-            open={selectOpen}
-            onOpen={() => setSelectOpen(true)}
-            onClose={() => setSelectOpen(false)}
-            MenuProps={{
-              disableScrollLock: true,
-              PaperProps: { style: { maxHeight: 320, overflowY: 'auto' } }
-            }}
-            >
-            {sonstigesTemplate && (
-              <MenuItem value={sonstigesTemplate.type} className="docs-select-sonstiges">
-                {t('docSonstigesSelectLabel')}
-              </MenuItem>
-            )}
-            {groupedTemplates.map(group => [
-              <ListSubheader key={group.key} className="docs-select-category">
-                {t(group.labelKey)}
-              </ListSubheader>,
-              ...group.items.map((doc: DocTemplate, idx: number) => (
-                <MenuItem key={idx} value={doc.type}>
-                  {doc.label} — {`${doc.price}€`}
-                </MenuItem>
-              ))
-            ])}
-            </Select>
-        </FormControl>
-      </Box>
-
       <div className='docs-container'>
             {docs.list.map((doc: DocsType, index: number) => (
-                <div className='doc-item' key={index}>
+                <div className={`doc-item${newDocIndex === index ? ' doc-item--new' : ''}`} key={index}>
 
                     <div className='doc-item-info'>
                         <p className='doc-name'>{doc.label}</p>
