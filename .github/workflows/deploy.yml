@@ -328,6 +328,11 @@ jobs:
             # Frontend URL
             echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
+            # Telegram
+
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+            echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+
             # 4. Создаем файл ключа Google (JSON) из секрета
             rm -rf backend/backend/service-account-file.json
             echo '${{ secrets.GOOGLE_SERVICE_ACCOUNT_FILE }}' > backend/backend/service-account-file.json

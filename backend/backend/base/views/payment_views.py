@@ -12,6 +12,7 @@ from base.models import Order
 from django_q.tasks import async_task
 from base.services.tasks import create_lex_office_invoice
 from base.services.email_notifications import send_admin_dispute_notification
+from base.services.telegram import notify_payment_received, notify_dispute, notify_payment_failed
 import sentry_sdk
 from decimal import Decimal
 
@@ -120,9 +121,10 @@ def stripe_webhook(request):
                     order.stripe_payment_intent_id = payment_intent['id']
                     
                     order.save(update_fields=['payment_status', 'stripe_payment_intent_id'])
-                    
+
                     # Async lex office task only on successfull DB commit
                     transaction.on_commit(lambda: async_task(create_lex_office_invoice, order_id))
+                    transaction.on_commit(lambda: notify_payment_received(order))
                     
                     logger.info("[Stripe Webhook]: Order %s successfully processed via webhook.", order_id)
                     return HttpResponse(status=200)
@@ -158,6 +160,7 @@ def stripe_webhook(request):
                        order_id, dispute_id, reason, amount_cents)
         sentry_sdk.capture_message(f"[Stripe Webhook] Dispute created for order {order_id}", level='warning')
         send_admin_dispute_notification(order_id, amount_cents, reason, dispute_id)
+        notify_dispute(order_id, amount_cents, reason, dispute_id)
 
     elif event['type'] == 'payment_intent.payment_failed':
         payment_intent = event['data']['object']
@@ -165,6 +168,7 @@ def stripe_webhook(request):
         error = payment_intent.get('last_payment_error', {}) or {}
         logger.warning("[Stripe Webhook] PaymentIntent failed — order_id=%s, error=%s",
                        order_id, error.get('message', 'unknown'))
+        notify_payment_failed(order_id, error.get('message', 'unknown'))
 
     else:
         logger.debug("[Stripe Webhook] Unhandled event type: %s", event['type'])

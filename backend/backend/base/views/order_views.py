@@ -9,6 +9,7 @@ from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from base.pagination import CustomPagination
 from base.services.google_storage import get_file_url
+from base.services.telegram import notify_new_order, notify_cost_estimate_created, notify_order_status_changed
 from rest_framework.decorators import action
 from base.services.generate_estimate import generate_quote_pdf
 from django.core.files.base import ContentFile
@@ -75,7 +76,14 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user if self.request.user.is_authenticated else None
-        serializer.save(user=user)
+        order = serializer.save(user=user)
+        notify_new_order(order)
+
+    def perform_update(self, serializer):
+        old_status = serializer.instance.status
+        instance = serializer.save()
+        if instance.status != old_status:
+            notify_order_status_changed(instance, instance.status)
         
     @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
     def toggle(self, request, pk=None):
@@ -123,6 +131,8 @@ class CreateCostEstimateViewSet(viewsets.ViewSet):
                 order=order,
                 file=ContentFile(pdf_bytes, name=f'cost_estimate_{order_id}.pdf'),
             )
+
+            notify_cost_estimate_created(order)
 
             return Response({'details': 'Cost estimate created'}, status=status.HTTP_201_CREATED)
         

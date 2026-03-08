@@ -1,6 +1,8 @@
+import logging
 from rest_framework import viewsets, filters
 from base.models import CustomUser, Message, RequestObject, RequestAnswer
 from base.serializers import MessageSerializer, RequestSerializer, RequestAnswerSerializer
+from base.services.telegram import notify_new_request
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.db.models import Q
 from rest_framework.decorators import action
@@ -8,6 +10,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import ValidationError
+
+logger = logging.getLogger(__name__)
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all().prefetch_related("files").order_by('-timestamp')
@@ -39,22 +43,23 @@ class MessageViewSet(viewsets.ModelViewSet):
         ).order_by('-timestamp')
         
     def perform_create(self, serializer):
-        print(self.request.data)
         receiver_id = self.request.data.get('id')
 
         if not receiver_id:
             try:
                 receiver = CustomUser.objects.get(last_name="Rosenblum")
             except CustomUser.DoesNotExist:
+                logger.warning("[MESSAGE] Default receiver (Rosenblum) not found")
                 raise ValidationError({'receiver': 'Receiver ID is required'})
         else:
             try:
                 receiver = CustomUser.objects.get(pk=receiver_id)
             except CustomUser.DoesNotExist:
-        
+                logger.warning("[MESSAGE] Receiver with id=%s not found", receiver_id)
                 raise ValidationError({'receiver': f'User with ID {receiver_id} does not exist'})
 
-        serializer.save(sender=self.request.user, receiver=receiver)
+        message = serializer.save(sender=self.request.user, receiver=receiver)
+        logger.info("[MESSAGE] Message %s sent from user=%s to user=%s", message.id, self.request.user.id, receiver.id)
         
     @action(detail=False, methods=['post'])
     def toggle(self, request):
@@ -112,6 +117,11 @@ class RequestViewSet(viewsets.ModelViewSet):
         
         return [IsAuthenticated()]
     
+    def perform_create(self, serializer):
+        req = serializer.save()
+        logger.info("[REQUEST] New request #%s created (name=%s, email=%s)", req.id, req.name, req.email)
+        notify_new_request(req)
+
     @action(detail=True, methods=['post'], permission_classes=[IsAdminUser])
     def toggle(self, request, pk=None):
         request_obj = self.get_object()
