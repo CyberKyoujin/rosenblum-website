@@ -50,13 +50,13 @@ const Navbar: React.FC = () => {
 
               <div className={openedComponent ? "overlay overlay-show" : "overlay"} onClick={handleOverlayClick}></div>
 
+              <ServicesMenu isOpened={openedComponent === 'services'} setOpened={() => toggle("services")}/>
+
               <div className='nav-center'>
 
                   <button className='services-btn' onClick={(e) => {e.stopPropagation();  toggle("services");}}>
                       {t('services')} {openedComponent === 'services' ? <MdKeyboardArrowUp/> : <MdKeyboardArrowDown/>}
                   </button>
-
-                  <ServicesMenu isOpened={openedComponent === 'services'} setOpened={() => toggle("services")}/>
 
                   <AiOutlineMenu className="services-menu"  onClick={(event) => {event.stopPropagation();  toggle("slider")}}/>
                   

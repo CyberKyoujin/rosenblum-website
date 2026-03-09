@@ -621,5 +621,12 @@
     "linesPerPage": "Zeilen/Seite",
     "disclaimer": "Dies ist eine Schätzung. Der genaue Preis wird nach Prüfung Ihrer Unterlagen festgelegt.",
     "cta": "JETZT BESTELLEN"
+  },
+  "whatsapp": {
+    "tooltip": "Hilfe benötigt?",
+    "title": "Haben Sie Schwierigkeiten bei der Bestellung?",
+    "sub": "Wenn etwas unklar ist — schreiben Sie uns auf WhatsApp, wir helfen Ihnen gerne weiter.",
+    "goToForm": "Nochmal versuchen",
+    "goToWhatsApp": "WhatsApp schreiben"
   }
 }

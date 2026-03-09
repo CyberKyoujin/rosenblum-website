@@ -12,6 +12,7 @@ import ProfileSkeleton from './components/ProfileSkeleton';
 import MessagesSkeleton from './components/MessagesSkeleton';
 import OrderDetailsSkeleton from './components/OrderDetailsSkeleton';
 import CookieConsent from './components/CookieConsent';
+import WhatsAppButton from './components/WhatsAppButton';
 
 const Home = lazy(() => import('./screens/Home'));
 const Login = lazy(() => import('./screens/Login'));
@@ -278,6 +279,7 @@ function App() {
         }/>
       </Routes>
       <CookieConsent />
+      <WhatsAppButton />
     </main>
   );
 }
