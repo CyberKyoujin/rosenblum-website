@@ -499,6 +499,10 @@
   "stepDocuments": "Документы",
   "stepOrderSummary": "Обзор заказа",
   "deleteAccount": "Удалить аккаунт",
+  "deleteAccountConfirmTitle": "Удалить аккаунт?",
+  "deleteAccountConfirmSub": "Это действие необратимо. Все ваши данные и история заказов будут удалены.",
+  "deleteAccountConfirm": "Да, удалить",
+  "deleteAccountCancel": "Отмена",
   "notSpecified": "Не указано",
   "memberSince": "Участник с",
   "contactPage": {

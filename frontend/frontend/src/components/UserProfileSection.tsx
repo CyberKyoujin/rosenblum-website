@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUserEdit } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import useAuthStore from "../zustand/useAuthStore";
@@ -9,9 +10,22 @@ import { IoDocumentTextOutline, IoCalendarOutline } from "react-icons/io5";
 
 const UserProfileSection = () => {
 
-    const {user, userData} = useAuthStore();
+    const {user, userData, deleteAccount} = useAuthStore();
     const {orders} = useOrderStore();
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDeleteConfirm = async () => {
+        setDeleting(true);
+        try {
+            await deleteAccount();
+            navigate('/');
+        } finally {
+            setDeleting(false);
+        }
+    };
 
     const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
 
@@ -59,7 +73,7 @@ const UserProfileSection = () => {
             <div className="profile-card profile-card--contact">
                 <div className="profile-card__header">
                     <h3 className="profile-card__title">{t('contactDetails')}</h3>
-                    <button className="profile-card__delete-btn">{t('deleteAccount')}</button>
+                    <button className="profile-card__delete-btn" onClick={() => setShowDeleteModal(true)}>{t('deleteAccount')}</button>
                 </div>
 
                 <div className="profile-card__info-list">
@@ -94,7 +108,33 @@ const UserProfileSection = () => {
                 </Link>
             </div>
 
+            {showDeleteModal && (
+            <div className="delete-account-overlay" onClick={() => setShowDeleteModal(false)}>
+                <div className="delete-account-modal" onClick={e => e.stopPropagation()}>
+                    <p className="delete-account-modal__title">{t('deleteAccountConfirmTitle')}</p>
+                    <p className="delete-account-modal__sub">{t('deleteAccountConfirmSub')}</p>
+                    <div className="delete-account-modal__actions">
+                        <button
+                            className="delete-account-modal__btn delete-account-modal__btn--danger"
+                            onClick={handleDeleteConfirm}
+                            disabled={deleting}
+                        >
+                            {t('deleteAccountConfirm')}
+                        </button>
+                        <button
+                            className="delete-account-modal__btn delete-account-modal__btn--cancel"
+                            onClick={() => setShowDeleteModal(false)}
+                        >
+                            {t('deleteAccountCancel')}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+
         </section>
+
+        
     )
 }
 

@@ -37,4 +37,5 @@ export interface AuthState {
     logoutUser: () => void;
     fetchUserData: () => Promise<void>;
     updateUserProfile: (formData: FormData) =>  Promise<void>;
+    deleteAccount: () => Promise<void>;
 }

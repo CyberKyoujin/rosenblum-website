@@ -8819,3 +8819,80 @@ html, body {
   background: #f1f5f9;
   color: #374151;
 }
+
+/* Delete Account Modal */
+.delete-account-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.delete-account-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.delete-account-modal__title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.delete-account-modal__sub {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.delete-account-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.delete-account-modal__btn {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s ease;
+}
+
+.delete-account-modal__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-account-modal__btn--danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.delete-account-modal__btn--danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.delete-account-modal__btn--cancel {
+  background: #f1f5f9;
+  color: #374151;
+}
+
+.delete-account-modal__btn--cancel:hover {
+  background: #e2e8f0;
+}

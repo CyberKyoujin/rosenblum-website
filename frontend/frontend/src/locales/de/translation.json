@@ -498,6 +498,10 @@
   "stepDocuments": "Unterlagen",
   "stepOrderSummary": "Bestellübersicht",
   "deleteAccount": "Konto löschen",
+  "deleteAccountConfirmTitle": "Konto löschen?",
+  "deleteAccountConfirmSub": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Daten und die Bestellhistorie werden gelöscht.",
+  "deleteAccountConfirm": "Ja, löschen",
+  "deleteAccountCancel": "Abbrechen",
   "notSpecified": "Nicht angegeben",
   "memberSince": "Mitglied seit",
   "contactPage": {

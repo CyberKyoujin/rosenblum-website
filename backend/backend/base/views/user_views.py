@@ -70,7 +70,7 @@ class UserViewSet(viewsets.ModelViewSet):
         ]
         if self.action in public_actions:
             return [AllowAny()]
-        if self.action in ['me', 'retrieve'] and not self.request.user.is_staff:
+        if self.action in ['me', 'retrieve', 'delete_me'] and not self.request.user.is_staff:
             return [IsAuthenticated()]
         return [IsAdminUser()]
 
@@ -79,6 +79,13 @@ class UserViewSet(viewsets.ModelViewSet):
             return UserDataSerializer
         return CustomUserSerializer
     
+
+    @action(detail=False, methods=['delete'])
+    def delete_me(self, request):
+        user = request.user
+        logger.info("[Auth]: User %s requested account deletion.", user.email)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=['get', 'patch'], permission_classes=[IsAuthenticated])
     def me(self, request):

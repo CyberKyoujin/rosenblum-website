@@ -499,6 +499,10 @@
   "stepDocuments": "Документи",
   "stepOrderSummary": "Огляд замовлення",
   "deleteAccount": "Видалити обліковий запис",
+  "deleteAccountConfirmTitle": "Видалити обліковий запис?",
+  "deleteAccountConfirmSub": "Цю дію не можна скасувати. Усі ваші дані та історія замовлень будуть видалені.",
+  "deleteAccountConfirm": "Так, видалити",
+  "deleteAccountCancel": "Скасувати",
   "notSpecified": "Не вказано",
   "memberSince": "Учасник з",
   "contactPage": {

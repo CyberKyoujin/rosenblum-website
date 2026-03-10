@@ -201,6 +201,11 @@ const useAuthStore = create<AuthState>((set,get) =>({
         set({authTokens: null, user: null, isAuthenticated: false, userData: null});
     },
 
+    deleteAccount: async () => {
+        await axiosInstance.delete('user/users/delete_me/');
+        get().logoutUser();
+    },
+
     fetchUserData: async() => {
             set({userDataLoading: true, userDataError: null});
             try{
