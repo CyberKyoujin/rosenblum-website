@@ -15,7 +15,7 @@ interface ApiErrorAlertProps {
 }
 
 const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, belowNavbar, onClose, fixed = false, action, duration = 5 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
  
   const [alertVisible, setAlertVisible] = useState(false);
 
@@ -74,8 +74,7 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, be
 
   } else if (error) {
 
-    const translatedMessage = t(error.code, { defaultValue: '' });
-    let displayMessage = translatedMessage || error.message;
+    let displayMessage = i18n.exists(error.code) ? t(error.code) : error.message;
 
     if (error.code === 'validation_error') {
         displayMessage = `${displayMessage} (${t('checkFields')})`;

@@ -7,9 +7,8 @@ interface ApiErrorViewProps {
 }
 
 const ApiErrorView: React.FC<ApiErrorViewProps> = ({ error }) => {
-    const { t } = useTranslation();
-    const translatedMessage = t(error.code, { defaultValue: '' });
-    const displayMessage = translatedMessage || error.message;
+    const { t, i18n } = useTranslation();
+    const displayMessage = i18n.exists(error.code) ? t(error.code) : error.message;
 
     return (
         <div className="error-view-container">

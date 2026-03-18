@@ -141,7 +141,7 @@ describe('toApiError', () => {
       const result = toApiError(axiosError)
 
       expect(result.status).toBe(500)
-      expect(result.code).toBe('server_error')
+      expect(result.code).toBe('error_server')
       expect(result.message).toContain('500')
     })
 
