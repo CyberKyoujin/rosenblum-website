@@ -36,7 +36,8 @@ describe('Order', () => {
     status: 'review',
     is_new: false,
     payment_status: "not paid",
-    payment_type: "stripe"
+    payment_type: "stripe",
+    express: false,
   }
 
   beforeEach(() => {
