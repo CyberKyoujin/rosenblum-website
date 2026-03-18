@@ -98,14 +98,6 @@ class OrderViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(orders, many=True)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['post'], url_path='get-file-url')
-    def get_file_url_action(self, request):
-        file_name = request.data.get('file_name')
-        if not file_name:
-            return Response({'error': 'file_name is required'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        url = get_file_url(file_name) 
-        return Response({'url': url}, status=status.HTTP_200_OK)
 
 class CreateCostEstimateViewSet(viewsets.ViewSet):
     permission_classes = [IsAdminUser]

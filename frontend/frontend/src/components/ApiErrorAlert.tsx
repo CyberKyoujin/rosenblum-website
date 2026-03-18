@@ -74,10 +74,11 @@ const ApiErrorAlert: React.FC<ApiErrorAlertProps> = ({ error, successMessage, be
 
   } else if (error) {
 
-    let displayMessage = error.message;
-    
+    const translatedMessage = t(error.code, { defaultValue: '' });
+    let displayMessage = translatedMessage || error.message;
+
     if (error.code === 'validation_error') {
-        displayMessage = `${error.message} (${t('checkFields')})`;
+        displayMessage = `${displayMessage} (${t('checkFields')})`;
     }
 
     content = (

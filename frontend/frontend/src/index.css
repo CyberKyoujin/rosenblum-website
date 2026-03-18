@@ -7655,6 +7655,158 @@ html, body {
   border-color: #e0e0e0;
 }
 
+/* Order Options Section */
+.order-options-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.order-option-hidden-input {
+  display: none;
+}
+
+.order-option-card {
+  display: block;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.order-option-card:hover {
+  border-color: var(--blue);
+  background-color: #fafbff;
+}
+
+.order-option-card--active {
+  border-color: var(--blue);
+  background-color: #f0f5ff;
+  box-shadow: 0 0 0 1px var(--blue);
+}
+
+.order-option-card__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order-option-card__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.order-option-card__icon {
+  font-size: 1.1rem;
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.order-option-card__icon--express {
+  color: var(--blue);
+}
+
+.order-option-card__title {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.order-option-card__desc {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.1rem;
+}
+
+.order-option-card__badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f59e0b;
+  background: #fef3c7;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+/* Pickup options */
+.order-option-pickup {
+  padding: 1rem 1.25rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.order-option-pickup__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.order-option-pickup__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pickup-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.pickup-option:hover {
+  border-color: var(--blue);
+  background-color: #fafbff;
+}
+
+.pickup-option--active {
+  border-color: var(--blue);
+  background-color: #f0f5ff;
+  box-shadow: 0 0 0 1px var(--blue);
+}
+
+.pickup-option__label {
+  font-size: 0.88rem;
+  color: #333;
+}
+
+.pickup-option__price {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+/* Price breakdown */
+.order-options-breakdown {
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.order-options-breakdown__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.order-options-breakdown__row--surcharge {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
 .payment-hint {
   display: flex;
   align-items: flex-start;

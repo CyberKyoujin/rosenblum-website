@@ -61,47 +61,47 @@ def test_rq1_coverage(manual_estimate=45):
     
     coverage_df = load_coverage_data()
 
-    # Use ALL historical coverage values (n=75: 25 rows × 3 components)
-    all_coverage = pd.concat([
-        coverage_df['backend_line'],
-        coverage_df['frontend_line'],
-        coverage_df['frontend_admin_line']
-    ]).reset_index(drop=True)
+    # Composite coverage per CI run = mean of 3 components (n=25 independent observations)
+    # Using per-run composite avoids pseudo-replication from treating 3 components as independent
+    composite_coverage = coverage_df[['backend_line', 'frontend_line', 'frontend_admin_line']].mean(axis=1)
 
     # Latest values for individual reporting
     latest = coverage_df.iloc[-1]
-    
+    # Latest composite = snapshot of current state (used for bar chart, not for test)
+    latest_composite = float(coverage_df[['backend_line', 'frontend_line', 'frontend_admin_line']].iloc[-1].mean())
+
     # One-sample t-test: Is automated coverage > manual estimate?
-    t_statistic, p_value = stats.ttest_1samp(all_coverage, manual_estimate, alternative='greater')
-    
+    t_statistic, p_value = stats.ttest_1samp(composite_coverage, manual_estimate, alternative='greater')
+
     # Effect size (Cohen's d)
-    cohens_d = (all_coverage.mean() - manual_estimate) / all_coverage.std()
-    
+    cohens_d = (composite_coverage.mean() - manual_estimate) / composite_coverage.std(ddof=1)
+
     # Results
     results = {
-        "test": "One-sample t-test",
+        "test": "One-sample t-test (composite per CI run)",
         "h0": f"Automated coverage = {manual_estimate}%",
         "h1": f"Automated coverage > {manual_estimate}%",
         "manual_estimate": manual_estimate,
         "backend_coverage": latest['backend_line'],
         "frontend_coverage": latest['frontend_line'],
         "frontend_admin_coverage": latest['frontend_admin_line'],
-        "automated_mean": all_coverage.mean(),
-        "automated_std": all_coverage.std(),
-        "n": len(all_coverage),
+        "automated_latest_composite": latest_composite,
+        "automated_mean": composite_coverage.mean(),
+        "automated_std": composite_coverage.std(ddof=1),
+        "n": len(composite_coverage),
         "t_statistic": t_statistic,
         "p_value": p_value,
         "cohens_d": cohens_d,
         "significant": p_value < 0.05,
         "effect_size_interpretation": interpret_cohens_d(cohens_d)
     }
-    
+
     # Print results
     print(f"\nManual Coverage (estimate): {manual_estimate}%")
-    print(f"Automated Coverage (measured): {all_coverage.mean():.2f}% (SD={all_coverage.std():.2f})")
-    print(f"Improvement: +{all_coverage.mean() - manual_estimate:.2f} percentage points")
-    print(f"\nStatistical Test: One-sample t-test")
-    print(f"  t({len(all_coverage)-1}) = {t_statistic:.3f}")
+    print(f"Automated Coverage (measured): {composite_coverage.mean():.2f}% (SD={composite_coverage.std(ddof=1):.2f})")
+    print(f"Improvement: +{composite_coverage.mean() - manual_estimate:.2f} percentage points")
+    print(f"\nStatistical Test: One-sample t-test (n={len(composite_coverage)} CI runs, composite coverage)")
+    print(f"  t({len(composite_coverage)-1}) = {t_statistic:.3f}")
     print(f"  p = {p_value:.6f} {'***' if p_value < 0.001 else '**' if p_value < 0.01 else '*' if p_value < 0.05 else 'ns'}")
     print(f"  Cohen's d = {cohens_d:.3f} ({interpret_cohens_d(cohens_d)})")
     
@@ -116,9 +116,9 @@ def test_rq2_execution_time():
     """
     RQ2: Execution Time Comparison
     Compares FULL manual test cycle (sum of all test cases) vs automated pipeline duration.
-    H0: Manual cycle time = Automated pipeline time
-    H1: Manual cycle time > Automated pipeline time
-    Test: One-sample t-test (manual cycle time as reference vs automated samples)
+    H0: Automated pipeline time >= Manual cycle time
+    H1: Automated pipeline time < Manual cycle time
+    Test: Welch's independent t-test (unequal variances; manual n=3, automated n=20)
     """
     print("\n" + "=" * 70)
     print("RQ2: EXECUTION TIME ANALYSIS")
@@ -135,39 +135,59 @@ def test_rq2_execution_time():
         manual_df['run2_time_min'].sum(),
         manual_df['run3_time_min'].sum()
     ])
+
+    # Testing-only cycle times (exclude Deployment row) — used for MTTD
+    # MTTD = time until bug detected = occurs during testing, not deployment
+    testing_df = manual_df[manual_df['test_type'] != 'Deployment']
+    testing_cycle_times = pd.Series([
+        testing_df['run1_time_min'].sum(),
+        testing_df['run2_time_min'].sum(),
+        testing_df['run3_time_min'].sum()
+    ])
+    testing_cycle_mean = testing_cycle_times.mean()
     manual_cycle_mean = manual_cycle_times.mean()
+    manual_cycle_std = manual_cycle_times.std(ddof=1)
+    n_manual = len(manual_cycle_times)
 
     # Automated: each pipeline run covers all tests at once
     auto_times = auto_df.loc[auto_df['conclusion'] == 'success', 'duration_minutes']
-    
     auto_failed_times = auto_df.loc[auto_df['conclusion'] == 'failure', 'duration_minutes']
+    auto_std = auto_times.std(ddof=1)
+    n_auto = len(auto_times)
 
-    # Standard deviation (thesis value, manually verified)
-    auto_std = 1.03
+    # Welch's independent t-test (unequal variances, one-sided: automated < manual)
+    t_statistic, p_value = stats.ttest_ind(
+        auto_times, manual_cycle_times,
+        equal_var=False,
+        alternative='less'
+    )
 
-    # One-sample t-test using thesis SD
-    n = len(auto_times)
-    t_statistic = (auto_times.mean() - manual_cycle_mean) / (auto_std / np.sqrt(n))
-    _, p_value = stats.ttest_1samp(auto_times, manual_cycle_mean, alternative='less')
+    # Welch-Satterthwaite degrees of freedom
+    s1, s2 = auto_times.var(ddof=1), manual_cycle_times.var(ddof=1)
+    df_welch = (s1/n_auto + s2/n_manual)**2 / (
+        (s1/n_auto)**2 / (n_auto - 1) + (s2/n_manual)**2 / (n_manual - 1)
+    )
 
-    # Effect size (Cohen's d)
-    cohens_d = (manual_cycle_mean - auto_times.mean()) / auto_std
+    # Effect size: Cohen's d using pooled SD (Hedges' approach for unequal n)
+    pooled_std = np.sqrt(((n_auto - 1) * s1 + (n_manual - 1) * s2) / (n_auto + n_manual - 2))
+    cohens_d = (manual_cycle_mean - auto_times.mean()) / pooled_std
 
     # Speed improvement
     speedup = manual_cycle_mean / auto_times.mean()
 
     results = {
-        "test": "One-sample t-test",
-        "h0": "Automated pipeline time = Manual cycle time",
+        "test": "Welch's independent t-test",
+        "h0": "Automated pipeline time >= Manual cycle time",
         "h1": "Automated pipeline time < Manual cycle time",
         "manual_cycle_mean": manual_cycle_mean,
-        "manual_cycle_std": manual_cycle_times.std(),
-        "manual_cycle_runs": len(manual_cycle_times),
+        "manual_cycle_std": manual_cycle_std,
+        "manual_cycle_runs": n_manual,
         "manual_num_test_cases": len(manual_df),
         "automated_mean": auto_times.mean(),
         "automated_failed_mean": auto_failed_times.mean(),
-        "automated_std": auto_std,
-        "automated_n": len(auto_times),
+        "automated_std": float(auto_std),
+        "automated_n": n_auto,
+        "df_welch": df_welch,
         "t_statistic": t_statistic,
         "p_value": p_value,
         "cohens_d": cohens_d,
@@ -179,17 +199,15 @@ def test_rq2_execution_time():
 
     # Print results
     print(f"\nManual Testing (full cycle = {len(manual_df)} test cases):")
-    print(f"  Cycle time: {manual_cycle_mean:.2f} minutes (SD={manual_cycle_times.std():.2f})")
-    print(f"  Measured over: {len(manual_cycle_times)} runs")
+    print(f"  Cycle time: {manual_cycle_mean:.2f} minutes (SD={manual_cycle_std:.2f}, n={n_manual})")
     print(f"\nAutomated Pipeline (all tests in one run):")
-    print(f"  Mean: {auto_times.mean():.2f} minutes (SD={auto_times.std():.2f})")
-    print(f"  N: {len(auto_times)} runs")
+    print(f"  Mean: {auto_times.mean():.4f} minutes (SD={auto_std:.4f}, n={n_auto})")
     print(f"\nImprovement:")
     print(f"  Time saved: {manual_cycle_mean - auto_times.mean():.2f} minutes per cycle")
     print(f"  Speedup: {speedup:.1f}× faster")
-    print(f"\nStatistical Test: One-sample t-test")
-    print(f"  t({len(auto_times)-1}) = {t_statistic:.3f}")
-    print(f"  p = {p_value:.6f} {'***' if p_value < 0.001 else '**' if p_value < 0.01 else '*' if p_value < 0.05 else 'ns'}")
+    print(f"\nStatistical Test: Welch's independent t-test")
+    print(f"  t({df_welch:.2f}) = {t_statistic:.3f}")
+    print(f"  p = {p_value:.6e} {'***' if p_value < 0.001 else '**' if p_value < 0.01 else '*' if p_value < 0.05 else 'ns'}")
     print(f"  Cohen's d = {cohens_d:.3f} ({interpret_cohens_d(cohens_d)})")
 
     if p_value < 0.05:
@@ -228,7 +246,7 @@ def test_rq2_bug_detection():
     successes = total_runs - failures
 
     # Time span
-    time_span_days = (auto_df['date'].max() - auto_df['date'].min()).days
+    time_span_days = (auto_df['date'].max() - auto_df['date'].min()).days + 1  # inclusive
     time_span_weeks = max(time_span_days / 7, 1)
 
     # Frequency advantage
@@ -242,17 +260,25 @@ def test_rq2_bug_detection():
     success_rate = successes / total_runs * 100 if total_runs > 0 else 0
 
     # --- MTTD Statistical Analysis ---
-    # Manual MTTD = half of manual cycle time (average wait before detection)
-    manual_mttd = 96.0  # rounded from manual_cycle_mean / 2 = 95.67
+    # Manual MTTD = half of testing-only cycle time (uniform probability assumption)
+    # Deployment excluded: bugs are detected during testing, not deployment
+    testing_df = manual_df[manual_df['test_type'] != 'Deployment']
+    testing_cycle_mean = pd.Series([
+        testing_df['run1_time_min'].sum(),
+        testing_df['run2_time_min'].sum(),
+        testing_df['run3_time_min'].sum()
+    ]).mean()
+    manual_mttd = testing_cycle_mean / 2
     # Automated MTTD = failed run duration (time to detect regression)
     failed_runs = master_runs[master_runs['conclusion'] == 'failure']['duration_minutes']
     mttd_n = len(failed_runs)
     mttd_mean = failed_runs.mean()
-    mttd_std = 3.23  # thesis value (ddof=1 = 3.23)
+    mttd_std = failed_runs.std(ddof=1)
 
     # One-sample t-test: is automated MTTD < manual MTTD?
-    mttd_t = (mttd_mean - manual_mttd) / (mttd_std / np.sqrt(mttd_n))
-    _, mttd_p = stats.ttest_1samp(failed_runs, manual_mttd, alternative='less')
+    # Manual MTTD is a derived constant (cycle_mean/2 under uniform probability assumption),
+    # not a sample — one-sample t-test is appropriate here.
+    mttd_t, mttd_p = stats.ttest_1samp(failed_runs, manual_mttd, alternative='less')
     mttd_d = abs(mttd_mean - manual_mttd) / mttd_std
 
     results = {
@@ -328,7 +354,7 @@ def test_rq3_deployment_frequency():
 
     # Calculate time span
     auto_df['date'] = pd.to_datetime(auto_df['date'])
-    time_span_days = (auto_df['date'].max() - auto_df['date'].min()).days
+    time_span_days = (auto_df['date'].max() - auto_df['date'].min()).days + 1  # inclusive
     time_span_weeks = max(time_span_days / 7, 1)
 
     # Deployment frequency
@@ -368,11 +394,14 @@ def test_rq3_deployment_frequency():
 
 def test_rq4_roi():
     """
-    RQ4: Return on Investment (Equivalent Value Methodology)
-    Calculate ROI, break-even point, and financial impact
+    RQ4: Return on Investment — Hybrid Scenario Analysis
+    Two frequency scenarios:
+      - Scenario A (Conservative):    only successful runs (n=20, F=14/week)
+      - Scenario B (Equivalent Value): all pipeline runs   (n=42, F=29.4/week)
+    Break-even in number of runs is identical across both scenarios.
     """
     print("\n" + "=" * 70)
-    print("RQ4: RETURN ON INVESTMENT (ROI) ANALYSIS")
+    print("RQ4: RETURN ON INVESTMENT (ROI) ANALYSIS — HYBRID SCENARIOS")
     print("=" * 70)
 
     # Load time data
@@ -381,86 +410,103 @@ def test_rq4_roi():
 
     # Constants
     implementation_hours = 145  # CI/CD setup time
-    hourly_rate = 27  # Mean developer gross salary EUR/hour
-    quarters_weeks = 12  # Analysis period
+    hourly_rate = 27             # Mean developer gross salary EUR/hour
+    quarters_weeks = 12          # Analysis period
 
-    # Per-cycle time savings (delta_t)
+    # Per-cycle time savings (delta_t) — identical for both scenarios
     manual_df['avg_time'] = manual_df[['run1_time_min', 'run2_time_min', 'run3_time_min']].mean(axis=1)
-    manual_time_per_cycle = manual_df['avg_time'].sum()  # Full manual cycle (min)
+    manual_time_per_cycle = manual_df['avg_time'].sum()
     successful_runs = auto_df[auto_df['conclusion'] == 'success']
-    auto_time_per_cycle = successful_runs['duration_minutes'].mean()  # Automated cycle (min)
+    auto_time_per_cycle = successful_runs['duration_minutes'].mean()
 
-    delta_t_min = manual_time_per_cycle - auto_time_per_cycle
+    delta_t_min   = manual_time_per_cycle - auto_time_per_cycle
     delta_t_hours = delta_t_min / 60
 
-    # Frequency: ALL runs/week (Equivalent Value — every run replaces a manual cycle)
-    dates = pd.to_datetime(auto_df['date'])
-    total_days = (dates.max() - dates.min()).days or 1
-    frequency = len(auto_df) / (total_days / 7)
-
-    # Total Savings (12 weeks)
-    total_savings_hours = delta_t_hours * frequency * quarters_weeks
-    total_savings_eur = total_savings_hours * hourly_rate
     implementation_eur = implementation_hours * hourly_rate
 
-    # Net Benefit
-    net_benefit_hours = total_savings_hours - implementation_hours
-    net_benefit_eur = total_savings_eur - implementation_eur
-
-    # ROI
-    roi_percent = (net_benefit_hours / implementation_hours) * 100
-
-    # Break-even
+    # Break-even in runs is frequency-independent
     break_even_runs = implementation_hours / delta_t_hours
-    break_even_weeks = break_even_runs / frequency
 
-    # Weekly savings (for chart)
-    weekly_savings_hours = delta_t_hours * frequency
+    # Time span
+    dates      = pd.to_datetime(auto_df['date'])
+    total_days = (dates.max() - dates.min()).days + 1  # inclusive
+    weeks_span = total_days / 7
+
+    def _calc_scenario(freq):
+        weekly_savings   = delta_t_hours * freq
+        total_savings    = weekly_savings * quarters_weeks
+        total_savings_eur = total_savings * hourly_rate
+        net_benefit      = total_savings - implementation_hours
+        net_benefit_eur  = total_savings_eur - implementation_eur
+        roi              = (net_benefit / implementation_hours) * 100
+        bep_weeks        = break_even_runs / freq
+        return {
+            "frequency":             freq,
+            "weekly_savings_hours":  weekly_savings,
+            "total_saved_12_weeks":  total_savings,
+            "total_saved_12_weeks_eur": total_savings_eur,
+            "net_benefit_12_weeks":  net_benefit,
+            "net_benefit_12_weeks_eur": net_benefit_eur,
+            "roi_12_weeks":          roi,
+            "break_even_weeks":      bep_weeks,
+        }
+
+    # Scenario A — Conservative (successful runs only)
+    freq_conservative = len(successful_runs) / weeks_span
+    scenario_a = _calc_scenario(freq_conservative)
+
+    # Scenario B — Equivalent Value (all runs)
+    freq_equiv = len(auto_df) / weeks_span
+    scenario_b = _calc_scenario(freq_equiv)
 
     results = {
-        "implementation_hours": implementation_hours,
-        "implementation_eur": implementation_eur,
-        "hourly_rate": hourly_rate,
-        "manual_hours_per_cycle": manual_time_per_cycle / 60,
+        "implementation_hours":    implementation_hours,
+        "implementation_eur":      implementation_eur,
+        "hourly_rate":             hourly_rate,
+        "manual_hours_per_cycle":  manual_time_per_cycle / 60,
         "automated_hours_per_cycle": auto_time_per_cycle / 60,
-        "delta_t_min": delta_t_min,
-        "delta_t_hours": delta_t_hours,
-        "frequency": frequency,
-        "weekly_savings_hours": weekly_savings_hours,
-        "total_saved_12_weeks": total_savings_hours,
-        "total_saved_12_weeks_eur": total_savings_eur,
-        "net_benefit_12_weeks": net_benefit_hours,
-        "net_benefit_12_weeks_eur": net_benefit_eur,
-        "roi_12_weeks": roi_percent,
-        "break_even_runs": break_even_runs,
-        "break_even_weeks": break_even_weeks,
-        "time_saved_per_cycle": delta_t_hours,
-        "runs_per_week": frequency,
+        "delta_t_min":             delta_t_min,
+        "delta_t_hours":           delta_t_hours,
+        "break_even_runs":         break_even_runs,
+        "time_saved_per_cycle":    delta_t_hours,
+        # Primary (Equivalent Value) — kept for backwards-compat with charts
+        "frequency":               freq_equiv,
+        "weekly_savings_hours":    scenario_b["weekly_savings_hours"],
+        "total_saved_12_weeks":    scenario_b["total_saved_12_weeks"],
+        "total_saved_12_weeks_eur": scenario_b["total_saved_12_weeks_eur"],
+        "net_benefit_12_weeks":    scenario_b["net_benefit_12_weeks"],
+        "net_benefit_12_weeks_eur": scenario_b["net_benefit_12_weeks_eur"],
+        "roi_12_weeks":            scenario_b["roi_12_weeks"],
+        "break_even_weeks":        scenario_b["break_even_weeks"],
+        "runs_per_week":           freq_equiv,
+        # Scenario A (Conservative)
+        "scenario_a": scenario_a,
+        # Scenario B (Equivalent Value)
+        "scenario_b": scenario_b,
     }
 
     # Print results
-    print(f"\nPer-Cycle Savings (delta_t):")
-    print(f"  Manual execution:    {manual_time_per_cycle:.2f} min ({manual_time_per_cycle/60:.2f} h)")
-    print(f"  Automated execution: {auto_time_per_cycle:.2f} min ({auto_time_per_cycle/60:.2f} h)")
-    print(f"  Time saved per cycle: {delta_t_min:.2f} min ({delta_t_hours:.2f} h)")
-    print(f"\nFrequency (Equivalent Value):")
-    print(f"  All CI runs/week: {frequency:.1f}")
-    print(f"  Weekly time savings: {weekly_savings_hours:.2f} h")
-    print(f"\nTotal Savings (12 weeks):")
-    print(f"  Time: {total_savings_hours:.2f} hours")
-    print(f"  EUR:  {total_savings_eur:,.0f} EUR")
-    print(f"\nInitial Investment:")
-    print(f"  Time: {implementation_hours} hours")
-    print(f"  EUR:  {implementation_eur:,.0f} EUR")
-    print(f"\nNet Benefit:")
-    print(f"  Time: {net_benefit_hours:.2f} hours")
-    print(f"  EUR:  {net_benefit_eur:,.0f} EUR")
-    print(f"\nROI: {roi_percent:.2f}%")
-    print(f"\nBreak-Even:")
-    print(f"  Runs: {break_even_runs:.0f} runs")
-    print(f"  Time: {break_even_weeks:.2f} weeks")
+    print(f"\nPer-Cycle Savings (delta_t) — shared by both scenarios:")
+    print(f"  Manual execution:     {manual_time_per_cycle:.2f} min ({manual_time_per_cycle/60:.4f} h)")
+    print(f"  Automated execution:  {auto_time_per_cycle:.2f} min ({auto_time_per_cycle/60:.4f} h)")
+    print(f"  Time saved per cycle: {delta_t_min:.2f} min ({delta_t_hours:.4f} h)")
+    print(f"  Break-even (runs):    {break_even_runs:.2f} runs  (identical for both scenarios)")
 
-    print(f"\n RESULT: BEP at {break_even_weeks:.2f} weeks, ROI {roi_percent:.0f}% over 12 weeks")
+    for label, sc in [("A — Conservative (successful only)", scenario_a),
+                      ("B — Equivalent Value (all runs)",    scenario_b)]:
+        print(f"\n{'='*60}")
+        print(f"  Scenario {label}")
+        print(f"{'='*60}")
+        print(f"  Frequency:          {sc['frequency']:.1f} runs/week")
+        print(f"  Weekly savings:     {sc['weekly_savings_hours']:.2f} h")
+        print(f"  Total savings (12w):{sc['total_saved_12_weeks']:.2f} h  /  {sc['total_saved_12_weeks_eur']:,.0f} EUR")
+        print(f"  Net benefit:        {sc['net_benefit_12_weeks']:.2f} h  /  {sc['net_benefit_12_weeks_eur']:,.0f} EUR")
+        print(f"  ROI:                {sc['roi_12_weeks']:.2f}%")
+        print(f"  Break-even (weeks): {sc['break_even_weeks']:.2f} weeks")
+
+    print(f"\n RESULT: ROI ranges from {scenario_a['roi_12_weeks']:.0f}% (conservative) "
+          f"to {scenario_b['roi_12_weeks']:.0f}% (equivalent value); "
+          f"BEP at {break_even_runs:.0f} runs in both scenarios")
 
     return results
 

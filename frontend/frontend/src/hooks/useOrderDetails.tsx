@@ -4,12 +4,13 @@ import { OrderData } from "../types/orders";
 import axiosInstance from "../axios/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toApiError } from "../axios/toApiError";
 
 
 export const useOrderDetails = (orderId?: string, uuid?: string) => {
 
     const [orderData, setOrderData] = useState<OrderData | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [orderDetailsError, setOrderDetailsError] = useState<ApiErrorResponse | null>(null);
     const [selectedPayment, setSelectedPayment] = useState<string>('stripe');
     const [paymentLoading, setPaymentLoading] = useState(false);
@@ -65,7 +66,7 @@ export const useOrderDetails = (orderId?: string, uuid?: string) => {
                 const response = await axiosInstance.get(`/orders/${orderId}/`, { params: { uuid: uuid || undefined } });
                 setOrderData(response.data);
             } catch (err: unknown) {
-                setOrderDetailsError(err as ApiErrorResponse);
+                setOrderDetailsError(toApiError(err));
             } finally {
                 setLoading(false);
             }
@@ -93,13 +94,13 @@ export const useOrderDetails = (orderId?: string, uuid?: string) => {
         if (selectedPayment === 'stripe') {
             try {
                 setPaymentLoading(true);
-
                 await axiosInstance.patch(`/orders/${orderId}/`, {
                     payment_type: 'stripe',
                 }, { params: { uuid: uuid || undefined } });
                 navigate('/payment', { state: { total, orderId } });
             } catch (err: unknown) {
-                setOrderDetailsError(err as ApiErrorResponse);
+                setOrderDetailsError(toApiError(err));
+            } finally {
                 setPaymentLoading(false);
             }
         } else if (selectedPayment === 'rechnung') {
@@ -110,8 +111,7 @@ export const useOrderDetails = (orderId?: string, uuid?: string) => {
                 }, { params: { uuid: uuid || undefined } });
                 navigate('/order-success', { state: { orderId, type: 'rechnung' } });
             } catch (err: unknown) {
-                setOrderDetailsError(err as ApiErrorResponse);
-                setPaymentLoading(false);
+                setOrderDetailsError(toApiError(err));
             } finally {
                 setPaymentLoading(false);
             }

@@ -28,11 +28,12 @@ def create_lex_office_invoice(order_id):
             return None
 
         # All prices in DB are stored as gross (VAT inclusive).
-        # Always use taxType "gross" so LexOffice shows "davon 19% MwSt enthalten"
-        # and avoids 1-cent rounding errors from gross→net→gross conversion.
+        # taxType "gross" so LexOffice shows "davon 19% MwSt enthalten"
+        # avoids 1-cent rounding errors from gross→net→gross conversion.
         line_items = []
-
+        
         for doc in order.documents.all():
+            
             gross_price = doc.price
             unit_price = {
                 "currency": "EUR",
@@ -105,7 +106,7 @@ def create_lex_office_invoice(order_id):
                 "shippingType": "delivery",
             },
             "title": "Rechnung",
-            "introduction": "Ihre bestellten Positionen stellen wir Ihnen hiermit in Rechnung.",
+            "introduction": "Ihre bestellten Positionen (Express-Auftrag) stellen wir Ihnen hiermit in Rechnung." if order.express else "Ihre bestellten Positionen stellen wir Ihnen hiermit in Rechnung.",
             "remark": remark,
         }
         

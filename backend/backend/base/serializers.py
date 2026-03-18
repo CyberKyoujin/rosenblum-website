@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.fields import ChoiceField, BooleanField
 from django.utils import timezone
 from base.services.email_verification import send_verification_code, generate_verification_code
 from base.services.email_notifications import (
@@ -20,6 +21,7 @@ from django_q.tasks import async_task
 from base.services.tasks import create_lex_office_invoice
 from .utils import get_doc_price
 import logging
+from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
@@ -47,8 +49,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return user
      
     def update(self, instance, validated_data):
+        
+        password = validated_data.pop('password', None)
+        
         for key, value in validated_data.items():
             setattr(instance, key, value)
+        
+        if password:
+            instance.set_password(password)
         
         instance.save()
         return instance
@@ -163,7 +171,7 @@ class DocumentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def validate_language(self, value):
-        valid = [c[0] for c in Document.Status.choices]
+        valid = [c[0] for c in Document.Language.choices]
         if value not in valid:
             raise serializers.ValidationError(f"Invalid language '{value}'. Must be one of: {valid}")
         return value
@@ -200,6 +208,8 @@ class OrderSerializer(serializers.ModelSerializer):
     documents = DocumentSerializer(many=True, read_only=True)
     cost_estimate = CostEstimateSerializer(read_only=True)
     invoice = InvoiceSerializer(read_only=True)
+    delivery_type = ChoiceField(choices=['pick_up', 'post'], default='pick_up')
+    express = BooleanField(default=False)
     uploaded_files = serializers.ListField(
         child=serializers.FileField(),
         write_only=True,
@@ -226,6 +236,7 @@ class OrderSerializer(serializers.ModelSerializer):
         uploaded_files = validated_data.pop('uploaded_files', [])
         order_docs = validated_data.pop('order_docs', [])
         password = validated_data.pop('password', None) 
+        delivery_type = validated_data.pop('delivery_type', None)
     
         
         user = validated_data.get('user')
@@ -269,19 +280,21 @@ class OrderSerializer(serializers.ModelSerializer):
             if not validated_data.get('user') or password:
                 validated_data['guest_uuid'] = str(uuid.uuid4())
             
-            order = Order.objects.create(**validated_data)
-            
-            logger.info("[ORDER] Order %s created in serializer (type=%s, user=%s)", order.id, order.order_type, order.user_id or "anonymous")
+            order = Order.objects.create(**validated_data, delivery_type=delivery_type or 'pick_up')
+
+            logger.info("[ORDER] Order %s created in serializer (type=%s, user=%s, delivery=%s, express=%s)", order.id, order.order_type, order.user_id or "anonymous", order.delivery_type, order.express)
 
             for file in uploaded_files:
                 File.objects.create(order=order, file=file)
-
+            
             for doc in order_docs:
                 if isinstance(doc, str):
                     doc = json.loads(doc)
                 
                 if self.context['request'].user.is_staff:
                     price = doc.get('price')
+                elif order.express:
+                   price = get_doc_price(doc.get('type', 'Sonstige')) * Decimal('1.25')
                 else:
                     price = get_doc_price(doc.get('type', 'Sonstige'))
                 
@@ -293,6 +306,15 @@ class OrderSerializer(serializers.ModelSerializer):
                     individual_price=doc.get("individualPrice", False),
                 )
                 
+            if delivery_type == 'post':
+                Document.objects.create(
+                    order=order,
+                    type="Versandkosten",
+                    language="de",
+                    price=Decimal('2.20'),
+                    individual_price=False
+                )    
+            
             if validated_data.get('payment_type') == 'rechnung':
                 transaction.on_commit(lambda: async_task(create_lex_office_invoice, order.pk))
 

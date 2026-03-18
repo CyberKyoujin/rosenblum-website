@@ -58,7 +58,7 @@ const Profile = () => {
 
                     {userDataError ? (
 
-                        <ApiErrorView message={t('technicalError')}/>
+                        <ApiErrorView error={userDataError}/>
 
                     ) : (
 

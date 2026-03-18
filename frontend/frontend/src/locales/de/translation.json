@@ -632,5 +632,21 @@
     "sub": "Wenn etwas unklar ist — schreiben Sie uns auf WhatsApp, wir helfen Ihnen gerne weiter.",
     "goToForm": "Nochmal versuchen",
     "goToWhatsApp": "WhatsApp schreiben"
-  }
+  },
+  "error_not_found": "Nicht gefunden. Bitte überprüfen Sie den Link.",
+  "error_unauthorized": "Sitzung abgelaufen. Bitte melden Sie sich erneut an.",
+  "error_forbidden": "Zugriff verweigert.",
+  "error_bad_request": "Ungültige Anfrage. Bitte überprüfen Sie Ihre Eingaben.",
+  "error_server": "Serverfehler. Bitte versuchen Sie es später erneut.",
+  "network_error": "Keine Verbindung zum Server.",
+  "unknown_error": "Ein unbekannter Fehler ist aufgetreten.",
+  "orderOptions": "Auftragsoptionen",
+  "expressOrder": "Express-Auftrag",
+  "expressOrderDesc": "Übersetzung in 36 Std. · +25% Aufpreis",
+  "pickupMethod": "Abholung / Zustellung",
+  "pickupOffice": "Abholung in unserem Büro – Alte Poststraße 25, 49074 Osnabrück (kostenlos)",
+  "pickupPost": "Postzustellung",
+  "subtotal": "Zwischensumme",
+  "expressSurcharge": "Express-Aufpreis (+25%)",
+  "postalSurcharge": "Postzustellung"
 }

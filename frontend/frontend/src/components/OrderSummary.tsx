@@ -1,4 +1,4 @@
-import { FaFile, FaUserCircle, FaLock, FaEye, FaEyeSlash, FaCheck, FaTimes, FaShieldAlt, FaBell, FaHistory } from 'react-icons/fa';
+import { FaFile, FaUserCircle, FaLock, FaEye, FaEyeSlash, FaCheck, FaTimes, FaShieldAlt, FaBell, FaHistory, FaCog, FaBoxOpen } from 'react-icons/fa';
 import { AiFillMessage } from 'react-icons/ai';
 import { IoDocuments } from 'react-icons/io5';
 import { PiUploadFill } from 'react-icons/pi';
@@ -33,6 +33,10 @@ export default function OrderSummary({ logic }: { logic: any }) {
   const selectedPayment: string = logic.payment.method;
   const hasIndividualDocs = logic.docs.specialDocs > 0;
   const reg = logic.registration;
+  const { isExpress, setIsExpress, pickupMethod, setPickupMethod } = logic.orderOptions;
+  const baseTotal: number = logic.docs.baseTotal;
+  const expressSurcharge = isExpress ? baseTotal * 0.25 : 0;
+  const postalSurcharge = pickupMethod === 'post' ? 2.20 : 0;
 
   return (
     <>
@@ -128,6 +132,89 @@ export default function OrderSummary({ logic }: { logic: any }) {
           </div>
         </>
       )}
+
+      <Divider sx={{ my: 2 }} />
+
+      <OrderSectionHeader Icon={FaCog} headerText={t('orderOptions')} />
+
+      <div className="order-options-section">
+
+        {/* Express-Auftrag */}
+        <label className={`order-option-card ${isExpress ? 'order-option-card--active' : ''}`}>
+          <input
+            type="checkbox"
+            checked={isExpress}
+            onChange={e => setIsExpress(e.target.checked)}
+            className="order-option-hidden-input"
+          />
+          <div className="order-option-card__body">
+            <div className="order-option-card__left">
+              <FaCog className="order-option-card__icon order-option-card__icon--express" />
+              <div>
+                <span className="order-option-card__title">{t('expressOrder')}</span>
+                <span className="order-option-card__desc">{t('expressOrderDesc')}</span>
+              </div>
+            </div>
+            <span className="order-option-card__badge">+25%</span>
+          </div>
+        </label>
+
+        {/* Abholung */}
+        <div className="order-option-pickup">
+          <div className="order-option-pickup__header">
+            <FaBoxOpen className="order-option-card__icon" />
+            <span className="order-option-card__title">{t('pickupMethod')}</span>
+          </div>
+          <div className="order-option-pickup__options">
+            <label className={`pickup-option ${pickupMethod === 'pick_up' ? 'pickup-option--active' : ''}`}>
+              <input
+                type="radio"
+                name="pickup"
+                value="office"
+                checked={pickupMethod === 'pick_up'}
+                onChange={() => setPickupMethod('pick_up')}
+                className="order-option-hidden-input"
+              />
+              <span className="pickup-option__label">{t('pickupOffice')}</span>
+            </label>
+            <label className={`pickup-option ${pickupMethod === 'post' ? 'pickup-option--active' : ''}`}>
+              <input
+                type="radio"
+                name="pickup"
+                value="post"
+                checked={pickupMethod === 'post'}
+                onChange={() => setPickupMethod('post')}
+                className="order-option-hidden-input"
+              />
+              <span className="pickup-option__label">{t('pickupPost')}</span>
+              <span className="pickup-option__price">+2,20 €</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Price breakdown */}
+        {docs.length > 0 && (expressSurcharge > 0 || postalSurcharge > 0) && (
+          <div className="order-options-breakdown">
+            <div className="order-options-breakdown__row">
+              <span>{t('subtotal')}</span>
+              <span>{baseTotal.toFixed(2)} €</span>
+            </div>
+            {expressSurcharge > 0 && (
+              <div className="order-options-breakdown__row order-options-breakdown__row--surcharge">
+                <span>{t('expressSurcharge')}</span>
+                <span>+{expressSurcharge.toFixed(2)} €</span>
+              </div>
+            )}
+            {postalSurcharge > 0 && (
+              <div className="order-options-breakdown__row order-options-breakdown__row--surcharge">
+                <span>{t('postalSurcharge')}</span>
+                <span>+2,20 €</span>
+              </div>
+            )}
+          </div>
+        )}
+
+      </div>
 
       <Divider sx={{ my: 2 }} />
 

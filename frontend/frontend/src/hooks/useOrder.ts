@@ -51,7 +51,7 @@ export const CATEGORY_ORDER: { key: DocCategory; labelKey: string }[] = [
 ];
 
 const getDocTemplates = (): DocTemplate[] => [
-    // Sonstiges — shown as a separate card in UI, not inside the Select
+    // Sonstiges
     {type: "Sonstiges Dokument mit komplexem Inhalt (Diplom, Arbeitsbuch, Gerichtsurteil, Erklärung)", label: t('docSonstiges'), price: 0, individualPrice: true, category: 'sonstiges'},
     // Personenstandsurkunden
     {type: "Geburtsurkunde",        label: t('docGeburtsurkunde'),        price: 35.30, individualPrice: false, category: 'personenstand'},
@@ -91,8 +91,11 @@ export const useOrder = () => {
 
   const [docs, setDocs] = useState<DocsType[]>([]);
   const [total, setTotal] = useState(0);
+  const [baseTotal, setBaseTotal] = useState(0);
   const [specialDocs, setSpecialDocs] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<string>('');
+  const [isExpress, setIsExpress] = useState(false);
+  const [pickupMethod, setPickupMethod] = useState<'pick_up' | 'post'>('pick_up');
   const [agbAccepted, setAgbAccepted] = useState(false);
   const [datenschutzAccepted, setDatenschutzAccepted] = useState(false);
   const [widerrufsrechtAccepted, setWiderrufsrechtAccepted] = useState(false);
@@ -115,17 +118,19 @@ export const useOrder = () => {
 
   useEffect(() => {
     const specialCount = docs.filter(doc => doc.individualPrice).length;
-
     setSpecialDocs(specialCount);
 
-    const totalPrice = docs.reduce((sum, doc) => sum + doc.price, 0);
+    const base = docs.reduce((sum, doc) => sum + doc.price, 0);
+    setBaseTotal(base);
 
-    setTotal(totalPrice);
+    const expressSurcharge = isExpress ? base * 0.25 : 0;
+    const postalSurcharge = pickupMethod === 'post' ? 2.20 : 0;
+    setTotal(base + expressSurcharge + postalSurcharge);
 
     if (specialCount > 0) {
       setPaymentMethod('kostenvoranschlag');
     }
-  }, [docs]);
+  }, [docs, isExpress, pickupMethod]);
 
 
   const methods = useForm<OrderFormValues>({
@@ -194,6 +199,9 @@ export const useOrder = () => {
     docs.forEach(doc => formData.append('order_docs', JSON.stringify(doc)));
     Object.entries(data).forEach(([key, value]) => formData.append(key, value || ''));
 
+    formData.append('delivery_type', pickupMethod);
+    formData.append('express',  isExpress ? 'True': 'False');
+
     if (paymentMethod === "kostenvoranschlag") {
       formData.append('order_type', 'kostenvoranschlag');
     } else {
@@ -247,7 +255,14 @@ export const useOrder = () => {
       changeLanguage: handleLanguageChange,
       handleInputChange: handleChange,
       total: total,
+      baseTotal: baseTotal,
       specialDocs: specialDocs
+    },
+    orderOptions: {
+      isExpress,
+      setIsExpress,
+      pickupMethod,
+      setPickupMethod,
     },
     payment: {
       method: paymentMethod,

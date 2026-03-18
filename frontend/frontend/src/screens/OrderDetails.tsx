@@ -35,7 +35,7 @@ const OrderDetails = ({ uuid, orderPropId }: OrderDetailsProps) => {
 
     const id =  orderPropId ?? orderId;
 
-const isAuthenticated = useAuthStore(s => s.isAuthenticated);
+    const isAuthenticated = useAuthStore(s => s.isAuthenticated);
 
     const { t } = useTranslation();
     const isAtTop = useIsAtTop(10);
@@ -72,7 +72,7 @@ const isAuthenticated = useAuthStore(s => s.isAuthenticated);
                     </button>}
 
                     {orderDetailsError ? (
-                        <ApiErrorView message={orderDetailsError?.message} />
+                        <ApiErrorView error={orderDetailsError} />
                     ) : (
                         <>
                             {/* Header Card */}

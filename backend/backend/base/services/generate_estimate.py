@@ -24,6 +24,7 @@ def generate_quote_pdf(order_id: int) -> bytes:
     docs_total = sum(
         d.price for d in documents if not d.individual_price
     )
+    
     has_individual_docs = any(d.individual_price for d in documents)
     logger.info("[PDF]: docs_total=%s, has_individual_docs=%s", docs_total, has_individual_docs)
 

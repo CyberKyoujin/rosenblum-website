@@ -43,6 +43,8 @@ export interface Order{
     invoice: InvoiceData | null;
     lexoffice_id: string | null;
     stripe_payment_intent_id: string | null;
+    express: boolean;
+    delivery_type: 'pick_up' | 'post';
 }
 
 export interface OrderResponseData {

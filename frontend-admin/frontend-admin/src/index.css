@@ -454,6 +454,15 @@ html, body {
   background: #ebf0fd;
 }
 
+.oi--express {
+  border-left: 3px solid #b45309;
+  background: #fffbeb;
+}
+
+.oi--express:hover {
+  background: #fef3c7;
+}
+
 .oi__icon {
   display: flex;
   align-items: center;

@@ -2,6 +2,14 @@ import axios from 'axios';
 import { ApiErrorResponse } from '../types/error';
 
 
+const statusCodeMap: Record<number, string> = {
+    400: 'error_bad_request',
+    401: 'error_unauthorized',
+    403: 'error_forbidden',
+    404: 'error_not_found',
+    500: 'error_server',
+  };
+
 function isAlreadyApiError(data: any): data is ApiErrorResponse {
   return (
     data &&
@@ -41,6 +49,7 @@ function extractErrorData(data: any) {
 }
 
 export function toApiError(error: unknown): ApiErrorResponse {
+
   if (isAlreadyApiError(error)) {
     return error;
   }
@@ -55,10 +64,12 @@ export function toApiError(error: unknown): ApiErrorResponse {
       const { serverMessage, customCode } = extractErrorData(response.data);
       const status = response.status;
 
+      const mappedErrorMessage = statusCodeMap[status];
+
       if (serverMessage || customCode) {
         return {
           status: status,
-          code: customCode || 'api_error',
+          code: customCode || mappedErrorMessage || 'api_error',
           message: typeof serverMessage === 'string' && serverMessage.length > 0
             ? serverMessage
             : `Error ${status}: Ambiguous server response.`,
@@ -68,7 +79,7 @@ export function toApiError(error: unknown): ApiErrorResponse {
       
       return {
         status: status,
-        code: 'server_error',
+        code: mappedErrorMessage || 'server_error',
         message: `Server error (${status}).`,
       };
     }

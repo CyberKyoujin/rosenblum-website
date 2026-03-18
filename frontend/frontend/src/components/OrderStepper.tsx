@@ -33,8 +33,6 @@ const stepFields: Record<number, (keyof OrderFormValues)[]> = {
   1: ['message'],
 };
 
-
-
 export default function OrderStepper({logic}: {logic?: any}) {
   const [activeStep, setActiveStep] = React.useState(0);
 

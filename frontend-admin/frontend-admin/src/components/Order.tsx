@@ -22,10 +22,11 @@ interface OrderProps {
     is_new: boolean;
     payment_status: string;
     payment_type: string | null;
+    express: boolean;
 }
 
 
-const Order = ({id, name, formatted_timestamp, status, is_new, payment_status, payment_type}: OrderProps) => {
+const Order = ({id, name, formatted_timestamp, status, is_new, payment_status, payment_type, express}: OrderProps) => {
 
     const navigate = useNavigate();
     const toggleOrder = useOrdersStore(s => s.toggleOrder);
@@ -35,7 +36,7 @@ const Order = ({id, name, formatted_timestamp, status, is_new, payment_status, p
 
     return (
         <div
-            className={`oi ${is_new ? 'oi--new' : ''}`}
+            className={`oi ${is_new ? 'oi--new' : ''} ${express ? 'oi--express' : ''}`}
             onClick={() => { navigate(`/order/${id}`); toggleOrder(id); }}
         >
             <div className="oi__icon">

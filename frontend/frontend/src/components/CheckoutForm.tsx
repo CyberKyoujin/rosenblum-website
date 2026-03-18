@@ -28,6 +28,8 @@ export default function CheckoutForm({total}: {total: number}) {
 
     if (error) {
       setErrorMessage(error.message || t('paymentError'));
+    } else {
+      // onSubmit trigger
     }
 
     setIsProcessing(false);

@@ -96,6 +96,10 @@ class Order(models.Model):
         PAYMENT_PENDING = 'payment_pending'
         PAYMENT_CANCELED = 'payment_canceled'
         
+    class DeliveryType(models.TextChoices):
+        PICK_UP = 'pick_up'
+        POST = 'post'
+        
     guest_uuid = models.UUIDField(null=True, blank=True, unique=True)    
     user = models.ForeignKey(CustomUser,models.CASCADE,null=True,blank=True)
     name = models.CharField(max_length = 264)
@@ -110,6 +114,8 @@ class Order(models.Model):
     order_type = models.CharField(max_length=40, choices=OrderType.choices, default=OrderType.ORDER)
     timestamp = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     is_new = models.BooleanField(default=True)
+    delivery_type = models.CharField(max_length=40, choices=DeliveryType.choices, default=DeliveryType.PICK_UP)
+    express = models.BooleanField(default=False)
     payment_type = models.CharField(max_length=40, choices=PaymentType.choices, null=True, blank=True)
     payment_status = models.CharField(max_length=40, choices=PaymentStatus.choices, default=PaymentStatus.NOT_PAID)
     lexoffice_id = models.CharField(max_length=64, null=True, blank=True)
@@ -131,13 +137,13 @@ class Order(models.Model):
     
 class Document(models.Model):
     
-    class Status(models.TextChoices):
+    class Language(models.TextChoices):
         UA = 'ua'
         RU = 'ru'
         DE = 'de'
         
     order = models.ForeignKey(Order,models.CASCADE, related_name='documents', blank=True, null=True)
-    language = models.CharField(max_length=40, choices=Status.choices, default=Status.UA)
+    language = models.CharField(max_length=40, choices=Language.choices, default=Language.UA)
     type = models.CharField(max_length=255, default="Sonstiges Dokument")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     individual_price = models.BooleanField(default=False)

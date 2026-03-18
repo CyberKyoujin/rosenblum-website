@@ -633,5 +633,21 @@
     "sub": "Если что-то непонятно — напишите нам в WhatsApp, мы поможем разобраться.",
     "goToForm": "Попробовать ещё раз",
     "goToWhatsApp": "Спросить в WhatsApp"
-  }
+  },
+  "error_not_found": "Не найдено. Проверьте ссылку.",
+  "error_unauthorized": "Сессия истекла. Пожалуйста, войдите снова.",
+  "error_forbidden": "Доступ запрещён.",
+  "error_bad_request": "Некорректный запрос. Проверьте введённые данные.",
+  "error_server": "Ошибка сервера. Попробуйте позже.",
+  "network_error": "Нет соединения с сервером.",
+  "unknown_error": "Произошла неизвестная ошибка.",
+  "orderOptions": "Параметры заказа",
+  "expressOrder": "Экспресс-заказ",
+  "expressOrderDesc": "Перевод в течение 36 ч. · +25% к стоимости",
+  "pickupMethod": "Получение заказа",
+  "pickupOffice": "Самовывоз из нашего офиса – Alte Poststraße 25, 49074 Osnabrück (бесплатно)",
+  "pickupPost": "Доставка почтой",
+  "subtotal": "Сумма",
+  "expressSurcharge": "Экспресс-надбавка (+25%)",
+  "postalSurcharge": "Доставка почтой"
 }

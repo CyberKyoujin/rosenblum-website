@@ -273,7 +273,7 @@ const Home = () => {
 
             ) : reviewsError ? (
                 <>
-                    <ApiErrorView message={"Es ist ein technisches Fehler aufgetreten. Versuchen Sie es bitte später."}/>
+                    <ApiErrorView error={reviewsError}/>
                 </>
 
             ):

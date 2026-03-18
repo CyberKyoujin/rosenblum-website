@@ -87,7 +87,7 @@ def figure_5_1_coverage_comparison(results):
         results['rq1']['backend_coverage'],
         results['rq1']['frontend_coverage'],
         results['rq1']['frontend_admin_coverage'],
-        results['rq1']['automated_mean']
+        results['rq1']['automated_latest_composite']
     ]
     colors = [COLORS['manual']] + [COLORS['automated']] * 4
     
@@ -433,9 +433,9 @@ def figure_5_7_ci_maturation(df_ci):
 
     # Maturation phases
     phases = [
-        (pd.Timestamp('2026-01-21'), pd.Timestamp('2026-01-24'), '#FFCDD2', 'Phase 1: Setup\n(13.3%)'),
-        (pd.Timestamp('2026-01-24'), pd.Timestamp('2026-01-29'), '#FFE0B2', 'Phase 2: Stabilization\n(61.9%)'),
-        (pd.Timestamp('2026-01-29'), pd.Timestamp('2026-02-01'), '#C8E6C9', 'Phase 3: Mature\n(100%)'),
+        (pd.Timestamp('2026-02-02'), pd.Timestamp('2026-02-05'), '#FFCDD2', 'Phase 1: Setup\n(12.5%)'),
+        (pd.Timestamp('2026-02-05'), pd.Timestamp('2026-02-09'), '#FFE0B2', 'Phase 2: Stabilization\n(61.9%)'),
+        (pd.Timestamp('2026-02-09'), pd.Timestamp('2026-02-12'), '#C8E6C9', 'Phase 3: Mature\n(100%)'),
     ]
 
     fig, ax = plt.subplots(figsize=(12, 6))
@@ -485,53 +485,67 @@ def figure_5_7_ci_maturation(df_ci):
 # ============================================================
 
 def figure_5_8_roi_breakeven(results):
-    """Line chart: ROI break-even analysis (Equivalent Value methodology)"""
+    """Line chart: ROI break-even analysis — both Conservative and Equivalent Value scenarios"""
 
-    rq4 = results['rq4']
-    weeks = np.arange(0, 13)
-
+    rq4       = results['rq4']
+    sc_a      = rq4['scenario_b']  # Scenario A = Equivalent Value (high freq)
+    sc_b      = rq4['scenario_a']  # Scenario B = Conservative (low freq)
     impl_cost = rq4['implementation_hours']
-    weekly_savings = rq4['weekly_savings_hours']
+    weeks     = np.arange(0, 13, 0.5)
 
-    cumulative_savings = weeks * weekly_savings
-    net_benefit = cumulative_savings - impl_cost
+    cum_a = weeks * sc_a['weekly_savings_hours']
+    cum_b = weeks * sc_b['weekly_savings_hours']
+    net_a = cum_a - impl_cost
+    net_b = cum_b - impl_cost
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 7))
 
-    # Plot lines
-    ax.plot(weeks, cumulative_savings, 'o-', color=COLORS['automated'],
-            linewidth=2, markersize=6, label='Cumulative Time Saved')
+    # --- Cumulative savings lines ---
+    # sc_a = Equivalent Value (high freq), sc_b = Conservative (low freq)
+    ax.plot(weeks, cum_a, 'o-', color=COLORS['automated'],
+            linewidth=2.5, markersize=0,
+            label=f'Scenario A - Equivalent Value (F={sc_a["frequency"]:.1f}/week)')
+    ax.plot(weeks, cum_b, 's--', color=COLORS['highlight'],
+            linewidth=2.5, markersize=0,
+            label=f'Scenario B - Conservative (F={sc_b["frequency"]:.1f}/week)')
+
+    # --- Implementation cost line ---
     ax.axhline(y=impl_cost, color=COLORS['manual'],
-               linestyle='--', linewidth=2, label=f'Implementation Cost ({impl_cost}h)')
-    ax.plot(weeks, net_benefit, 's-', color=COLORS['highlight'],
-            linewidth=2, markersize=5, label='Net Benefit', alpha=0.7)
+               linestyle='--', linewidth=2,
+               label=f'Implementation Cost ({impl_cost} h)')
 
-    # Mark break-even point
-    breakeven = rq4['break_even_weeks']
-    ax.axvline(x=breakeven, color='red', linestyle=':', linewidth=2, alpha=0.5)
-    ax.plot(breakeven, impl_cost, 'r*', markersize=20,
-            label=f'Break-even ({breakeven:.2f} weeks)')
+    # --- Break-even markers ---
+    bep_a = sc_a['break_even_weeks']
+    bep_b = sc_b['break_even_weeks']
 
-    # Shade profit region
-    ax.fill_between(weeks, net_benefit, 0, where=(net_benefit >= 0),
-                     alpha=0.2, color=COLORS['automated'], label='Positive ROI')
+    ax.axvline(x=bep_a, color=COLORS['automated'], linestyle=':', linewidth=1.5, alpha=0.7)
+    ax.plot(bep_a, impl_cost, '*', color=COLORS['automated'], markersize=18,
+            label=f'BEP Scenario A ({bep_a:.2f} week)')
+
+    ax.axvline(x=bep_b, color=COLORS['highlight'], linestyle=':', linewidth=1.5, alpha=0.7)
+    ax.plot(bep_b, impl_cost, '*', color=COLORS['highlight'], markersize=18,
+            label=f'BEP Scenario B ({bep_b:.2f} week)')
+
+    # --- Shade positive-ROI regions ---
+    full_weeks = np.arange(0, 13, 0.1)
+    net_a_full = full_weeks * sc_a['weekly_savings_hours'] - impl_cost
+    net_b_full = full_weeks * sc_b['weekly_savings_hours'] - impl_cost
+    ax.fill_between(full_weeks, net_a_full, 0,
+                    where=(net_a_full >= 0), alpha=0.10,
+                    color=COLORS['automated'])
+    ax.fill_between(full_weeks, net_b_full, 0,
+                    where=(net_b_full >= 0), alpha=0.10,
+                    color=COLORS['highlight'])
+
+    ax.axhline(y=0, color='black', linewidth=0.8, alpha=0.4)
 
     ax.set_xlabel('Weeks', fontweight='bold')
     ax.set_ylabel('Hours', fontweight='bold')
-    ax.set_title('Figure 5.8: Return on Investment (ROI) Analysis\nEquivalent Value',
+    ax.set_title('Figure 5.8: ROI Break-Even Analysis - Conservative vs. Equivalent Value',
                  fontweight='bold', pad=20)
-    ax.legend(loc='upper left')
+    ax.legend(loc='upper left', fontsize=9)
     ax.grid(True, alpha=0.3)
-
-    # Add ROI annotation
-    ax.text(0.98, 0.45,
-            f'12-Week Results:\n'
-            f'ROI: {rq4["roi_12_weeks"]:.0f}%\n'
-            f'Net Benefit: {rq4["net_benefit_12_weeks"]:.0f}h ({rq4["net_benefit_12_weeks_eur"]:,.0f} EUR)\n'
-            f'BEP: {rq4["break_even_runs"]:.0f} runs ({breakeven:.2f} weeks)',
-            transform=ax.transAxes, ha='right', va='center',
-            bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.8),
-            fontsize=10, fontweight='bold')
+    ax.set_xlim(0, 12)
 
     save_figure(fig, 'figure_5_8_roi_breakeven.png')
 
