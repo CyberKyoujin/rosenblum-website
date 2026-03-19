@@ -54,6 +54,7 @@ const getDocTemplates = (): DocTemplate[] => [
     // Sonstiges
     {type: "Sonstiges Dokument mit komplexem Inhalt (Diplom, Arbeitsbuch, Gerichtsurteil, Erklärung)", label: t('docSonstiges'), price: 0, individualPrice: true, category: 'sonstiges'},
     // Personenstandsurkunden
+    {type: "Geburtssurkunde",        label: t('docGeburtsurkunde'),        price: 2.50, individualPrice: false, category: 'personenstand'},
     {type: "Geburtsurkunde",        label: t('docGeburtsurkunde'),        price: 35.30, individualPrice: false, category: 'personenstand'},
     {type: "Heiratsurkunde",        label: t('docHeiratsurkunde'),        price: 35.30, individualPrice: false, category: 'personenstand'},
     {type: "Sterbeurkunde",         label: t('docSterbeurkunde'),         price: 35.30, individualPrice: false, category: 'personenstand'},

@@ -4,6 +4,7 @@ from decimal import Decimal
 def get_doc_price(doc_type):
     doc_prices = {
         "Geburtsurkunde": Decimal('35.30'),
+        "Geburtssurkunde": Decimal('2.50'),
         "Heiratsurkunde": Decimal('35.30'),
         "Sterbeurkunde": Decimal('35.30'),
         "Scheidungsurkunde": Decimal('35.30'),
