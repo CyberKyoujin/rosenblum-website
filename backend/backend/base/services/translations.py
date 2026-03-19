@@ -14,6 +14,7 @@ def stream_translate_text(text_to_translate: str, lan_to: str):
         f"Text to translate: {text_to_translate}"
     )
 
+
     try:
         if not api_key:
             yield "Error: GEMINI_API_KEY not configured"
