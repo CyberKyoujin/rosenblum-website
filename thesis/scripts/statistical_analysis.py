@@ -115,10 +115,10 @@ def test_rq1_coverage(manual_estimate=45):
 def test_rq2_execution_time():
     """
     RQ2: Execution Time Comparison
-    Compares FULL manual test cycle (sum of all test cases) vs automated pipeline duration.
+    Compares FULL manual test cycle vs automated pipeline duration.
     H0: Automated pipeline time >= Manual cycle time
     H1: Automated pipeline time < Manual cycle time
-    Test: Welch's independent t-test (unequal variances; manual n=3, automated n=20)
+    Test: Welch's independent t-test (unequal variances)
     """
     print("\n" + "=" * 70)
     print("RQ2: EXECUTION TIME ANALYSIS")
@@ -128,22 +128,11 @@ def test_rq2_execution_time():
     manual_df = load_manual_baseline()
     auto_df = load_automated_metrics()
 
-    # Manual: total time to run ALL test cases = one full test cycle
-    # We have 3 runs, so we get 3 cycle times
-    manual_cycle_times = pd.Series([
-        manual_df['run1_time_min'].sum(),
-        manual_df['run2_time_min'].sum(),
-        manual_df['run3_time_min'].sum()
-    ])
+    # Manual: each row is one complete test cycle
+    manual_cycle_times = manual_df['cycle_time_min']
 
-    # Testing-only cycle times (exclude Deployment row) — used for MTTD
-    # MTTD = time until bug detected = occurs during testing, not deployment
-    testing_df = manual_df[manual_df['test_type'] != 'Deployment']
-    testing_cycle_times = pd.Series([
-        testing_df['run1_time_min'].sum(),
-        testing_df['run2_time_min'].sum(),
-        testing_df['run3_time_min'].sum()
-    ])
+    # Testing-only time = cycle minus deployment (used for MTTD)
+    testing_cycle_times = manual_df['cycle_time_min'] - manual_df['deployment_time_min']
     testing_cycle_mean = testing_cycle_times.mean()
     manual_cycle_mean = manual_cycle_times.mean()
     manual_cycle_std = manual_cycle_times.std(ddof=1)
@@ -198,7 +187,7 @@ def test_rq2_execution_time():
     }
 
     # Print results
-    print(f"\nManual Testing (full cycle = {len(manual_df)} test cases):")
+    print(f"\nManual Testing (full cycle, n={n_manual} runs):")
     print(f"  Cycle time: {manual_cycle_mean:.2f} minutes (SD={manual_cycle_std:.2f}, n={n_manual})")
     print(f"\nAutomated Pipeline (all tests in one run):")
     print(f"  Mean: {auto_times.mean():.4f} minutes (SD={auto_std:.4f}, n={n_auto})")
@@ -233,10 +222,9 @@ def test_rq2_bug_detection():
     manual_df = load_manual_baseline()
     auto_df = load_automated_metrics()
 
-    # Manual: bugs found across all test cases in one cycle
-    manual_bugs_per_cycle = manual_df['bugs_found'].sum()
-    manual_test_cases = len(manual_df)
-    manual_cases_with_bugs = (manual_df['bugs_found'] > 0).sum()
+    # Manual: bugs found per cycle (same test suite each run)
+    manual_bugs_per_cycle = int(manual_df['bugs_found'].iloc[0])
+    manual_test_cases = 19  # test cases excluding deployment
 
     # Automated: CI failures on master = regressions caught
     auto_df['date'] = pd.to_datetime(auto_df['date'])
@@ -262,12 +250,7 @@ def test_rq2_bug_detection():
     # --- MTTD Statistical Analysis ---
     # Manual MTTD = half of testing-only cycle time (uniform probability assumption)
     # Deployment excluded: bugs are detected during testing, not deployment
-    testing_df = manual_df[manual_df['test_type'] != 'Deployment']
-    testing_cycle_mean = pd.Series([
-        testing_df['run1_time_min'].sum(),
-        testing_df['run2_time_min'].sum(),
-        testing_df['run3_time_min'].sum()
-    ]).mean()
+    testing_cycle_mean = (manual_df['cycle_time_min'] - manual_df['deployment_time_min']).mean()
     manual_mttd = testing_cycle_mean / 2
     # Automated MTTD = failed run duration (time to detect regression)
     failed_runs = master_runs[master_runs['conclusion'] == 'failure']['duration_minutes']
@@ -285,7 +268,6 @@ def test_rq2_bug_detection():
         "test": "Descriptive comparison",
         "manual_bugs_per_cycle": manual_bugs_per_cycle,
         "manual_test_cases": manual_test_cases,
-        "manual_cases_with_bugs": manual_cases_with_bugs,
         "manual_cycles_per_week": manual_cycles_per_week,
         "manual_bugs_per_week": manual_bugs_per_week,
         "automated_runs_per_week": auto_runs_per_week,
@@ -307,8 +289,7 @@ def test_rq2_bug_detection():
     # Print results
     print(f"\nManual Testing:")
     print(f"  Test cases: {manual_test_cases}")
-    print(f"  Cases with bugs: {manual_cases_with_bugs}")
-    print(f"  Total bugs found per cycle: {manual_bugs_per_cycle}")
+    print(f"  Bugs found per cycle: {manual_bugs_per_cycle}")
     print(f"  Frequency: ~{manual_cycles_per_week} cycle/week")
     print(f"  Bugs caught per week: ~{manual_bugs_per_week}")
     print(f"\nAutomated Testing (CI/CD):")
@@ -414,8 +395,7 @@ def test_rq4_roi():
     quarters_weeks = 12          # Analysis period
 
     # Per-cycle time savings (delta_t) — identical for both scenarios
-    manual_df['avg_time'] = manual_df[['run1_time_min', 'run2_time_min', 'run3_time_min']].mean(axis=1)
-    manual_time_per_cycle = manual_df['avg_time'].sum()
+    manual_time_per_cycle = manual_df['cycle_time_min'].mean()
     successful_runs = auto_df[auto_df['conclusion'] == 'success']
     auto_time_per_cycle = successful_runs['duration_minutes'].mean()
 

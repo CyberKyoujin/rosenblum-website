@@ -119,13 +119,9 @@ def figure_5_1_coverage_comparison(results):
 def figure_5_2_execution_time_boxplot(results, df_manual=None, df_ci=None):
     """Box plot: Manual vs Automated execution time"""
 
-    # Manual: full cycle times (sum of all test cases per run)
+    # Manual: full cycle times (one value per run)
     if df_manual is not None:
-        manual_times = [
-            df_manual['run1_time_min'].sum(),
-            df_manual['run2_time_min'].sum(),
-            df_manual['run3_time_min'].sum()
-        ]
+        manual_times = df_manual['cycle_time_min'].tolist()
     else:
         manual_times = [results['rq2_time']['manual_cycle_mean']] * 3
 
