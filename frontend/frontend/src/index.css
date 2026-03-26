@@ -7391,6 +7391,13 @@ html, body {
   }
 }
 
+/* Allow long document names to wrap inside dropdown */
+.docs-select-paper .MuiMenuItem-root {
+  white-space: normal !important;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
 /* Category headers in doc select */
 .docs-select-category {
   font-size: 0.72rem !important;

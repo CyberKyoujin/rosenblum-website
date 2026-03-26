@@ -286,11 +286,11 @@ else:
 
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # Must be False so JS can read and send X-CSRFToken header
 
 SESSION_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
-
-CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True  # Prevent JS access to session cookie
 
 
 ROOT_URLCONF = 'backend.urls'

@@ -70,7 +70,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
             onClose={() => setSelectOpen(false)}
             MenuProps={{
               disableScrollLock: true,
-              PaperProps: { style: { maxHeight: 320, overflowY: 'auto' } }
+              PaperProps: { className: 'docs-select-paper', style: { maxHeight: 320, overflowY: 'auto' } }
             }}
             >
             {sonstigesTemplate && ([

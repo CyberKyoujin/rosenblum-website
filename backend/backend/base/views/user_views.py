@@ -101,7 +101,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def register(self, request):
-        email = request.data.get('email', '').strip()
+        email = request.data.get('email', '').strip().lower()
         if CustomUser.objects.filter(email=email).exists():
             logger.info(f"[Auth]: Registration failed - user {email} already exists.")
             return Response({"detail": "User already exists"}, status=status.HTTP_409_CONFLICT)
@@ -133,7 +133,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='resend-code')
     def resend_code(self, request):
-        email = request.data.get("email", "").strip()
+        email = request.data.get("email", "").strip().lower()
         user = get_object_or_404(CustomUser, email=email)
 
         with transaction.atomic():
@@ -146,7 +146,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='reset-password-link')
     def reset_password_link(self, request):
-        email = request.data.get("email", "").strip()
+        email = request.data.get("email", "").strip().lower()
         logger.info(f"[Auth]: Password reset requested for {email}")
         try:
             user = CustomUser.objects.get(email=email)

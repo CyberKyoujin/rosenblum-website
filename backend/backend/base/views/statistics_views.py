@@ -11,7 +11,7 @@ class DashboardStatsView(APIView):
     """
     Base Data
     """
-    permission_classes = []
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         return Response({
@@ -22,7 +22,7 @@ class DashboardStatsView(APIView):
 
 class OrderStatusDistributionView(APIView):
     
-    permission_classes = []
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         
@@ -48,7 +48,7 @@ class OrderStatusDistributionView(APIView):
         return Response(formatted_data)
     
 class OrderDynamicsView(APIView):
-    permission_classes = []
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         last_year = timezone.now() - timedelta(days=365)
@@ -62,7 +62,7 @@ class OrderDynamicsView(APIView):
         return Response(data)
 
 class OrderTypeDistributionView(APIView):
-    permission_classes = []
+    permission_classes = [IsAdminUser]
     
     def get(self, request):
         # Сравнение типов заказов
@@ -70,7 +70,7 @@ class OrderTypeDistributionView(APIView):
         return Response(data)
 
 class GeographyStatsView(APIView):
-    permission_classes = []
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         # Топ 10 городов
@@ -81,7 +81,7 @@ class GeographyStatsView(APIView):
         return Response(data)
 
 class UserGrowthView(APIView):
-    permission_classes = []
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         # Динамика регистраций
@@ -92,7 +92,7 @@ class UserGrowthView(APIView):
         return Response(data)
 
 class ComparisonStatsView(APIView):
-    permission_classes = []
+    permission_classes = [IsAdminUser]
 
     def get(self, request):
         """

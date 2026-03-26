@@ -1,5 +1,6 @@
 import logging
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
 from base.models import CustomUser, EmailVerification
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,6 +9,8 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 class UserVerificationCode(APIView):
+        permission_classes = [IsAdminUser]
+
         def get(self, request):
 
             if not settings.DEBUG:

@@ -4,7 +4,7 @@ from rest_framework import status
 from base.models import Order
 from django.db.models import Q
 from base.serializers import CostEstimateSerializer, OrderSerializer, OrderUpdateSerializer
-from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from base.pagination import CustomPagination
@@ -32,6 +32,18 @@ class OrderViewSet(viewsets.ModelViewSet):
         if self.action in ['update', 'partial_update']:
             return OrderUpdateSerializer
         return OrderSerializer
+    
+    def get_permissions(self):
+        # Only admins can delete orders or view any user's orders
+        admin_actions = ["destroy", "user_orders"]
+        # Guests (anonymous) can create, view and update their own orders via UUID
+        anonymous_allowed = ["create", "retrieve", "list", "update", "partial_update"]
+
+        if self.action in admin_actions:
+            return [IsAdminUser()]
+        if self.action in anonymous_allowed:
+            return [AllowAny()]  
+        return [IsAuthenticated()]
 
     def get_queryset(self):
         user = self.request.user
@@ -70,7 +82,7 @@ class OrderViewSet(viewsets.ModelViewSet):
             {'id': instance.id, 'is_new': instance.is_new},
             status=status.HTTP_201_CREATED
         )
-
+        
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
