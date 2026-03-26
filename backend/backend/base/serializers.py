@@ -25,6 +25,18 @@ from decimal import Decimal
 
 logger = logging.getLogger(__name__)
 
+ALLOWED_FILE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf', 'doc', 'docx'}
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+
+def validate_uploaded_files_list(files):
+    for file in files:
+        ext = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
+        if ext not in ALLOWED_FILE_EXTENSIONS:
+            raise serializers.ValidationError(f"Dateityp .{ext} ist nicht erlaubt.")
+        if file.size > MAX_FILE_SIZE:
+            raise serializers.ValidationError(f"{file.name} überschreitet das Limit von 50 MB.")
+    return files
+
 class CustomUserSerializer(serializers.ModelSerializer):
     
     image_url = serializers.SerializerMethodField()
@@ -231,8 +243,11 @@ class OrderSerializer(serializers.ModelSerializer):
         local_timestamp = timezone.localtime(obj.timestamp)
         return local_timestamp.strftime('%d.%m.%Y %H:%M')
 
+    def validate_uploaded_files(self, files):
+        return validate_uploaded_files_list(files)
+
     def create(self, validated_data):
-        
+
         uploaded_files = validated_data.pop('uploaded_files', [])
         order_docs = validated_data.pop('order_docs', [])
         password = validated_data.pop('password', None) 
@@ -440,13 +455,16 @@ class MessageSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request:
             return None
-            
+
         user = request.user
-        
+
         if obj.sender_id == user.id:
             return UserDataSerializer(obj.receiver, context=self.context).data
         return UserDataSerializer(obj.sender, context=self.context).data
-    
+
+    def validate_uploaded_files(self, files):
+        return validate_uploaded_files_list(files)
+
     def create(self, validated_data):
         with transaction.atomic():
             uploaded_files = validated_data.pop('uploaded_files', [])

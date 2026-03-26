@@ -87,7 +87,11 @@ export const useOrder = () => {
 
   const [error, setError] = useState<ApiErrorResponse | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [fileError, setFileError] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
+
+  const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf', 'doc', 'docx'];
+  const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
   const [docs, setDocs] = useState<DocsType[]>([]);
   const [total, setTotal] = useState(0);
@@ -146,7 +150,23 @@ export const useOrder = () => {
     }
   });
 
-  const handleFiles = (newFiles: File[]) => setUploadedFiles(prev => [...prev, ...newFiles]);
+  const handleFiles = (newFiles: File[]) => {
+    const valid: File[] = [];
+    for (const file of newFiles) {
+      const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+      if (!ALLOWED_EXTENSIONS.includes(ext)) {
+        setFileError(`Dateityp .${ext} ist nicht erlaubt.`);
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setFileError(`${file.name} überschreitet das Limit von 50 MB.`);
+        return;
+      }
+      valid.push(file);
+    }
+    setFileError(null);
+    setUploadedFiles(prev => [...prev, ...valid]);
+  };
   const removeFile = (index: number) => setUploadedFiles(prev => prev.filter((_, i) => i !== index));
 
   const onDrop = (e: React.DragEvent) => {
@@ -243,6 +263,7 @@ export const useOrder = () => {
       dragging,
       setDragging,
       inputRef: fileInputRef,
+      fileError,
       handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) handleFiles(Array.from(e.target.files));
       }

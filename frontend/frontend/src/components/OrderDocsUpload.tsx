@@ -198,7 +198,7 @@ const OrderDocsUpload = ({logic}: {logic: any}) => {
         </div>
 
         <input
-          type="file" multiple accept=".jpg,.png,.pdf,.doc,.docx"
+          type="file" multiple accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx"
           ref={logic.files.inputRef}
           style={{ display: 'none' }}
           onChange={logic.files.handleInputChange}
