@@ -7,6 +7,7 @@ from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.fields import ChoiceField, BooleanField
+from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidToken, TokenError
 from django.utils import timezone
 from base.services.email_verification import send_verification_code, generate_verification_code
 from base.services.email_notifications import (
@@ -22,20 +23,10 @@ from base.services.tasks import create_lex_office_invoice
 from .utils import get_doc_price
 import logging
 from decimal import Decimal
-
+from base.auth import validate_magic_bytes as validate_uploaded_files_list
 logger = logging.getLogger(__name__)
 
-ALLOWED_FILE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp', 'gif', 'pdf', 'doc', 'docx'}
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
-def validate_uploaded_files_list(files):
-    for file in files:
-        ext = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
-        if ext not in ALLOWED_FILE_EXTENSIONS:
-            raise serializers.ValidationError(f"Dateityp .{ext} ist nicht erlaubt.")
-        if file.size > MAX_FILE_SIZE:
-            raise serializers.ValidationError(f"{file.name} überschreitet das Limit von 50 MB.")
-    return files
 
 class CustomUserSerializer(serializers.ModelSerializer):
     
@@ -97,25 +88,64 @@ class UserDataSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['id', 'date_joined', 'phone_number', 'city', 'street', 'zip', 'image_url', 'first_name', 'last_name', 'email', 'profile_img_url']
+        fields = ['id', 'date_joined', 'phone_number', 'city', 'street', 'zip', 'image_url', 'first_name', 'last_name', 'email', 'profile_img_url', 'is_staff']
         
 
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     def validate(self, attrs):
-        data = super().validate(attrs)
+        
+        try:
+            data = super().validate(attrs)
+        except InvalidToken:
+            raise exceptions.AuthenticationFailed(
+                detail={
+                    "detail": "Invalid refresh token.",
+                    "code": "token_not_valid"
+                }
+            )
 
-        refresh = RefreshToken(attrs['refresh'])
-        user = get_user_model().objects.get(id=refresh['user_id'])
+        try:
+            refresh = RefreshToken(data['refresh'])
+        except TokenError:
+            raise exceptions.AuthenticationFailed(
+                detail={"detail": "Invalid refresh token.", "code": "token_not_valid"}
+            )
 
-        access = AccessToken.for_user(user)
+        user_id = refresh.get('user_id')
+        
+        if not user_id:
+            raise exceptions.AuthenticationFailed(
+                detail={
+                    "detail": "Invalid token payload.",
+                    "code": "token_invalid_payload"
+                }
+            )
+        
+        User = get_user_model()
+        
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise exceptions.AuthenticationFailed(detail={"detail": "User not found."})
 
+        if not user.is_active:
+            raise exceptions.AuthenticationFailed(
+                detail={
+                    "detail": "Account unverified. Please verify your email.",
+                    "code": "account_disabled"
+                }
+            )
+        
+        access = refresh.access_token
+        
         access['id'] = user.id
         access['email'] = user.email
         access['first_name'] = user.first_name
         access['last_name'] = user.last_name
         access['profile_img_url'] = user.profile_img_url
-
+            
         data['access'] = str(access)
+        data['refresh'] = str(refresh)
 
         return data    
     
@@ -165,7 +195,6 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
         data = {
             "refresh": str(refresh),
             "access": str(refresh.access_token),
-            "message": "Login successful"
         }
 
         return data

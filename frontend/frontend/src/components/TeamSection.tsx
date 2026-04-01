@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { IoPersonCircleOutline } from "react-icons/io5";
+import oleg from "../assets/oleg.webp"
 
 interface TeamMember {
     nameKey: string;
@@ -13,7 +14,8 @@ const TeamSection = () => {
     const teamMembers: TeamMember[] = [
         {
             nameKey: "team.oleg.name",
-            roleKey: "team.oleg.role"
+            roleKey: "team.oleg.role", 
+            image: oleg
         },
         {
             nameKey: "team.elana.name",

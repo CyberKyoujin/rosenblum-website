@@ -4,9 +4,14 @@ export interface User {
     first_name: string | null;
     last_name: string | null;
     profile_img_url: string;
-} 
+}
 
 export interface UserData {
+    id: number | null;
+    email: string | null;
+    first_name: string | null;
+    last_name: string | null;
+    profile_img_url: string | null;
     date_joined: string | null;
     phone_number: string | null;
     city: string | null;

@@ -18,8 +18,10 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView
 import requests
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from google_maps_reviews import ReviewsClient
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+
 import requests
 from rest_framework import generics
 from base.services.email_verification import verify_email, send_verification_code, generate_verification_code
@@ -183,13 +185,49 @@ class UserViewSet(viewsets.ModelViewSet):
             logger.error(f"[Auth]: Password reset failed. Error: {str(e)}")
             return Response({"detail": "Invalid data."}, status=400)
     
-class UserTokenObtainPairView(TokenObtainPairView):
-    serializer_class = UserTokenObtainPairSerializer
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserTokenObtainPairSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
         
-class UserTokenRefreshView(TokenRefreshView):
-    serializer_class = CustomTokenRefreshSerializer
+        data = serializer.validated_data
+        
+        response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+        
+        response.set_cookie("access", data['access'], httponly=True, secure=True, samesite='None', max_age=300)
+        response.set_cookie("refresh", data['refresh'], httponly=True, secure=True, samesite='None', max_age=86400)
+        
+        return response
+
+    
+class CookieTokenRefreshView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get('refresh')
+        
+        if not refresh_token:
+            return Response({"detail": "Refresh token not provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = CustomTokenRefreshSerializer(data={"refresh": refresh_token})
+        serializer.is_valid(raise_exception=True)
+        
+        data = serializer.validated_data
+        
+        response = Response({"detail": "Successfully refreshed token"}, status=status.HTTP_200_OK)
+        
+        response.set_cookie("access", data['access'], httponly=True, secure=True, samesite='None', max_age=300)
+        response.set_cookie("refresh", data['refresh'], httponly=True, secure=True, samesite='None', max_age=86400)
+        
+        return response
     
 class GoogleLogin(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request, *args, **kwargs):
         try:
             # Check if Google OAuth is configured
@@ -200,6 +238,7 @@ class GoogleLogin(APIView):
                 }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
             token = request.data.get('access_token')
+            
             if not token:
                 return Response({
                     'error': 'access_token is required'
@@ -226,12 +265,14 @@ class GoogleLogin(APIView):
                     logger.info(f"[Google Login]: Existing user logged in via Google: {user.email}")
 
                 refresh = RefreshToken.for_user(user)
-                access_token = UserTokenObtainPairSerializer.get_token(user)
+                access_token = refresh.access_token
+                
+                response = Response({'detail': 'Login successful'}, status=status.HTTP_200_OK)
+                
+                response.set_cookie("access", str(access_token), httponly=True, secure=True, samesite='None', max_age=300)
+                response.set_cookie("refresh", str(refresh), httponly=True, secure=True, samesite='None', max_age=86400)
 
-                return Response({
-                    'refresh': str(refresh),
-                    'access': str(access_token.access_token),
-                }, status=status.HTTP_200_OK)
+                return response
 
         except ValueError as e:
             logger.warning(f"[Google Login]: Token verification failed: {str(e)}")
@@ -248,8 +289,27 @@ class GoogleLogin(APIView):
                 'error': 'Internal server error',
                 'detail': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+class LogoutView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.COOKIES.get('refresh')
+        
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            except Exception as e:
+                logger.warning(f"[Logout]: Failed to blacklist refresh token: {str(e)}")
+                
+        response = Response({"detail": "Logout successful"}, status=status.HTTP_200_OK)
+        response.delete_cookie("access", samesite='None')
+        response.delete_cookie("refresh", samesite='None')
+        return response
         
 class ReviewListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
     serializer_class = ReviewSerializer
     pagination_class = None
     queryset = Review.objects.all().prefetch_related("translations").order_by("-review_timestamp")

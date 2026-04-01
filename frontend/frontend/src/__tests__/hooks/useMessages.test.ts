@@ -9,7 +9,7 @@ const mockSendMessage = vi.fn()
 vi.mock('../../zustand/useAuthStore', () => ({
   default: vi.fn((selector) => {
     const state = {
-      user: { id: 1, email: 'test@example.com', first_name: 'John', last_name: 'Doe', profile_img_url: '' },
+      userData: { id: 1, email: 'test@example.com', first_name: 'John', last_name: 'Doe', profile_img_url: '' },
     }
     return selector ? selector(state) : state
   }),

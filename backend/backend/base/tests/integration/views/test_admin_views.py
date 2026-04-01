@@ -40,8 +40,8 @@ class TestAdminLoginView:
         })
 
         assert response.status_code == status.HTTP_200_OK
-        assert 'access' in response.data
-        assert 'refresh' in response.data
+        assert 'access' in response.cookies
+        assert 'refresh' in response.cookies
 
     def test_non_admin_login_forbidden(self, api_client, regular_user):
         """Test non-admin user gets 403"""
@@ -96,12 +96,7 @@ class TestGlobalMessagesView:
         admin.is_active = True
         admin.save()
 
-        response = api_client.post('/api/admin-user/login/', {
-            'email': 'admin@example.com',
-            'password': 'adminpass123'
-        })
-        api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
-        api_client.user = admin
+        api_client.force_authenticate(user=admin)
         return api_client
 
     @pytest.fixture
@@ -179,25 +174,14 @@ class TestTranslationViewSet:
         admin.is_active = True
         admin.save()
 
-        response = api_client.post('/api/admin-user/login/', {
-            'email': 'admin@example.com',
-            'password': 'adminpass123'
-        })
-        api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
+        api_client.force_authenticate(user=admin)
         return api_client
 
     @pytest.fixture
     def regular_client(self, api_client, create_user):
         """Create authenticated regular user client"""
         user = create_user(email='regular@example.com', password='userpass123')
-        user.is_active = True
-        user.save()
-
-        response = api_client.post('/api/user/login/', {
-            'email': 'regular@example.com',
-            'password': 'userpass123'
-        })
-        api_client.credentials(HTTP_AUTHORIZATION=f'Bearer {response.data["access"]}')
+        api_client.force_authenticate(user=user)
         return api_client
 
     def test_list_translations_requires_admin(self, api_client):

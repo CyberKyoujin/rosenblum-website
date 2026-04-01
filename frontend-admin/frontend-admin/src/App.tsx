@@ -22,20 +22,11 @@ const Statistics = lazy(() => import('./screens/Statistics'));
 
 function App() {
   
-  const authStore = useAuthStore();
+  const initAuth = useAuthStore(s => s.initAuth);
 
   useEffect(() => {
-    const refreshTokenInterval = setInterval(async () => {
-      try {
-        await authStore.refreshToken();
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-      }
-    }, 240000); 
-
-
-    return () => clearInterval(refreshTokenInterval);
-  }, [authStore]);
+    initAuth();
+  }, [initAuth]);
 
 
   return (

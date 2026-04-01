@@ -861,6 +861,112 @@ html, body {
 
 
 
+/* ── Oleg Trust Section ── */
+.oleg-trust {
+  width: 100%;
+  padding: 3rem 1.5rem;
+}
+
+.oleg-trust__inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+
+.oleg-trust__photo-wrap {
+  flex-shrink: 0;
+}
+
+.oleg-trust__photo {
+  width: 260px;
+  height: 300px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 16px;
+  border: 3px solid var(--blue);
+  box-shadow: 0 4px 20px rgba(76, 121, 212, 0.2);
+}
+
+.oleg-trust__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.oleg-trust__label {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgb(76, 121, 212);
+  background: rgba(76, 121, 212, 0.08);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.oleg-trust__name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0.25rem 0 0;
+}
+
+.oleg-trust__role {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+}
+
+.oleg-trust__points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.oleg-trust__point {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.oleg-trust__check {
+  color: rgb(76, 121, 212);
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 1rem;
+}
+
+@media (max-width: 640px) {
+  .oleg-trust__inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+  }
+
+  .oleg-trust__photo-wrap {
+    order: -1;
+  }
+
+  .oleg-trust__label {
+    margin: 0 auto;
+  }
+
+  .oleg-trust__point {
+    text-align: left;
+  }
+}
+
+/* ── End Oleg Trust Section ── */
+
 .home-counter-container{
   max-width: 1280px;
   background-color: rgb(76, 121, 212);
@@ -1209,6 +1315,7 @@ html, body {
   }
   .how-it-works__entry {
     align-items: stretch;
+    margin-bottom: 1.5rem;
   }
   .how-it-works__line {
     display: block;

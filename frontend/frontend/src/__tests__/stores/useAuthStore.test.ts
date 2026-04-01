@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act } from '@testing-library/react'
-import Cookies from 'js-cookie'
 
 // Mock axiosInstance before importing store
 vi.mock('../../axios/axiosInstance', () => ({
@@ -8,18 +7,8 @@ vi.mock('../../axios/axiosInstance', () => ({
     get: vi.fn(),
     post: vi.fn(),
     patch: vi.fn(),
+    delete: vi.fn(),
   },
-}))
-
-// Mock jwt-decode
-vi.mock('jwt-decode', () => ({
-  jwtDecode: vi.fn(() => ({
-    id: 1,
-    email: 'test@example.com',
-    first_name: 'John',
-    last_name: 'Doe',
-    profile_img_url: '',
-  })),
 }))
 
 import useAuthStore from '../../zustand/useAuthStore'
@@ -27,9 +16,7 @@ import axiosInstance from '../../axios/axiosInstance'
 
 describe('useAuthStore', () => {
   beforeEach(() => {
-    // Reset store state before each test
     useAuthStore.setState({
-      authTokens: null,
       user: null,
       loading: false,
       userDataLoading: false,
@@ -46,45 +33,6 @@ describe('useAuthStore', () => {
     vi.restoreAllMocks()
   })
 
-  describe('setTokens', () => {
-    it('sets tokens and decodes user from access token', () => {
-      const tokens = { access: 'test-access-token', refresh: 'test-refresh-token' }
-
-      act(() => {
-        useAuthStore.getState().setTokens(tokens)
-      })
-
-      const state = useAuthStore.getState()
-      expect(state.authTokens).toEqual(tokens)
-      expect(state.isAuthenticated).toBe(true)
-      expect(state.user).toEqual({
-        id: 1,
-        email: 'test@example.com',
-        first_name: 'John',
-        last_name: 'Doe',
-        profile_img_url: '',
-      })
-    })
-
-    it('clears tokens when null is passed', () => {
-      // First set tokens
-      useAuthStore.setState({
-        authTokens: { access: 'token', refresh: 'refresh' },
-        user: { id: 1, email: 'test@example.com', first_name: 'John', last_name: 'Doe', profile_img_url: '' },
-        isAuthenticated: true,
-      })
-
-      act(() => {
-        useAuthStore.getState().setTokens(null)
-      })
-
-      const state = useAuthStore.getState()
-      expect(state.authTokens).toBe(null)
-      expect(state.user).toBe(null)
-      expect(state.isAuthenticated).toBe(false)
-    })
-  })
-
   describe('setUser', () => {
     it('sets the user', () => {
       const user = { id: 2, email: 'new@example.com', first_name: 'Jane', last_name: 'Doe', profile_img_url: '' }
@@ -98,8 +46,12 @@ describe('useAuthStore', () => {
   })
 
   describe('initAuth', () => {
-    it('does nothing when no tokens in cookies', async () => {
-      vi.mocked(Cookies.get).mockReturnValue(undefined as unknown as { [key: string]: string })
+    it('sets isAuthenticated to false when session is invalid', async () => {
+      vi.mocked(axiosInstance.get).mockRejectedValueOnce({
+        status: 401,
+        code: 'unauthorized',
+        message: 'Not authenticated',
+      })
 
       await act(async () => {
         await useAuthStore.getState().initAuth()
@@ -110,13 +62,13 @@ describe('useAuthStore', () => {
       expect(state.isAuthenticated).toBe(false)
     })
 
-    it('initializes auth from cookies and fetches user data', async () => {
-      vi.mocked(Cookies.get)
-        .mockReturnValueOnce('access-token' as unknown as { [key: string]: string }) // first call for access
-        .mockReturnValueOnce('refresh-token' as unknown as { [key: string]: string }) // second call for refresh
-
+    it('initializes auth and fetches user data from valid session', async () => {
       vi.mocked(axiosInstance.get).mockResolvedValueOnce({
         data: {
+          id: 1,
+          email: 'test@example.com',
+          first_name: 'John',
+          last_name: 'Doe',
           date_joined: '2024-01-01',
           phone_number: '123456789',
           city: 'Berlin',
@@ -136,32 +88,38 @@ describe('useAuthStore', () => {
       expect(state.userData).toBeTruthy()
     })
 
-    it('logs out user on 401 error', async () => {
-      vi.mocked(Cookies.get)
-        .mockReturnValueOnce('access-token' as unknown as { [key: string]: string })
-        .mockReturnValueOnce('refresh-token' as unknown as { [key: string]: string })
-
+    it('sets isAuthenticated false on non-401 error', async () => {
       vi.mocked(axiosInstance.get).mockRejectedValueOnce({
-        status: 401,
-        code: 'unauthorized',
-        message: 'Token expired',
+        status: 500,
+        code: 'server_error',
+        message: 'Server error',
       })
 
       await act(async () => {
         await useAuthStore.getState().initAuth()
       })
 
-      expect(Cookies.remove).toHaveBeenCalled()
+      const state = useAuthStore.getState()
+      expect(state.isAuthLoading).toBe(false)
     })
   })
 
   describe('loginUser', () => {
-    it('successfully logs in and sets tokens', async () => {
-      vi.mocked(axiosInstance.post).mockResolvedValueOnce({
-        data: { access: 'new-access', refresh: 'new-refresh' },
-      })
+    it('successfully logs in and sets isAuthenticated', async () => {
+      vi.mocked(axiosInstance.post).mockResolvedValueOnce({ data: {} })
       vi.mocked(axiosInstance.get).mockResolvedValueOnce({
-        data: { date_joined: '2024-01-01', phone_number: null, city: null, street: null, zip: null, image_url: null },
+        data: {
+          id: 1,
+          email: 'test@example.com',
+          first_name: 'John',
+          last_name: 'Doe',
+          date_joined: '2024-01-01',
+          phone_number: null,
+          city: null,
+          street: null,
+          zip: null,
+          image_url: null,
+        },
       })
 
       await act(async () => {
@@ -170,15 +128,17 @@ describe('useAuthStore', () => {
 
       const state = useAuthStore.getState()
       expect(state.isAuthenticated).toBe(true)
-      expect(Cookies.set).toHaveBeenCalledWith('access', 'new-access', expect.any(Object))
-      expect(Cookies.set).toHaveBeenCalledWith('refresh', 'new-refresh', expect.any(Object))
+      expect(axiosInstance.post).toHaveBeenCalledWith('/user/login/', {
+        email: 'test@example.com',
+        password: 'password123',
+      })
     })
 
     it('sets loading state during login', async () => {
       let loadingDuringCall = false
       vi.mocked(axiosInstance.post).mockImplementationOnce(async () => {
         loadingDuringCall = useAuthStore.getState().loading
-        return { data: { access: 'token', refresh: 'refresh' } }
+        return { data: {} }
       })
       vi.mocked(axiosInstance.get).mockResolvedValueOnce({ data: {} })
 
@@ -238,9 +198,7 @@ describe('useAuthStore', () => {
 
   describe('googleLogin', () => {
     it('successfully logs in with Google', async () => {
-      vi.mocked(axiosInstance.post).mockResolvedValueOnce({
-        data: { access: 'google-access', refresh: 'google-refresh' },
-      })
+      vi.mocked(axiosInstance.post).mockResolvedValueOnce({ data: {} })
       vi.mocked(axiosInstance.get).mockResolvedValueOnce({ data: {} })
 
       await act(async () => {
@@ -253,69 +211,34 @@ describe('useAuthStore', () => {
   })
 
   describe('logoutUser', () => {
-    it('clears all auth state and cookies', () => {
+    it('clears all auth state', async () => {
       useAuthStore.setState({
-        authTokens: { access: 'token', refresh: 'refresh' },
         user: { id: 1, email: 'test@example.com', first_name: 'John', last_name: 'Doe', profile_img_url: '' },
         isAuthenticated: true,
-        userData: { date_joined: '2024-01-01', phone_number: null, city: null, street: null, zip: null, image_url: null },
+        userData: { id: 1, email: 'test@example.com', first_name: 'John', last_name: 'Doe', profile_img_url: null, date_joined: '2024-01-01', phone_number: null, city: null, street: null, zip: null, image_url: null },
       })
 
-      act(() => {
-        useAuthStore.getState().logoutUser()
+      vi.mocked(axiosInstance.post).mockResolvedValueOnce({ data: {} })
+
+      await act(async () => {
+        await useAuthStore.getState().logoutUser()
       })
 
       const state = useAuthStore.getState()
-      expect(state.authTokens).toBe(null)
       expect(state.user).toBe(null)
       expect(state.isAuthenticated).toBe(false)
       expect(state.userData).toBe(null)
-      expect(Cookies.remove).toHaveBeenCalledWith('access', expect.any(Object))
-      expect(Cookies.remove).toHaveBeenCalledWith('refresh', expect.any(Object))
     })
-  })
 
-  describe('updateToken', () => {
-    it('refreshes token successfully', async () => {
-      vi.mocked(Cookies.get).mockReturnValueOnce('old-refresh-token' as unknown as { [key: string]: string })
-      vi.mocked(axiosInstance.post).mockResolvedValueOnce({
-        data: { access: 'new-access', refresh: 'new-refresh' },
-      })
+    it('clears state even if logout request fails', async () => {
+      useAuthStore.setState({ isAuthenticated: true })
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce({ status: 500 })
 
       await act(async () => {
-        await useAuthStore.getState().updateToken()
+        await useAuthStore.getState().logoutUser()
       })
 
-      expect(axiosInstance.post).toHaveBeenCalledWith('/user/token-refresh/', { refresh: 'old-refresh-token' })
-      expect(Cookies.set).toHaveBeenCalledWith('access', 'new-access', expect.any(Object))
-    })
-
-    it('logs out when no refresh token', async () => {
-      vi.mocked(Cookies.get).mockReturnValueOnce(undefined as unknown as { [key: string]: string })
-
-      await expect(
-        act(async () => {
-          await useAuthStore.getState().updateToken()
-        })
-      ).rejects.toThrow('Refresh token not found')
-
-      expect(Cookies.remove).toHaveBeenCalled()
-    })
-
-    it('logs out on refresh error', async () => {
-      vi.mocked(Cookies.get).mockReturnValueOnce('refresh-token' as unknown as { [key: string]: string })
-      vi.mocked(axiosInstance.post).mockRejectedValueOnce({ status: 401, code: 'invalid_token', message: 'Invalid refresh token' })
-
-      let errorThrown = false
-      try {
-        await act(async () => {
-          await useAuthStore.getState().updateToken()
-        })
-      } catch {
-        errorThrown = true
-      }
-
-      expect(errorThrown).toBe(true)
+      expect(useAuthStore.getState().isAuthenticated).toBe(false)
     })
   })
 
@@ -339,7 +262,7 @@ describe('useAuthStore', () => {
       expect(useAuthStore.getState().userDataLoading).toBe(false)
     })
 
-    it('logs out on 401 error', async () => {
+    it('throws error on fetch failure', async () => {
       vi.mocked(axiosInstance.get).mockRejectedValueOnce({ status: 401, code: 'unauthorized', message: 'Unauthorized' })
 
       let errorThrown = false

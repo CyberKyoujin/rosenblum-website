@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie"
 import useAuthStore from "./useAuthStore";
 
-const BASE_URL =  import.meta.env.VITE_API_URL || "/api";
+const BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
@@ -14,10 +14,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     config => {
-        const accessToken = Cookies.get('access');
-
-        if (accessToken && config.headers) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+        const csrfToken = Cookies.get('csrftoken');
+        if (csrfToken) {
+            config.headers['X-CSRFToken'] = csrfToken;
         }
         return config;
     },
@@ -29,44 +28,31 @@ axiosInstance.interceptors.response.use(
     async error => {
         const originalRequest = error.config;
 
-        if (
-            error.response?.status === 401 && 
-            originalRequest && 
-            !originalRequest._retry
-        ) {
+        if (!error.response) {
+            return Promise.reject({ status: null, message: "NETWORK_ERROR", errors: null });
+        }
+
+        const status = error.response.status;
+
+        const isAuthEndpoint = originalRequest.url?.includes('/admin-user/login/') ||
+                               originalRequest.url?.includes('/user/token-refresh/');
+
+        if (status === 401 && !originalRequest._retry && !isAuthEndpoint) {
             originalRequest._retry = true;
-            const refreshToken = Cookies.get('refresh');
-
-            if (refreshToken) {
-                try {
-                    const response = await axios.post(`${BASE_URL}/user/token-refresh/`, { 
-                        refresh: refreshToken 
-                    });
-
-                    const { access, refresh } = response.data;
-
-                    Cookies.set('access', access, { expires: 7 / 24 / 60, secure: true, sameSite: 'Strict' });
-                    Cookies.set('refresh', refresh, { expires: 7, secure: true, sameSite: 'Strict' });
-
-                    useAuthStore.getState().setTokens({ access, refresh });
-
-                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-                    
-                    originalRequest.headers['Authorization'] = `Bearer ${access}`;
-
-                    return axiosInstance(originalRequest);
-
-                } catch (refreshError) {
-                    console.error('Token refresh failed:', refreshError);
-                    useAuthStore.getState().logoutUser();
-                    return Promise.reject(refreshError);
-                }
-            } else {
+            try {
+                await axios.post(`${BASE_URL}/user/token-refresh/`, {}, { withCredentials: true });
+                return axiosInstance(originalRequest);
+            } catch (refreshError) {
                 useAuthStore.getState().logoutUser();
+                return Promise.reject({ status: 401, message: "TOKEN_REFRESH_FAILED", errors: null });
             }
         }
 
-        return Promise.reject(error);
+        return Promise.reject({
+            status,
+            message: error.response.data?.message ?? null,
+            errors: error.response.data ?? null,
+        });
     }
 );
 

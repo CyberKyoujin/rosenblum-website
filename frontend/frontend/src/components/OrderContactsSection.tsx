@@ -15,8 +15,8 @@ export const OrderContactsSection = ({logic}: {logic?: any}) => {
     <OrderSectionHeader Icon={GrContactInfo} headerText={t('contactInformation')} />
 
       <div className="order-contacts-content">
-        <TextField {...register('name')} required label={t('name')} fullWidth error={!!errors.name} />
-        <TextField {...register('email')} required label={t('email')} fullWidth error={!!errors.email} />
+        <TextField {...register('name')} required label={t('name')} fullWidth error={!!errors.name} helperText={errors.name?.message} />
+        <TextField {...register('email')} required label={t('email')} fullWidth error={!!errors.email} helperText={errors.email?.message} />
 
         <TextField
           {...register('phone_number')}

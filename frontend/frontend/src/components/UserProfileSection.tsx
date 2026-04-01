@@ -10,7 +10,7 @@ import { IoDocumentTextOutline, IoCalendarOutline } from "react-icons/io5";
 
 const UserProfileSection = () => {
 
-    const {user, userData, deleteAccount} = useAuthStore();
+    const {userData, deleteAccount} = useAuthStore();
     const {orders} = useOrderStore();
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ const UserProfileSection = () => {
         }
     };
 
-    const profileImg = user?.profile_img_url || userData?.image_url || defaultAvatar;
+    const profileImg = userData?.profile_img_url || userData?.image_url || defaultAvatar;
 
     const handleImageError = (e: any) => {
         e.target.src = defaultAvatar;
@@ -52,7 +52,7 @@ const UserProfileSection = () => {
                     />
                 </div>
 
-                <h2 className="profile-card__name">{user?.first_name} {user?.last_name}</h2>
+                <h2 className="profile-card__name">{userData?.first_name} {userData?.last_name}</h2>
 
                 <div className="profile-card__stats">
                     <div className="profile-card__stat">
@@ -81,7 +81,7 @@ const UserProfileSection = () => {
                         <HiOutlineMail className="profile-card__info-icon" />
                         <div className="profile-card__info-content">
                             <span className="profile-card__info-label">{t('email')}</span>
-                            <span className="profile-card__info-value">{user?.email || t('notSpecified')}</span>
+                            <span className="profile-card__info-value">{userData?.email || t('notSpecified')}</span>
                         </div>
                     </div>
 

@@ -13,7 +13,7 @@ interface Props {
 
 const MessagesDropdown: React.FC<Props> = ({ isOpened }) => {
 
-    const user = useAuthStore(s => s.user);
+    const user = useAuthStore(s => s.userData);
     const userMessages = useMessageStore(s => s.messages);
     
     const {t} = useTranslation();

@@ -99,8 +99,9 @@ class TestOrderSerializerCreate:
 
     def test_create_order_with_uploaded_files(self):
         """Test creating order with uploaded files"""
-        file1 = SimpleUploadedFile("doc1.pdf", b"content1", content_type="application/pdf")
-        file2 = SimpleUploadedFile("doc2.pdf", b"content2", content_type="application/pdf")
+        pdf_bytes = b"%PDF-1.4 fake pdf content"
+        file1 = SimpleUploadedFile("doc1.pdf", pdf_bytes, content_type="application/pdf")
+        file2 = SimpleUploadedFile("doc2.pdf", pdf_bytes, content_type="application/pdf")
 
         request = _make_request()
         data = _valid_order_data(uploaded_files=[file1, file2])

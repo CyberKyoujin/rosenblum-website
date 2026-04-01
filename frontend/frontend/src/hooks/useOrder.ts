@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import  {zodResolver} from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -11,15 +11,19 @@ import uaFlag from '../assets/ua.svg';
 import ruFlag from '../assets/ru.svg';
 import deFlag from '../assets/de.svg';
 import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
-export const orderSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name is too long"),
-  email: z.string().email("Invalid email"),
-  phone_number: z.string().min(5, "Invalid phone"),
-  city: z.string().min(1, "City is required"),
-  street: z.string().min(1, "Street is required"),
-  zip: z.string().min(1, "ZIP is required"),
-  message: z.string().min(1, "Message is required"),
+export const createOrderSchema = (t: (key: string) => string) => z.object({
+  name: z.string()
+    .min(1, t('required'))
+    .max(100, t('validationNameTooLong'))
+    .regex(/^[a-zA-Z\s-]+$/, t('validationLatinOnly')),
+  email: z.string().email(t('invalidEmail')),
+  phone_number: z.string().min(5, t('validationInvalidPhone')),
+  city: z.string().min(1, t('required')),
+  street: z.string().min(1, t('required')),
+  zip: z.string().min(1, t('required')),
+  message: z.string().min(1, t('required')),
 });
 
 export interface DocsType {
@@ -76,12 +80,22 @@ const getDocTemplates = (): DocTemplate[] => [
     {type: "Apostille auf unsere Übersetzung",label: t('docApostilleUbersetzung'),        price: 35.00, individualPrice: false, category: 'apostille'},
 ]
 
-export type OrderFormValues = z.infer<typeof orderSchema>;
+export type OrderFormValues = {
+  name: string;
+  email: string;
+  phone_number: string;
+  city: string;
+  street: string;
+  zip: string;
+  message: string;
+};
 
 export const useOrder = () => {
-  const { user, userData } = useAuthStore();
+  const { userData } = useAuthStore();
   const { createOrder, createOrderLoading } = useOrderStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const schema = useMemo(() => createOrderSchema(t), [t]);
 
   const [orderId, setOrderId] = useState<string | null>(null);
 
@@ -138,10 +152,10 @@ export const useOrder = () => {
 
 
   const methods = useForm<OrderFormValues>({
-    resolver: zodResolver(orderSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
-      name: user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : '',
-      email: user?.email || '',
+      name: userData ? `${userData.first_name || ''} ${userData.last_name || ''}`.trim() : '',
+      email: userData?.email || '',
       phone_number: userData?.phone_number || '',
       city: userData?.city || '',
       street: userData?.street || '',
@@ -228,7 +242,7 @@ export const useOrder = () => {
       formData.append('payment_type', paymentMethod);
     }
 
-    if (wantsAccount && !user) {
+    if (wantsAccount && !userData) {
       formData.append('password', password);
     }
 
@@ -237,7 +251,7 @@ export const useOrder = () => {
 
       setOrderId(data.id);
 
-      if (wantsAccount && !user) {
+      if (wantsAccount && !userData) {
         navigate("/email-verification", { state: { email: methods.getValues('email') } });
       } else if (paymentMethod === "stripe") {
         navigate("/payment", { state: { orderId: data.id, total: total } });
@@ -309,7 +323,7 @@ export const useOrder = () => {
       passwordChecks,
       isPasswordValid,
       passwordsMatch,
-      isLoggedIn: !!user,
+      isLoggedIn: !!userData,
     },
     canSubmit,
     onSubmit: methods.handleSubmit(onSubmit)

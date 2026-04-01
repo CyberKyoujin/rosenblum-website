@@ -46,7 +46,6 @@ const OrderSuccess = lazy(() => import('./screens/OrderSuccess'));
 
 function App() {
   
-  const updateToken = useAuthStore(s => s.updateToken);
   const initAuth = useAuthStore(s => s.initAuth);
   const isAuthLoading = useAuthStore(s => s.isAuthLoading);
   const fetchUserMessages = useMessageStore(s => s.fetchUserMessages);
@@ -56,20 +55,8 @@ function App() {
   // Auth initialization
 
   useEffect(() => {
-
-  initAuth();
-
-  const refreshTokenInterval = setInterval(async () => {
-    try {
-      await updateToken();
-    } catch (error) {
-      console.error('Error refreshing token:', error);
-    }
-  }, 240000);
-
-  return () => clearInterval(refreshTokenInterval);
-
-  }, [updateToken, initAuth]);
+      initAuth();
+  }, [initAuth]);
 
   // Conditional user data fetch
 

@@ -8,6 +8,8 @@ import sentry_sdk
 import logging
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
+from django.middleware.csrf import CsrfViewMiddleware as CSRFCheck
+from rest_framework import exceptions
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'base.apps.BaseConfig',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'social_django',
     'django_filters',
@@ -58,7 +61,10 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+         'base.auth.CookieAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 8,
@@ -92,7 +98,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://rosenblum-uebersetzungen.de:3001",
     "http://46.224.229.147:3001",
     "https://admin.rosenblum-uebersetzungen.de",
-    "https://supersolar-unerupted-jaleesa.ngrok-free.dev/"
 ]
 
 SIMPLE_JWT = {

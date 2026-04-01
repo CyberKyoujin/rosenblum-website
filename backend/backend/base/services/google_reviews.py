@@ -29,6 +29,7 @@ def sync_google_reviews():
     google_reviews = fetch_google_reviews()
 
     for r in google_reviews:
+        
         google_review_id = r.get("time")
         review_rating = r.get("rating")
         

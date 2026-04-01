@@ -1,19 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
-import { orderSchema } from '../../hooks/useOrder'
+import { createOrderSchema } from '../../hooks/useOrder'
+
+const mockT = (key: string) => key
 
 // Mock the stores
 const mockCreateOrder = vi.fn()
 vi.mock('../../zustand/useAuthStore', () => ({
   default: vi.fn(() => ({
-    user: {
+    userData: {
       id: 1,
       email: 'test@example.com',
       first_name: 'John',
       last_name: 'Doe',
       profile_img_url: '',
-    },
-    userData: {
       phone_number: '+491234567890',
       city: 'Berlin',
       street: 'Main St 1',
@@ -52,7 +52,7 @@ describe('useOrder', () => {
 
   describe('orderSchema', () => {
     it('validates correct order data', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'john@example.com',
         phone_number: '+491234567890',
@@ -66,7 +66,7 @@ describe('useOrder', () => {
     })
 
     it('rejects order without message (message is required)', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'john@example.com',
         phone_number: '+491234567890',
@@ -79,7 +79,7 @@ describe('useOrder', () => {
     })
 
     it('rejects empty message', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'john@example.com',
         phone_number: '+491234567890',
@@ -93,7 +93,7 @@ describe('useOrder', () => {
     })
 
     it('rejects missing name', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: '',
         email: 'john@example.com',
         phone_number: '+491234567890',
@@ -107,7 +107,7 @@ describe('useOrder', () => {
     })
 
     it('rejects invalid email', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'invalid',
         phone_number: '+491234567890',
@@ -121,7 +121,7 @@ describe('useOrder', () => {
     })
 
     it('rejects short phone number', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'john@example.com',
         phone_number: '123',
@@ -135,7 +135,7 @@ describe('useOrder', () => {
     })
 
     it('rejects missing city', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'john@example.com',
         phone_number: '+491234567890',
@@ -149,7 +149,7 @@ describe('useOrder', () => {
     })
 
     it('rejects missing street', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'john@example.com',
         phone_number: '+491234567890',
@@ -163,7 +163,7 @@ describe('useOrder', () => {
     })
 
     it('rejects missing zip', () => {
-      const result = orderSchema.safeParse({
+      const result = createOrderSchema(mockT).safeParse({
         name: 'John Doe',
         email: 'john@example.com',
         phone_number: '+491234567890',

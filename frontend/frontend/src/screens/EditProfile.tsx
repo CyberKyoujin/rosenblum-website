@@ -10,7 +10,6 @@ import { ApiErrorResponse } from '../types/error';
 import ApiErrorAlert from '../components/ApiErrorAlert';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 const EditProfile = () => {
-  const user = useAuthStore(s => s.user);
   const userData = useAuthStore(s => s.userData);
   const updateUserProfile = useAuthStore(s => s.updateUserProfile);
 
@@ -26,7 +25,7 @@ const EditProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [profileUrl, setProfileUrl] = useState<string>('');
 
-  const profileImg = user?.profile_img_url || userData?.image_url || '';
+  const profileImg = userData?.profile_img_url || userData?.image_url || '';
 
   const isAtTop = useIsAtTop(10);
 
@@ -89,7 +88,7 @@ const EditProfile = () => {
         <form className="edit-form" onSubmit={handleSubmit}>
           <div className="edit-form-content">
 
-            <div className="edit-avatar-container" style={{display: user?.profile_img_url ? 'none' : 'block'}}>
+            <div className="edit-avatar-container" style={{display: userData?.profile_img_url ? 'none' : 'block'}}>
 
                 <div className='image-container'>
                     <img src={profileUrl || profileImg || defaultAvatar} className="profile__user-avatar"/>

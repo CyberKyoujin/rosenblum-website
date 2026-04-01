@@ -92,8 +92,8 @@ class TestUserAuthentication:
         response = api_client.post('/api/user/login/', data)
 
         assert response.status_code == status.HTTP_200_OK
-        assert 'access' in response.data
-        assert 'refresh' in response.data
+        assert 'access' in response.cookies
+        assert 'refresh' in response.cookies
 
     def test_login_with_invalid_password(self, api_client, create_user):
         """Test login with wrong password fails"""
@@ -142,26 +142,23 @@ class TestUserAuthentication:
 
     def test_refresh_token(self, api_client, create_user):
         """Test token refresh endpoint"""
-        user = create_user(
+        create_user(
             email='refresh@example.com',
             password='TestPass123!',
             is_active=True
         )
 
-        # First login to get tokens
-        login_data = {
+        # Login - refresh cookie is set automatically
+        api_client.post('/api/user/login/', {
             'email': 'refresh@example.com',
             'password': 'TestPass123!'
-        }
-        login_response = api_client.post('/api/user/login/', login_data)
-        refresh_token = login_response.data['refresh']
+        })
 
-        # Use refresh token to get new access token
-        refresh_data = {'refresh': refresh_token}
-        response = api_client.post('/api/user/token-refresh/', refresh_data)
+        # Token refresh reads cookie automatically
+        response = api_client.post('/api/user/token-refresh/', {})
 
         assert response.status_code == status.HTTP_200_OK
-        assert 'access' in response.data
+        assert 'access' in response.cookies
 
 
 @pytest.mark.django_db

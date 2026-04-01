@@ -21,13 +21,13 @@ const Navbar: React.FC = () => {
     
   const [openedComponent, setOpenedComponent] = useState<OpenedComponent>(null);
   
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, userData } = useAuthStore();
   const {messages} = useMessageStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const messagesCount = messages?.filter(m => m.receiver === user?.id && !m.viewed).length ?? 0;
+  const messagesCount = messages?.filter(m => m.receiver === userData?.id && !m.viewed).length ?? 0;
 
   const handleOverlayClick = () => {
     if (openedComponent) {

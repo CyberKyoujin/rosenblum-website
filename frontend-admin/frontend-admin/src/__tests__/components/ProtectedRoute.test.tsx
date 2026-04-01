@@ -2,13 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 
-// Mock useAuthStore
 vi.mock('../../zustand/useAuthStore', () => ({
-  default: {
-    getState: vi.fn(() => ({ isAuthenticated: false })),
-    setState: vi.fn(),
-    subscribe: vi.fn(),
-  },
+  default: vi.fn(),
 }))
 
 import ProtectedRoute from '../../components/ProtectedRoute'
@@ -22,8 +17,11 @@ describe('ProtectedRoute', () => {
   const TestComponent = () => <div data-testid="protected-content">Protected Content</div>
   const LoginPage = () => <div data-testid="login-page">Login Page</div>
 
-  const renderWithRouter = (isAuthenticated: boolean) => {
-    vi.mocked(useAuthStore.getState).mockReturnValue({ isAuthenticated } as any)
+  const renderWithRouter = (isAuthenticated: boolean, isAuthLoading = false) => {
+    vi.mocked(useAuthStore).mockImplementation((selector: any) => {
+      const state = { isAuthenticated, isAuthLoading }
+      return selector(state)
+    })
 
     return render(
       <MemoryRouter initialEntries={['/protected']}>
@@ -69,6 +67,15 @@ describe('ProtectedRoute', () => {
       renderWithRouter(false)
 
       expect(screen.getByText('Login Page')).toBeInTheDocument()
+    })
+  })
+
+  describe('when auth is loading', () => {
+    it('renders AppLoader instead of children or redirect', () => {
+      renderWithRouter(false, true)
+
+      expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument()
+      expect(screen.queryByTestId('login-page')).not.toBeInTheDocument()
     })
   })
 })

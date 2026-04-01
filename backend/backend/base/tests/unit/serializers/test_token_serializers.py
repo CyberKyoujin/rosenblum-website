@@ -24,8 +24,6 @@ class TestUserTokenObtainPairSerializerValidation:
 
         assert 'access' in result
         assert 'refresh' in result
-        assert 'message' in result
-        assert result['message'] == 'Login successful'
 
     def test_invalid_email_raises_error(self, create_user):
         """Test invalid email raises AuthenticationFailed"""

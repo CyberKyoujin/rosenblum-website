@@ -19,7 +19,8 @@ export const mockUser = {
     email: "admin@test.com",
     first_name: "Test",
     last_name: "Admin",
-    profile_img_url: ""
+    profile_img_url: "",
+    is_staff: true,
 };
 
 export const mockAccessToken = createMockJWT({
@@ -85,12 +86,22 @@ export async function setupApiMocks(page: Page, options?: {
         });
     });
 
-    // Mock users endpoint - /user/users/ is the actual endpoint
+    // Mock users list endpoint (registered first = lower priority)
     await page.route(/.*\/api\/user\/users.*/, async (route) => {
         await route.fulfill({
             status: 200,
             contentType: "application/json",
             body: JSON.stringify(options?.users ?? { count: 0, results: [] })
+        });
+    });
+
+    // Mock /user/users/me/ - registered last = highest priority, overrides the general users mock
+    // initAuth calls this endpoint to verify the session and check is_staff
+    await page.route(/.*\/api\/user\/users\/me.*/, async (route) => {
+        await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify(mockUser)
         });
     });
 

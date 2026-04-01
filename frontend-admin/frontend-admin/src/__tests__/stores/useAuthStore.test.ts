@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { act } from '@testing-library/react'
-import Cookies from 'js-cookie'
 
 // Mock axiosInstance
 vi.mock('../../zustand/axiosInstance', () => ({
@@ -10,31 +9,27 @@ vi.mock('../../zustand/axiosInstance', () => ({
   },
 }))
 
-// Mock jwt-decode
-vi.mock('jwt-decode', () => ({
-  jwtDecode: vi.fn(() => ({
-    id: 1,
-    email: 'admin@example.com',
-    first_name: 'Admin',
-    last_name: 'User',
-    profile_img_url: '',
-  })),
-}))
-
 import useAuthStore from '../../zustand/useAuthStore'
 import axiosInstance from '../../zustand/axiosInstance'
+
+const mockAdminUser = {
+  id: 1,
+  email: 'admin@example.com',
+  first_name: 'Admin',
+  last_name: 'User',
+  profile_img_url: null,
+  is_staff: true,
+}
 
 describe('useAuthStore', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Reset the store state
     useAuthStore.setState({
-      authTokens: null,
       isAuthenticated: false,
+      isAuthLoading: true,
       user: null,
       loading: false,
       loginError: null,
-      loginSuperuserError: null,
     })
   })
 
@@ -42,7 +37,6 @@ describe('useAuthStore', () => {
     it('has correct initial values', () => {
       const state = useAuthStore.getState()
 
-      expect(state.authTokens).toBe(null)
       expect(state.isAuthenticated).toBe(false)
       expect(state.user).toBe(null)
       expect(state.loading).toBe(false)
@@ -50,66 +44,52 @@ describe('useAuthStore', () => {
     })
   })
 
-  describe('setTokens', () => {
-    it('sets tokens and marks user as authenticated', () => {
-      const tokens = { access: 'access-token', refresh: 'refresh-token' }
+  describe('initAuth', () => {
+    it('sets authenticated and user when staff session is valid', async () => {
+      vi.mocked(axiosInstance.get).mockResolvedValueOnce({ data: mockAdminUser })
 
-      act(() => {
-        useAuthStore.getState().setTokens(tokens)
+      await act(async () => {
+        await useAuthStore.getState().initAuth()
       })
 
       const state = useAuthStore.getState()
-      expect(state.authTokens).toEqual(tokens)
       expect(state.isAuthenticated).toBe(true)
-      expect(state.user).not.toBe(null)
+      expect(state.user).toEqual(mockAdminUser)
+      expect(state.isAuthLoading).toBe(false)
     })
 
-    it('clears state when tokens are null', () => {
-      // First set tokens
-      const tokens = { access: 'access-token', refresh: 'refresh-token' }
-      act(() => {
-        useAuthStore.getState().setTokens(tokens)
+    it('sets isAuthenticated false when user is not staff', async () => {
+      vi.mocked(axiosInstance.get).mockResolvedValueOnce({
+        data: { ...mockAdminUser, is_staff: false },
       })
 
-      // Then clear them
-      act(() => {
-        useAuthStore.getState().setTokens(null as any)
+      await act(async () => {
+        await useAuthStore.getState().initAuth()
       })
 
       const state = useAuthStore.getState()
-      expect(state.authTokens).toBe(null)
       expect(state.isAuthenticated).toBe(false)
       expect(state.user).toBe(null)
+      expect(state.isAuthLoading).toBe(false)
     })
-  })
 
-  describe('setUser', () => {
-    it('sets user data', () => {
-      const user = {
-        id: 1,
-        email: 'test@example.com',
-        first_name: 'Test',
-        last_name: 'User',
-        profile_img_url: 'https://example.com/photo.jpg',
-      }
+    it('sets isAuthenticated false on error', async () => {
+      vi.mocked(axiosInstance.get).mockRejectedValueOnce({ status: 401, code: 'unauthorized' })
 
-      act(() => {
-        useAuthStore.getState().setUser(user)
+      await act(async () => {
+        await useAuthStore.getState().initAuth()
       })
 
-      expect(useAuthStore.getState().user).toEqual(user)
+      const state = useAuthStore.getState()
+      expect(state.isAuthenticated).toBe(false)
+      expect(state.isAuthLoading).toBe(false)
     })
   })
 
   describe('loginUser', () => {
-    it('logs in successfully and sets tokens', async () => {
-      const mockResponse = {
-        data: {
-          access: 'new-access-token',
-          refresh: 'new-refresh-token',
-        },
-      }
-      vi.mocked(axiosInstance.post).mockResolvedValueOnce(mockResponse)
+    it('logs in successfully and authenticates', async () => {
+      vi.mocked(axiosInstance.post).mockResolvedValueOnce({ data: {} })
+      vi.mocked(axiosInstance.get).mockResolvedValueOnce({ data: mockAdminUser })
 
       const formData = new FormData()
       formData.append('email', 'admin@example.com')
@@ -120,8 +100,6 @@ describe('useAuthStore', () => {
       })
 
       expect(axiosInstance.post).toHaveBeenCalledWith('/admin-user/login/', formData)
-      expect(Cookies.set).toHaveBeenCalledWith('access', 'new-access-token', expect.any(Object))
-      expect(Cookies.set).toHaveBeenCalledWith('refresh', 'new-refresh-token', expect.any(Object))
       expect(useAuthStore.getState().isAuthenticated).toBe(true)
     })
 
@@ -129,8 +107,9 @@ describe('useAuthStore', () => {
       let loadingDuringCall = false
       vi.mocked(axiosInstance.post).mockImplementationOnce(async () => {
         loadingDuringCall = useAuthStore.getState().loading
-        return { data: { access: 'token', refresh: 'token' } }
+        return { data: {} }
       })
+      vi.mocked(axiosInstance.get).mockResolvedValueOnce({ data: mockAdminUser })
 
       const formData = new FormData()
 
@@ -173,12 +152,10 @@ describe('useAuthStore', () => {
     })
 
     it('clears error before login attempt', async () => {
-      // Set an existing error
       useAuthStore.setState({ loginError: { status: 400, code: 'error', message: 'Old error' } })
 
-      vi.mocked(axiosInstance.post).mockResolvedValueOnce({
-        data: { access: 'token', refresh: 'token' },
-      })
+      vi.mocked(axiosInstance.post).mockResolvedValueOnce({ data: {} })
+      vi.mocked(axiosInstance.get).mockResolvedValueOnce({ data: mockAdminUser })
 
       const formData = new FormData()
 
@@ -186,86 +163,37 @@ describe('useAuthStore', () => {
         await useAuthStore.getState().loginUser(formData)
       })
 
-      // Error should be cleared (null) on success
       expect(useAuthStore.getState().loginError).toBe(null)
     })
   })
 
   describe('logoutUser', () => {
-    it('clears tokens and user data', () => {
-      // First login
+    it('clears user and isAuthenticated', async () => {
       useAuthStore.setState({
-        authTokens: { access: 'token', refresh: 'token' },
         isAuthenticated: true,
-        user: { id: 1, email: 'test@example.com', first_name: 'Test', last_name: 'User', profile_img_url: '' },
+        user: mockAdminUser,
       })
 
-      act(() => {
-        useAuthStore.getState().logoutUser()
+      vi.mocked(axiosInstance.post).mockResolvedValueOnce({ data: {} })
+
+      await act(async () => {
+        await useAuthStore.getState().logoutUser()
       })
 
       const state = useAuthStore.getState()
-      expect(state.authTokens).toBe(null)
       expect(state.user).toBe(null)
       expect(state.isAuthenticated).toBe(false)
     })
 
-    it('removes cookies on logout', () => {
-      act(() => {
-        useAuthStore.getState().logoutUser()
-      })
-
-      expect(Cookies.remove).toHaveBeenCalledWith('access', expect.any(Object))
-      expect(Cookies.remove).toHaveBeenCalledWith('refresh', expect.any(Object))
-    })
-  })
-
-  describe('refreshToken', () => {
-    it('refreshes tokens successfully', async () => {
-      vi.mocked(Cookies.get).mockReturnValue('valid-refresh-token' as unknown as { [key: string]: string })
-      vi.mocked(axiosInstance.post).mockResolvedValueOnce({
-        data: { access: 'new-access', refresh: 'new-refresh' },
-      })
+    it('clears state even if logout request fails', async () => {
+      useAuthStore.setState({ isAuthenticated: true, user: mockAdminUser })
+      vi.mocked(axiosInstance.post).mockRejectedValueOnce({ status: 500 })
 
       await act(async () => {
-        await useAuthStore.getState().refreshToken()
+        await useAuthStore.getState().logoutUser()
       })
 
-      expect(axiosInstance.post).toHaveBeenCalledWith('/user/token-refresh/', { refresh: 'valid-refresh-token' })
-      expect(Cookies.set).toHaveBeenCalledWith('access', 'new-access', expect.any(Object))
-      expect(Cookies.set).toHaveBeenCalledWith('refresh', 'new-refresh', expect.any(Object))
-    })
-
-    it('logs out when no refresh token exists', async () => {
-      vi.mocked(Cookies.get).mockReturnValue(undefined as unknown as { [key: string]: string })
-
-      let errorThrown = false
-      await act(async () => {
-        try {
-          await useAuthStore.getState().refreshToken()
-        } catch {
-          errorThrown = true
-        }
-      })
-
-      expect(errorThrown).toBe(true)
       expect(useAuthStore.getState().isAuthenticated).toBe(false)
-    })
-
-    it('throws error on refresh failure', async () => {
-      vi.mocked(Cookies.get).mockReturnValue('valid-refresh-token' as unknown as { [key: string]: string })
-      vi.mocked(axiosInstance.post).mockRejectedValueOnce(new Error('Refresh failed'))
-
-      let errorThrown = false
-      await act(async () => {
-        try {
-          await useAuthStore.getState().refreshToken()
-        } catch {
-          errorThrown = true
-        }
-      })
-
-      expect(errorThrown).toBe(true)
     })
   })
 })

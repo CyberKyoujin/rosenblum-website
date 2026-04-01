@@ -16,12 +16,12 @@ export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const { isAuthenticated, user, logoutUser, userData } = useAuthStore.getState();
+  const { isAuthenticated, logoutUser, userData } = useAuthStore();
 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const avatar = user?.profile_img_url || userData?.image_url || defaultAvatar;
+  const avatar = userData?.profile_img_url || userData?.image_url || defaultAvatar;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -99,9 +99,9 @@ export default function AccountMenu() {
             {avatar ? (
               <img className='profile-img-sm' src={avatar} style={{ width: '35px', marginRight: "0.5rem" }} alt="Profile" onError={handleImageError}/>
             ) : (
-              <Avatar sx={{ background: 'rgb(76, 121, 212)' }}>{user?.first_name?.[0]}</Avatar>
+              <Avatar sx={{ background: 'rgb(76, 121, 212)' }}>{userData?.first_name?.[0]}</Avatar>
             )}
-            {isAuthenticated ? `${user?.first_name} ${user?.last_name}` : t('profile')}
+            {isAuthenticated ? `${userData?.first_name} ${userData?.last_name}` : t('profile')}
           </div>
         </MenuItem>
         <Divider />

@@ -4,7 +4,7 @@ import useMessageStore from '../zustand/useMessageStore';
 import { ApiErrorResponse } from '../types/error';
 
 export const useMessages = () => {
-    const user = useAuthStore(s => s.user);
+    const user = useAuthStore(s => s.userData);
     const { 
         messages, messagesLoading, sendMessagesLoading, 
         toggleMessages, fetchUserMessages, sendMessage, fetchMessagesError 

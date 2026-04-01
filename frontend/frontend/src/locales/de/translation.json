@@ -254,6 +254,13 @@
     "teamFirst": "Unser",
     "teamSecond": "Team",
     "teamText": "Unser Team besteht aus erfahrenen und qualifizierten Übersetzern und Dolmetschern, die sich durch ihre Leidenschaft für Sprachen und interkulturelle Kommunikation auszeichnen. Alle unsere Fachkräfte sind muttersprachlich und verfügen über branchenspezifische Kenntnisse, um die Genauigkeit und Relevanz jeder Übersetzung zu gewährleisten.",
+    "olegTrust": {
+      "label": "Ihr vereidigter Übersetzer",
+      "point1": "Vom Landgericht Hannover allgemein beeidigt",
+      "point2": "Übersetzungen mit offiziellem Amtssiegel – anerkannt bei Behörden, Ämtern & Botschaften",
+      "point3": "Spezialist für Russisch und Ukrainisch",
+      "point4": "Über 8 Jahre Erfahrung in beglaubigten Übersetzungen"
+    },
     "team": {
       "sectionTitle": "Unser",
       "sectionTitleHighlight": "Team",
@@ -286,7 +293,7 @@
     "thursday": "Donnerstag",
     "friday": "Freitag",
     "onlyGerman": "Bitte geben Sie nur eine deutsche Telefonnummer ein !",
-    "name": "Name",
+    "name": "Vorname und Nachname",
     "email": "Email",
     "phoneNumber": "Telefonnummer",
     "city": "Stadt",
@@ -346,6 +353,9 @@
     "footerQuickLinks": "Schnellzugriff",
     "footerLegal": "Rechtliches",
     "invalidEmail": "Ungültiges E-Mail-Format",
+    "validationLatinOnly": "Nur lateinische Buchstaben erlaubt",
+    "validationNameTooLong": "Name ist zu lang (max. 100 Zeichen)",
+    "validationInvalidPhone": "Ungültige Telefonnummer",
     "mr": "Herr",
     "mrs": "Frau",
     "verificationCode": "Bestätigungscode",

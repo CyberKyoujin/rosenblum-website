@@ -4,10 +4,11 @@ from rest_framework import status, filters, generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
 from base.models import CustomUser, Order, Message, File, RequestObject, RequestAnswer, Translation
 from base.serializers import CustomUserSerializer, TranslationSerializer, OrderSerializer, MessageSerializer, RequestAnswerSerializer, TranslateSerializer, UserTokenObtainPairSerializer, RequestSerializer
 from django.contrib.auth import authenticate
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Count, Case, When, F, Q, Max, IntegerField
 from base.services.translations import stream_translate_text
@@ -18,18 +19,25 @@ from rest_framework.decorators import action
 
 # AUTHENTICATION VIEWS
 
-class AdminLoginView(TokenObtainPairView):
-    serializer_class = UserTokenObtainPairSerializer
+class AdminLoginView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request: Request, *args, **kwargs) -> Response:
         email = request.data.get('email')
         password = request.data.get('password')
         user = authenticate(email=email, password=password)
         if not user:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        if user.is_superuser:
-            return super().post(request, *args, **kwargs)
-        else:
+        if not user.is_superuser:
             return Response({"details": "Only admin users are allowed!"}, status=status.HTTP_403_FORBIDDEN)
+
+        refresh = RefreshToken.for_user(user)
+        access_token = refresh.access_token
+
+        response = Response({"detail": "Login successful"}, status=status.HTTP_200_OK)
+        response.set_cookie("access", str(access_token), httponly=True, secure=True, samesite='None', max_age=300)
+        response.set_cookie("refresh", str(refresh), httponly=True, secure=True, samesite='None', max_age=86400)
+        return response
    
 
 # MESSAGE VIEWS

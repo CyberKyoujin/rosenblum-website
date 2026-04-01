@@ -3,7 +3,6 @@ import Cookies from "js-cookie"
 import useAuthStore from "../zustand/useAuthStore";
 import { ApiError } from "../types/auth";
 
-// Use VITE_API_URL if set, otherwise use relative path for same-origin requests
 const BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 const axiosInstance = axios.create({
@@ -13,9 +12,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     config => {
-        const accessToken = Cookies.get('access');
-        if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+        const csrfToken = Cookies.get('csrftoken');
+        if (csrfToken) {
+            config.headers['X-CSRFToken'] = csrfToken;
         }
         return config;
     },
@@ -41,24 +40,17 @@ axiosInstance.interceptors.response.use(
 
         const status = error.response.status;
 
-        if (status === 401 && !originalRequest._retry) {
+        const isAuthEndpoint = originalRequest.url?.includes('/user/login/') ||
+                               originalRequest.url?.includes('/user/token-refresh/');
+
+        if (status === 401 && !originalRequest._retry && !isAuthEndpoint) {
 
             originalRequest._retry = true;
-            const refreshToken = Cookies.get("refresh");
 
-            if (refreshToken) {
+            
                 try {
 
-                    const response = await axios.post(`${BASE_URL}/user/token-refresh/`, {refresh: refreshToken});
-
-                    const { access, refresh } = response.data;
-                    Cookies.set("access", access, {expires: 7 / 24 / 60, secure: true, sameSite: "Strict"});
-                    Cookies.set("refresh", refresh, {expires: 7, secure: true, sameSite: "Strict"});
-
-                    axiosInstance.defaults.headers.Authorization = `Bearer ${access}`;
-                    originalRequest.headers.Authorization = `Bearer ${access}`;
-
-                    useAuthStore.getState().setTokens({access, refresh});
+                    await axios.post(`${BASE_URL}/user/token-refresh/`, {}, { withCredentials: true });
 
                     return axiosInstance(originalRequest);
 
@@ -76,8 +68,6 @@ axiosInstance.interceptors.response.use(
                     return Promise.reject(apiError);
 
                 }
-
-            }
 
         }
 

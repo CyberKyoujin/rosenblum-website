@@ -78,7 +78,7 @@ class TestMessageSerializerCreate:
         sender = create_user(email='sender@example.com')
         receiver = create_user(email='receiver@example.com')
 
-        file1 = SimpleUploadedFile("doc.pdf", b"content", content_type="application/pdf")
+        file1 = SimpleUploadedFile("doc.pdf", b"%PDF-1.4 fake pdf content", content_type="application/pdf")
 
         data = {
             'sender': sender.id,

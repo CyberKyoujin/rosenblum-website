@@ -1,4 +1,5 @@
 import React from "react";
+import OlegTrustSection from "../components/OlegTrustSection";
 import planetIcon from '../assets/planet_icon.webp'
 import { useTranslation } from "react-i18next";
 import Divider from '@mui/material/Divider';
@@ -65,6 +66,7 @@ const Home = () => {
 
   }, []);
 
+  const sortedReviews = [...reviews].filter((review) => review.rating > 4);
 
   return(
     <>
@@ -131,7 +133,11 @@ const Home = () => {
             </div>
         </div>
 
-        <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '4rem', marginBottom: '3rem'}}/>
+        <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '4rem', marginBottom: '1rem'}}/>
+
+        <OlegTrustSection />
+
+        <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '1rem', marginBottom: '3rem'}}/>
 
         <div className="reviews-header">
             <h1>{t('weAre')}</h1>
@@ -281,7 +287,7 @@ const Home = () => {
             (
             
             <CustomSlider>
-                { reviews.map((review, index) => (
+                { sortedReviews.map((review, index) => (
                     <div className="review-container" key={index}>
                         <div className="review-header">
                             <img src={review.profile_photo_url} alt="" loading="lazy" onError={handleImageError}/>
