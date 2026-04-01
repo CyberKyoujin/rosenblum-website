@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcairo2-dev \
     libpango1.0-dev \
+    libmagic1 \
     libffi-dev \
     shared-mime-info \
     pkg-config \
