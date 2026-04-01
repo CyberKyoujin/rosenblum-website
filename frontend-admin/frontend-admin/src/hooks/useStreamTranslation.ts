@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiErrorResponse } from "../types/error";
-import useAuthStore from "../zustand/useAuthStore";
 import { toApiError } from "../utils/toApiError";
+import Cookies from "js-cookie";
 
-const API_URL = "http://localhost:8000"
+const API_URL = import.meta.env.VITE_API_URL || "/api";
 
 export const useStreamTranslation = () => {
 
@@ -14,8 +14,6 @@ export const useStreamTranslation = () => {
   const fullTextRef = useRef('');
 
   const indexRef = useRef(0);
-  
-  const accessToken = useAuthStore((state) => state.authTokens?.access);
 
   useEffect(() => {
     let intervalId: any;
@@ -45,11 +43,13 @@ export const useStreamTranslation = () => {
     indexRef.current = 0;
 
     try {
+      const csrfToken = Cookies.get('csrftoken');
       const response = await fetch(`${API_URL}/admin-user/translations/translate/`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {}),
         },
         body: JSON.stringify({ text, lan_to: lanTo }),
       });
@@ -75,7 +75,7 @@ export const useStreamTranslation = () => {
     } finally {
       setIsStreaming(false); 
     }
-  }, [accessToken]);
+  }, []);
 
   const reset = () => {
     setDisplayedText('');
