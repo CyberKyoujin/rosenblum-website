@@ -42,7 +42,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
+          sudo apt-get install -y libcairo2-dev libpango1.0-dev libgdk-pixbuf2.0-0 libffi-dev shared-mime-info libmagic1
 
       - name: Install Backend Dependencies
         run: |

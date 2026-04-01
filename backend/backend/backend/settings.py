@@ -289,6 +289,9 @@ else:
         },
     }
 
+# Trust X-Forwarded-Proto from nginx so Django knows it's behind HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 CSRF_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False  # Must be False so JS can read and send X-CSRFToken header
