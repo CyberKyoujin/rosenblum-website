@@ -47,8 +47,6 @@ const useMessages = create<MessagesState>((set, get) => ({
                     ordering: filters.ordering
                 }});
             set({ messages: response.data as MessagesResponseData});
-
-            console.log(response.data);
         } catch (err: unknown) {
             const error = toApiError(err);
             set({fetchMessagesError: error});
@@ -95,7 +93,8 @@ const useMessages = create<MessagesState>((set, get) => ({
          try{
             await axiosInstance.post(`/messages/toggle/`, {sender_id});
         }catch (error) {
-            console.log('Error while toggling user messages:' + error);
+            const err = toApiError(error);
+            set({ fetchMessagesError: err });
         }
     }
 

@@ -41,8 +41,6 @@ export default function useEmailVerification () {
             const attemptsValue = err?.errors?.attempts;
             const errorMessage = err?.message;
 
-            console.log(errorCode, attemptsValue, errorMessage)
-
             if (attemptsValue !== undefined) {
                 setAttempts(attemptsValue === null ? 0 : attemptsValue);
             } else {
