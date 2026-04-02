@@ -92,9 +92,8 @@ const useMessages = create<MessagesState>((set, get) => ({
     toggleMessages: async (sender_id) => {
          try{
             await axiosInstance.post(`/messages/toggle/`, {sender_id});
-        }catch (error) {
-            const err = toApiError(error);
-            set({ fetchMessagesError: err });
+        }catch {
+            // toggle failure is non-critical, silently ignored
         }
     }
 
