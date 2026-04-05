@@ -83,12 +83,34 @@ class CustomUserSerializer(serializers.ModelSerializer):
         return Order.objects.filter(user=obj).count()
         
 class UserDataSerializer(serializers.ModelSerializer):
-    
+
     image_url = serializers.ImageField(source='profile_img', read_only=True)
-    
+
     class Meta:
         model = CustomUser
         fields = ['id', 'date_joined', 'phone_number', 'city', 'street', 'zip', 'image_url', 'first_name', 'last_name', 'email', 'profile_img_url', 'is_staff']
+
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'phone_number', 'city', 'street', 'zip', 'profile_img', 'image_url']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.profile_img:
+            url = obj.profile_img.url
+            return request.build_absolute_uri(url) if request else url
+        return None
+
+    def update(self, instance, validated_data):
+        for key, value in validated_data.items():
+            setattr(instance, key, value)
+        instance.save()
+        return instance
         
 
 class CustomTokenRefreshSerializer(TokenRefreshSerializer):

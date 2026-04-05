@@ -97,7 +97,7 @@ export const useOrderDetails = (orderId?: string, uuid?: string) => {
                 await axiosInstance.patch(`/orders/${orderId}/`, {
                     payment_type: 'stripe',
                 }, { params: { uuid: uuid || undefined } });
-                navigate('/payment', { state: { total, orderId } });
+                navigate('/payment', { state: { total, orderId, guestUuid: uuid ?? null } });
             } catch (err: unknown) {
                 setOrderDetailsError(toApiError(err));
             } finally {
@@ -116,7 +116,7 @@ export const useOrderDetails = (orderId?: string, uuid?: string) => {
                 setPaymentLoading(false);
             }
         }
-    }, [orderData, selectedPayment, orderId, navigate]);
+    }, [orderData, selectedPayment, orderId, uuid, navigate]);
 
     return {
         orderData,

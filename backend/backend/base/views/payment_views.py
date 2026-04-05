@@ -26,6 +26,8 @@ class CreatePaymentIntent(APIView):
     def post(self, request):
         order_id = request.data.get('order_id') 
         
+        print(request.data)  # Debugging statement
+        
         if not order_id:
             logger.warning("[Stripe PaymentIntent]: Invalid or missing order_id=%s in request.", order_id)
             return Response({'error': 'order_id is required'}, status=400)
@@ -38,7 +40,7 @@ class CreatePaymentIntent(APIView):
 
             # IDOR check: authenticated users can only pay for their own orders
             if request.user.is_authenticated and not request.user.is_staff:
-                if order.user_id and order.user_id != request.user.id:
+                if order.user_id != request.user.id:
                     logger.warning("[Stripe PaymentIntent]: IDOR attempt by user_id=%s for order_id=%s", request.user.id, order_id)
                     return Response({'error': 'Not found'}, status=404)
             # Guest IDOR check: guest must provide matching UUID

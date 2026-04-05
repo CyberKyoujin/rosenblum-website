@@ -135,7 +135,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
     updateUserProfile: async (formData: FormData) => {
         set({ loading: true });
         try {
-            await axiosInstance.patch('/user/users/', formData);
+            await axiosInstance.patch('/user/users/me/', formData);
             await get().fetchUserData();
         } catch (err: unknown) {
             throw toApiError(err);

@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from base.serializers import CustomUserSerializer, CustomTokenRefreshSerializer, UserTokenObtainPairSerializer, UserDataSerializer, MessageSerializer, RequestSerializer, ReviewSerializer
+from base.serializers import CustomUserSerializer, CustomTokenRefreshSerializer, UserTokenObtainPairSerializer, UserDataSerializer, UpdateProfileSerializer, MessageSerializer, RequestSerializer, ReviewSerializer
 from social_django.utils import load_strategy, load_backend
 from social_core.backends.oauth import BaseOAuth2
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -72,7 +72,7 @@ class UserViewSet(viewsets.ModelViewSet):
         ]
         if self.action in public_actions:
             return [AllowAny()]
-        if self.action in ['me', 'retrieve', 'delete_me'] and not self.request.user.is_staff:
+        if self.action in ['me', 'retrieve', 'delete_me', 'update_profile'] and not self.request.user.is_staff:
             return [IsAuthenticated()]
         return [IsAdminUser()]
 
@@ -96,7 +96,7 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = UserDataSerializer(user)
             return Response(serializer.data)
         
-        serializer = CustomUserSerializer(user, data=request.data, partial=True, context={'request': request})
+        serializer = UpdateProfileSerializer(user, data=request.data, partial=True, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

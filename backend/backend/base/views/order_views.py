@@ -78,6 +78,12 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         logger.info("[ORDER VIEWSET] Order %s created (type=%s, user=%s)", instance.id, instance.order_type, instance.user_id or "anonymous")
 
+        if instance.guest_uuid:
+            return Response(
+                {'id': instance.id, 'is_new': instance.is_new, 'guest_uuid': str(instance.guest_uuid)},
+                status=status.HTTP_201_CREATED
+            )
+        
         return Response(
             {'id': instance.id, 'is_new': instance.is_new},
             status=status.HTTP_201_CREATED

@@ -19,7 +19,7 @@ export interface OrderState {
     successfullyCreated: boolean;
     ordersLoading: boolean;
     createOrderLoading: boolean;
-    createOrder: (formData: FormData) => Promise<{ id: string }>;
+    createOrder: (formData: FormData) => Promise<{ id: string; guest_uuid: string | null }>;
     fetchOrders: () => Promise<void>;
 }
 

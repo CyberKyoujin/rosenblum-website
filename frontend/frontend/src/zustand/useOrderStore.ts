@@ -21,6 +21,7 @@ const useOrderStore = create<OrderState>((set, get) => ({
                 }
             });
 
+
             set({successfullyCreated: true})
 
             await get().fetchOrders();

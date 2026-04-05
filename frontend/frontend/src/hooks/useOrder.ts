@@ -254,7 +254,7 @@ export const useOrder = () => {
       if (wantsAccount && !userData) {
         navigate("/email-verification", { state: { email: methods.getValues('email') } });
       } else if (paymentMethod === "stripe") {
-        navigate("/payment", { state: { orderId: data.id, total: total } });
+        navigate("/payment", { state: { orderId: data.id, total: total, guestUuid: data.guest_uuid ?? null } });
       } else if (paymentMethod === "kostenvoranschlag") {
         navigate("/order-success", { state: { orderId: data.id, type: 'kostenvoranschlag' } });
       } else {

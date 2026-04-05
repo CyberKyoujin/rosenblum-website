@@ -330,7 +330,7 @@ describe('useAuthStore', () => {
         await useAuthStore.getState().updateUserProfile(formData)
       })
 
-      expect(axiosInstance.patch).toHaveBeenCalledWith('/user/users/', formData)
+      expect(axiosInstance.patch).toHaveBeenCalledWith('/user/users/me/', formData)
     })
   })
 })

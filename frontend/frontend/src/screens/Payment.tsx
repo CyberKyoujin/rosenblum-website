@@ -66,13 +66,16 @@ export const PaymentPage = () => {
 
   const location = useLocation();
 
-  const { total, orderId } = location.state as { total: number; orderId: string };
+  const { total, orderId, guestUuid } = location.state as { total: number; orderId: string; guestUuid: string | null };
 
   useEffect(() => {
 
     const fetchClientSecret = async () => {
         try {
-            const response = await axiosInstance.post("/payments/payment-intent/", { order_id: orderId });
+            const response = await axiosInstance.post("/payments/payment-intent/", {
+                order_id: orderId,
+                ...(guestUuid ? { uuid: guestUuid } : {}),
+            });
             setClientSecret(response.data.clientSecret);
         } catch (error) {
             console.error("Error fetching client secret:", error);
