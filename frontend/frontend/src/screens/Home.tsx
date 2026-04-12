@@ -18,9 +18,10 @@ import ApiErrorAlert from "../components/ApiErrorAlert";
 import ApiErrorView from "../components/ApiErrorView";
 import { useIsAtTop } from "../hooks/useIsAtTop";
 import deFlag from "../assets/de.svg"
-import { FaCcVisa, FaCcMastercard, FaCcApplePay, FaGooglePay, FaCheck } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import sutthausen1 from "../assets/sutthausen1.webp"
 import AuthoritiesSection from "../components/AuthoritiesSection";
+import HowItWorksVideo from "../components/HowItWorksVideo";
 
 const Home = () => {
 
@@ -139,6 +140,10 @@ const Home = () => {
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '1rem', marginBottom: '3rem'}}/>
 
+        <HowItWorksVideo />
+
+        <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
+
         <div className="reviews-header">
             <h1>{t('weAre')}</h1>
             <h1 className="header-span">{t('reliable')}.</h1>
@@ -171,98 +176,6 @@ const Home = () => {
                 <p className="feature-card-text">{t('featureCard4Text')}</p>
                 <p className="feature-card-details">{t('featureCard4Details')}</p>
             </div>
-        </div>
-
-        
-
-        <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
-
-
-        <div className="how-it-works">
-
-            <div className="how-it-works__header">
-                <h1>{t('thisWay')}</h1>
-                <h1 className="header-span">{t('itWorks')}</h1>
-            </div>
-
-            <div className="how-it-works__timeline">
-
-                {/* Step 1 */}
-                <div className="how-it-works__entry">
-                    <div className="how-it-works__num-col">
-                        <div className="how-it-works__badge">1</div>
-                        <div className="how-it-works__line" />
-                    </div>
-                    <div className="how-it-works__card">
-                        <h4>{t('how_it_works.step1.title')}</h4>
-                        <p>{t('how_it_works.step1.text')}</p>
-                        <Link className="action-link-btn" to="/pricing">
-                            {t('how_it_works.step1.btn')}
-                        </Link>
-                    </div>
-                </div>
-
-                {/* Step 2 */}
-                <div className="how-it-works__entry">
-                    <div className="how-it-works__num-col">
-                        <div className="how-it-works__badge">2</div>
-                        <div className="how-it-works__line" />
-                    </div>
-                    <div className="how-it-works__card">
-                        <h4>{t('how_it_works.step2.title')}</h4>
-                        <p>
-                            {t('how_it_works.step2.text_part1')}
-                            <span className="action-span">{t('how_it_works.step2.span_pay_now')}</span>
-                            {t('how_it_works.step2.text_part2')}
-                            <span className="action-span">{t('how_it_works.step2.span_quote')}</span>
-                            {t('how_it_works.step2.text_part3')}
-                        </p>
-                        <Link className="action-link-btn" to="/order">
-                            {t('how_it_works.step2.btn')}
-                        </Link>
-                    </div>
-                </div>
-
-                {/* Step 3 */}
-                <div className="how-it-works__entry">
-                    <div className="how-it-works__num-col">
-                        <div className="how-it-works__badge">3</div>
-                        <div className="how-it-works__line" />
-                    </div>
-                    <div className="how-it-works__card">
-                        <h4>{t('how_it_works.step3.title')}</h4>
-                        <ul className="action-steps-list">
-                            <li>
-                                {t('how_it_works.step3.std_part1')}
-                                <span className="action-span">{t('how_it_works.step3.span_stripe')}</span>
-                                {t('how_it_works.step3.std_part2')}
-                                <span className="action-span">{t('how_it_works.step3.span_rechnung')}</span>
-                                {t('how_it_works.step3.std_part3')}
-                            </li>
-                            <li>{t('how_it_works.step3.individual')}</li>
-                        </ul>
-                        <div className="action-pay-badge">
-                            <FaCcVisa size={38} className="app-icon" />
-                            <FaCcMastercard size={38} className="app-icon" />
-                            <FaGooglePay size={38} className="app-icon" />
-                            <FaCcApplePay size={38} className="app-icon" />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Step 4 */}
-                <div className="how-it-works__entry">
-                    <div className="how-it-works__num-col">
-                        <div className="how-it-works__badge">4</div>
-                    </div>
-                    <div className="how-it-works__card">
-                        <h4>{t('how_it_works.step4.title')}</h4>
-                        <p>{t('how_it_works.step4.text')}</p>
-                    </div>
-                </div>
-
-            </div>
-
         </div>
 
         <Divider orientation="horizontal" flexItem sx={{backgroundColor: 'lightgray', width: '100%', height: '2px', margin: 'auto', marginTop: '3rem', marginBottom: '3rem'}}/>
