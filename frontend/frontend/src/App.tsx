@@ -1,5 +1,11 @@
 import { useEffect, Suspense, lazy } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 import './App.css';
 
 import Navbar from './components/Navbar';
@@ -80,6 +86,7 @@ function App() {
 
   return (
     <main>
+      <ScrollToTop />
       <Navbar/>
       <Routes>
 
