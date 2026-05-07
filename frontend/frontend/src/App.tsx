@@ -19,6 +19,8 @@ import MessagesSkeleton from './components/MessagesSkeleton';
 import OrderDetailsSkeleton from './components/OrderDetailsSkeleton';
 import CookieConsent from './components/CookieConsent';
 import WhatsAppButton from './components/WhatsAppButton';
+import RouteTracker from './components/RouteTracker';
+
 
 const Home = lazy(() => import('./screens/Home'));
 const Login = lazy(() => import('./screens/Login'));
@@ -87,6 +89,7 @@ function App() {
   return (
     <main>
       <ScrollToTop />
+      <RouteTracker />
       <Navbar/>
       <Routes>
 

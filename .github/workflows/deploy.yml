@@ -328,6 +328,9 @@ jobs:
             # Frontend URL
             echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
 
+            # Google Analytics
+            echo "VITE_GA_MEASUREMENT_ID=${{ secrets.VITE_GA_MEASUREMENT_ID }}" >> .env
+
             # Telegram
 
             echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
