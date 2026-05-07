@@ -5,7 +5,7 @@ import './i18n';
 import { BrowserRouter } from 'react-router-dom';
 import * as Sentry from "@sentry/react";
 import i18next from 'i18next';
-import { initGA } from './utils/analytics.ts';
+import { tryInitGA } from './utils/analytics.ts';
 
 
 const t = (key: string) => i18next.t(key);
@@ -41,9 +41,7 @@ Sentry.init({
   tracesSampleRate: 0.1, 
 });
 
-if (import.meta.env.PROD) {
-  initGA();
-}
+tryInitGA();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   
