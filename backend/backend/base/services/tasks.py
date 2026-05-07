@@ -1,6 +1,7 @@
 import logging
 import requests
 from django.core.files.base import ContentFile
+from django.utils import timezone
 from decouple import config
 from base.models import Order, Invoice
 from base.services.email_notifications import _send_invoice_email
@@ -10,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 AUTH_TOKEN = config('LEX_OFFICE_AUTH_TOKEN')
 LEXOFFICE_BASE = "https://api.lexoffice.io/v1"
+
 HEADERS = {
     "Authorization": f"Bearer {AUTH_TOKEN}",
     "Content-Type": "application/json",
@@ -84,8 +86,13 @@ def create_lex_office_invoice(order_id):
         else:
             remark = "Vielen Dank für Ihren Auftrag!\nÜbersetzungsbüro Rosenblum"
 
+        today = timezone.localtime(timezone.now())
+        today_str = today.strftime('%Y-%m-%dT00:00:00.000%z')
+        # LexOffice requires colon in offset: +0100 → +01:00
+        today_str = today_str[:-2] + ':' + today_str[-2:]
+
         payload = {
-            "voucherDate": order.date.strftime('%Y-%m-%dT00:00:00.000+01:00'),
+            "voucherDate": today_str,
             "address": {
                 "name": order.name,
                 "street": order.street,
@@ -102,7 +109,7 @@ def create_lex_office_invoice(order_id):
             },
             "paymentConditions": payment_conditions,
             "shippingConditions": {
-                "shippingDate": order.date.strftime('%Y-%m-%dT00:00:00.000+01:00'),
+                "shippingDate": today_str,
                 "shippingType": "delivery",
             },
             "title": "Rechnung",
