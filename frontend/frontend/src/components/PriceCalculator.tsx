@@ -12,8 +12,8 @@ interface DocTypeConfig {
 }
 
 const DOC_TYPES: DocTypeConfig[] = [
-  { id: 'workbook',  labelKey: 'calc.docWorkbook', avgLines: 40 },
-  { id: 'diploma',   labelKey: 'calc.docDiploma',  avgLines: 35 },
+  { id: 'workbook',  labelKey: 'calc.docWorkbook', avgLines:25 },
+  { id: 'diploma',   labelKey: 'calc.docDiploma',  avgLines: 28 },
   { id: 'court',     labelKey: 'calc.docCourt',    avgLines: 45 },
   { id: 'medical',   labelKey: 'calc.docMedical',  avgLines: 30 },
   { id: 'education', labelKey: 'calc.docEducation',avgLines: 30 },

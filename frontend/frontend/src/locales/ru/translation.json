@@ -429,7 +429,7 @@
     "schoolCertificates": "Аттестаты (аттестат + приложение)",
     "driverLicense": "Водительское удостоверение",
     "registrationCerts": "Справки о регистрации, справки об отсутствии судимости",
-    "apostille": "Апостиль",
+    "apostille": "Перевод апостиля",
     "otherCerts": "Справки, сертификаты, свидетельства (до 1 страницы)",
     "otherDocs": "Прочие документы",
     "otherDocsDescription": "Дипломы, трудовые книжки, судебные решения, прививочные паспорта, справки о семейном положении и т.д.",
@@ -441,7 +441,7 @@
     "residencePermit": "Разрешение на проживание",
     "maturityCertNoGrades": "Аттестат (без приложения с оценками)",
     "diplomaNoGrades": "Диплом (без приложения с оценками)",
-    "apostilleOnTranslation": "Апостиль на наш перевод"
+    "apostilleOnTranslation": "Апостиль на немецкий документ / наш перевод"
   },
   "pricing_examples": {
     "title": "Примеры цен",
@@ -550,6 +550,7 @@
   "orderBannerFaq": "FAQ",
   "orderBannerText2": "Для индивидуальных запросов используйте нашу",
   "orderBannerContact": "контактную форму",
+  "orderVideoHintLabel": "Как сделать заказ? (Смотреть видео)",
   "docCategoryPersonenstand": "Документы гражданского состояния",
   "docCategoryAusweis": "Удостоверения и транспорт",
   "docCategoryBescheinigung": "Справки и свидетельства",
@@ -586,8 +587,8 @@
   "requestQuoteButton": "ЗАПРОСИТЬ СМЕТУ",
   "orderAndPayByInvoiceButton": "ЗАКАЗАТЬ И ОПЛАТИТЬ ПО СЧЁТУ",
   "payWithStripeButton": "ОПЛАТИТЬ ЧЕРЕЗ STRIPE",
-  "quoteDescription": "Для Jobcenter, Sozialamt, других учреждений или прочих документов",
-  "invoicePaymentDesc": "Оплата переводом после получения счёта",
+  "quoteDescription": "Я хочу получить смету - Kostenvoranschlag (для Jobcenter, Sozialamt, других учреждений или документов с переменным объемом текста)",
+  "invoicePaymentDesc": "Оплата переводом после получения перевода",
   "uploadedFiles": "Загруженные файлы",
   "individualDocsPaymentHint": "Ваш заказ содержит документы с индивидуальным расчётом цены. В этом случае доступна только опция Смета.",
   "createFreeAccount": "Создать бесплатный аккаунт",

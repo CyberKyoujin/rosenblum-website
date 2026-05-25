@@ -40,9 +40,9 @@ const PricingExamples = () => {
             items: [
                 { labelKey: "pricing_examples.marriage_cert", price: "35,30€" },
                 { labelKey: "pricing_examples.apostille_trans", price: "10,50€" },
-                { labelKey: "pricing_examples.apostille_cert", price: "25,00€" }
+                { labelKey: "pricing_examples.apostille_cert", price: "35,00€" }
             ],
-            total: "70,80€"
+            total: "80,80€"
         },
         {
             icon: <IoSchoolOutline />,

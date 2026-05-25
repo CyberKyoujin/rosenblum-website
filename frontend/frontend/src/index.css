@@ -2308,6 +2308,86 @@ html, body {
   text-decoration: underline;
 }
 
+/* ── Order page: collapsible video hint ─────────────────────── */
+
+.order-video-hint {
+  width: 100%;
+  margin-bottom: 1.5rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  overflow: hidden;
+}
+
+.order-video-hint__toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.9rem 1.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: "Rubik", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e3a5f;
+  text-align: left;
+  transition: background 0.18s;
+}
+
+.order-video-hint__toggle:hover {
+  background: #dbeafe;
+}
+
+.order-video-hint__play-icon {
+  font-size: 1.2rem;
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.order-video-hint__chevron {
+  margin-left: auto;
+  font-size: 1rem;
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.order-video-hint__panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.order-video-hint__panel--open {
+  max-height: 620px;
+  padding: 0 1.25rem 1.25rem;
+}
+
+.order-video-hint__frame-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 620px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(76, 121, 212, 0.15);
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+@media (max-width: 600px) {
+  .order-video-hint__frame-wrap {
+    border-radius: 8px;
+  }
+  .order-video-hint__panel--open {
+    max-height: 420px;
+  }
+}
+
 .oreder-contacts-header{
   display: flex;
   margin-top: 1rem;

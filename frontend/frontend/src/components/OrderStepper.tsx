@@ -20,6 +20,7 @@ import ApiErrorAlert from './ApiErrorAlert';
 import { ApiErrorResponse } from '../types/error';
 import { useIsAtTop } from '../hooks/useIsAtTop';
 import { t } from 'i18next';
+import OrderVideoHint from './OrderVideoHint';
 
 interface Step {
     icon: IconType;
@@ -181,12 +182,15 @@ export default function OrderStepper({logic}: {logic?: any}) {
       </Stepper>
 
       {activeStep === 0 && (
-        <div className="order-info-banner">
-          <IoInformationCircleOutline className="order-info-banner__icon" />
-          <p className="order-info-banner__text">
-            {t('orderBannerText1')} <Link to="/pricing" className="order-info-banner__link">{t('orderBannerPrices')}</Link> {t('orderBannerOr')} <Link to="/faq" className="order-info-banner__link">{t('orderBannerFaq')}</Link> {t('orderBannerText2')} <Link to="/contact-us" className="order-info-banner__link">{t('orderBannerContact')}</Link>.
-          </p>
-        </div>
+        <>
+          <div className="order-info-banner">
+            <IoInformationCircleOutline className="order-info-banner__icon" />
+            <p className="order-info-banner__text">
+              {t('orderBannerText1')} <Link to="/pricing" className="order-info-banner__link">{t('orderBannerPrices')}</Link> {t('orderBannerOr')} <Link to="/faq" className="order-info-banner__link">{t('orderBannerFaq')}</Link> {t('orderBannerText2')} <Link to="/contact-us" className="order-info-banner__link">{t('orderBannerContact')}</Link>.
+            </p>
+          </div>
+          <OrderVideoHint />
+        </>
       )}
 
       {activeStep === steps.length ? (

@@ -429,7 +429,7 @@
     "schoolCertificates": "Атестати (атестат + додаток)",
     "driverLicense": "Водійське посвідчення",
     "registrationCerts": "Довідки про реєстрацію, довідки про відсутність судимості",
-    "apostille": "Апостиль",
+    "apostille": "Переклад апостиля",
     "otherCerts": "Довідки, сертифікати, свідоцтва (до 1 сторінки)",
     "otherDocs": "Інші документи",
     "otherDocsDescription": "Дипломи, трудові книжки, судові рішення, паспорти вакцинації, довідки про сімейний стан тощо.",
@@ -441,7 +441,7 @@
     "residencePermit": "Дозвіл на проживання",
     "maturityCertNoGrades": "Атестат (без додатку з оцінками)",
     "diplomaNoGrades": "Диплом (без додатку з оцінками)",
-    "apostilleOnTranslation": "Апостиль на наш переклад"
+    "apostilleOnTranslation": "Апостиль на наш переклад чи німецький документ"
   },
   "pricing_examples": {
     "title": "Приклади цін",
@@ -550,6 +550,7 @@
   "orderBannerFaq": "FAQ",
   "orderBannerText2": "Для індивідуальних запитів скористайтеся нашою",
   "orderBannerContact": "формою зв'язку",
+  "orderVideoHintLabel": "Як зробити замовлення? (Переглянути відео)",
   "docCategoryPersonenstand": "Документи про сімейний стан",
   "docCategoryAusweis": "Посвідчення та проїзд",
   "docCategoryBescheinigung": "Довідки та свідоцтва",
@@ -586,8 +587,8 @@
   "requestQuoteButton": "ЗАПРОСИТИ КОШТОРИС",
   "orderAndPayByInvoiceButton": "ЗАМОВИТИ ТА ОПЛАТИТИ ЗА РАХУНКОМ",
   "payWithStripeButton": "ОПЛАТИТИ ЧЕРЕЗ STRIPE",
-  "quoteDescription": "Для Jobcenter, Sozialamt, інших установ або інших документів",
-  "invoicePaymentDesc": "Оплата переказом після отримання рахунку",
+  "quoteDescription": "Я хочу отримати кошторис - Kostenvoranschlag (для Jobcenter, Sozialamt, інших установ або документів з змінним обсягом тексту)",
+  "invoicePaymentDesc": "Оплата переказом після отримання перекладу та рахунку",
   "uploadedFiles": "Завантажені файли",
   "individualDocsPaymentHint": "Ваше замовлення містить документи з індивідуальним розрахунком ціни. У цьому випадку доступна лише опція Кошторис.",
   "createFreeAccount": "Створити безкоштовний акаунт",

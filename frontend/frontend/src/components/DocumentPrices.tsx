@@ -37,7 +37,7 @@ const DocumentPrices = () => {
         {
             icon: <IoSchoolOutline />,
             labelKey: "documents_price.schoolCertificates",
-            price: "70,60€"
+            price: "78,90€"
         },
         {
             icon: <IoCarOutline />,
