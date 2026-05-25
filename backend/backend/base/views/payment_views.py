@@ -26,8 +26,6 @@ class CreatePaymentIntent(APIView):
     def post(self, request):
         order_id = request.data.get('order_id') 
         
-        print(request.data)  # Debugging statement
-        
         if not order_id:
             logger.warning("[Stripe PaymentIntent]: Invalid or missing order_id=%s in request.", order_id)
             return Response({'error': 'order_id is required'}, status=400)

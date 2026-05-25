@@ -222,7 +222,7 @@ if not DEBUG:
     sentry_sdk.init(
         dsn=config('SENTRY_DSN'),
         integrations=[DjangoIntegration(), sentry_logging],
-        send_default_pii=True,
+        send_default_pii=False,
         enable_logs=True,
         traces_sample_rate=0.3,
         profiles_sample_rate=0.1,

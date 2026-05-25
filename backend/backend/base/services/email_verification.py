@@ -9,7 +9,6 @@ from django.db import transaction
 
 logger = logging.getLogger(__name__)
 
-
 @dataclass
 class VerificationResult:
     ok: bool

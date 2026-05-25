@@ -303,8 +303,7 @@ class OrderSerializer(serializers.ModelSerializer):
         order_docs = validated_data.pop('order_docs', [])
         password = validated_data.pop('password', None) 
         delivery_type = validated_data.pop('delivery_type', None)
-    
-        
+      
         user = validated_data.get('user')
 
         with transaction.atomic():
@@ -354,6 +353,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 File.objects.create(order=order, file=file)
             
             for doc in order_docs:
+                
                 if isinstance(doc, str):
                     doc = json.loads(doc)
                 
@@ -389,6 +389,7 @@ class OrderSerializer(serializers.ModelSerializer):
             order_pk = order.pk
             order_type = validated_data.get('order_type', '')
             order_total = float(order.total_price)
+            
             transaction.on_commit(lambda: send_order_received_email(order_email, order_pk, order_name))
             transaction.on_commit(lambda: send_admin_new_order_notification(order_pk, order_name, order_email, order_type, order_total))
 
@@ -405,7 +406,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
     documents = DocumentUpdateInputSerializer(many=True, required=False)
     class Meta:
         model = Order
-        fields = ['status', 'is_new', 'order_type', 'payment_status', 'payment_type', 'documents']
+        fields = ['order_type', 'payment_type', 'documents']
         
     def update(self, instance, validated_data):
 
@@ -479,7 +480,10 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
                         Document.objects.create(order=instance, **fields)
             
         return instance
-    
+
+class OrderAdminUpdateSerializer(OrderUpdateSerializer):
+    class Meta(OrderUpdateSerializer.Meta):
+        fields = ['status', 'is_new', 'order_type', 'payment_status', 'payment_type', 'documents']
 
 class MessageSerializer(serializers.ModelSerializer):
     formatted_timestamp = serializers.SerializerMethodField()

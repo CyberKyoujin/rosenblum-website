@@ -181,6 +181,7 @@ export const useOrder = () => {
     setFileError(null);
     setUploadedFiles(prev => [...prev, ...valid]);
   };
+  
   const removeFile = (index: number) => setUploadedFiles(prev => prev.filter((_, i) => i !== index));
 
   const onDrop = (e: React.DragEvent) => {

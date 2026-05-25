@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from base.models import Order
 from django.db.models import Q
-from base.serializers import CostEstimateSerializer, OrderSerializer, OrderUpdateSerializer
+from base.serializers import CostEstimateSerializer, OrderSerializer, OrderUpdateSerializer, OrderAdminUpdateSerializer
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework import viewsets, filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -30,6 +30,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     
     def get_serializer_class(self):
         if self.action in ['update', 'partial_update']:
+            if self.request.user.is_staff:
+                return OrderAdminUpdateSerializer
             return OrderUpdateSerializer
         return OrderSerializer
     
