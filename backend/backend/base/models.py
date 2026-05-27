@@ -104,7 +104,7 @@ class Order(models.Model):
     user = models.ForeignKey(CustomUser,models.CASCADE,null=True,blank=True)
     name = models.CharField(max_length = 264)
     email = models.EmailField(max_length = 264)
-    phone_number = models.CharField(max_length=12)
+    phone_number = models.CharField(max_length=20)
     city = models.CharField(max_length = 264)
     date = models.DateField(null=True,blank=True, auto_now_add = True)
     street = models.CharField(max_length = 264)
