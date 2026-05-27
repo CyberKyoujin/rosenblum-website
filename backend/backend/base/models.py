@@ -32,7 +32,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, null=True, blank=True)
-    phone_number = models.CharField(max_length=12,null=True,blank=True)
+    phone_number = models.CharField(max_length=20,null=True,blank=True)
     city = models.CharField(max_length=264,null=True,blank=True)
     street = models.CharField(max_length=264,null=True,blank=True)
     zip = models.CharField(max_length=264,null=True,blank=True)
