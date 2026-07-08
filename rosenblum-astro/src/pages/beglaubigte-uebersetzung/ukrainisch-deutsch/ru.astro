@@ -1,0 +1,2347 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Navbar from '../../../components/Navbar.astro';
+import StickyBar from '../../../components/StickyBar.astro';
+
+const icons: Record<string, string> = {
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  shieldcheck: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+  check: '<polyline points="20 6 9 17 4 12"/>',
+  arrowright: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  graduation: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12.5V17c3 2.5 9 2.5 12 0v-4.5"/>',
+  briefcase: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>',
+  filetext: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  filecheck: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/>',
+  idcard: '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',
+  home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+  creditcard: '<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>',
+  mailcheck: '<path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/>',
+  camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  calculator: '<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="10" x2="8" y2="10"/><line x1="16" y1="14" x2="8" y2="14"/><line x1="16" y1="18" x2="8" y2="18"/>',
+  checksquare: '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  layers: '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  messagecircle: '<path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>',
+  send: '<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+};
+
+const docs = [
+  {
+    icon: 'filetext',
+    name: 'Свидетельство о рождении',
+    de: 'Geburtsurkunde',
+    ua: 'Свідоцтво про народження',
+    usage: 'Для Einbürgerung, Standesamt, Kindergeld',
+    price: '35,30 €',
+    href: '/app/bestellen?doc=geburtsurkunde',
+    bilingual: true,
+  },
+  {
+    icon: 'filetext',
+    name: 'Свидетельство о браке',
+    de: 'Heiratsurkunde',
+    ua: 'Свідоцтво про шлюб',
+    usage: 'Für Standesamt, воссоединение семьи',
+    price: '35,30 €',
+    href: '/app/bestellen?doc=heiratsurkunde',
+    bilingual: true,
+  },
+  {
+    icon: 'idcard',
+    name: 'Водительское удостоверение',
+    de: 'Führerschein',
+    ua: 'Посвідчення водія',
+    usage: 'Для обмена на немецкие права',
+    price: '30,30 €',
+    href: '/app/bestellen?doc=fuehrerschein',
+    badge: 'Самое доступное',
+  },
+  {
+    icon: 'idcard',
+    name: 'Загранпаспорт',
+    de: 'Reisepass',
+    ua: 'Закордонний паспорт',
+    usage: 'Для Ausländerbehörde',
+    price: '35,30 €',
+    href: '/app/bestellen?doc=pass',
+  },
+  {
+    icon: 'shield',
+    name: 'Справка о несудимости',
+    de: 'Führungszeugnis',
+    ua: 'Довідка про несудимість',
+    usage: 'Для работодателей, органов власти',
+    price: '35,30 €',
+    href: '/app/bestellen?doc=fuehrungszeugnis',
+  },
+  {
+    icon: 'home',
+    name: 'Справка о регистрации',
+    de: 'Meldebescheinigung',
+    ua: 'Довідка про реєстрацію',
+    usage: 'Для органов власти, банков',
+    price: '35,30 €',
+    href: '/app/bestellen?doc=meldebescheinigung',
+  },
+];
+
+const situations = [
+  {
+    icon: 'filecheck',
+    title: 'Ведомство по делам иностранцев',
+    text: 'Для оформления статуса пребывания и продления вида на жительство.',
+    items: ['Свидетельство о рождении', 'Паспорт (страница с данными)', 'Свидетельство о браке'],
+  },
+  {
+    icon: 'star',
+    title: 'Получение гражданства',
+    text: 'Для подачи заявления на немецкое гражданство необходимы заверенные переводы украинских документов.',
+    items: ['Свидетельство о рождении', 'Свидетельство о браке (если есть)', 'Возможно апостиль'],
+  },
+  {
+    icon: 'graduation',
+    title: 'Университет / Uni-Assist',
+    text: 'Для поступления через Uni-Assist нужны заверенные переводы аттестата и диплома.',
+    items: ['Аттестат с приложением оценок', 'Диплом (если есть)'],
+  },
+  {
+    icon: 'briefcase',
+    title: 'Jobcenter / Признание профессии',
+    text: 'Jobcenter может оплатить перевод. Мы выставляем счёт напрямую — вы не платите ничего.',
+    items: ['Трудовая книжка', 'Диплом / Аттестат', 'Jobcenter оплачивает'],
+    badge: 'Jobcenter оплачивает',
+  },
+  {
+    icon: 'heart',
+    title: 'ЗАГС / Бракосочетание',
+    text: 'Для регистрации брака в Германии нужны заверенные переводы украинских документов.',
+    items: ['Свидетельство о рождении', 'Справка о несудимости', 'Решение о разводе (если есть)'],
+  },
+];
+
+const reviews = [
+  {
+    initials: 'ЕК',
+    name: 'Елена Коваленко',
+    city: 'Берлин',
+    text: 'В течение 30 минут получила расчёт для Jobcenter. Перевод пришёл вовремя, всё приняли без вопросов.',
+  },
+  {
+    initials: 'ДА',
+    name: 'Дмитрий Антонов',
+    city: 'Мюнхен',
+    text: 'Перевод диплома для Uni-Assist — идеально оформлено и заверено. Господин Розенблюм терпеливо ответил на все вопросы.',
+  },
+  {
+    initials: 'ЮВ',
+    name: 'Юлия Вебер',
+    city: 'Кёльн',
+    text: 'Экспресс за 24 часа. Именно то что мне было нужно для вида на жительство. Очень рекомендую.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Нужен ли оригинал документа?',
+    a: 'Нет. Для перевода достаточно фото или скана — даже снятого на телефон. Оригинал нужен только если ведомство требует чтобы перевод был физически прикреплён к оригиналу. Это редкий случай — мы сообщим в расчёте если это необходимо.',
+  },
+  {
+    q: 'Сколько стоит заверенный перевод?',
+    a: 'Стандартные документы (свидетельство о рождении, водительское удостоверение, паспорт) стоят от 30,30 € включая НДС — фиксированная цена, без сюрпризов. Сложные документы (диплом, трудовая книжка) оплачиваются по строкам: 1,40–1,80 € за строку. Бесплатный расчёт — за 30 минут.',
+  },
+  {
+    q: 'Как долго ждать перевод?',
+    a: 'Стандартный срок — 72 часа. С опцией Экспресс — 24 часа. Готовый перевод отправляем почтой по всей Германии. Цифровая копия PDF — сразу на email.',
+  },
+  {
+    q: 'Примут ли перевод в ведомстве?',
+    a: 'Да. Все переводы выполняет Олег Розенблюм — общеприсяжный переводчик при Земельном суде Ганновера. Переводы с официальной печатью и подписью признаны по всей Германии — во всех органах власти, судах и университетах.',
+  },
+  {
+    q: 'Может ли Jobcenter оплатить перевод?',
+    a: 'Да. Jobcenter и Agentur für Arbeit могут оплатить расходы на заверенный перевод. Вы подаёте наш расчёт куратору — после подтверждения мы выставляем счёт напрямую в Jobcenter. Вам не нужно платить.',
+  },
+  {
+    q: 'Если мой документ на двух языках (украинский и русский)?',
+    a: 'Это частый случай — многие украинские документы выпущенные до 2000-х годов содержат текст на обоих языках. Мы переводим весь документ целиком как один заказ — доплата за второй язык не взимается.',
+  },
+  {
+    q: 'Нужен ли мне апостиль?',
+    a: 'Это зависит от того, для чего вам нужен перевод. Для использования в Германии апостиль обычно не нужен — достаточно заверенного перевода. Но если документы нужны за рубежом, апостиль может потребоваться. Важно: мы оформляем апостиль именно на наш перевод, а не на ваш оригинальный документ. Апостиль на оригинал оформляется через Министерство юстиции Украины или соответствующий орган вашей страны. Апостиль на наш перевод: 35,00 € (Земельный суд Ганновера).',
+  },
+  {
+    q: 'Как отправить документ?',
+    a: 'Удобнее всего — через форму на сайте: загрузите фото, получите подтверждение сразу. Также можно отправить фото в WhatsApp или Telegram — ответим в течение 30 минут в рабочее время (Пн–Пт 9:00–18:00).',
+  },
+];
+
+const translationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TranslationService',
+  name: 'Rosenblum Übersetzungsbüro',
+  url: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/',
+  serviceType: 'Заверенный перевод Украинский Немецкий',
+  inLanguage: 'uk',
+  outLanguage: 'de',
+  provider: {
+    '@type': 'Person',
+    name: 'Oleg Rosenblum',
+    hasCredential: {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Vereidigter Übersetzer',
+      recognizedBy: { '@type': 'Organization', name: 'Landgericht Hannover' },
+    },
+  },
+  areaServed: { '@type': 'Country', name: 'Germany' },
+  priceRange: 'от €30,30',
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', reviewCount: '50' },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rosenblum-uebersetzungen.de/' },
+    { '@type': 'ListItem', position: 2, name: 'Русский', item: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Переводчик украинского языка в Германии — заверенный перевод | Rosenblum"
+  description="Заверенный перевод украинских документов на немецкий. Присяжный переводчик при Земельном суде Ганновера. Свидетельства, дипломы, водительские удостоверения от 30,30 €. Расчёт за 30 мин."
+  lang="ru"
+  canonicalUrl="https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/"
+  hreflang={{
+    ru: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/',
+    de: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/',
+    uk: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/',
+  }}
+  schema={[translationSchema, faqSchema, breadcrumbSchema]}
+>
+  <Navbar />
+
+  <!-- ===== SECTION 1: HERO ===== -->
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <!-- TEXT -->
+      <div class="hero-text-top">
+        <nav class="lang-switcher" aria-label="Язык страницы">
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/" class="lang-btn lang-btn--active" aria-current="page">
+            <img src="/media/flags/ru.svg" width="20" height="14" alt="" aria-hidden="true" />
+            Русский
+          </a>
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/" class="lang-btn">
+            <img src="/media/flags/de.svg" width="20" height="14" alt="" aria-hidden="true" />
+            Deutsch
+          </a>
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/" class="lang-btn">
+            <img src="/media/flags/ua.svg" width="20" height="14" alt="" aria-hidden="true" />
+            Українська
+          </a>
+        </nav>
+
+        <div class="hero-status-badge" aria-label="Статус переводчика">
+          <span class="hero-status-dot" aria-hidden="true"></span>
+          Присяжный переводчик · Земельный суд Ганновера
+        </div>
+
+        <h1 class="hero-h1">
+          Переводчик<br />
+          <span class="hero-accent">украинского языка</span><br />
+          в Германии
+        </h1>
+      </div>
+
+      <!-- VISUAL -->
+      <div class="hero-visual" aria-label="Пример заверенного перевода">
+        <div class="hv-badge-top">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+          Заверено судом · Официально признано
+        </div>
+
+        <div class="hv-doc" aria-hidden="true">
+          <div class="hv-doc-chip">ОРИГИНАЛ</div>
+          <div class="hv-doc-title">СВИДЕТЕЛЬСТВО О РОЖДЕНИИ</div>
+          <div class="hv-doc-country">Украина · Отдел ЗАГС</div>
+          <div class="hv-doc-divider"></div>
+          <div class="hv-doc-line" style="width:75%"></div>
+          <div class="hv-doc-line" style="width:52%"></div>
+          <div class="hv-doc-line" style="width:80%"></div>
+          <div class="hv-doc-line" style="width:62%"></div>
+          <div class="hv-doc-line" style="width:70%"></div>
+          <div class="hv-doc-stamp">
+            <div class="hv-stamp-text1">BEGLAUBIGT</div>
+            <div class="hv-stamp-divline"></div>
+            <div class="hv-stamp-text2">LG HANNOVER</div>
+          </div>
+        </div>
+
+        <div class="hv-badge-bottom">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.clock} />
+          Экспресс 24 ч · Доставка по всей Германии
+        </div>
+      </div>
+
+      <div class="hero-text-bottom">
+        <p class="hero-subline">
+          Заверенный перевод украинских документов на немецкий — с печатью и подписью.
+          Признано всеми ведомствами Германии.
+          <strong class="hero-subline-accent">Доставка по всей Германии.</strong>
+        </p>
+
+        <ul class="hero-trust-list" aria-label="Преимущества">
+          <li class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Присяжный при Земельном суде Ганновера</span>
+          </li>
+          <li class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>От 30,30 € · Стандарт 72 ч / Экспресс 24 ч</span>
+          </li>
+          <li class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>4,8/5 · 50 отзывов Google</span>
+          </li>
+        </ul>
+
+        <div class="hero-cta">
+          <a href="/app/bestellen" class="btn-primary">ЗАКАЗАТЬ ПЕРЕВОД →</a>
+          <a href="/preise/" class="btn-secondary">Посмотреть цены →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: E-E-A-T ===== -->
+  <section class="eeat-section">
+    <div class="container eeat-grid">
+      <div class="eeat-content">
+        <p class="eeat-eyebrow">НАШИ ПОЛНОМОЧИЯ</p>
+        <h2 class="eeat-h2">
+          Олег Розенблюм —<br />
+          <span class="eeat-accent">официально уполномоченный</span>
+        </h2>
+        <p class="eeat-text">
+          Олег Розенблюм — общеприсяжный переводчик и уполномоченный переводчик при
+          Земельном суде Ганновера для украинского и русского языков. Каждый перевод
+          содержит официальную печать и подпись — признано по всей Германии.
+        </p>
+        <ul class="eeat-list" aria-label="Полномочия">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Уполномочен Земельным судом Ганновера</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span><span style="color:#93c5fd">Специалист по украинскому</span> и русскому с 2016 года</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Каждый перевод с официальной печатью и подписью</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Признано по всей Германии — всеми ведомствами</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Register card -->
+      <div class="eeat-register-card">
+        <div class="register-icon-wrap">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.shieldcheck} />
+        </div>
+        <div class="register-label">JUSTIZ-DOLMETSCHER-REGISTER</div>
+        <h3 class="register-name">Oleg Rosenblum</h3>
+        <p class="register-role">Общеприсяжный переводчик и уполномоченный переводчик</p>
+        <p class="register-nr">Запись № 53923 · Земельный суд Ганновера</p>
+        <p class="register-langs">Языки: Украинский · Русский</p>
+        <div class="register-divider"></div>
+        <a
+          href="https://www.justiz.niedersachsen.de/dolmetscher"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="register-link"
+        >
+          Проверить запись в реестре →
+        </a>
+        <p class="register-note">↗ внешний · Justiz Niedersachsen</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: DOCUMENTS + PRICES ===== -->
+  <section class="docs-section">
+    <div class="container">
+      <p class="section-eyebrow">ДОКУМЕНТЫ И ЦЕНЫ</p>
+      <h2 class="section-h2">Какие документы мы переводим?</h2>
+      <p class="section-sub">Фиксированные цены включают НДС. Расчёт бесплатно за 30 минут.</p>
+
+      <div class="docs-grid">
+        {docs.map((doc) => (
+          <a href={doc.href} class="doc-card">
+            <div class="doc-card-top">
+              <div class="doc-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[doc.icon]} />
+              </div>
+              <div class="doc-price">{doc.price}</div>
+            </div>
+            <h3 class="doc-name">{doc.name}</h3>
+            <p class="doc-de">{doc.de}</p>
+            <p class="doc-ua">{doc.ua}</p>
+            {doc.bilingual && (
+              <div class="doc-bilingual-badge">↩ Двуязычные (укр./рус.) — один перевод</div>
+            )}
+            {doc.badge && <span class="doc-badge">{doc.badge}</span>}
+            <p class="doc-usage">{doc.usage}</p>
+            <div class="doc-order-row">
+              <span class="doc-order">Заказать →</span>
+            </div>
+          </a>
+        ))}
+
+        <!-- Amber Zeilenpreis accent block -->
+        <div class="docs-zeilen-card">
+          <div class="docs-zeilen-left">
+            <div class="docs-zeilen-header">
+              <div class="docs-zeilen-icon-wrap">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#92400e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.layers} />
+              </div>
+              <div>
+                <h3 class="docs-zeilen-h3">Сложные документы — оплата по строкам</h3>
+                <p class="docs-zeilen-sub">Документы с переменным объёмом текста</p>
+              </div>
+            </div>
+            <div class="docs-zeilen-docs">
+              <span class="docs-zeilen-doc">📄 Диплом с приложением</span>
+              <span class="docs-zeilen-doc">📖 Трудовая книжка</span>
+              <span class="docs-zeilen-doc">⚖️ Судебные решения</span>
+              <span class="docs-zeilen-doc">🏥 Медицинские справки</span>
+              <span class="docs-zeilen-doc">📝 Аттестат с оценками</span>
+            </div>
+          </div>
+          <div class="docs-zeilen-right">
+            <div class="docs-zeilen-price">1,40 – 1,80 €</div>
+            <div class="docs-zeilen-unit">за строку · inkl. MwSt.</div>
+            <a href="/app/bestellen?type=complex" class="docs-zeilen-cta">
+              ПОЛУЧИТЬ РАСЧЁТ ЗА 30 МИН. →
+            </a>
+            <p class="docs-zeilen-note">→ Бесплатно и без обязательств</p>
+          </div>
+        </div>
+
+        <div class="apostille-hint">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.globe} />
+          <div>
+            <p>
+              <strong>Нужен ли апостиль на ваш перевод?</strong>
+              Мы оформляем апостиль на наш готовый перевод через
+              Земельный суд Ганновера — 35,00 €.
+              Перевод + апостиль от 65,30 € под ключ.
+            </p>
+            <p class="apostille-hint-note">
+              Обратите внимание: апостиль ставится на наш перевод,
+              а не на ваш оригинальный документ. Апостиль на оригинал
+              оформляется в органах власти вашей страны.
+            </p>
+            <a href="/apostille/">Подробнее об апостиле →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: RUSSIAN LANGUAGE ===== -->
+  <section class="ru-lang-section">
+    <div class="container">
+      <div class="ru-lang-card">
+        <div class="ru-lang-top">
+          <div class="ru-lang-icon-wrap">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.messagecircle} />
+          </div>
+          <h2 class="ru-lang-h2">Общение полностью на русском языке</h2>
+        </div>
+        <p class="ru-lang-text">
+          От первого обращения до получения перевода — мы общаемся на русском.
+          Расчёт стоимости, уточнения по документу, подтверждение заказа —
+          всё на вашем языке.
+        </p>
+        <div class="ru-lang-points">
+          <div class="ru-lang-point">
+            <span class="ru-lang-point-icon">💬</span>
+            Расчёт — на русском
+          </div>
+          <div class="ru-lang-point">
+            <span class="ru-lang-point-icon">📄</span>
+            Подтверждение — на русском
+          </div>
+          <div class="ru-lang-point">
+            <span class="ru-lang-point-icon">📬</span>
+            Доставка с сопроводительным письмом
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 5: HOW IT WORKS (TABS) ===== -->
+  <section class="process-section">
+    <div class="container">
+      <p class="section-eyebrow">КАК ЭТО РАБОТАЕТ</p>
+      <h2 class="section-h2">От документа до перевода</h2>
+
+      <div class="tabs-wrapper">
+        <div class="tabs-switcher" role="tablist" aria-label="Тип документа">
+          <button
+            class="tab-btn tab-btn--active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="tab-standard"
+            id="tab-standard-btn"
+            data-target="tab-standard"
+          >
+            📄 Стандартный документ
+          </button>
+          <button
+            class="tab-btn"
+            role="tab"
+            aria-selected="false"
+            aria-controls="tab-diploma"
+            id="tab-diploma-btn"
+            data-target="tab-diploma"
+          >
+            📋 Диплом / Трудовая книжка
+          </button>
+        </div>
+
+        <!-- Tab 1: Standard document -->
+        <div id="tab-standard" class="tab-panel" role="tabpanel" aria-labelledby="tab-standard-btn">
+          <div class="timeline timeline-3">
+            <div class="process-step">
+              <div class="process-num">1</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.upload} />
+              </div>
+              <h3 class="process-step-h3">Отправьте фото или скан</h3>
+              <p class="process-step-text">Сфотографируйте документ на телефон или сделайте скан. Загрузите через сайт, WhatsApp или Telegram.</p>
+              <div class="process-step-note process-step-note--blue">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Оригинал НЕ нужен
+              </div>
+              <div class="process-info-block">
+                <div class="process-info-row">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                  Достаточно фото на телефон
+                </div>
+                <div class="process-info-row">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                  Или скан / PDF
+                </div>
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num">2</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.creditcard} />
+              </div>
+              <h3 class="process-step-h3">Оплатите фиксированную цену</h3>
+              <p class="process-step-text">Свидетельство о рождении — 35,30 €. Без сюрпризов.</p>
+              <div class="process-step-note process-step-note--blue">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Цена известна заранее
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num">3</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.mailcheck} />
+              </div>
+              <h3 class="process-step-h3">Получите перевод почтой</h3>
+              <p class="process-step-text">Стандарт 72 ч / Экспресс 24 ч. С печатью и подписью. По всей Германии.</p>
+              <div class="process-step-note process-step-note--blue">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Цифровая копия PDF — сразу на email
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Diploma / Workbook -->
+        <div id="tab-diploma" class="tab-panel" role="tabpanel" aria-labelledby="tab-diploma-btn" hidden>
+          <div class="timeline timeline-4">
+            <div class="process-step">
+              <div class="process-num process-num--amber">1</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.camera} />
+              </div>
+              <h3 class="process-step-h3">Отправьте фото всех страниц</h3>
+              <p class="process-step-text">Сфотографируйте каждую страницу диплома или трудовой книжки вместе с приложениями.</p>
+              <div class="process-info-block process-info-block--amber">
+                <div class="process-info-row">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                  Оригинал НЕ нужен
+                </div>
+                <div class="process-info-row">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                  Фото каждой страницы
+                </div>
+                <div class="process-info-row">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                  Включая обложку и титульную
+                </div>
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num process-num--amber">2</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.calculator} />
+              </div>
+              <h3 class="process-step-h3">Бесплатный расчёт за 30 мин.</h3>
+              <p class="process-step-text">Считаем количество строк, называем точную сумму. 1,40–1,80 € за строку.</p>
+              <div class="process-step-note process-step-note--amber">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Бесплатно и без обязательств
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num process-num--amber">3</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.checksquare} />
+              </div>
+              <h3 class="process-step-h3">Вы подтверждаете заказ</h3>
+              <p class="process-step-text">Только после вашего OK — начинаем перевод. Никаких скрытых расходов.</p>
+              <div class="process-step-note process-step-note--amber">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Jobcenter может оплатить
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num process-num--amber">4</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.mailcheck} />
+              </div>
+              <h3 class="process-step-h3">Получите перевод почтой</h3>
+              <p class="process-step-text">С печатью и подписью присяжного переводчика. PDF-копия сразу на email.</p>
+              <div class="process-step-note process-step-note--amber">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Доставка по всей Германии
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6: CHANNELS ===== -->
+  <section class="channels-section">
+    <div class="container">
+      <p class="section-eyebrow">КАК С НАМИ СВЯЗАТЬСЯ</p>
+      <h2 class="section-h2">Выберите удобный способ</h2>
+
+      <div class="channels-grid">
+        <!-- Website (primary, larger) -->
+        <div class="channel-card channel-card--primary">
+          <div class="channel-badge">⚡ РЕКОМЕНДОВАНО</div>
+          <div class="channel-icon-wrap channel-icon-wrap--primary">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.globe} />
+          </div>
+          <h3 class="channel-h3">Через сайт</h3>
+          <p class="channel-text">
+            Загрузите документ, получите цену автоматически, оплатите онлайн.
+            <strong>Без переписки — быстрее и удобнее.</strong>
+          </p>
+          <ul class="channel-list">
+            <li>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+              Цена сразу — без ожидания
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+              Заказ 24/7 — даже в выходные
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+              Автоматическое подтверждение на email
+            </li>
+          </ul>
+          <a href="/app/bestellen" class="channel-cta channel-cta--primary">ЗАКАЗАТЬ ЧЕРЕЗ САЙТ →</a>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="channel-card">
+          <div class="channel-icon-wrap channel-icon-wrap--wa">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.messagecircle} />
+          </div>
+          <h3 class="channel-h3">WhatsApp</h3>
+          <p class="channel-text">Отправьте фото документа — ответим в течение 30 минут.</p>
+          <p class="channel-hours">Пн–Пт 9:00–18:00</p>
+          <a href="https://wa.me/4917624137205" target="_blank" rel="noopener noreferrer" class="channel-cta channel-cta--wa" aria-label="Написать в WhatsApp">
+            Написать в WhatsApp
+          </a>
+        </div>
+
+        <!-- Telegram -->
+        <div class="channel-card">
+          <div class="channel-icon-wrap channel-icon-wrap--tg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#229ED9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.send} />
+          </div>
+          <h3 class="channel-h3">Telegram</h3>
+          <p class="channel-text">Отправьте фото документа — ответим в течение 30 минут.</p>
+          <a href="https://t.me/rosenblum_uebersetzungen" target="_blank" rel="noopener noreferrer" class="channel-cta channel-cta--tg" aria-label="Написать в Telegram">
+            Написать в Telegram
+          </a>
+        </div>
+      </div>
+
+      <p class="channels-disclaimer">
+        Через сайт — самый быстрый способ. WhatsApp и Telegram — для тех кому нужна дополнительная консультация.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 7: SITUATIONS ===== -->
+  <section class="situations-section">
+    <div class="container">
+      <p class="section-eyebrow">ДЛЯ КАКИХ ВЕДОМСТВ</p>
+      <h2 class="section-h2">Где нужен заверенный перевод?</h2>
+
+      <div class="situations-grid">
+        {situations.map((sit) => (
+          <div class="situation-card">
+            <div class={`sit-icon-wrap${sit.badge ? ' sit-icon-wrap--amber' : ''}`}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={sit.badge ? '#92400e' : 'var(--color-primary)'} stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[sit.icon]} />
+            </div>
+            {sit.badge && <span class="sit-badge">{sit.badge}</span>}
+            <h3 class="sit-h3">{sit.title}</h3>
+            <p class="sit-text">{sit.text}</p>
+            <ul class="sit-list">
+              {sit.items.map((item) => (
+                <li>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 8: JOBCENTER ===== -->
+  <section class="jobcenter-section">
+    <div class="container">
+      <p class="section-eyebrow jobcenter-eyebrow">💰 БЕСПЛАТНАЯ УСЛУГА</p>
+      <h2 class="section-h2 jobcenter-h2">Jobcenter оплачивает перевод</h2>
+      <p class="section-sub jobcenter-sub">
+        Jobcenter и Agentur für Arbeit могут оплатить расходы на заверенный перевод —
+        например для признания диплома или документов для работы.
+        Мы выставляем счёт напрямую — вы не платите.
+      </p>
+
+      <div class="jobcenter-steps">
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">1</div>
+          <h3 class="jobcenter-step-h3">Запросите расчёт</h3>
+          <p class="jobcenter-step-text">
+            Мы бесплатно составим расчёт в течение 30 минут.
+          </p>
+        </div>
+
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">2</div>
+          <h3 class="jobcenter-step-h3">Подайте в Jobcenter</h3>
+          <p class="jobcenter-step-text">
+            Передайте расчёт вашему куратору. Jobcenter платит напрямую нам.
+          </p>
+        </div>
+
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">3</div>
+          <h3 class="jobcenter-step-h3">Получите перевод</h3>
+          <p class="jobcenter-step-text">
+            После подтверждения начинаем сразу. Никакого предоплаты с вашей стороны.
+          </p>
+        </div>
+      </div>
+
+      <div class="jobcenter-cta-wrap">
+        <a href="/app/bestellen?type=jobcenter" class="jobcenter-cta-btn">
+          ПОЛУЧИТЬ РАСЧЁТ ДЛЯ JOBCENTER →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 9: REVIEWS ===== -->
+  <section class="reviews-section">
+    <div class="container">
+      <h2 class="section-h2" style="text-align:center">Что говорят наши клиенты</h2>
+      <p class="section-sub" style="text-align:center;margin-left:auto;margin-right:auto">⭐ 4,8 из 5 · 50 отзывов на Google</p>
+
+      <div class="reviews-grid">
+        {reviews.map((r) => (
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 звёзд">
+              {[...Array(5)].map(() => (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--color-primary)" stroke="none" aria-hidden="true" set:html={icons.star} />
+              ))}
+            </div>
+            <blockquote class="review-text">«{r.text}»</blockquote>
+            <div class="review-author">
+              <div class="review-initials">{r.initials}</div>
+              <div>
+                <div class="review-name">{r.name}</div>
+                <div class="review-city">{r.city} · ОТЗЫВ GOOGLE</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="reviews-all-link-wrap">
+        <a href="https://g.page/r/review" target="_blank" rel="noopener noreferrer" class="reviews-all-link">
+          ← Все отзывы на Google
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 10: FAQ ===== -->
+  <section class="faq-section">
+    <div class="container faq-container">
+      <h2 class="section-h2" style="text-align:center">Частые вопросы</h2>
+
+      <div class="faq-list">
+        {faqs.map((faq) => (
+          <details class="faq-item" name="faq">
+            <summary class="faq-question">
+              {faq.q}
+              <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </summary>
+            <p class="faq-answer">{faq.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 11: FINAL CTA ===== -->
+  <section class="final-cta-outer">
+    <div class="container">
+      <div class="final-cta-card">
+        <div class="final-cta-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.shieldcheck} />
+        </div>
+        <h2 class="final-cta-h2">Ваши документы — официально переведены</h2>
+        <p class="final-cta-sub">
+          Расчёт за 30 минут — бесплатно и без обязательств.
+          Присяжный переводчик при Земельном суде Ганновера.
+        </p>
+        <div class="final-cta-btns">
+          <a href="/app/bestellen" class="final-btn-primary">ЗАКАЗАТЬ ПЕРЕВОД →</a>
+          <a href="/preise/" class="final-btn-secondary">Посмотреть цены →</a>
+        </div>
+        <p class="final-cta-trust">
+          ✓ Присяжный LG Hannover &nbsp;·&nbsp; ✓ От 30,30 € &nbsp;·&nbsp; ✓ Ответ за 30 мин.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <StickyBar />
+</BaseLayout>
+
+<script>
+  const tabBtns = document.querySelectorAll<HTMLButtonElement>('[data-target]');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => {
+        b.classList.remove('tab-btn--active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => {
+        (p as HTMLElement).hidden = true;
+      });
+      btn.classList.add('tab-btn--active');
+      btn.setAttribute('aria-selected', 'true');
+      const target = document.getElementById(btn.dataset.target!);
+      if (target) target.hidden = false;
+    });
+  });
+</script>
+
+<style>
+  /* ── GLOBAL ───────────────────────────────────────── */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .section-eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+  }
+
+  .section-h2 {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .section-sub {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    margin-bottom: 40px;
+    max-width: 600px;
+  }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .hero-section {
+    padding: 64px 0 72px;
+    background: white;
+  }
+
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .lang-switcher {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    margin-bottom: 16px;
+  }
+
+  .lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+
+  .lang-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .lang-btn--active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .lang-btn--active:hover {
+    background: var(--color-primary-dark);
+    color: white;
+  }
+
+  /* Status badge */
+  .hero-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #166534;
+    margin-bottom: 20px;
+  }
+
+  .hero-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    flex-shrink: 0;
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes status-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.75); }
+  }
+
+  .hero-h1 {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--color-text);
+    margin-bottom: 16px;
+  }
+
+  .hero-accent { color: var(--color-primary); }
+
+  .hero-subline {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-width: 520px;
+  }
+
+  .hero-subline-accent { color: var(--color-text); }
+
+  .hero-trust-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .trust-item svg { flex-shrink: 0; }
+
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-size: var(--text-base);
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: background 0.2s;
+  }
+
+  .btn-primary:hover { background: var(--color-primary-dark); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 24px;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: 8px;
+    font-size: var(--text-base);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  /* Hero visual */
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hv-badge-top,
+  .hv-badge-bottom {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    white-space: nowrap;
+  }
+
+  .hv-doc {
+    width: 100%;
+    max-width: 340px;
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+  }
+
+  .hv-doc-chip {
+    display: inline-block;
+    background: var(--color-bg-soft);
+    color: var(--color-text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .hv-doc-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+
+  .hv-doc-country {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+  }
+
+  .hv-doc-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin-bottom: 12px;
+  }
+
+  .hv-doc-line {
+    height: 8px;
+    background: var(--color-bg-soft);
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .hv-doc-stamp {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.75;
+  }
+
+  .hv-stamp-text1,
+  .hv-stamp-text2 {
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .hv-stamp-divline {
+    width: 40px;
+    height: 1px;
+    background: var(--color-primary);
+    margin: 3px 0;
+    opacity: 0.6;
+  }
+
+  /* ── E-E-A-T ──────────────────────────────────────── */
+  .eeat-section {
+    background: #1e3a8a;
+    padding: 72px 0;
+    color: white;
+  }
+
+  .eeat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .eeat-eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 8px;
+  }
+
+  .eeat-h2 {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .eeat-accent { color: #93c5fd; }
+
+  .eeat-text {
+    font-size: var(--text-base);
+    color: rgba(255,255,255,0.8);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .eeat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .eeat-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: var(--text-sm);
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+  }
+
+  .eeat-list li svg { flex-shrink: 0; margin-top: 2px; }
+
+  .eeat-register-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    color: var(--color-text);
+  }
+
+  .register-icon-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .register-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .register-name {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+
+  .register-role {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .register-nr {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 4px;
+  }
+
+  .register-langs {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+  }
+
+  .register-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin-bottom: 16px;
+  }
+
+  .register-link {
+    display: inline-block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-bottom: 6px;
+  }
+
+  .register-link:hover { text-decoration: underline; }
+
+  .register-note {
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── DOCUMENTS ────────────────────────────────────── */
+  .docs-section {
+    padding: 72px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .doc-card {
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+
+  .doc-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  .doc-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .doc-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .doc-price {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .doc-name {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .doc-de,
+  .doc-ua {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  .doc-bilingual-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: 4px;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  .doc-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 20px;
+    margin-top: 2px;
+  }
+
+  .doc-usage {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    flex: 1;
+    margin-top: 4px;
+  }
+
+  .doc-order-row {
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border);
+    margin-top: 6px;
+  }
+
+  .doc-order {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  /* Amber Zeilenpreis accent block */
+  .docs-zeilen-card {
+    grid-column: 1 / -1;
+    background: #FEF3C7;
+    border: 2px solid #F59E0B;
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .docs-zeilen-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .docs-zeilen-icon-wrap {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background: #fde68a;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .docs-zeilen-h3 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 2px;
+  }
+
+  .docs-zeilen-sub {
+    font-size: var(--text-sm);
+    color: #92400e;
+    opacity: 0.75;
+  }
+
+  .docs-zeilen-docs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .docs-zeilen-doc {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    background: rgba(245,158,11,0.1);
+    color: #92400e;
+    border-radius: 20px;
+    border: 1px solid rgba(245,158,11,0.35);
+  }
+
+  .docs-zeilen-right {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .docs-zeilen-price {
+    font-size: var(--text-3xl);
+    font-weight: 900;
+    color: #92400e;
+    line-height: 1;
+  }
+
+  .docs-zeilen-unit {
+    font-size: var(--text-sm);
+    color: #92400e;
+    margin-bottom: 8px;
+  }
+
+  .docs-zeilen-cta {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #F59E0B;
+    color: white;
+    border-radius: 8px;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .docs-zeilen-cta:hover { background: #d97706; }
+
+  .apostille-hint {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: #FEF3C7;
+    border-left: 3px solid #F59E0B;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 16px;
+    grid-column: 1 / -1;
+  }
+  .apostille-hint svg { flex-shrink: 0; margin-top: 2px; }
+  .apostille-hint p {
+    font-size: var(--text-sm);
+    color: #1c1917;
+    line-height: 1.6;
+    margin: 0 0 6px;
+  }
+  .apostille-hint-note {
+    color: #78716c !important;
+    font-size: 0.8125rem;
+    font-style: italic;
+  }
+  .apostille-hint a {
+    color: #92400e;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+  .apostille-hint a:hover { text-decoration: underline; }
+
+  .docs-zeilen-note {
+    font-size: 11px;
+    color: #92400e;
+    opacity: 0.75;
+  }
+
+  /* ── RUSSIAN LANG CARD ────────────────────────────── */
+  .ru-lang-section {
+    padding: 48px 0;
+    background: white;
+  }
+
+  .ru-lang-card {
+    max-width: 680px;
+    margin: 0 auto;
+    background: var(--color-primary-light);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 12px;
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ru-lang-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .ru-lang-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: white;
+    border: 1.5px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ru-lang-h2 {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .ru-lang-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .ru-lang-points {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .ru-lang-point {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .ru-lang-point-icon { font-size: 16px; }
+
+  /* ── PROCESS / TABS ───────────────────────────────── */
+  .process-section {
+    padding: 72px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .tabs-wrapper { margin-top: 0; }
+
+  .tabs-switcher {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    background: white;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .tab-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .tab-btn--active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .tab-btn--active:hover { background: var(--color-primary-dark); }
+
+  .timeline {
+    display: grid;
+    gap: 20px;
+  }
+
+  .timeline-3 { grid-template-columns: repeat(1, 1fr); }
+  .timeline-4 { grid-template-columns: repeat(1, 1fr); }
+
+  .process-step {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .process-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .process-num--amber { background: #f59e0b; }
+
+  .process-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--color-bg-soft);
+    border: 1.5px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .process-step-h3 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .process-step-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .process-step-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .process-step-note--blue { color: var(--color-primary); }
+  .process-step-note--amber { color: #92400e; }
+
+  .process-info-block {
+    background: var(--color-primary-light);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .process-info-block--amber {
+    background: #fef3c7;
+  }
+
+  .process-info-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  .process-info-block--amber .process-info-row { color: #92400e; }
+
+  /* ── CHANNELS ─────────────────────────────────────── */
+  .channels-section {
+    padding: 72px 0;
+    background: white;
+  }
+
+  .channels-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .channel-card {
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+  }
+
+  .channel-card--primary {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  .channel-badge {
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .channel-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .channel-icon-wrap--primary { background: var(--color-primary-light); }
+  .channel-icon-wrap--wa { background: #dcfce7; }
+  .channel-icon-wrap--tg { background: #dbeafe; }
+
+  .channel-h3 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .channel-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .channel-hours {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: -4px;
+  }
+
+  .channel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .channel-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .channel-cta {
+    display: block;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 4px;
+    transition: opacity 0.2s;
+  }
+
+  .channel-cta:hover { opacity: 0.88; }
+
+  .channel-cta--primary { background: var(--color-primary); color: white; }
+  .channel-cta--wa { background: #25D366; color: white; }
+  .channel-cta--tg { background: #229ED9; color: white; }
+
+  .channels-disclaimer {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  /* ── SITUATIONS ───────────────────────────────────── */
+  .situations-section {
+    padding: 72px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .situations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .situation-card {
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .situation-card:hover {
+    border-color: var(--color-primary);
+  }
+
+  .sit-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sit-icon-wrap--amber { background: #fef3c7; }
+
+  .sit-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 20px;
+  }
+
+  .sit-h3 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .sit-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .sit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sit-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── JOBCENTER ────────────────────────────────────── */
+  .jobcenter-section {
+    padding: 72px 0;
+    background: #fffbeb;
+    border-top: 3px solid #F59E0B;
+  }
+
+  .jobcenter-eyebrow {
+    display: inline-block;
+    background: #fde68a;
+    color: #92400e;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    margin-bottom: 12px;
+  }
+
+  .jobcenter-h2 { color: #92400e; }
+  .jobcenter-sub { color: #78716c; }
+
+  .jobcenter-steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .jobcenter-step {
+    background: white;
+    border: 1.5px solid #fde68a;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .jobcenter-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f59e0b;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .jobcenter-step-h3 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: #1c1917;
+  }
+
+  .jobcenter-step-text {
+    font-size: var(--text-sm);
+    color: #78716c;
+    line-height: 1.5;
+  }
+
+  .jobcenter-cta-wrap { text-align: center; }
+
+  .jobcenter-cta-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: #f59e0b;
+    color: white;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: var(--text-base);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .jobcenter-cta-btn:hover { background: #d97706; }
+
+  /* ── REVIEWS ──────────────────────────────────────── */
+  .reviews-section {
+    padding: 72px 0;
+    background: white;
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .review-card {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .review-stars { display: flex; gap: 2px; }
+
+  .review-text {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    line-height: 1.6;
+    font-style: normal;
+    flex: 1;
+  }
+
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .review-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .review-name {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .review-city {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .reviews-all-link-wrap { text-align: center; }
+
+  .reviews-all-link {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .reviews-all-link:hover { text-decoration: underline; }
+
+  /* ── FAQ ──────────────────────────────────────────── */
+  .faq-section {
+    padding: 72px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .faq-container { max-width: 720px; }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 32px;
+  }
+
+  .faq-item {
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .faq-item[open] { border-color: var(--color-primary); }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq-question::-webkit-details-marker { display: none; }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transition: transform 0.2s;
+  }
+
+  .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+  .faq-answer {
+    padding: 0 20px 18px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── FINAL CTA ────────────────────────────────────── */
+  .final-cta-outer {
+    padding: 80px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .final-cta-card {
+    background: #1A1F2E;
+    border-radius: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 64px 48px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .final-cta-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    background: rgba(99,102,241,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+
+  .final-cta-h2 {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: white;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .final-cta-sub {
+    font-size: var(--text-base);
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .final-cta-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .final-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: var(--text-base);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .final-btn-primary:hover { background: var(--color-primary-dark); }
+
+  .final-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 24px;
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: var(--text-base);
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .final-btn-secondary:hover { border-color: white; }
+
+  .final-cta-trust {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ── DESKTOP ──────────────────────────────────────── */
+  @media (min-width: 768px) {
+    .docs-grid { grid-template-columns: repeat(3, 1fr); }
+
+    .docs-zeilen-card {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .docs-zeilen-right {
+      min-width: 220px;
+      align-items: flex-start;
+    }
+
+    .reviews-grid { grid-template-columns: repeat(3, 1fr); }
+    .situations-grid { grid-template-columns: repeat(2, 1fr); }
+    .jobcenter-steps { grid-template-columns: repeat(3, 1fr); }
+    .channels-grid { grid-template-columns: 1.5fr 1fr 1fr; }
+    .timeline-3 { grid-template-columns: repeat(3, 1fr); }
+    .timeline-4 { grid-template-columns: repeat(2, 1fr); }
+    .ru-lang-points { flex-wrap: nowrap; }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 55% 45%;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "top visual"
+        "bottom visual";
+      column-gap: 64px;
+      row-gap: 0;
+      align-items: start;
+    }
+
+    .hero-text-top { grid-area: top; }
+    .hero-text-bottom { grid-area: bottom; align-self: start; }
+    .hero-visual { grid-area: visual; align-self: center; }
+
+    .eeat-grid { grid-template-columns: 1fr 360px; }
+    .timeline-4 { grid-template-columns: repeat(4, 1fr); }
+    .situations-grid { grid-template-columns: repeat(3, 1fr); }
+    .docs-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ── MOBILE ───────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .hero-h1 { font-size: var(--text-3xl); }
+    .hero-subline { font-size: var(--text-sm); }
+
+    .lang-btn { padding: 4px 8px; font-size: 12px; gap: 4px; }
+    .lang-btn img { width: 16px; height: 11px; }
+
+    .hero-cta { flex-direction: column; align-items: stretch; }
+    .hero-cta .btn-primary,
+    .hero-cta .btn-secondary { display: block; text-align: center; }
+
+    .section-h2 { font-size: var(--text-2xl); }
+    .section-sub { font-size: var(--text-sm); margin-bottom: 28px; }
+    .eeat-h2 { font-size: var(--text-2xl); }
+    .jobcenter-h2 { font-size: var(--text-2xl); }
+    .final-cta-h2 { font-size: var(--text-2xl); }
+    .final-cta-card { padding: 40px 24px; }
+
+    .final-cta-btns { flex-direction: column; align-items: stretch; }
+    .final-btn-primary,
+    .final-btn-secondary { text-align: center; justify-content: center; }
+
+    .tab-btn { font-size: 12px; padding: 8px 14px; }
+
+    .ru-lang-card { padding: 20px; }
+    .ru-lang-top { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .ru-lang-points { flex-direction: column; gap: 8px; }
+  }
+</style>

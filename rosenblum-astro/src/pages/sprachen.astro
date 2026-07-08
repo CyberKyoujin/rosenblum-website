@@ -1,0 +1,660 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import StickyBar from '../components/StickyBar.astro';
+import languages from '../data/languages.json';
+
+const langCount = languages.length;
+
+const categoryMap: Record<string, string> = {
+  ua: 'gus', ru: 'gus', tr: 'andere', gb: 'andere',
+  pl: 'osteuropa', ro: 'osteuropa', lt: 'osteuropa', lv: 'osteuropa',
+};
+
+const langCards = languages.map((l) => ({
+  ...l,
+  category: categoryMap[l.code],
+}));
+
+const filters = [
+  { key: 'all', label: 'Alle' },
+  { key: 'gus', label: 'GUS' },
+  { key: 'osteuropa', label: 'Osteuropa' },
+  { key: 'andere', label: 'Andere' },
+];
+
+const diaspora = [
+  { code: 'tr', label: 'Türkisch', value: 3.5, display: '3,5 Mio.' },
+  { code: 'ru', label: 'Russisch', value: 3, display: '3 Mio.' },
+  { code: 'ua', label: 'Ukrainisch', value: 1.2, display: '1,2 Mio.' },
+  { code: 'ro', label: 'Rumänisch', value: 0.9, display: '900.000' },
+  { code: 'pl', label: 'Polnisch', value: 0.86, display: '860.000' },
+  { code: 'lt', label: 'Litauisch', value: 0.2, display: '200.000' },
+].map((d) => ({ ...d, flag: languages.find((l) => l.code === d.code)?.flag }));
+
+const maxDiaspora = Math.max(...diaspora.map((d) => d.value));
+
+const cityDots = [
+  { name: 'Berlin', left: 71.8, top: 35.9, size: 32, fact: '~250.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Hamburg', left: 47.3, top: 23.3, size: 28, fact: '~120.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'München', left: 59, top: 76, size: 28, fact: '~100.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Köln', left: 29, top: 56, size: 24, fact: '~70.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Frankfurt', left: 42, top: 58, size: 24, fact: '~65.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Düsseldorf', left: 26, top: 50, size: 22, fact: '~55.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Stuttgart', left: 40, top: 74, size: 22, fact: '~50.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Hannover', left: 46, top: 40, size: 20, fact: '~45.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Dortmund', left: 29, top: 51, size: 20, fact: '~40.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Nürnberg', left: 56, top: 69, size: 18, fact: '~40.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Bremen', left: 38.1, top: 28.9, size: 16, fact: '~25.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Duisburg', left: 27, top: 49.5, size: 16, fact: '~22.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Leipzig', left: 66, top: 51, size: 14, fact: '~30.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Dresden', left: 71, top: 55.5, size: 14, fact: '~30.000 ukrainische & russischsprachige Einwohner' },
+  { name: 'Osnabrück', left: 34, top: 37, size: 18, fact: 'Unser Büro', isOffice: true },
+];
+
+const situations = [
+  {
+    icon: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/>',
+    title: 'Aufenthaltstitel & Visum',
+    text: 'Die Ausländerbehörde verlangt beglaubigte Übersetzungen Ihrer Dokumente – Geburtsurkunde, Pass, Heiratsurkunde.',
+    linkText: 'Welche Dokumente? →',
+    href: '/beglaubigte-uebersetzungen/',
+  },
+  {
+    icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    title: 'Einbürgerung',
+    text: 'Für die deutsche Staatsangehörigkeit müssen ausländische Urkunden beglaubigt übersetzt werden.',
+    linkText: 'Zur Einbürgerung →',
+    href: '/kontakt/',
+  },
+  {
+    icon: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12.5V17c3 2.5 9 2.5 12 0v-4.5"/>',
+    title: 'Studium & Uni-Assist',
+    text: 'Uni-Assist und deutsche Hochschulen verlangen beglaubigte Übersetzungen von Zeugnissen und Diplomen.',
+    linkText: 'Diplom übersetzen →',
+    href: '/preise/',
+  },
+  {
+    icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    title: 'Arbeit & Anerkennung',
+    text: 'Für die Anerkennung ausländischer Berufsabschlüsse und Bewerbungen brauchen Sie beglaubigte Zeugnisse.',
+    linkText: 'Jobcenter & AfA →',
+    href: '/preise/#jobcenter',
+  },
+  {
+    icon: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>',
+    title: 'Heirat & Familie',
+    text: 'Das Standesamt verlangt beglaubigte Übersetzungen von Geburtsurkunden, Ledigkeitsbescheinigungen und Scheidungsurteilen.',
+    linkText: 'Heiratsurkunde übersetzen →',
+    href: '/preise/',
+  },
+  {
+    icon: '<path d="M5 11 6.5 6.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"/><rect x="3" y="11" width="18" height="6" rx="2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/>',
+    title: 'Führerschein & Fahrzeug',
+    text: 'Ausländische Führerscheine müssen für den Umtausch in einen deutschen Führerschein übersetzt werden.',
+    linkText: 'Führerschein übersetzen →',
+    href: '/preise/',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Bieten Sie auch Übersetzungen für Sprachen an, die hier nicht aufgelistet sind?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ja – auch wenn Ihre Sprache nicht in der Liste steht, kontaktieren Sie uns einfach. Wir vermitteln über unser Netzwerk vereidigter Übersetzer und finden für Sie eine Lösung.',
+      },
+    },
+  ],
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rosenblum-uebersetzungen.de/' },
+    { '@type': 'ListItem', position: 2, name: 'Sprachen', item: 'https://rosenblum-uebersetzungen.de/sprachen/' },
+  ],
+};
+---
+
+<BaseLayout
+  title={`Beglaubigte Übersetzungen in ${langCount} Sprachen | Rosenblum`}
+  description={`Beglaubigte Übersetzungen aus Ukrainisch, Russisch, Türkisch, Polnisch, Rumänisch und weiteren Sprachen ins Deutsche. Vereidigter Übersetzer – ab 30,30 €, Express 24 Std.`}
+  lang="de"
+  canonicalUrl="https://rosenblum-uebersetzungen.de/sprachen/"
+  schema={[faqSchema, breadcrumbSchema]}
+>
+  <Navbar currentLang="de" />
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 1 · HERO + DEUTSCHLANDKARTE
+  ════════════════════════════════════════════════ -->
+  <section class="hero" aria-label="Hero">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <div class="section-label"><span class="line"></span>{langCount} SPRACHEN</div>
+
+        <h1 class="hero-h1">
+          Beglaubigte Übersetzungen<br />
+          in <span class="hero-accent">{langCount} Sprachen</span>
+        </h1>
+
+        <p class="hero-sub">
+          Ukrainisch, Russisch, Türkisch, Polnisch und mehr – alle Übersetzungen
+          von einem vereidigten Übersetzer, deutschlandweit anerkannt.
+        </p>
+
+        <div class="search-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input
+            type="text"
+            id="lang-search"
+            class="search-input"
+            placeholder="Sprache suchen... z.B. Ukrainisch"
+            aria-label="Sprache suchen"
+          />
+        </div>
+        <p class="search-hint" id="search-hint" hidden>
+          Sprache nicht dabei? <a href="/kontakt/">Kontaktieren Sie uns →</a>
+        </p>
+
+        <div class="hero-stats" aria-label="Kennzahlen">
+          <span class="hero-stat">✓ {langCount} Sprachen</span>
+          <span class="hero-stat">✓ Ab 30,30 € Festpreis</span>
+          <span class="hero-stat">✓ Express 24 Std.</span>
+          <span class="hero-stat">✓ Vereidigt LG Hannover</span>
+        </div>
+      </div>
+
+      <div class="map-col">
+        <div class="map-wrap" id="germany-map-wrap">
+          <img src="/media/de.svg" class="germany-map" alt="" aria-hidden="true" />
+
+          {cityDots.map((city) => (
+            <button
+              type="button"
+              class={`city-dot${city.isOffice ? ' city-dot-office' : ''}`}
+              style={`left:${city.left}%; top:${city.top}%; width:${city.size}px; height:${city.size}px;`}
+              aria-label={`${city.name}: ${city.fact}`}
+            >
+              <span class="city-tooltip">
+                <strong>{city.name}</strong>
+                <span>{city.fact}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+
+        <div class="map-filter" role="group" aria-label="Sprachgruppe einfärben">
+          <button type="button" class="map-filter-btn active" data-dotgroup="all">Alle</button>
+          <button type="button" class="map-filter-btn" data-dotgroup="ua-ru">UA/RU</button>
+          <button type="button" class="map-filter-btn" data-dotgroup="tr">TR</button>
+          <button type="button" class="map-filter-btn" data-dotgroup="pl-ro">PL/RO</button>
+        </div>
+
+        <p class="map-caption">
+          Wir übersetzen für Kunden in ganz Deutschland –{' '}
+          <span class="map-caption-accent">{langCount} Sprachen</span>, deutschlandweit per Post.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 2 · SPRACHEN GRID + FILTER
+  ════════════════════════════════════════════════ -->
+  <section class="sprachen-grid-section" aria-labelledby="grid-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>UNSERE SPRACHEN</div>
+      <h2 id="grid-h2" class="section-h2">Wählen Sie Ihre Sprache</h2>
+      <p class="section-sub">
+        Alle Übersetzungen vom vereidigten Übersetzer – mit Siegel, Unterschrift
+        und deutschlandweiter Anerkennung.
+      </p>
+
+      <div class="category-filter" role="group" aria-label="Nach Region filtern">
+        {filters.map((f, i) => (
+          <button type="button" class={`category-btn${i === 0 ? ' active' : ''}`} data-cat={f.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+            {f.label}
+          </button>
+        ))}
+      </div>
+
+      <div class="lang-grid">
+        {langCards.map((l) => (
+          <a
+            href={`/beglaubigte-uebersetzung/${l.slug}`}
+            class="lang-card"
+            data-lang={l.name.toLowerCase()}
+            data-category={l.category}
+          >
+            <img src={l.flag} alt="" class="lang-card-flag" />
+            <h3 class="lang-card-name">{l.name}</h3>
+            <p class="lang-card-fact">{l.fact}</p>
+            <span class="lang-card-price">ab 30,30 €</span>
+            <span class="lang-card-arrow" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+
+      <p class="not-found" id="not-found" hidden aria-live="polite">
+        Keine Sprache gefunden. <a href="/kontakt/">Kontaktieren Sie uns →</a>
+      </p>
+
+      <div class="grid-cta">
+        <p class="grid-cta-text">Ihre Sprache nicht dabei?</p>
+        <p class="grid-cta-sub">Kontaktieren Sie uns – wir helfen Ihnen weiter.</p>
+        <a href="/kontakt/" class="btn-primary btn-lg">Kontakt aufnehmen →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 3 · DIASPORA IN ZAHLEN
+  ════════════════════════════════════════════════ -->
+  <section class="diaspora-section" aria-labelledby="diaspora-h2">
+    <div class="container">
+      <div class="diaspora-label">— WARUM WIR?</div>
+      <h2 id="diaspora-h2" class="diaspora-h2">Millionen Menschen in Deutschland brauchen Übersetzungen</h2>
+      <p class="diaspora-sub">Die größten Sprachgemeinschaften – und ihre Dokumente.</p>
+
+      <div class="diaspora-bars">
+        {diaspora.map((d) => (
+          <button
+            type="button"
+            class="diaspora-bar"
+            data-lang={d.label.toLowerCase()}
+            role="img"
+            aria-label={`${d.label}: ${d.display}`}
+          >
+            <img src={d.flag} alt="" class="diaspora-flag" />
+            <span class="diaspora-name">{d.label}</span>
+            <span class="diaspora-track">
+              <span class="diaspora-fill" data-width={(d.value / maxDiaspora) * 100}></span>
+            </span>
+            <span class="diaspora-value">{d.display}</span>
+          </button>
+        ))}
+      </div>
+
+      <p class="diaspora-source">Quelle: Statistisches Bundesamt, 2024</p>
+
+      <div class="diaspora-info">
+        <p>
+          Jeder dieser Menschen kann bei deutschen Behörden eine beglaubigte
+          Übersetzung benötigen – für Aufenthaltstitel, Einbürgerung, Studium oder Arbeit.
+        </p>
+        <a href="/app/bestellen" class="btn-primary diaspora-cta">KOSTENVORANSCHLAG IN 30 MIN. →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 4 · WARUM BRAUCHEN MENSCHEN EINE ÜBERSETZUNG
+  ════════════════════════════════════════════════ -->
+  <section class="situations" aria-labelledby="situations-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>LEBENSSITUATIONEN</div>
+      <h2 id="situations-h2" class="section-h2">Wann wird eine beglaubigte Übersetzung benötigt?</h2>
+      <p class="section-sub">
+        Beglaubigte Übersetzungen sind in vielen Lebenssituationen erforderlich –
+        hier sind die häufigsten.
+      </p>
+
+      <div class="situations-grid">
+        {situations.map((s) => (
+          <div class="situation-card">
+            <div class="situation-icon" set:html={`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${s.icon}</svg>`} />
+            <h3 class="situation-title">{s.title}</h3>
+            <p class="situation-text">{s.text}</p>
+            <a href={s.href} class="situation-link">{s.linkText}</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 5 · FINAL CTA
+  ════════════════════════════════════════════════ -->
+  <section class="final-cta-wrap">
+    <div class="container final-cta">
+      <h2 class="final-cta-h2">Ihre Sprache ist dabei – jetzt bestellen</h2>
+      <p class="final-cta-text">Kostenvoranschlag in 30 Minuten. Kostenlos, unverbindlich.</p>
+      <div class="final-cta-buttons">
+        <a href="/app/bestellen" class="final-cta-primary">Kostenvoranschlag anfordern →</a>
+        <a href="/preise" class="final-cta-secondary">Alle Preise ansehen →</a>
+      </div>
+      <p class="final-cta-trust">
+        ✓ {langCount} Sprachen &nbsp;·&nbsp; ✓ Express 24 Std. &nbsp;·&nbsp; ✓ Vereidigt LG Hannover
+      </p>
+    </div>
+  </section>
+
+  <StickyBar />
+</BaseLayout>
+
+<script>
+  // ── Hero search: filtert lang-cards in Section 2 ──
+  const searchInput = document.getElementById('lang-search') as HTMLInputElement | null;
+  const searchHint = document.getElementById('search-hint');
+  const notFound = document.getElementById('not-found');
+  const cards = document.querySelectorAll<HTMLElement>('.lang-card');
+  const categoryBtns = document.querySelectorAll<HTMLButtonElement>('.category-btn');
+
+  let activeCategory = 'all';
+  let searchQuery = '';
+
+  function applyFilters() {
+    let visible = 0;
+    cards.forEach((card) => {
+      const lang = card.dataset.lang ?? '';
+      const cat = card.dataset.category ?? '';
+      const matchesSearch = !searchQuery || lang.includes(searchQuery);
+      const matchesCategory = activeCategory === 'all' || cat === activeCategory;
+      const match = matchesSearch && matchesCategory;
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    if (notFound) notFound.hidden = visible !== 0;
+    if (searchHint) searchHint.hidden = visible !== 0 || !searchQuery;
+  }
+
+  searchInput?.addEventListener('input', (e) => {
+    searchQuery = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    applyFilters();
+  });
+
+  categoryBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      categoryBtns.forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+      activeCategory = btn.dataset.cat ?? 'all';
+      applyFilters();
+    });
+  });
+
+  // ── City dot tooltips (hover + tap) ───────────────
+  const cityDots = document.querySelectorAll<HTMLButtonElement>('.city-dot');
+  cityDots.forEach((dot) => {
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dot.classList.contains('open');
+      cityDots.forEach((d) => d.classList.remove('open'));
+      if (!isOpen) dot.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    cityDots.forEach((d) => d.classList.remove('open'));
+  });
+
+  // ── Map filter: recolor dots by language group ────
+  const mapWrap = document.getElementById('germany-map-wrap');
+  const mapFilterBtns = document.querySelectorAll<HTMLButtonElement>('.map-filter-btn');
+  mapFilterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      mapFilterBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      mapWrap?.setAttribute('data-dotgroup', btn.dataset.dotgroup ?? 'all');
+    });
+  });
+
+  // ── Diaspora bar animation on scroll ──────────────
+  const diasporaFills = document.querySelectorAll<HTMLElement>('.diaspora-fill');
+  const diasporaSection = document.querySelector('.diaspora-section');
+  if (diasporaSection && diasporaFills.length) {
+    const barObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          diasporaFills.forEach((bar, i) => {
+            setTimeout(() => {
+              bar.style.width = `${bar.dataset.width}%`;
+            }, i * 100);
+          });
+          barObserver.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    barObserver.observe(diasporaSection);
+  }
+
+  // ── Diaspora bar click → scroll + highlight card ──
+  document.querySelectorAll<HTMLButtonElement>('.diaspora-bar').forEach((bar) => {
+    bar.addEventListener('click', () => {
+      const lang = bar.dataset.lang;
+      const card = document.querySelector<HTMLElement>(`.lang-card[data-lang="${lang}"]`);
+      if (!card) return;
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      card.classList.add('highlight');
+      setTimeout(() => card.classList.remove('highlight'), 1500);
+    });
+  });
+</script>
+
+<style>
+  /* ══════════════════════════════════════
+     SHARED
+  ══════════════════════════════════════ */
+  .section-h2 { font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--color-text); margin-bottom: 12px; line-height: var(--leading-tight); }
+  .section-sub { font-size: var(--text-base); color: var(--color-text-muted); line-height: var(--leading-relaxed); margin-bottom: 32px; max-width: 640px; }
+  .btn-lg { padding: 16px 32px; font-size: var(--text-base); }
+
+  /* ══════════════════════════════════════
+     HERO
+  ══════════════════════════════════════ */
+  .hero { background: var(--color-bg); padding: 56px 0 64px; }
+
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  @media (min-width: 1024px) {
+    .hero-grid { grid-template-columns: 45fr 55fr; gap: 56px; align-items: center; }
+    .hero { padding: 80px 0; }
+  }
+
+  .hero-h1 { font-size: var(--text-4xl); font-weight: var(--font-black); line-height: var(--leading-tight); color: var(--color-text); margin-bottom: 16px; }
+  @media (min-width: 1024px) { .hero-h1 { font-size: var(--text-5xl); } }
+  .hero-accent { color: var(--color-primary); }
+
+  .hero-sub { font-size: var(--text-lg); color: var(--color-text-muted); line-height: var(--leading-relaxed); margin-bottom: 24px; max-width: 480px; }
+
+  .search-wrap { position: relative; margin-bottom: 8px; }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+  .search-input {
+    width: 100%; border: 1px solid var(--color-border); border-radius: 8px;
+    padding: 12px 12px 12px 40px; font-size: var(--text-base); font-family: inherit; color: var(--color-text);
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { outline: none; border-color: var(--color-primary); }
+
+  .search-hint { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: 24px; }
+  .search-hint a { color: var(--color-primary); font-weight: var(--font-medium); text-decoration: none; }
+  .search-hint a:hover { text-decoration: underline; }
+  .search-hint[hidden] { display: none; }
+
+  .hero-stats { display: flex; flex-wrap: wrap; gap: 12px 20px; margin-top: 24px; }
+  .hero-stat { font-size: var(--text-sm); font-weight: var(--font-medium); color: var(--color-text); }
+
+  /* Germany map */
+  .map-wrap {
+    position: relative; aspect-ratio: 1/1; max-width: 420px; margin: 0 auto;
+  }
+  .germany-map { width: 100%; height: 100%; display: block; object-fit: contain; }
+
+  .city-dot {
+    position: absolute; transform: translate(-50%, -50%); border-radius: 50%;
+    background: var(--color-primary); opacity: 0.7; border: none; cursor: pointer;
+    padding: 0; z-index: 1; transition: opacity 0.15s, transform 0.15s;
+  }
+  .city-dot:hover, .city-dot:focus, .city-dot.open { opacity: 1; transform: translate(-50%, -50%) scale(1.2); z-index: 50; }
+  .city-dot-office { background: white; border: 2px solid var(--color-primary); opacity: 1; }
+
+  .map-wrap[data-dotgroup="ua-ru"] .city-dot:not(.city-dot-office) { background: var(--color-primary); }
+  .map-wrap[data-dotgroup="tr"] .city-dot:not(.city-dot-office) { background: #DC2626; }
+  .map-wrap[data-dotgroup="pl-ro"] .city-dot:not(.city-dot-office) { background: #16A34A; }
+
+  .city-tooltip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: white; box-shadow: var(--shadow-card); border-radius: 8px; padding: 8px 12px;
+    display: flex; flex-direction: column; gap: 2px; white-space: normal; text-align: center;
+    width: 140px; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 999;
+  }
+  .city-dot:hover .city-tooltip, .city-dot:focus .city-tooltip, .city-dot.open .city-tooltip { opacity: 1; }
+  .city-tooltip strong { font-size: var(--text-sm); color: var(--color-text); }
+  .city-tooltip span { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+  .map-filter { display: flex; justify-content: center; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .map-filter-btn {
+    border: 1px solid var(--color-border); background: white; color: var(--color-text-muted);
+    border-radius: 20px; padding: 6px 14px; font-size: var(--text-xs); font-weight: var(--font-medium);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .map-filter-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .map-filter-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+
+  .map-caption { font-size: var(--text-sm); color: var(--color-text-muted); text-align: center; margin-top: 16px; }
+  .map-caption-accent { color: var(--color-primary); font-weight: var(--font-semibold); }
+
+  /* ══════════════════════════════════════
+     SPRACHEN GRID
+  ══════════════════════════════════════ */
+  .sprachen-grid-section { background: var(--color-bg-soft); padding: var(--section-py) 0; }
+
+  .category-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+  .category-btn {
+    border: 1px solid var(--color-border); background: white; color: var(--color-text-muted);
+    border-radius: 20px; padding: 6px 16px; font-size: var(--text-sm); font-weight: var(--font-medium);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .category-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+  .category-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+
+  .lang-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 40px; }
+  @media (min-width: 768px) { .lang-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  .lang-card {
+    position: relative; display: block; background: white; border: 1px solid var(--color-border);
+    border-radius: 12px; padding: 20px; text-decoration: none; transition: all 0.2s;
+  }
+  @media (max-width: 479px) { .lang-card { padding: 14px; } }
+
+  .lang-card:hover { border-color: var(--color-primary); box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+  .lang-card:hover .lang-card-arrow { color: var(--color-primary); }
+
+  .lang-card.highlight { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(59, 91, 219, 0.2); }
+
+  .lang-card-flag { width: 32px; height: 22px; object-fit: cover; border-radius: 3px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); margin-bottom: 10px; }
+  .lang-card-name { font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--color-text); margin-bottom: 4px; }
+  .lang-card-fact { font-size: var(--text-sm); color: var(--color-text-muted); margin: 0 0 8px; line-height: var(--leading-normal); }
+  .lang-card-price { display: block; font-size: var(--text-sm); color: var(--color-primary); font-weight: var(--font-medium); }
+  .lang-card-arrow { position: absolute; top: 20px; right: 20px; color: var(--color-text-muted); transition: color 0.15s; }
+
+  .not-found { text-align: center; font-size: var(--text-base); color: var(--color-text-muted); margin-bottom: 40px; }
+  .not-found[hidden] { display: none; }
+  .not-found a { color: var(--color-primary); font-weight: var(--font-semibold); text-decoration: none; }
+
+  .grid-cta { text-align: center; }
+  .grid-cta-text { font-size: var(--text-lg); font-weight: var(--font-semibold); color: var(--color-text); margin-bottom: 4px; }
+  .grid-cta-sub { font-size: var(--text-base); color: var(--color-text-muted); margin-bottom: 20px; }
+
+  /* ══════════════════════════════════════
+     DIASPORA
+  ══════════════════════════════════════ */
+  .diaspora-section { background: var(--color-bg-dark); padding: var(--section-py) 0; }
+
+  .diaspora-label { font-size: var(--text-xs); font-weight: var(--font-bold); color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; text-align: center; }
+  .diaspora-h2 { font-size: var(--text-3xl); font-weight: var(--font-black); color: white; text-align: center; max-width: 700px; margin: 0 auto 12px; }
+  .diaspora-sub { font-size: var(--text-base); color: white; opacity: 0.6; text-align: center; margin-bottom: 40px; }
+
+  .diaspora-bars { display: flex; flex-direction: column; gap: 16px; max-width: 800px; margin: 0 auto; }
+
+  .diaspora-bar {
+    display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: 12px;
+    background: none; border: none; padding: 4px; cursor: pointer; width: 100%; text-align: left;
+  }
+  .diaspora-flag { width: 24px; height: 17px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15); flex-shrink: 0; }
+  .diaspora-name { color: white; font-weight: var(--font-medium); font-size: var(--text-sm); min-width: 90px; }
+  .diaspora-track { flex-grow: 1; background: rgba(255, 255, 255, 0.1); border-radius: 4px; height: 8px; overflow: hidden; }
+  .diaspora-fill { display: block; height: 100%; width: 0; background: var(--color-primary); border-radius: 4px; transition: width 1.2s ease-out; }
+  .diaspora-value { color: white; font-weight: var(--font-semibold); font-size: var(--text-sm); min-width: 70px; text-align: right; }
+
+  @media (max-width: 479px) {
+    .diaspora-bar { grid-template-columns: auto 1fr; grid-template-areas: "flag name" "track track" "track value"; row-gap: 4px; }
+    .diaspora-flag { grid-area: flag; }
+    .diaspora-name { grid-area: name; }
+    .diaspora-track { grid-area: track; }
+    .diaspora-value { grid-area: value; justify-self: end; }
+  }
+
+  .diaspora-source { text-align: center; font-size: var(--text-xs); color: white; opacity: 0.3; margin-top: 24px; }
+
+  .diaspora-info {
+    background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 28px 24px; text-align: center;
+    max-width: 700px; margin: 32px auto 0;
+  }
+  .diaspora-info p { color: white; opacity: 0.7; font-size: var(--text-base); line-height: var(--leading-relaxed); margin: 0 0 16px; }
+  .diaspora-cta { padding: 14px 28px; }
+
+  /* ══════════════════════════════════════
+     SITUATIONS
+  ══════════════════════════════════════ */
+  .situations { background: var(--color-bg); padding: var(--section-py) 0; }
+
+  .situations-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  @media (min-width: 640px) { .situations-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .situations-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .situation-card {
+    background: var(--color-bg-soft); border: 1px solid var(--color-border); border-radius: 12px;
+    padding: 24px; transition: all 0.2s;
+  }
+  .situation-card:hover { background: white; border-color: var(--color-primary); transform: translateY(-2px); }
+
+  .situation-icon {
+    width: 48px; height: 48px; border-radius: 10px; background: var(--color-primary-light);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+  }
+  .situation-title { font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-text); margin-bottom: 8px; }
+  .situation-text { font-size: var(--text-sm); color: var(--color-text-muted); line-height: var(--leading-relaxed); margin-bottom: 14px; }
+  .situation-link { font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--color-primary); text-decoration: none; }
+  .situation-link:hover { text-decoration: underline; }
+
+  /* ══════════════════════════════════════
+     FINAL CTA
+  ══════════════════════════════════════ */
+  .final-cta-wrap { background: var(--color-primary); padding: 64px 0; }
+  @media (max-width: 639px) { .final-cta-wrap { padding: 40px 0; } }
+
+  .final-cta { text-align: center; }
+  .final-cta-h2 { font-size: var(--text-3xl); font-weight: var(--font-black); color: white; margin-bottom: 12px; }
+  .final-cta-text { font-size: var(--text-lg); color: white; opacity: 0.8; margin-bottom: 28px; }
+
+  .final-cta-buttons { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .final-cta-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: white; color: var(--color-primary);
+    padding: 16px 32px; border-radius: var(--radius-btn); font-size: var(--text-sm); font-weight: var(--font-semibold);
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; transition: opacity 0.15s;
+  }
+  .final-cta-primary:hover { opacity: 0.9; }
+  .final-cta-secondary {
+    display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white; padding: 14px 32px; border-radius: var(--radius-btn); font-size: var(--text-sm); font-weight: var(--font-semibold);
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; transition: background 0.15s;
+  }
+  .final-cta-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+  .final-cta-trust { font-size: var(--text-sm); color: white; opacity: 0.5; }
+
+  @media (max-width: 479px) {
+    .final-cta-buttons { flex-direction: column; align-items: stretch; }
+    .final-cta-primary, .final-cta-secondary { justify-content: center; }
+  }
+</style>

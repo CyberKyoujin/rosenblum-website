@@ -1,0 +1,62 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  lang?: 'de' | 'ru' | 'uk';
+  hreflang?: { de?: string; ru?: string; uk?: string };
+  schema?: object[];
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description,
+  lang = 'de',
+  hreflang,
+  schema = [],
+  canonicalUrl,
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+    {hreflang?.de && <link rel="alternate" hreflang="de" href={hreflang.de} />}
+    {hreflang?.ru && <link rel="alternate" hreflang="ru" href={hreflang.ru} />}
+    {hreflang?.uk && <link rel="alternate" hreflang="uk" href={hreflang.uk} />}
+    {
+      (hreflang?.de || canonicalUrl) && (
+        <link
+          rel="alternate"
+          hreflang="x-default"
+          href={hreflang?.de ?? canonicalUrl}
+        />
+      )
+    }
+
+    {
+      schema.map((s) => (
+        <script type="application/ld+json" set:html={JSON.stringify(s)} />
+      ))
+    }
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,2043 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import StickyBar from '../components/StickyBar.astro';
+import languages from '../data/languages.json';
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Rosenblum Übersetzungsbüro',
+  url: 'https://rosenblum-uebersetzungen.de',
+  description:
+    `Vereidigter Übersetzer am Landgericht Hannover. Beglaubigte Übersetzungen in ${languages.length} Sprachen.`,
+};
+
+const translationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TranslationService',
+  name: 'Rosenblum Übersetzungsbüro',
+  url: 'https://rosenblum-uebersetzungen.de',
+  provider: {
+    '@type': 'Person',
+    name: 'Oleg Rosenblum',
+    hasCredential: {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Vereidigter Übersetzer',
+      recognizedBy: {
+        '@type': 'Organization',
+        name: 'Landgericht Hannover',
+      },
+    },
+  },
+  serviceType: 'Beglaubigte Übersetzung',
+  inLanguage: languages.map((l) => l.iso),
+  outLanguage: 'de',
+  areaServed: [{ '@type': 'Country', name: 'Germany' }],
+  priceRange: 'ab €30,30',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.8',
+    reviewCount: '26',
+  },
+};
+
+const langCodes = languages.map((l) => ({
+  code: l.code.toUpperCase(),
+  name: l.name,
+  flag: l.flag,
+  href: `/beglaubigte-uebersetzung/${l.slug}`,
+}));
+
+const sprachen = languages.map((l) => ({
+  flag: l.flag,
+  name: l.name,
+  fact: l.fact,
+  href: `/beglaubigte-uebersetzung/${l.slug}`,
+  specialization: l.code === 'ua' || l.code === 'ru',
+}));
+
+const langCount = languages.length;
+
+const dokumente = [
+  { icon: '📄', name: 'Geburtsurkunde',     price: 'ab €30,30', time: 'Standard 72 Std.', href: '/beglaubigte-uebersetzung/geburtsurkunde' },
+  { icon: '💍', name: 'Heiratsurkunde',     price: 'ab €30,30', time: 'Standard 72 Std.', href: '/beglaubigte-uebersetzung/heiratsurkunde' },
+  { icon: '🚗', name: 'Führerschein',       price: 'ab €30,30', time: 'Standard 72 Std.', href: '/beglaubigte-uebersetzung/fuehrerschein' },
+  { icon: '🎓', name: 'Diplom / Zeugnis',   price: 'ab €60,00', time: 'je nach Umfang',   href: '/beglaubigte-uebersetzung/diplom' },
+  { icon: '📋', name: 'Führungszeugnis',    price: 'ab €30,30', time: 'Standard 72 Std.', href: '/beglaubigte-uebersetzung/fuehrungszeugnis' },
+  { icon: '⚖️', name: 'Gerichtsentscheidung', price: 'auf Anfrage', time: 'je nach Umfang', href: '/beglaubigte-uebersetzung/gerichtsentscheidung' },
+  { icon: '🏥', name: 'Medizinische Dok.',  price: 'auf Anfrage', time: 'je nach Umfang', href: '/beglaubigte-uebersetzung/medizinische-dokumente' },
+  { icon: '➕', name: 'Anderes Dokument',   price: 'auf Anfrage', time: '',                href: '/app/bestellen', special: true },
+];
+
+const behoerden = [
+  {
+    icon: '💼',
+    name: 'Jobcenter',
+    content: 'Das Jobcenter übernimmt die Kosten für beglaubigte Übersetzungen nach §44 SGB III. Wir stellen Ihnen eine Rechnung direkt auf das Jobcenter aus — Sie zahlen nichts. Kostenvoranschlag in 30 Min.',
+    cta: { text: 'Jetzt Kostenvoranschlag anfordern →', href: '/app/bestellen' },
+  },
+  {
+    icon: '🏢',
+    name: 'Agentur für Arbeit',
+    content: 'Die Agentur für Arbeit übernimmt Übersetzungskosten nach §44 SGB III. Wir erstellen Ihnen die Rechnung direkt — Sie zahlen 0 €. Kostenvoranschlag in 30 Minuten.',
+    cta: { text: 'Kostenlos anfragen →', href: '/app/bestellen' },
+  },
+  {
+    icon: '🌍',
+    name: 'Ausländerbehörde',
+    content: 'Alle unsere Übersetzungen werden von der Ausländerbehörde deutschlandweit anerkannt — dank Beglaubigung durch den vereidigten Übersetzer am Landgericht Hannover.',
+    cta: { text: 'Mehr erfahren →', href: '/beglaubigte-uebersetzungen' },
+  },
+  {
+    icon: '💒',
+    name: 'Standesamt',
+    content: 'Heiratsurkunden, Geburtsurkunden, Scheidungsurteile — alle Dokumente für das Standesamt übersetzen wir nach ISO 9:1995 Norm.',
+    cta: { text: 'Mehr erfahren →', href: '/beglaubigte-uebersetzung/heiratsurkunde' },
+  },
+  {
+    icon: '🎓',
+    name: 'Uni-Assist',
+    content: 'Für die Zulassung über Uni-Assist benötigen Sie beglaubigte Übersetzungen aller Zeugnisse und Diplome. Unsere Übersetzungen werden von allen deutschen Universitäten akzeptiert.',
+    cta: { text: 'Diplom übersetzen →', href: '/beglaubigte-uebersetzung/diplom' },
+  },
+  {
+    icon: '🏛️',
+    name: 'BAMF',
+    content: 'Für Anerkennungsverfahren beim BAMF müssen alle fremdsprachigen Dokumente von einem vereidigten Übersetzer übersetzt sein. Unsere Übersetzungen werden vollständig anerkannt.',
+    cta: { text: 'Jetzt bestellen →', href: '/app/bestellen' },
+  },
+  {
+    icon: '⚖️',
+    name: 'Gerichte',
+    content: 'Für Gerichtsverfahren in Deutschland müssen Dokumente in anderen Sprachen von einem staatlich anerkannten Übersetzer übersetzt werden. Oleg Rosenblum ist am Landgericht Hannover beeidigt.',
+    cta: { text: 'Mehr erfahren →', href: '/beglaubigte-uebersetzungen' },
+  },
+  {
+    icon: '❓',
+    name: 'Ihre Behörde nicht dabei?',
+    content: 'Unsere Übersetzungen werden von allen deutschen Behörden und Institutionen anerkannt. Kontaktieren Sie uns — wir helfen Ihnen schnell und unkompliziert.',
+    cta: { text: 'Kontakt aufnehmen →', href: '/kontakt' },
+    special: true,
+  },
+];
+
+const reviews = [
+  {
+    stars: 5,
+    text: '„Ich kann es zu 100 % empfehlen. So einfach und schnell war es noch nie. Ich musste nur ein Foto des Dokuments und meine Adresse schicken – die Entfernung spielt keine Rolle, alles läuft online. Die Übersetzung war innerhalb eines Tages fertig und wurde sofort versendet. Innerhalb von zwei Tagen nach meiner Anfrage lag die beglaubigte Übersetzung schon im Briefkasten. Sogar die Bezahlung war erst nach Erhalt fällig, innerhalb von 10 Tagen."',
+    name: 'Fekriia Akhmetova',
+    avatar: '/media/clients/Fekriia_Akhmetova.png',
+  },
+  {
+    stars: 5,
+    text: '„Ich brauchte eine Übersetzung eines großen Dokuments. Alles wurde sehr schnell gemacht, die Kommunikation war klar und sachlich. Ich bin wirklich dankbar."',
+    name: 'NürVik',
+    avatar: '/media/clients/NürVik.png',
+  },
+  {
+    stars: 5,
+    text: '„Ich bin mit der Zusammenarbeit sehr zufrieden. Ich habe eine Express-Übersetzung mit einer Bearbeitungszeit von 24 Stunden bestellt. Obwohl die Bestellung erst abends angenommen wurde, war die Übersetzung schon am nächsten Tag bis Mittag fertig und versendet — und bereits am übernächsten Tag hatte ich die Dokumente in der Hand. Besonders positiv überrascht hat mich die Geschwindigkeit: Bei einem anderen Übersetzer dauerten selbst dringende Aufträge etwa eine Woche."',
+    name: 'Helena Baida',
+    avatar: '/media/clients/Helena_Baida.png',
+  },
+  {
+    stars: 5,
+    text: '„Ich habe eine Übersetzung meiner Heirats- und Geburtsurkunden einschließlich Apostillen in Auftrag gegeben. Ich war beeindruckt von der Schnelligkeit und der Liebe zum Detail; dank dieser Arbeitsweise war alles – einschließlich der Zustellung nach Hause – in nur drei Tagen und absolut fehlerfrei erledigt."',
+    name: 'Vlad Zhelenko',
+    avatar: '/media/clients/Vlad_Zhelenko.png',
+  },
+];
+---
+
+<BaseLayout
+  title="Beglaubigte Übersetzungen | Rosenblum Übersetzungsbüro"
+  description={`Vereidigter Übersetzer am Landgericht Hannover. Beglaubigte Übersetzungen in ${langCount} Sprachen ab €30,30 — express in 24 Std., deutschlandweit per Post.`}
+  lang="de"
+  canonicalUrl="https://rosenblum-uebersetzungen.de/"
+  hreflang={{
+    de: 'https://rosenblum-uebersetzungen.de/',
+    ru: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/',
+    uk: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/',
+  }}
+  schema={[websiteSchema, translationSchema]}
+>
+  <Navbar currentLang="de" />
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 2 · HERO
+  ════════════════════════════════════════════════ -->
+  <section class="hero" aria-label="Hero">
+    <div class="container hero-grid">
+
+      <!-- Left: text content -->
+      <div class="hero-top">
+        <!-- Verified badge -->
+        <div class="hero-badge" aria-label="Zertifizierung">
+          <span class="badge-dot" aria-hidden="true"></span>
+          Vereidigt · Landgericht Hannover
+        </div>
+
+        <!-- H1 -->
+        <h1 class="hero-h1">
+          Beglaubigte<br />
+          Übersetzungen in<br />
+          <span class="hero-accent">{langCount} Sprachen</span>
+        </h1>
+      </div>
+
+      <!-- Right: visual -->
+      <div class="hero-visual" aria-hidden="true">
+        <!-- Floating card top -->
+        <div class="hero-float hero-float-top">
+          <div class="float-check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div>
+            <div class="float-title">Vom Gericht beglaubigt</div>
+            <div class="float-sub">Amtlich anerkannt</div>
+          </div>
+        </div>
+
+        <!-- Document placeholder -->
+        <div class="hero-doc">
+          <div class="doc-header">
+            <div class="doc-circle"></div>
+            <div class="doc-lines-header">
+              <div class="doc-line" style="width:70%"></div>
+              <div class="doc-line" style="width:45%"></div>
+            </div>
+          </div>
+          <div class="doc-body">
+            <div class="doc-line" style="width:100%"></div>
+            <div class="doc-line" style="width:88%"></div>
+            <div class="doc-line" style="width:72%"></div>
+          </div>
+          <div class="doc-footer">
+            <span class="doc-label">— Vereidigter Übersetzer</span>
+            <span class="doc-signature">O. Rosenblum</span>
+          </div>
+
+          <!-- Blue stamp -->
+          <div class="doc-stamp">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="stamp-line">BEGLAUBIGT</span>
+            <span class="stamp-line">LG HANNOVER</span>
+          </div>
+        </div>
+
+        <!-- Floating card bottom -->
+        <div class="hero-float hero-float-bottom">
+          <div class="float-icon-blue">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <div class="float-title">Express 24 Std.</div>
+            <div class="float-sub">Deutschlandweit per Post</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom: rest of text content -->
+      <div class="hero-bottom">
+        <!-- Subline -->
+        <p class="hero-sub">
+          Vereidigter Übersetzer · Landgericht Hannover ·
+          Deutschlandweit anerkannt — ab <strong>€30,30</strong>
+        </p>
+
+        <!-- Language row -->
+        <div class="lang-row-wrapper" role="group" aria-label="Verfügbare Sprachen">
+          <div class="lang-row" id="lang-row">
+            {langCodes.map((lang) => (
+              <span
+                class="lang-code"
+                data-name={lang.name}
+                data-href={lang.href}
+                role="button"
+                tabindex="0"
+                aria-label={`${lang.name} – zur Sprachseite`}
+              >
+                <img src={lang.flag} alt="" class="lang-code-flag" width="18" height="13" />
+                {lang.code}
+                <span class="lang-tooltip" role="tooltip">
+                  <strong>{lang.name}</strong>
+                  <a href={lang.href} class="tooltip-link">Zur Sprachseite →</a>
+                </span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <!-- CTA block -->
+        <div class="hero-ctas">
+          <a href="/app/bestellen" class="btn-primary btn-lg hero-cta" aria-label="Kostenvoranschlag anfordern">
+            KOSTENVORANSCHLAG BESTELLEN →
+          </a>
+          <a href="/preise" class="hero-secondary-btn">Zur Preisliste ↓</a>
+        </div>
+
+        <!-- Trust stats -->
+        <div class="hero-stats" aria-label="Kennzahlen">
+          <div class="stats-divider"></div>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span class="stat-value">8+</span>
+              <span class="stat-label">Jahre</span>
+            </div>
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span class="stat-value">10.000+</span>
+              <span class="stat-label">Übersetzungen</span>
+            </div>
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span class="stat-value">5.000+</span>
+              <span class="stat-label">Kunden</span>
+            </div>
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span class="stat-value">{langCount}</span>
+              <span class="stat-label">Sprachen</span>
+            </div>
+            <div class="stat-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--color-star)" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span class="stat-value">4,8/5</span>
+              <span class="stat-label">Google</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 3 · TRANSLATOR SECTION
+  ════════════════════════════════════════════════ -->
+  <section class="translator" aria-labelledby="translator-h2">
+    <div class="container translator-grid">
+      <!-- Left: photo placeholder -->
+      <div class="translator-photo">
+        <img src="/media/oleg.jpg" alt="Oleg Rosenblum" class="photo-image" />
+        <div class="translator-badge" aria-label="Zertifizierung">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div>
+            <div class="badge-line1">Vereidigt</div>
+            <div class="badge-line2">Landgericht Hannover</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: text -->
+      <div class="translator-content">
+        <div class="section-label"><span class="line"></span>IHR ÜBERSETZER</div>
+        <h2 id="translator-h2" class="section-h2">Ihr vereidigter Übersetzer</h2>
+        <p class="translator-lead">
+          <strong>Oleg Rosenblum</strong> — vom Landgericht Hannover allgemein beeidigter
+          Dolmetscher und ermächtigter Übersetzer für die russische und ukrainische Sprache.
+        </p>
+        <ul class="checklist" aria-label="Qualifikationen">
+          {[
+            'Über 8 Jahre Erfahrung',
+            '10.000+ beglaubigte Übersetzungen',
+            'Übersetzungen mit offiziellem Amtssiegel',
+            'Spezialist für Ukrainisch und Russisch',
+            `Netzwerk vereidigter Übersetzer für ${langCount} Sprachen`,
+          ].map((item) => (
+            <li class="check-item">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+        <a
+          href="https://www.justiz-dolmetscher.de"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="eeat-link"
+          aria-label="Oleg im offiziellen Register auf justiz-dolmetscher.de (öffnet in neuem Tab)"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Oleg im offiziellen Register auf justiz-dolmetscher.de →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 4 · BEHÖRDEN ACCORDION
+  ════════════════════════════════════════════════ -->
+  <section class="behoerden" aria-labelledby="behoerden-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>ANERKANNT BEI</div>
+      <h2 id="behoerden-h2" class="section-h2">Anerkannt bei allen deutschen Behörden</h2>
+      <p class="section-sub">
+        Tippen Sie auf eine Behörde, um zu erfahren, wie wir Ihren Antrag unterstützen.
+      </p>
+
+      <div class="behoerden-grid" role="list">
+        {behoerden.map((item, i) => (
+          <div
+            class={`behoerde-item${item.special ? ' behoerde-special' : ''}`}
+            role="listitem"
+          >
+            <button
+              class="behoerde-header"
+              aria-expanded="false"
+              aria-controls={`behoerde-body-${i}`}
+              id={`behoerde-btn-${i}`}
+            >
+              <div class="behoerde-icon-wrap">
+                <span class="behoerde-emoji" aria-hidden="true">{item.icon}</span>
+              </div>
+              <span class="behoerde-name">{item.name}</span>
+              <span class="behoerde-toggle" aria-hidden="true">+</span>
+            </button>
+            <div
+              class="behoerde-body"
+              id={`behoerde-body-${i}`}
+              role="region"
+              aria-labelledby={`behoerde-btn-${i}`}
+              hidden
+            >
+              <p class="behoerde-text">{item.content}</p>
+              {item.cta && (
+                <a href={item.cta.href} class="behoerde-cta">{item.cta.text}</a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 5 · SPRACHEN GRID
+  ════════════════════════════════════════════════ -->
+  <section class="sprachen" aria-labelledby="sprachen-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>UNSERE SPRACHEN</div>
+      <h2 id="sprachen-h2" class="section-h2">Übersetzen aus {langCount} Sprachen ins Deutsche</h2>
+      <p class="section-sub">
+        Wählen Sie Ihre Sprache für detaillierte Informationen, Preise und Bearbeitungszeiten.
+      </p>
+
+      <div class="sprachen-grid">
+        {sprachen.map((lang) => (
+          <a href={lang.href} class="sprache-card" aria-label={`${lang.name} – beglaubigte Übersetzung`}>
+            {lang.specialization && <span class="sprache-badge">★ Spezialisierung</span>}
+            <img src={lang.flag} alt="" class="sprache-flag" width="40" height="28" />
+            <span class="sprache-name">{lang.name}</span>
+            <span class="sprache-fact">{lang.fact}</span>
+            <span class="sprache-arrow" aria-hidden="true">→</span>
+          </a>
+        ))}
+      </div>
+
+      <p class="sprachen-footer">
+        Ihre Sprache nicht dabei?{' '}
+        <a href="/kontakt" class="text-link">Kontaktieren Sie uns →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 6 · WIE ES FUNKTIONIERT
+  ════════════════════════════════════════════════ -->
+  <section class="steps" aria-labelledby="steps-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>SO EINFACH GEHT'S</div>
+      <h2 id="steps-h2" class="section-h2">Beglaubigte Übersetzung in 3 Schritten</h2>
+
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <div class="step-card" style="animation-delay: 0ms">
+          <div class="step-top">
+            <div class="step-number">01</div>
+            <div class="step-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+          </div>
+          <h3 class="step-title">Dokument hochladen</h3>
+          <p class="step-text">
+            Laden Sie einen Scan oder ein Foto hoch — auch Handyfotos sind ausreichend.
+          </p>
+          <span class="step-badge step-badge-green">⚡ Kostenvoranschlag in 30 Min.</span>
+        </div>
+
+        <div class="step-connector" aria-hidden="true"></div>
+
+        <!-- Step 2 -->
+        <div class="step-card" style="animation-delay: 150ms">
+          <div class="step-top">
+            <div class="step-number">02</div>
+            <div class="step-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+          </div>
+          <h3 class="step-title">Übersetzer bearbeitet</h3>
+          <p class="step-text">
+            Oleg Rosenblum — vereidigter Übersetzer am Landgericht Hannover — übersetzt Ihr Dokument.
+          </p>
+          <span class="step-badge step-badge-blue">⏱ 72 Std. Standard · 24 Std. Express</span>
+        </div>
+
+        <div class="step-connector" aria-hidden="true"></div>
+
+        <!-- Step 3 -->
+        <div class="step-card" style="animation-delay: 300ms">
+          <div class="step-top">
+            <div class="step-number">03</div>
+            <div class="step-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </div>
+          </div>
+          <h3 class="step-title">Per Post erhalten</h3>
+          <p class="step-text">
+            Die beglaubigte Übersetzung kommt per Post — deutschlandweit, mit offiziellem Amtssiegel.
+          </p>
+          <span class="step-badge step-badge-gray">✉ Deutschlandweit</span>
+        </div>
+      </div>
+
+      <div class="steps-cta">
+        <a href="/app/bestellen" class="btn-primary btn-lg">JETZT ÜBERSETZUNG BESTELLEN →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 7 · DOKUMENTE GRID
+  ════════════════════════════════════════════════ -->
+  <section class="dokumente" aria-labelledby="dokumente-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>DOKUMENTE</div>
+      <h2 id="dokumente-h2" class="section-h2">Welche Dokumente übersetzen wir?</h2>
+      <p class="section-sub">
+        Klicken Sie auf einen Dokumententyp für Preise und Bearbeitungszeiten.
+      </p>
+
+      <div class="dokumente-grid">
+        {dokumente.map((doc) =>
+          doc.special ? (
+            <a href={doc.href} class="dok-card dok-card-special" aria-label="Ihr Dokument nicht dabei? Kostenvoranschlag anfordern">
+              <div class="dok-icon-wrap dok-icon-wrap-special" aria-hidden="true">
+                <span class="dok-emoji">{doc.icon}</span>
+              </div>
+              <p class="dok-special-text">Ihr Dokument ist nicht dabei? Wir übersetzen alles.</p>
+              <span class="dok-special-cta">Kostenvoranschlag anfordern →</span>
+            </a>
+          ) : (
+            <a href={doc.href} class="dok-card" aria-label={`${doc.name} übersetzen — ${doc.price}`}>
+              <div class="dok-icon-wrap" aria-hidden="true">
+                <span class="dok-emoji">{doc.icon}</span>
+              </div>
+              <h3 class="dok-name">{doc.name}</h3>
+              <p class="dok-price">{doc.price}</p>
+              {doc.time && <p class="dok-time">{doc.time}</p>}
+              <span class="dok-arrow">→ Mehr erfahren</span>
+            </a>
+          )
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 8 · JOBCENTER BLOCK
+  ════════════════════════════════════════════════ -->
+  <section class="jobcenter" aria-labelledby="jobcenter-h2">
+    <div class="container">
+      <div class="jobcenter-grid">
+        <!-- Left: text -->
+        <div class="jobcenter-text-block">
+          <h2 id="jobcenter-h2" class="jobcenter-h2">
+            Jobcenter kann die<br />Übersetzungskosten übernehmen
+          </h2>
+          <p class="jobcenter-text">
+            Jobcenter und Agentur für Arbeit können in bestimmten Fällen die Kosten
+            für beglaubigte Übersetzungen übernehmen. Wird die Kostenübernahme
+            bewilligt, stellen wir die Rechnung direkt dorthin aus — Sie zahlen nichts.
+          </p>
+        </div>
+
+        <!-- Illustration card -->
+        <div class="jobcenter-visual" aria-hidden="true">
+          <div class="jc-card">
+            <div class="jc-card-header">
+              <span class="jc-card-label">KOSTENVORANSCHLAG</span>
+              <span class="jc-card-number">Nr. 2026-0417</span>
+            </div>
+            <div class="jc-items">
+              <div class="jc-item">
+                <span>Geburtsurkunde — Übersetzung</span>
+                <span>30,30 €</span>
+              </div>
+              <div class="jc-item">
+                <span>Heiratsurkunde — Übersetzung</span>
+                <span>30,30 €</span>
+              </div>
+              <div class="jc-item">
+                <span>Versandkosten</span>
+                <span>2,20 €</span>
+              </div>
+            </div>
+            <div class="jc-total">
+              <span>Gesamt</span>
+              <span class="jc-total-value">62,80 €</span>
+            </div>
+            <div class="jc-card-footer">
+              <div class="jc-check-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                Anerkannt
+              </div>
+              <span class="jc-law-badge">Jobcenter</span>
+            </div>
+          </div>
+        </div>
+
+        <ul class="jobcenter-list" aria-label="Vorteile">
+          <li class="check-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Kostenvoranschlag in 30 Minuten
+          </li>
+          <li class="check-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Rechnung direkt ans Jobcenter
+          </li>
+          <li class="check-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Alle Dokumente anerkannt
+          </li>
+          <li class="check-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Deutschlandweit gültig
+          </li>
+        </ul>
+
+        <div class="jobcenter-bottom">
+          <a href="/app/bestellen" class="btn-primary btn-lg">KOSTENVORANSCHLAG BESTELLEN →</a>
+          <p class="jobcenter-note">Kein Risiko — Kostenvoranschlag ist immer kostenlos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 9 · REVIEWS
+  ════════════════════════════════════════════════ -->
+  <section class="reviews" aria-labelledby="reviews-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>KUNDENBEWERTUNGEN</div>
+      <h2 id="reviews-h2" class="section-h2">Das sagen unsere Kunden</h2>
+
+      <div class="reviews-grid" role="list">
+        {reviews.map((review) => (
+          <article class="review-card" role="listitem">
+            <div class="review-stars" aria-label={`${review.stars} von 5 Sternen`}>
+              {'★'.repeat(review.stars)}
+            </div>
+            <blockquote class="review-text">{review.text}</blockquote>
+            <footer class="review-author">
+              <img src={review.avatar} alt="" class="review-avatar" aria-hidden="true" />
+              <div class="review-name">{review.name}</div>
+            </footer>
+          </article>
+        ))}
+      </div>
+
+      <div class="reviews-footer" aria-label="Gesamtbewertung">
+        <span class="reviews-aggregate">
+          4,8 <span class="reviews-stars" aria-hidden="true">★★★★★</span>
+          von 5 · 26 Bewertungen auf Google
+        </span>
+        <a
+          href="https://www.google.com/maps"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-link"
+          aria-label="Alle Google-Bewertungen ansehen (öffnet in neuem Tab)"
+        >
+          Alle Bewertungen ansehen →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky bottom bar -->
+  <StickyBar />
+</BaseLayout>
+
+<!-- ═══════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════════ -->
+<script>
+  // ── Language row tooltips ──────────────────────
+  const langCodes = document.querySelectorAll('.lang-code');
+
+  langCodes.forEach((el) => {
+    const showTooltip = (e: Event) => {
+      e.stopPropagation();
+      // Hide all others
+      langCodes.forEach((other) => {
+        if (other !== el) other.querySelector('.lang-tooltip')?.classList.remove('visible');
+      });
+      el.querySelector('.lang-tooltip')?.classList.toggle('visible');
+    };
+
+    el.addEventListener('click', showTooltip);
+    el.addEventListener('keydown', (e: Event) => {
+      const ke = e as KeyboardEvent;
+      if (ke.key === 'Enter' || ke.key === ' ') {
+        ke.preventDefault();
+        showTooltip(e);
+      }
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.lang-tooltip.visible').forEach((t) => t.classList.remove('visible'));
+  });
+
+  // ── Behörden accordion ─────────────────────────
+  const accordionBtns = document.querySelectorAll('.behoerde-header');
+
+  accordionBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const body = document.getElementById(btn.getAttribute('aria-controls') ?? '');
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      const toggle = btn.querySelector('.behoerde-toggle');
+
+      // Close all
+      accordionBtns.forEach((other) => {
+        other.setAttribute('aria-expanded', 'false');
+        const otherBody = document.getElementById(other.getAttribute('aria-controls') ?? '');
+        if (otherBody) otherBody.hidden = true;
+        const otherToggle = other.querySelector('.behoerde-toggle');
+        if (otherToggle) otherToggle.textContent = '+';
+      });
+
+      // Toggle current
+      if (!isOpen) {
+        btn.setAttribute('aria-expanded', 'true');
+        if (body) body.hidden = false;
+        if (toggle) toggle.textContent = '×';
+      }
+    });
+  });
+
+  // ── Scroll-driven step animations ─────────────
+  const stepCards = document.querySelectorAll('.step-card');
+  if ('IntersectionObserver' in window) {
+    const stepObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).style.opacity = '1';
+            (entry.target as HTMLElement).style.transform = 'translateY(0)';
+            stepObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    stepCards.forEach((card) => {
+      (card as HTMLElement).style.opacity = '0';
+      (card as HTMLElement).style.transform = 'translateY(20px)';
+      (card as HTMLElement).style.transition = `opacity 0.4s ease ${(card as HTMLElement).style.animationDelay}, transform 0.4s ease ${(card as HTMLElement).style.animationDelay}`;
+      stepObserver.observe(card);
+    });
+  }
+</script>
+
+<style>
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  background: var(--color-bg);
+  padding: 64px 0 80px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "top" "visual" "bottom";
+  gap: 16px;
+}
+
+.hero-top { grid-area: top; }
+.hero-visual { grid-area: visual; }
+.hero-bottom { grid-area: bottom; }
+
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 58fr 42fr;
+    grid-template-areas: "top visual" "bottom visual";
+    column-gap: 56px;
+    row-gap: 40px;
+    padding: 0;
+  }
+
+  .hero-visual {
+    align-self: center;
+  }
+
+  .hero {
+    padding: 80px 0;
+  }
+}
+
+/* Badge */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-badge-bg);
+  color: var(--color-badge-text);
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  margin-bottom: 24px;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse-dot 2s infinite;
+  flex-shrink: 0;
+}
+
+/* H1 */
+.hero-h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-black);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  margin-bottom: 20px;
+}
+
+@media (min-width: 1024px) {
+  .hero-h1 { font-size: var(--text-5xl); }
+}
+
+.hero-accent {
+  color: var(--color-primary);
+}
+
+/* Subline */
+.hero-sub {
+  font-size: var(--text-lg);
+  font-weight: var(--font-medium);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin-bottom: 28px;
+}
+
+/* Language row */
+.lang-row-wrapper {
+  margin-bottom: 32px;
+}
+
+.lang-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  padding: 14px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.lang-code {
+  position: relative;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: background 0.12s, color 0.12s;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.lang-code-flag {
+  display: inline-block;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+.lang-code:hover,
+.lang-code:focus {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  outline: none;
+}
+
+.lang-code:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Tooltip */
+.lang-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 10px 14px;
+  min-width: 160px;
+  white-space: nowrap;
+  z-index: 20;
+  text-align: center;
+  gap: 6px;
+  flex-direction: column;
+  font-size: var(--text-sm);
+}
+
+.lang-tooltip.visible { display: flex; }
+
+.lang-tooltip strong {
+  color: var(--color-text);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0;
+}
+
+.tooltip-link {
+  color: var(--color-primary);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+  font-size: var(--text-xs);
+}
+
+.tooltip-link:hover { text-decoration: underline; }
+
+/* CTAs */
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+
+.hero-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  padding: 14px 28px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.hero-secondary-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+@media (max-width: 639px) {
+  .hero-ctas {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .hero-cta,
+  .hero-secondary-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.btn-lg {
+  padding: 16px 32px;
+  font-size: var(--text-base);
+}
+
+/* Trust stats */
+.stats-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin-bottom: 20px;
+}
+
+.stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 28px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.stat-item svg { color: var(--color-primary); flex-shrink: 0; }
+
+.stat-value {
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+}
+
+/* ── HERO VISUAL ── */
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+@media (min-width: 1024px) {
+  .hero-visual { padding: 40px; }
+}
+
+/* Document card */
+.hero-doc {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--color-border);
+  width: 100%;
+  max-width: 320px;
+  background: linear-gradient(145deg, #fff 0%, #f8f9ff 100%);
+}
+
+.doc-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.doc-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+  background: var(--color-bg-soft);
+}
+
+.doc-lines-header { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+.doc-body { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
+
+.doc-line {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-border);
+}
+
+.doc-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.doc-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.doc-signature {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  font-size: var(--text-xl);
+  color: var(--color-text);
+  line-height: 1;
+}
+
+/* Stamp */
+.doc-stamp {
+  position: absolute;
+  right: -20px;
+  bottom: 50px;
+  width: 80px;
+  height: 80px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 20px rgba(59, 91, 219, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  gap: 1px;
+}
+
+.stamp-line {
+  font-size: 7.5px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+/* Floating cards */
+.hero-float {
+  position: absolute;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+}
+
+.hero-float-top {
+  top: 0;
+  left: -12px;
+}
+
+@media (min-width: 1024px) {
+  .hero-float-top { top: 20px; left: -20px; }
+}
+
+.hero-float-bottom {
+  bottom: 0;
+  right: -4px;
+}
+
+@media (min-width: 1024px) {
+  .hero-float-bottom { bottom: 20px; right: -12px; }
+}
+
+.float-check {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.float-icon-blue {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.float-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.float-sub {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════════════
+   BEHÖRDEN ACCORDION
+══════════════════════════════════════ */
+.behoerden {
+  padding: var(--section-py) 0;
+  background: var(--color-bg);
+}
+
+.section-h2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin-bottom: 12px;
+  line-height: var(--leading-tight);
+}
+
+@media (min-width: 640px) {
+  .section-h2 { font-size: var(--text-4xl); }
+}
+
+.section-sub {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin-bottom: 40px;
+  max-width: 600px;
+}
+
+.behoerden-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .behoerden-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.behoerde-item {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.behoerde-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.behoerde-special {
+  border-style: dashed;
+  color: var(--color-primary);
+}
+
+.behoerde-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.behoerde-header:hover { background: var(--color-bg-soft); }
+
+.behoerde-header[aria-expanded="true"] { background: var(--color-bg-soft); }
+
+.behoerde-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.behoerde-emoji { font-size: 18px; }
+
+.behoerde-name {
+  flex: 1;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+}
+
+.behoerde-special .behoerde-name { color: var(--color-primary); }
+
+.behoerde-toggle {
+  font-size: 20px;
+  color: var(--color-text-muted);
+  font-weight: var(--font-normal);
+  line-height: 1;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.behoerde-body {
+  padding: 0 20px 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.behoerde-body[hidden] { display: none; }
+
+.behoerde-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 14px 0 12px;
+}
+
+.behoerde-cta {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.behoerde-cta:hover { text-decoration: underline; }
+
+/* ══════════════════════════════════════
+   SPRACHEN GRID
+══════════════════════════════════════ */
+.sprachen {
+  padding: var(--section-py) 0;
+  background: var(--color-bg-soft);
+}
+
+.sprachen-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+  /* Mobile horizontal scroll hint */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 4px;
+}
+
+@media (min-width: 640px) {
+  .sprachen-grid {
+    grid-template-columns: repeat(3, 1fr);
+    overflow-x: visible;
+  }
+}
+
+@media (min-width: 1024px) {
+  .sprachen-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.sprache-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 16px;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.2s ease;
+  scroll-snap-align: start;
+  min-width: 140px;
+  position: relative;
+}
+
+.sprache-badge {
+  align-self: flex-start;
+  background: var(--color-primary);
+  color: white;
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.02em;
+  padding: 3px 9px;
+  border-radius: 10px;
+  white-space: nowrap;
+  margin-bottom: 2px;
+}
+
+.sprache-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.sprache-card:hover .sprache-arrow { opacity: 1; }
+
+.sprache-flag { width: 40px; height: 28px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08); }
+
+.sprache-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+}
+
+.sprache-fact {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+.sprache-arrow {
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  opacity: 0;
+  transition: opacity 0.15s;
+  margin-top: 4px;
+}
+
+.sprachen-footer {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* ══════════════════════════════════════
+   STEPS
+══════════════════════════════════════ */
+.steps {
+  padding: var(--section-py) 0;
+  background: var(--color-bg);
+}
+
+.steps-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 1024px) {
+  .steps-grid {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+  }
+}
+
+.step-card {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  transition: box-shadow 0.2s;
+}
+
+.step-card:hover { box-shadow: var(--shadow-card-hover); }
+
+.step-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.step-number {
+  font-size: 36px;
+  font-weight: var(--font-black);
+  color: var(--color-primary-light);
+  line-height: 1;
+  background: var(--color-bg-soft);
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  color: var(--color-primary);
+  font-weight: var(--font-bold);
+}
+
+.step-icon {
+  color: var(--color-primary);
+  opacity: 0.6;
+}
+
+.step-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.step-text {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin-bottom: 16px;
+}
+
+.step-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+}
+
+.step-badge-green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.step-badge-blue {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.step-badge-gray {
+  background: var(--color-bg-soft);
+  color: var(--color-text-muted);
+}
+
+/* Connector between steps */
+.step-connector {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .step-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    flex-shrink: 0;
+    margin-top: 40px;
+  }
+
+  .step-connector::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-border) 0,
+      var(--color-border) 6px,
+      transparent 6px,
+      transparent 12px
+    );
+  }
+}
+
+.steps-cta {
+  text-align: center;
+}
+
+/* ══════════════════════════════════════
+   DOKUMENTE GRID
+══════════════════════════════════════ */
+.dokumente {
+  padding: var(--section-py) 0;
+  background: var(--color-bg-soft);
+}
+
+.dokumente-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 640px) {
+  .dokumente-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .dokumente-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.dok-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px 20px;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.2s ease;
+}
+
+.dok-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.dok-card-special {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dok-card-special:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.dok-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.dok-emoji { font-size: 22px; }
+
+.dok-icon-wrap-special { background: rgba(255, 255, 255, 0.18); }
+
+.dok-special-text {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: white;
+  line-height: var(--leading-normal);
+  margin: 0;
+}
+
+.dok-special-cta {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: white;
+  text-decoration: underline;
+  margin-top: auto;
+}
+
+.dok-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.dok-price {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+}
+
+.dok-time {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.dok-arrow {
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  font-weight: var(--font-medium);
+  margin-top: auto;
+}
+
+/* ══════════════════════════════════════
+   JOBCENTER
+══════════════════════════════════════ */
+.jobcenter {
+  padding: var(--section-py) 0;
+  background: linear-gradient(135deg, #EEF2FF 0%, #DBEAFE 100%);
+}
+
+.jobcenter-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "text" "visual" "list" "bottom";
+  gap: 32px;
+}
+
+.jobcenter-text-block { grid-area: text; }
+.jobcenter-visual { grid-area: visual; }
+.jobcenter-list { grid-area: list; }
+.jobcenter-bottom { grid-area: bottom; }
+
+@media (min-width: 1024px) {
+  .jobcenter-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "text visual"
+      "list visual"
+      "bottom visual";
+    column-gap: 48px;
+    row-gap: 28px;
+    align-items: start;
+  }
+
+  .jobcenter-visual { align-self: center; }
+}
+
+.jobcenter-h2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin-bottom: 16px;
+  line-height: var(--leading-tight);
+}
+
+@media (min-width: 640px) {
+  .jobcenter-h2 { font-size: var(--text-4xl); }
+}
+
+.jobcenter-text {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+}
+
+.jobcenter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--text-base);
+  color: var(--color-text);
+  line-height: var(--leading-normal);
+}
+
+.check-item svg { flex-shrink: 0; margin-top: 2px; }
+
+.jobcenter-note {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: 12px;
+}
+
+/* Jobcenter visual card */
+.jobcenter-visual {
+  display: flex;
+  justify-content: center;
+}
+
+.jc-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(59, 91, 219, 0.15);
+  padding: 24px;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .jc-card { max-width: 320px; }
+}
+
+.jc-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.jc-card-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  letter-spacing: 0.04em;
+}
+
+.jc-card-number {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.jc-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.jc-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.jc-item span:last-child {
+  color: var(--color-text);
+  font-weight: var(--font-medium);
+  flex-shrink: 0;
+}
+
+.jc-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-top: 14px;
+  margin-bottom: 16px;
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+}
+
+.jc-total-value {
+  font-size: var(--text-xl);
+  font-weight: var(--font-black);
+  color: var(--color-primary);
+}
+
+.jc-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.jc-check-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-success);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+}
+
+.jc-law-badge {
+  font-size: var(--text-xs);
+  font-weight: var(--font-bold);
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+/* ══════════════════════════════════════
+   TRANSLATOR
+══════════════════════════════════════ */
+.translator {
+  padding: var(--section-py) 0;
+  background: var(--color-bg-soft);
+}
+
+.translator-grid {
+  display: grid;
+  gap: 48px;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .translator-grid { grid-template-columns: 2fr 3fr; }
+}
+
+/* Photo placeholder */
+.translator-photo {
+  position: relative;
+}
+
+.photo-image {
+  width: 100%;
+  aspect-ratio: 4/5;
+  max-width: 340px;
+  border-radius: 16px;
+  object-fit: cover;
+  background: var(--color-bg-soft);
+}
+
+/* Badge */
+.translator-badge {
+  position: absolute;
+  bottom: -16px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-primary);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(59, 91, 219, 0.3);
+}
+
+.badge-line1 {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  line-height: 1.2;
+}
+
+.badge-line2 {
+  font-size: var(--text-xs);
+  opacity: 0.85;
+}
+
+/* Translator content */
+.translator-content { padding-top: 16px; }
+
+@media (min-width: 1024px) {
+  .translator-content { padding-top: 0; }
+}
+
+.translator-lead {
+  font-size: var(--text-lg);
+  color: var(--color-text);
+  line-height: var(--leading-relaxed);
+  margin-bottom: 24px;
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.eeat-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  padding: 10px 18px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.eeat-link:hover { background: var(--color-primary); color: white; }
+
+/* ══════════════════════════════════════
+   REVIEWS
+══════════════════════════════════════ */
+.reviews {
+  padding: var(--section-py) 0;
+  background: var(--color-bg-soft);
+  padding-bottom: calc(var(--section-py) + 60px);
+}
+
+.reviews-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+  /* Mobile horizontal scroll */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+  margin-bottom: 32px;
+}
+
+@media (min-width: 640px) {
+  .reviews-grid {
+    grid-template-columns: repeat(2, 1fr);
+    overflow-x: visible;
+  }
+}
+
+@media (min-width: 1024px) {
+  .reviews-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.review-card {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-snap-align: start;
+  min-width: 260px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.review-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.review-stars {
+  color: var(--color-star);
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.review-text {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-relaxed);
+  flex: 1;
+  font-style: normal;
+  margin: 0;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.review-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--color-bg-soft);
+}
+
+.review-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+}
+
+
+.reviews-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .reviews-footer { flex-direction: row; justify-content: center; gap: 16px; }
+}
+
+.reviews-aggregate {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+}
+
+.reviews-stars { color: var(--color-star); }
+
+/* ══════════════════════════════════════
+   GLOBAL UTILITIES
+══════════════════════════════════════ */
+.text-link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: var(--font-medium);
+  transition: text-decoration 0.15s;
+}
+
+.text-link:hover { text-decoration: underline; }
+</style>

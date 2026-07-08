@@ -1,0 +1,135 @@
+---
+interface Props {
+  langName: string;
+  langNameGen: string;
+  flag: string;
+}
+const { langName, langNameGen, flag } = Astro.props;
+---
+
+<main class="cs-main">
+  <div class="container cs-wrap">
+    <div class="cs-card">
+      <img src={flag} width="48" height="33" alt={`${langName} Flagge`} class="cs-flag" />
+
+      <div class="cs-badge">
+        <span class="cs-dot" aria-hidden="true"></span>
+        Demnächst verfügbar
+      </div>
+
+      <h1 class="cs-h1">{langName}–Deutsch</h1>
+
+      <p class="cs-text">
+        Diese Seite wird gerade aufgebaut. Beglaubigte Übersetzungen aus dem {langNameGen} ins
+        Deutsche führen wir bereits durch — als vereidigter Übersetzer am Landgericht Hannover.
+      </p>
+
+      <div class="cs-actions">
+        <a href="/sprachen/" class="cs-back">← Alle Sprachen</a>
+        <a href="/app/bestellen" class="btn-primary">Jetzt anfragen →</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<style>
+  .cs-main {
+    min-height: calc(100vh - 72px);
+    background: var(--color-bg-soft);
+    display: flex;
+    align-items: center;
+  }
+
+  .cs-wrap {
+    padding-top: 80px;
+    padding-bottom: 80px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .cs-card {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    padding: 48px 56px;
+    max-width: 520px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .cs-flag {
+    border-radius: 3px;
+    display: block;
+  }
+
+  .cs-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #FEF3C7;
+    border: 1px solid #F59E0B;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: #92400e;
+  }
+
+  .cs-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #F59E0B;
+    flex-shrink: 0;
+    animation: cs-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes cs-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  .cs-h1 {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .cs-text {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .cs-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cs-back {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .cs-back:hover { color: var(--color-primary); }
+
+  @media (max-width: 600px) {
+    .cs-card { padding: 36px 24px; }
+    .cs-h1 { font-size: var(--text-2xl); }
+  }
+</style>

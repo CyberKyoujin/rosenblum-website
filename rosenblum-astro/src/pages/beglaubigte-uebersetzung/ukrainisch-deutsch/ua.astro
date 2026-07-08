@@ -1,0 +1,2130 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Navbar from '../../../components/Navbar.astro';
+import StickyBar from '../../../components/StickyBar.astro';
+
+const icons: Record<string, string> = {
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  shieldcheck: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+  check: '<polyline points="20 6 9 17 4 12"/>',
+  arrowright: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  graduation: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12.5V17c3 2.5 9 2.5 12 0v-4.5"/>',
+  briefcase: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>',
+  filetext: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>',
+  filecheck: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/>',
+  idcard: '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',
+  home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+  penline: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
+  mailcheck: '<path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/>',
+  camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  calculator: '<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="10" x2="8" y2="10"/><line x1="16" y1="14" x2="8" y2="14"/><line x1="16" y1="18" x2="8" y2="18"/>',
+  checksquare: '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  globe: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  messagecircle: '<path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>',
+  send: '<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+  tag: '<path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.42 0l8.58-8.58a1 1 0 0 0 0-1.42z"/><circle cx="6.5" cy="6.5" r="1.5"/>',
+};
+
+const docs = [
+  { icon: 'filetext', name: 'Свідоцтво про народження', de: 'Geburtsurkunde', usage: 'Для Einbürgerung, Standesamt, Kindergeld', price: '35,30 €', href: '/app/bestellen?doc=geburtsurkunde' },
+  { icon: 'filetext', name: 'Свідоцтво про шлюб', de: 'Heiratsurkunde', usage: 'Для Standesamt, возз\'єднання сім\'ї', price: '35,30 €', href: '/app/bestellen?doc=heiratsurkunde' },
+  { icon: 'idcard', name: 'Посвідчення водія', de: 'Führerschein', usage: 'Для обміну на німецькі права', price: '30,30 €', href: '/app/bestellen?doc=fuehrerschein', badge: 'Найдешевше' },
+  { icon: 'idcard', name: 'Закордонний паспорт', de: 'Reisepass', usage: 'Для Ausländerbehörde', price: '35,30 €', href: '/app/bestellen?doc=pass' },
+  { icon: 'shield', name: 'Довідка про несудимість', de: 'Führungszeugnis', usage: 'Для роботодавців, органів влади', price: '35,30 €', href: '/app/bestellen?doc=fuehrungszeugnis' },
+  { icon: 'home', name: 'Довідка про реєстрацію', de: 'Meldebescheinigung', usage: 'Для органів влади, банків', price: '35,30 €', href: '/app/bestellen?doc=meldebescheinigung' },
+];
+
+const situations = [
+  {
+    icon: 'filecheck',
+    title: 'Відомство у справах іноземців (§24)',
+    text: 'Українці з тимчасовим захистом за §24 потребують засвідченого перекладу документів для оформлення посвідки на проживання.',
+    items: ['Свідоцтво про народження', 'Паспорт (сторінка з даними)', 'Свідоцтво про шлюб (якщо є)'],
+  },
+  {
+    icon: 'star',
+    title: 'Отримання громадянства',
+    text: 'Для заяви на отримання громадянства потрібні засвідчені переклади українських документів про особистий стан.',
+    items: ['Свідоцтво про народження', 'Свідоцтво про шлюб (якщо є)', 'Апостиль (якщо є)'],
+  },
+  {
+    icon: 'graduation',
+    title: 'Університет / Uni-Assist',
+    text: 'Для вступу до університету через Uni-Assist потрібні засвідчені переклади атестата та диплома.',
+    items: ['Атестат з додатком оцінок', 'Диплом (якщо є)', 'Апостиль (якщо є)'],
+  },
+  {
+    icon: 'briefcase',
+    title: 'Jobcenter / Визнання професії',
+    text: 'Jobcenter може оплатити переклад. Ми виставляємо рахунок напряму — ви не платите нічого.',
+    items: ['Трудова книжка', 'Диплом / Атестат', 'Jobcenter оплачує'],
+    badge: 'Jobcenter оплачує',
+  },
+  {
+    icon: 'heart',
+    title: 'РАЦС / Одруження',
+    text: 'Для реєстрації шлюбу в Німеччині потрібні засвідчені переклади українських документів.',
+    items: ['Свідоцтво про народження', 'Довідка про несудимість', 'Рішення про розлучення (якщо є)'],
+  },
+];
+
+const reviews = [
+  {
+    initials: 'ОК',
+    name: 'Олена Коваленко',
+    city: 'Берлін',
+    text: 'Протягом 30 хвилин отримала кошторис для Jobcenter. Переклад прийшов вчасно, все прийняли без питань.',
+  },
+  {
+    initials: 'ДА',
+    name: 'Дмитро Антонов',
+    city: 'Мюнхен',
+    text: 'Переклад диплома для Uni-Assist — ідеально оформлено та засвідчено. Пан Розенблюм терпляче відповів на всі питання.',
+  },
+  {
+    initials: 'ЮВ',
+    name: 'Юлія Вебер',
+    city: 'Кельн',
+    text: 'Експрес за 24 години. Саме те що мені було потрібно для посвідки на проживання. Дуже рекомендую.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Чи потрібен оригінал документа?',
+    a: 'Ні. Для перекладу достатньо фото або сканів — навіть знятого на телефон. Оригінал потрібен тільки якщо орган влади вимагає щоб переклад був фізично прикріплений до оригіналу. Це рідкісний випадок — ми повідомимо вас у кошторисі якщо це необхідно.',
+  },
+  {
+    q: 'Скільки коштує засвідчений переклад?',
+    a: 'Стандартні документи (свідоцтво про народження, посвідчення водія, паспорт) коштують від 30,30 € включно з ПДВ — фіксована ціна, без сюрпризів. Складні документи (диплом, трудова книжка) оплачуються по рядках: 1,40–1,80 € за рядок. Безкоштовний кошторис — за 30 хвилин.',
+  },
+  {
+    q: 'Як довго чекати на переклад?',
+    a: 'Стандартний термін — 72 години після підтвердження замовлення. З опцією Експрес — 24 години. Готовий переклад надсилаємо поштою по всій Німеччині. Цифрова копія PDF — одразу на email.',
+  },
+  {
+    q: 'Чи приймуть переклад у відомстві?',
+    a: 'Так. Всі переклади виконує Олег Розенблюм — загальноприсяжний перекладач при Земельному суді Ганновера. Переклади з офіційною печаткою та підписом визнані по всій Німеччині — у всіх органах влади, судах та університетах.',
+  },
+  {
+    q: 'Чи може Jobcenter оплатити переклад?',
+    a: 'Так. Jobcenter та Agentur für Arbeit можуть оплатити витрати на засвідчений переклад. Ви подаєте наш кошторис куратору — після підтвердження ми виставляємо рахунок напряму до Jobcenter. Вам не потрібно платити.',
+  },
+  {
+    q: 'Чи перекладаєте ви з німецької на українську?',
+    a: 'Так. Ми перекладаємо в обох напрямках — українські документи на німецьку і німецькі листи, рішення, договори на українську. На запит — також із засвідченням.',
+  },
+  {
+    q: 'Чи потрібен мені апостиль?',
+    a: 'Це залежить від того, для чого вам потрібен переклад. Для використання в Німеччині апостиль зазвичай не потрібен — достатньо засвідченого перекладу. Але якщо документи потрібні за кордоном, апостиль може знадобитися. Важливо: ми оформлюємо апостиль саме на наш переклад, а не на ваш оригінальний документ. Апостиль на оригінал оформлюється через Міністерство юстиції України або відповідний орган вашої країни. Апостиль на наш переклад: 35,00 € (Земельний суд Ганновера).',
+  },
+  {
+    q: 'Як надіслати документ?',
+    a: 'Найзручніше — через форму на сайті: завантажте фото, отримайте підтвердження одразу. Також можна надіслати фото у WhatsApp або Telegram — відповімо протягом 30 хвилин у робочий час (Пн–Пт 9:00–18:00).',
+  },
+];
+
+const translationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TranslationService',
+  name: 'Rosenblum Übersetzungsbüro',
+  url: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/',
+  serviceType: 'Засвідчений переклад Українська Німецька',
+  inLanguage: 'uk',
+  outLanguage: 'de',
+  provider: {
+    '@type': 'Person',
+    name: 'Oleg Rosenblum',
+    hasCredential: {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Vereidigter Übersetzer',
+      recognizedBy: { '@type': 'Organization', name: 'Landgericht Hannover' },
+    },
+  },
+  areaServed: { '@type': 'Country', name: 'Germany' },
+  priceRange: 'від €30,30',
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', reviewCount: '50' },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rosenblum-uebersetzungen.de/' },
+    { '@type': 'ListItem', position: 2, name: 'Українська', item: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Присяжний перекладач у Німеччині — засвідчений переклад | Rosenblum"
+  description="Засвідчений переклад українських документів — присяжний перекладач при Земельному суді Ганновера. Свідоцтво про народження, права, диплом від 30,30 €. Кошторис за 30 хв. По всій Німеччині."
+  lang="uk"
+  canonicalUrl="https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/"
+  hreflang={{
+    uk: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/',
+    de: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/',
+    ru: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/',
+  }}
+  schema={[translationSchema, faqSchema, breadcrumbSchema]}
+>
+  <Navbar />
+
+  <!-- ===== SECTION 1: HERO ===== -->
+  <section class="hero-section">
+
+    <div class="container hero-grid">
+      <!-- TEXT -->
+      <div class="hero-text-top">
+        <!-- Lang switcher -->
+        <nav class="lang-switcher" aria-label="Мова сторінки">
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/" class="lang-btn lang-btn--active" aria-current="page">
+            <img src="/media/flags/ua.svg" width="20" height="14" alt="" aria-hidden="true" />
+            Українська
+          </a>
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/" class="lang-btn">
+            <img src="/media/flags/de.svg" width="20" height="14" alt="" aria-hidden="true" />
+            Deutsch
+          </a>
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/" class="lang-btn">
+            <img src="/media/flags/ru.svg" width="20" height="14" alt="" aria-hidden="true" />
+            Русский
+          </a>
+        </nav>
+
+        <h1 class="hero-h1">
+          Засвідчений переклад<br />
+          <span class="hero-accent">Українська–Німецька</span>
+        </h1>
+      </div>
+
+      <!-- VISUAL -->
+      <div class="hero-visual" aria-label="Приклад засвідченого перекладу">
+        <div class="hv-badge-top">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+          Засвідчено судом · Офіційно визнано
+        </div>
+
+        <div class="hv-doc" aria-hidden="true">
+          <div class="hv-doc-chip">ОРИГІНАЛ</div>
+          <div class="hv-doc-title">СВІДОЦТВО ПРО НАРОДЖЕННЯ</div>
+          <div class="hv-doc-country">Україна · Відділ РАЦС</div>
+          <div class="hv-doc-divider"></div>
+          <div class="hv-doc-line" style="width:78%"></div>
+          <div class="hv-doc-line" style="width:55%"></div>
+          <div class="hv-doc-line" style="width:82%"></div>
+          <div class="hv-doc-line" style="width:60%"></div>
+          <div class="hv-doc-line" style="width:70%"></div>
+          <div class="hv-doc-stamp">
+            <div class="hv-stamp-text1">BEGLAUBIGT</div>
+            <div class="hv-stamp-divline"></div>
+            <div class="hv-stamp-text2">LG HANNOVER</div>
+          </div>
+        </div>
+
+        <div class="hv-badge-bottom">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.clock} />
+          Експрес 24 год. · Доставка по всій Німеччині
+        </div>
+      </div>
+
+      <div class="hero-text-bottom">
+        <p class="hero-subline">
+          Офіційний перекладач при Земельному суді Ганновера.
+          Визнано у всіх органах влади, судах та університетах Німеччини.
+          <strong class="hero-subline-accent">По всій Німеччині поштою.</strong>
+        </p>
+
+        <ul class="hero-trust-list" aria-label="Переваги">
+          <li class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Присяжний при Земельному суді Ганновера</span>
+          </li>
+          <li class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Від 30,30 € · Стандарт 72 год / Експрес 24 год</span>
+          </li>
+          <li class="trust-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>4,8/5 · 50 відгуків на Google</span>
+          </li>
+        </ul>
+
+        <div class="hero-cta">
+          <a href="/app/bestellen" class="btn-primary">ЗАМОВИТИ ПЕРЕКЛАД →</a>
+          <a href="/preise/" class="btn-secondary">Переглянути ціни →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: E-E-A-T ===== -->
+  <section class="eeat-section">
+    <div class="container eeat-grid">
+      <div class="eeat-content">
+        <p class="eeat-eyebrow">Чому варто довіряти</p>
+        <h2 class="eeat-h2">
+          Не просто перекладач —<br />
+          <span class="eeat-accent">офіційно визнаний спеціаліст</span>
+        </h2>
+        <p class="eeat-text">
+          Олег Розенблюм — загальноприсяжний перекладач та уповноважений перекладач при
+          Земельному суді Ганновера (Niedersachsen). Лише присяжні перекладачі мають право
+          виконувати юридично визнані засвідчені переклади в Німеччині.
+        </p>
+        <ul class="eeat-list" aria-label="Переваги">
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Верифікований у реєстрі Нижньої Саксонії</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Офіційна печатка та власноручний підпис</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Визнано по всій Німеччині — від Flensburg до München</span>
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Мови: Українська · Російська · Німецька</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Register card with photo -->
+      <div class="register-card">
+        <div class="register-photo-wrap">
+          <img src="/media/oleg.jpg" class="register-photo" alt="Олег Розенблюм — присяжний перекладач при Земельному суді Ганновера" />
+          <div class="register-photo-chip">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            Верифіковано · ЗС Ганновера
+          </div>
+        </div>
+        <div class="register-card-body">
+          <div class="register-label">JUSTIZ-DOLMETSCHER-REGISTER</div>
+          <h3 class="register-name">Oleg Rosenblum</h3>
+          <p class="register-cred">
+            Загальноприсяжний перекладач &amp;<br />
+            уповноважений перекладач
+          </p>
+          <p class="register-nr">№ 53923 · Земельний суд Ганновера</p>
+          <p class="register-langs">Мови: Українська · Російська</p>
+          <div class="register-divider"></div>
+          <a
+            href="https://www.justiz.niedersachsen.de/dolmetscher"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="register-link"
+          >
+            ↗ Перевірити запис у реєстрі
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: DOCUMENTS + PRICES ===== -->
+  <section class="docs-section">
+    <div class="container">
+      <p class="section-eyebrow">Документи та ціни</p>
+      <h2 class="section-h2">Які документи ми перекладаємо</h2>
+      <p class="section-sub">Фіксована ціна — без прихованих доплат. Кошторис безкоштовно за 30 хвилин. <a href="/preise/dokumente/" class="section-sub-link">Всі документи та ціни →</a></p>
+
+      <div class="docs-grid">
+        {docs.map((doc) => (
+          <a href={doc.href} class="doc-card">
+            <div class="doc-card-top">
+              <div class="doc-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[doc.icon]} />
+              </div>
+              {doc.badge && <span class="doc-badge">{doc.badge}</span>}
+            </div>
+            <h3 class="doc-name">{doc.name}</h3>
+            <p class="doc-de">{doc.de}</p>
+            <p class="doc-usage">{doc.usage}</p>
+            <div class="doc-price-row">
+              <span class="doc-price">{doc.price}</span>
+              <span class="doc-order">Замовити →</span>
+            </div>
+          </a>
+        ))}
+
+        <!-- Zeilenpreis accent block -->
+        <div class="docs-zeilen-card">
+          <div class="docs-zeilen-left">
+            <div class="docs-zeilen-badge">ЗАРЯДКА ЗА РЯДКОМ</div>
+            <h3 class="docs-zeilen-h3">Багатосторінкові документи — оплата за рядками</h3>
+            <div class="docs-zeilen-price">1,40–1,80 € / рядок</div>
+            <div class="docs-zeilen-docs">
+              <span class="docs-zeilen-doc">Диплом з додатком</span>
+              <span class="docs-zeilen-doc">Трудова книжка</span>
+              <span class="docs-zeilen-doc">Рішення суду</span>
+            </div>
+            <p class="docs-zeilen-text">
+              Обсяг та ціна залежить від кількості рядків. Безкоштовний кошторис — за 30 хвилин.
+              Jobcenter може оплатити напряму.
+            </p>
+          </div>
+          <div class="docs-zeilen-right">
+            <a href="/app/bestellen" class="docs-zeilen-cta">Отримати кошторис →</a>
+          </div>
+        </div>
+
+        <div class="apostille-hint">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.globe} />
+          <div>
+            <p>
+              <strong>Чи потрібен апостиль на ваш переклад?</strong><br />
+              Ми оформлюємо апостиль на наш готовий переклад через
+              Земельний суд Ганновера — 35,00 €.
+              Переклад + апостиль від 65,30 € під ключ.
+            </p>
+            <p class="apostille-hint-note">
+              Зверніть увагу: апостиль ставиться на наш переклад,
+              а не на ваш оригінальний документ. Апостиль на оригінал
+              оформлюється в органах влади вашої країни.
+            </p>
+            <a href="/apostille/">Детальніше про апостиль →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: HOW IT WORKS (TABS) ===== -->
+  <section class="process-section">
+    <div class="container">
+      <p class="section-eyebrow">Як це працює</p>
+      <h2 class="section-h2">Три кроки до засвідченого перекладу</h2>
+      <p class="section-sub">Весь процес — онлайн. Оригінал не потрібен.</p>
+
+      <div class="tabs-wrapper">
+        <div class="tabs-switcher" role="tablist" aria-label="Тип документа">
+          <button
+            class="tab-btn tab-btn--active"
+            role="tab"
+            aria-selected="true"
+            aria-controls="tab-standard"
+            id="tab-standard-btn"
+            data-target="tab-standard"
+          >
+            📄 Стандартний документ
+          </button>
+          <button
+            class="tab-btn"
+            role="tab"
+            aria-selected="false"
+            aria-controls="tab-diploma"
+            id="tab-diploma-btn"
+            data-target="tab-diploma"
+          >
+            📋 Диплом / Трудова книжка
+          </button>
+        </div>
+
+        <!-- Tab 1: Standard document -->
+        <div id="tab-standard" class="tab-panel" role="tabpanel" aria-labelledby="tab-standard-btn">
+          <div class="timeline timeline-3">
+            <div class="process-step">
+              <div class="process-num">1</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.upload} />
+              </div>
+              <h3 class="process-step-h3">Надішліть фото або скан</h3>
+              <p class="process-step-text">Сфотографуйте документ на телефон або зробіть скан. Завантажте через сайт, WhatsApp або Telegram.</p>
+              <div class="process-step-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Оригінал НЕ потрібен
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num">2</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.penline} />
+              </div>
+              <h3 class="process-step-h3">Олег Розенблюм перекладає</h3>
+              <p class="process-step-text">Засвідчений переклад з офіційною печаткою та підписом. Стандарт — 72 години, Експрес — 24 години.</p>
+              <div class="process-step-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Офіційна печатка та підпис
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num">3</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.mailcheck} />
+              </div>
+              <h3 class="process-step-h3">Отримайте оригінал поштою</h3>
+              <p class="process-step-text">Надсилаємо по всій Німеччині — без доплат. Цифрова копія PDF одразу на email після завершення.</p>
+              <div class="process-step-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Доставка по всій Німеччині
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Diploma / Workbook -->
+        <div id="tab-diploma" class="tab-panel" role="tabpanel" aria-labelledby="tab-diploma-btn" hidden>
+          <div class="timeline timeline-4">
+            <div class="process-step">
+              <div class="process-num">1</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.camera} />
+              </div>
+              <h3 class="process-step-h3">Надішліть фото всіх сторінок</h3>
+              <p class="process-step-text">Сфотографуйте кожну сторінку диплома або трудової книжки разом із додатками.</p>
+              <div class="process-step-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Оригінал НЕ потрібен
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num">2</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.calculator} />
+              </div>
+              <h3 class="process-step-h3">Кошторис за 30 хвилин</h3>
+              <p class="process-step-text">Підраховуємо рядки, надсилаємо точну ціну. Для Jobcenter — оформляємо офіційний кошторис.</p>
+              <div class="process-step-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Безкоштовно · Без зобов'язань
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num">3</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.checksquare} />
+              </div>
+              <h3 class="process-step-h3">Ви підтверджуєте замовлення</h3>
+              <p class="process-step-text">Після погодження ціни ми починаємо переклад. Diplom + Zeugnis — до 5 робочих днів.</p>
+              <div class="process-step-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Jobcenter може оплатити
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="process-num">4</div>
+              <div class="process-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.mailcheck} />
+              </div>
+              <h3 class="process-step-h3">Отримайте оригінал поштою</h3>
+              <p class="process-step-text">Засвідчений переклад надсилаємо поштою по всій Німеччині. PDF-копія одразу на email.</p>
+              <div class="process-step-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                Доставка по всій Німеччині
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 5: CHANNELS ===== -->
+  <section class="channels-section">
+    <div class="container">
+      <p class="section-eyebrow">Як надіслати документ</p>
+      <h2 class="section-h2">Оберіть зручний спосіб</h2>
+      <p class="section-sub">Відповідаємо протягом 30 хвилин у робочий час (Пн–Пт 9:00–18:00).</p>
+
+      <div class="channels-grid">
+        <!-- Website (primary, larger) -->
+        <div class="channel-card channel-card--primary">
+          <div class="channel-badge">Рекомендовано</div>
+          <div class="channel-icon-wrap channel-icon-wrap--primary">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.globe} />
+          </div>
+          <h3 class="channel-h3">Через сайт</h3>
+          <p class="channel-text">
+            Завантажте фото документа через форму — підтвердження одразу.
+            Кошторис з'явиться протягом 30 хвилин.
+          </p>
+          <ul class="channel-list">
+            <li>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+              Моментальне підтвердження
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+              Відстеження замовлення
+            </li>
+            <li>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+              Безпечна передача файлів
+            </li>
+          </ul>
+          <a href="/app/bestellen" class="channel-cta channel-cta--primary">Замовити через сайт →</a>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="channel-card">
+          <div class="channel-icon-wrap channel-icon-wrap--wa">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.messagecircle} />
+          </div>
+          <h3 class="channel-h3">WhatsApp</h3>
+          <p class="channel-text">Надішліть фото документа у WhatsApp — відповімо та надамо кошторис.</p>
+          <a href="https://wa.me/4917624137205" target="_blank" rel="noopener noreferrer" class="channel-cta channel-cta--wa">
+            Написати у WhatsApp →
+          </a>
+        </div>
+
+        <!-- Telegram -->
+        <div class="channel-card">
+          <div class="channel-icon-wrap channel-icon-wrap--tg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#229ED9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.send} />
+          </div>
+          <h3 class="channel-h3">Telegram</h3>
+          <p class="channel-text">Зручний спосіб для тих, хто користується Telegram. Надішліть фото — відповімо швидко.</p>
+          <a href="https://t.me/rosenblum_uebersetzungen" target="_blank" rel="noopener noreferrer" class="channel-cta channel-cta--tg">
+            Написати у Telegram →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6: SITUATIONS ===== -->
+  <section class="situations-section">
+    <div class="container">
+      <p class="section-eyebrow">Для яких органів</p>
+      <h2 class="section-h2">Коли потрібен засвідчений переклад</h2>
+      <p class="section-sub">Найпоширеніші ситуації, з якими звертаються українці в Німеччині.</p>
+
+      <div class="situations-grid">
+        {situations.map((sit) => (
+          <div class="situation-card">
+            <div class="sit-icon-wrap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[sit.icon]} />
+            </div>
+            {sit.badge && <span class="sit-badge">{sit.badge}</span>}
+            <h3 class="sit-h3">{sit.title}</h3>
+            <p class="sit-text">{sit.text}</p>
+            <ul class="sit-list">
+              {sit.items.map((item) => (
+                <li>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 7: JOBCENTER ===== -->
+  <section class="jobcenter-section">
+    <div class="container">
+      <p class="section-eyebrow jobcenter-eyebrow">Безкоштовно для вас</p>
+      <h2 class="section-h2 jobcenter-h2">Jobcenter оплачує переклад</h2>
+      <p class="section-sub jobcenter-sub">
+        Ви не платите нічого. Jobcenter та Agentur für Arbeit можуть взяти на себе всі витрати.
+      </p>
+
+      <div class="jobcenter-steps">
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">1</div>
+          <h3 class="jobcenter-step-h3">Запитайте у куратора</h3>
+          <p class="jobcenter-step-text">
+            Зверніться до вашого куратора в Jobcenter або Agentur für Arbeit. Запитайте чи можуть вони взяти на себе витрати на засвідчений переклад.
+          </p>
+        </div>
+
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">2</div>
+          <h3 class="jobcenter-step-h3">Отримайте кошторис від нас</h3>
+          <p class="jobcenter-step-text">
+            Надішліть нам фото документів. Ми підготуємо офіційний кошторис для Jobcenter безкоштовно — протягом 30 хвилин.
+          </p>
+        </div>
+
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">3</div>
+          <h3 class="jobcenter-step-h3">Jobcenter платить напряму</h3>
+          <p class="jobcenter-step-text">
+            Після затвердження Jobcenter ми виставляємо рахунок напряму. Ви отримуєте переклад — без жодних власних витрат.
+          </p>
+        </div>
+      </div>
+
+      <div class="jobcenter-cta-wrap">
+        <a href="/app/bestellen" class="jobcenter-cta-btn">Отримати кошторис безкоштовно →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 8: REVIEWS ===== -->
+  <section class="reviews-section">
+    <div class="container">
+      <p class="section-eyebrow">Відгуки</p>
+      <h2 class="section-h2">Що кажуть наші клієнти</h2>
+      <p class="section-sub">4,8/5 на Google · 50 відгуків від клієнтів по всій Німеччині</p>
+
+      <div class="reviews-grid">
+        {reviews.map((r) => (
+          <div class="review-card">
+            <div class="review-stars" aria-label="5 зірок">
+              {[...Array(5)].map(() => (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--color-primary)" stroke="none" aria-hidden="true" set:html={icons.star} />
+              ))}
+            </div>
+            <blockquote class="review-text">"{r.text}"</blockquote>
+            <div class="review-author">
+              <div class="review-initials">{r.initials}</div>
+              <div>
+                <div class="review-name">{r.name}</div>
+                <div class="review-city">{r.city}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 9: FAQ ===== -->
+  <section class="faq-section">
+    <div class="container">
+      <p class="section-eyebrow">FAQ</p>
+      <h2 class="section-h2">Часті запитання</h2>
+
+      <div class="faq-list">
+        {faqs.map((faq, i) => (
+          <details class="faq-item" name="faq">
+            <summary class="faq-question">
+              {faq.q}
+              <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </summary>
+            <p class="faq-answer">{faq.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 10: FINAL CTA ===== -->
+  <section class="final-cta-section">
+    <div class="container final-cta-container">
+      <div class="final-cta-eyebrow">Готові замовити?</div>
+      <h2 class="final-cta-h2">Замовте засвідчений переклад сьогодні</h2>
+      <p class="final-cta-sub">
+        Фото документа → кошторис за 30 хв → переклад поштою по всій Німеччині.
+        Присяжний перекладач. Від 30,30 €.
+      </p>
+      <div class="final-cta-btns">
+        <a href="/app/bestellen" class="final-btn-primary">ЗАМОВИТИ ПЕРЕКЛАД →</a>
+        <a href="/preise/" class="final-btn-secondary">Переглянути ціни</a>
+      </div>
+      <p class="final-cta-note">Кошторис безкоштовний · Без зобов'язань · Відповідь за 30 хвилин</p>
+    </div>
+  </section>
+
+  <StickyBar />
+</BaseLayout>
+
+<script>
+  // Tab switcher for "How it works" section
+  const tabBtns = document.querySelectorAll<HTMLButtonElement>('[data-target]');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => {
+        b.classList.remove('tab-btn--active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => {
+        (p as HTMLElement).hidden = true;
+      });
+      btn.classList.add('tab-btn--active');
+      btn.setAttribute('aria-selected', 'true');
+      const target = document.getElementById(btn.dataset.target!);
+      if (target) target.hidden = false;
+    });
+  });
+
+  // FAQ: only one open at a time (native <details> with name="" handles this in modern browsers)
+</script>
+
+<style>
+  /* ── GLOBAL ───────────────────────────────────────── */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .section-eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+  }
+
+  .section-h2 {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .section-sub {
+    font-size: var(--text-base);
+    color: var(--color-text-muted);
+    margin-bottom: 40px;
+    max-width: 600px;
+  }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .hero-section {
+    position: relative;
+    padding: 64px 0 72px;
+    background: white;
+    overflow: hidden;
+  }
+
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/media/Vyshyvanka.svg');
+    background-size: 640px auto;
+    background-repeat: repeat;
+    opacity: 0.045;
+    filter: grayscale(1) sepia(1) hue-rotate(210deg) saturate(5) brightness(0.85);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .lang-switcher {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    margin-bottom: 20px;
+  }
+
+  .lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1.5px solid var(--color-border);
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+
+  .lang-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .lang-btn--active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .lang-btn--active:hover {
+    background: var(--color-primary-dark);
+    color: white;
+  }
+
+  .hero-h1 {
+    font-size: var(--text-4xl);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--color-text);
+    margin-bottom: 16px;
+  }
+
+  .hero-accent {
+    color: var(--color-primary);
+  }
+
+  .hero-subline {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-width: 520px;
+  }
+
+  .hero-subline-accent {
+    color: var(--color-text);
+  }
+
+  .hero-trust-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .trust-item svg {
+    flex-shrink: 0;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 28px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-size: var(--text-base);
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: background 0.2s;
+  }
+
+  .btn-primary:hover { background: var(--color-primary-dark); }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 24px;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    border-radius: 8px;
+    font-size: var(--text-base);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  /* Hero visual */
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hv-badge-top,
+  .hv-badge-bottom {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    white-space: nowrap;
+  }
+
+  .hv-doc {
+    width: 100%;
+    max-width: 340px;
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+  }
+
+  .hv-doc-chip {
+    display: inline-block;
+    background: var(--color-bg-soft);
+    color: var(--color-text-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .hv-doc-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+
+  .hv-doc-country {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+  }
+
+  .hv-doc-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin-bottom: 12px;
+  }
+
+  .hv-doc-line {
+    height: 8px;
+    background: var(--color-bg-soft);
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+
+  .hv-doc-stamp {
+    position: absolute;
+    bottom: 14px;
+    right: 14px;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: transparent;
+    border: 3px solid var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.75;
+  }
+
+  .hv-stamp-text1,
+  .hv-stamp-text2 {
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--color-primary);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .hv-stamp-divline {
+    width: 40px;
+    height: 1px;
+    background: var(--color-primary);
+    margin: 3px 0;
+    opacity: 0.6;
+  }
+
+  /* ── E-E-A-T ──────────────────────────────────────── */
+  .eeat-section {
+    background: #1e3a8a;
+    padding: 72px 0;
+    color: white;
+  }
+
+  .eeat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .eeat-eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+  }
+
+  .eeat-h2 {
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .eeat-accent { color: #93c5fd; }
+
+  .eeat-text {
+    font-size: var(--text-base);
+    color: rgba(255,255,255,0.8);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .eeat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .eeat-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: var(--text-sm);
+    color: rgba(255,255,255,0.85);
+    line-height: 1.5;
+  }
+
+  .eeat-list li svg { flex-shrink: 0; margin-top: 2px; }
+
+  /* Register card */
+  .register-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    color: var(--color-text);
+  }
+
+  .register-photo-wrap {
+    position: relative;
+    aspect-ratio: 3/2;
+    overflow: hidden;
+  }
+
+  .register-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+
+  .register-photo-chip {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 16px;
+    padding: 5px 12px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .register-card-body {
+    padding: 14px 18px 18px;
+  }
+
+  .register-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .register-name {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+
+  .register-cred {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .register-nr {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 4px;
+  }
+
+  .register-langs {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 16px;
+  }
+
+  .register-divider {
+    height: 1px;
+    background: var(--color-border);
+    margin-bottom: 16px;
+  }
+
+  .register-link {
+    display: inline-block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    margin-bottom: 6px;
+  }
+
+  .register-link:hover { text-decoration: underline; }
+
+  .register-note {
+    font-size: 11px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── DOCUMENTS ────────────────────────────────────── */
+  .docs-section {
+    padding: 72px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .doc-card {
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .doc-card:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+
+  .doc-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  .doc-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .doc-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 8px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 20px;
+  }
+
+  .doc-name {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .doc-de {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .doc-usage {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .doc-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .doc-price {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .doc-order {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+
+  /* Zeilenpreis accent block */
+  .section-sub-link {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .section-sub-link:hover { text-decoration: underline; }
+
+  .docs-zeilen-card {
+    grid-column: 1 / -1;
+    background: var(--color-primary);
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+
+  .docs-zeilen-badge {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .docs-zeilen-price {
+    font-size: var(--text-xl);
+    font-weight: 800;
+    color: white;
+  }
+
+  .docs-zeilen-h3 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: white;
+  }
+
+  .docs-zeilen-docs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .docs-zeilen-doc {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.25);
+  }
+
+  .docs-zeilen-text {
+    font-size: var(--text-sm);
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+  }
+
+  .docs-zeilen-right {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .docs-zeilen-cta {
+    display: inline-block;
+    padding: 12px 24px;
+    background: white;
+    color: var(--color-primary);
+    border-radius: 8px;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+
+  .docs-zeilen-cta:hover { background: rgba(255,255,255,0.9); }
+
+  .apostille-hint {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: #FEF3C7;
+    border-left: 3px solid #F59E0B;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-top: 16px;
+    grid-column: 1 / -1;
+  }
+  .apostille-hint svg { flex-shrink: 0; margin-top: 2px; }
+  .apostille-hint p {
+    font-size: var(--text-sm);
+    color: #1c1917;
+    line-height: 1.6;
+    margin: 0 0 6px;
+  }
+  .apostille-hint-note {
+    color: #78716c !important;
+    font-size: 0.8125rem;
+    font-style: italic;
+  }
+  .apostille-hint a {
+    color: #92400e;
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+  }
+  .apostille-hint a:hover { text-decoration: underline; }
+
+  /* ── PROCESS / TABS ───────────────────────────────── */
+  .process-section {
+    padding: 72px 0;
+    background: white;
+  }
+
+  .tabs-wrapper { margin-top: 0; }
+
+  .tabs-switcher {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    background: white;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+
+  .tab-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .tab-btn--active {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .tab-btn--active:hover {
+    background: var(--color-primary-dark);
+  }
+
+  .timeline {
+    display: grid;
+    gap: 20px;
+  }
+
+  .timeline-3 { grid-template-columns: repeat(1, 1fr); }
+  .timeline-4 { grid-template-columns: repeat(1, 1fr); }
+
+  .process-step {
+    background: var(--color-bg-soft);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+
+  .process-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .process-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: white;
+    border: 1.5px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .process-step-h3 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .process-step-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .process-step-note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-top: 4px;
+  }
+
+  /* ── CHANNELS ─────────────────────────────────────── */
+  .channels-section {
+    padding: 72px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .channels-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .channel-card {
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+  }
+
+  .channel-card--primary {
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+
+  .channel-badge {
+    position: absolute;
+    top: -10px;
+    left: 24px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .channel-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .channel-icon-wrap--primary { background: var(--color-primary-light); }
+  .channel-icon-wrap--wa { background: #dcfce7; }
+  .channel-icon-wrap--tg { background: #dbeafe; }
+
+  .channel-h3 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .channel-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .channel-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .channel-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+
+  .channel-cta {
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    margin-top: 4px;
+    transition: opacity 0.2s;
+  }
+
+  .channel-cta:hover { opacity: 0.88; }
+
+  .channel-cta--primary {
+    background: var(--color-primary);
+    color: white;
+  }
+
+  .channel-cta--wa {
+    background: #25D366;
+    color: white;
+  }
+
+  .channel-cta--tg {
+    background: #229ED9;
+    color: white;
+  }
+
+  /* ── SITUATIONS ───────────────────────────────────── */
+  .situations-section {
+    padding: 72px 0;
+    background: white;
+  }
+
+  .situations-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .situation-card {
+    background: var(--color-bg-soft);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+
+  .sit-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--color-primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sit-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 20px;
+  }
+
+  .sit-h3 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .sit-text {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  .sit-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .sit-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── JOBCENTER ────────────────────────────────────── */
+  .jobcenter-section {
+    padding: 72px 0;
+    background: #fffbeb;
+    border-top: 1px solid #fde68a;
+    border-bottom: 1px solid #fde68a;
+  }
+
+  .jobcenter-eyebrow { color: #92400e; }
+  .jobcenter-h2 { color: #1c1917; }
+  .jobcenter-sub { color: #78716c; }
+
+  .jobcenter-steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .jobcenter-step {
+    background: white;
+    border: 1.5px solid #fde68a;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .jobcenter-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f59e0b;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .jobcenter-step-h3 {
+    font-size: var(--text-base);
+    font-weight: 700;
+    color: #1c1917;
+  }
+
+  .jobcenter-step-text {
+    font-size: var(--text-sm);
+    color: #78716c;
+    line-height: 1.5;
+  }
+
+  .jobcenter-cta-wrap {
+    text-align: center;
+  }
+
+  .jobcenter-cta-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    background: #f59e0b;
+    color: white;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: var(--text-base);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .jobcenter-cta-btn:hover { background: #d97706; }
+
+  /* ── REVIEWS ──────────────────────────────────────── */
+  .reviews-section {
+    padding: 72px 0;
+    background: white;
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .review-card {
+    background: var(--color-bg-soft);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .review-stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .review-text {
+    font-size: var(--text-sm);
+    color: var(--color-text);
+    line-height: 1.6;
+    font-style: normal;
+    flex: 1;
+  }
+
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .review-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .review-name {
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .review-city {
+    font-size: 12px;
+    color: var(--color-text-muted);
+  }
+
+  /* ── FAQ ──────────────────────────────────────────── */
+  .faq-section {
+    padding: 72px 0;
+    background: var(--color-bg-soft);
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .faq-item {
+    background: white;
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .faq-item[open] {
+    border-color: var(--color-primary);
+  }
+
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px;
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq-question::-webkit-details-marker { display: none; }
+
+  .faq-chevron {
+    flex-shrink: 0;
+    color: var(--color-text-muted);
+    transition: transform 0.2s;
+  }
+
+  .faq-item[open] .faq-chevron {
+    transform: rotate(180deg);
+  }
+
+  .faq-answer {
+    padding: 0 20px 18px;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── FINAL CTA ────────────────────────────────────── */
+  .final-cta-section {
+    padding: 80px 0;
+    background: #0f172a;
+  }
+
+  .final-cta-container {
+    text-align: center;
+    max-width: 640px;
+  }
+
+  .final-cta-eyebrow {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+  }
+
+  .final-cta-h2 {
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    color: white;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .final-cta-sub {
+    font-size: var(--text-base);
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .final-cta-btns {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .final-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: var(--text-base);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .final-btn-primary:hover { background: var(--color-primary-dark); }
+
+  .final-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 24px;
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: var(--text-base);
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+
+  .final-btn-secondary:hover { border-color: white; }
+
+  .final-cta-note {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ── DESKTOP ──────────────────────────────────────── */
+  @media (min-width: 768px) {
+    .docs-zeilen-card {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .docs-zeilen-left { flex: 1; }
+
+    .reviews-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .situations-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .jobcenter-steps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .channels-grid {
+      grid-template-columns: 1.5fr 1fr 1fr;
+    }
+
+    .timeline-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .timeline-4 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 55% 45%;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "top visual"
+        "bottom visual";
+      column-gap: 64px;
+      row-gap: 0;
+      align-items: start;
+    }
+
+    .hero-text-top { grid-area: top; }
+    .hero-text-bottom { grid-area: bottom; align-self: start; }
+    .hero-visual { grid-area: visual; align-self: center; }
+
+    .eeat-grid {
+      grid-template-columns: 1fr 360px;
+    }
+
+    .timeline-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .situations-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* ── MOBILE ───────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .hero-section::before { display: none; }
+
+    .hero-h1 { font-size: var(--text-3xl); }
+    .hero-subline { font-size: var(--text-sm); }
+
+    .lang-btn {
+      padding: 4px 8px;
+      font-size: 12px;
+      gap: 4px;
+    }
+
+    .lang-btn img { width: 16px; height: 11px; }
+
+    .hero-cta {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .hero-cta .btn-primary,
+    .hero-cta .btn-secondary {
+      display: block;
+      text-align: center;
+    }
+
+    .section-h2 { font-size: var(--text-2xl); }
+    .section-sub { font-size: var(--text-sm); margin-bottom: 28px; }
+
+    .eeat-h2 { font-size: var(--text-2xl); }
+    .eeat-text { font-size: var(--text-sm); }
+    .eeat-list li { font-size: var(--text-sm); }
+
+    .docs-zeilen-doc { font-size: 11px; padding: 2px 8px; }
+    .docs-zeilen-h3 { font-size: var(--text-base); }
+
+    .jobcenter-h2 { font-size: var(--text-2xl); }
+
+    .final-cta-h2 { font-size: var(--text-2xl); }
+
+    .final-cta-btns {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .final-btn-primary,
+    .final-btn-secondary {
+      text-align: center;
+      justify-content: center;
+    }
+
+    .tabs-switcher {
+      gap: 6px;
+    }
+
+    .tab-btn {
+      font-size: 12px;
+      padding: 8px 14px;
+    }
+  }
+</style>

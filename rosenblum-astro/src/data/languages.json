@@ -1,0 +1,66 @@
+[
+  {
+    "code": "ua",
+    "iso": "uk",
+    "name": "Ukrainisch",
+    "flag": "/media/flags/ua.svg",
+    "slug": "ukrainisch-deutsch",
+    "fact": "1,2 Mio. Ukrainer in DE"
+  },
+  {
+    "code": "ru",
+    "iso": "ru",
+    "name": "Russisch",
+    "flag": "/media/flags/ru.svg",
+    "slug": "russisch-deutsch",
+    "fact": "3 Mio. Russischsprachige"
+  },
+  {
+    "code": "tr",
+    "iso": "tr",
+    "name": "Türkisch",
+    "flag": "/media/flags/tr.svg",
+    "slug": "tuerkisch-deutsch",
+    "fact": "3,5 Mio. Türken in DE"
+  },
+  {
+    "code": "gb",
+    "iso": "en",
+    "name": "Englisch",
+    "flag": "/media/flags/gb.svg",
+    "slug": "englisch-deutsch",
+    "fact": "Expats & internationale Dokumente"
+  },
+  {
+    "code": "pl",
+    "iso": "pl",
+    "name": "Polnisch",
+    "flag": "/media/flags/pl.svg",
+    "slug": "polnisch-deutsch",
+    "fact": "860.000 Polen in DE"
+  },
+  {
+    "code": "ro",
+    "iso": "ro",
+    "name": "Rumänisch",
+    "flag": "/media/flags/ro.svg",
+    "slug": "rumaenisch-deutsch",
+    "fact": "900.000 Rumänen in DE"
+  },
+  {
+    "code": "lt",
+    "iso": "lt",
+    "name": "Litauisch",
+    "flag": "/media/flags/lt.svg",
+    "slug": "litauisch-deutsch",
+    "fact": "200.000 Litauer in DE"
+  },
+  {
+    "code": "lv",
+    "iso": "lv",
+    "name": "Lettisch",
+    "flag": "/media/flags/lv.svg",
+    "slug": "lettisch-deutsch",
+    "fact": "Lettische Dokumente"
+  }
+]

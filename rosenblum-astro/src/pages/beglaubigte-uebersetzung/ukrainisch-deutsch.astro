@@ -1,0 +1,2403 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import StickyBar from '../../components/StickyBar.astro';
+
+const icons: Record<string, string> = {
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  shieldcheck: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+  check: '<polyline points="20 6 9 17 4 12"/>',
+  arrowright: '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+  arrowleftright: '<path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/>',
+  mappin: '<path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+  filetext: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>',
+  filecheck: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/>',
+  tag: '<path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.42 0l8.58-8.58a1 1 0 0 0 0-1.42z"/><circle cx="6.5" cy="6.5" r="1.5"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  graduation: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12.5V17c3 2.5 9 2.5 12 0v-4.5"/>',
+  briefcase: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/>',
+  idcard: '<rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>',
+  home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+};
+
+const docs = [
+  { icon: 'filetext', name: 'Geburtsurkunde', ua: 'Свідоцтво про народження', usage: 'Für Einbürgerung, Standesamt, Kindergeld', price: '35,30 €', href: '/beglaubigte-uebersetzung/geburtsurkunde' },
+  { icon: 'filetext', name: 'Heiratsurkunde', ua: 'Свідоцтво про шлюб', usage: 'Für Standesamt, Familienzusammenführung', price: '35,30 €', href: '/beglaubigte-uebersetzung/heiratsurkunde' },
+  { icon: 'idcard', name: 'Führerschein', ua: 'Посвідчення водія', usage: 'Für Führerscheinumtausch', price: '30,30 €', href: '/beglaubigte-uebersetzung/fuehrerschein', badge: 'Günstigster Einstieg' },
+  { icon: 'graduation', name: 'Diplom / Zeugnis', ua: 'Диплом · Атестат', usage: 'Für Uni-Assist, Berufsanerkennung', price: 'Ab 35,30 €', href: '/beglaubigte-uebersetzung/diplom' },
+  { icon: 'idcard', name: 'Reisepass', ua: 'Закордонний паспорт', usage: 'Für Ausländerbehörde', price: '35,30 €', href: '/beglaubigte-uebersetzung/pass' },
+  { icon: 'shield', name: 'Führungszeugnis', ua: 'Довідка про несудимість', usage: 'Für Arbeitgeber, Behörden', price: '35,30 €', href: '/beglaubigte-uebersetzung/fuehrungszeugnis' },
+  { icon: 'home', name: 'Meldebescheinigung', ua: 'Довідка про реєстрацію', usage: 'Für Behörden, Banken', price: '35,30 €', href: '/beglaubigte-uebersetzung/meldebescheinigung' },
+  { icon: 'arrowright', name: 'Alle Dokumente ansehen', ua: '', usage: '', price: '', href: '/dokumente/', isAllLink: true },
+];
+
+const situations = [
+  {
+    icon: 'filecheck',
+    title: 'Aufenthaltstitel & §24-Status',
+    text: 'Ukrainer mit vorübergehendem Schutz nach §24 benötigen für die Ausländerbehörde beglaubigte Übersetzungen ihrer Dokumente.',
+    items: ['Geburtsurkunde', 'Reisepass (Datenseite)', 'Ggf. Heiratsurkunde'],
+    href: '/beglaubigte-uebersetzungen/',
+  },
+  {
+    icon: 'star',
+    title: 'Einbürgerung',
+    text: 'Für den Einbürgerungsantrag müssen ukrainische Urkunden beglaubigt ins Deutsche übersetzt werden.',
+    items: ['Geburtsurkunde', 'Heiratsurkunde (falls verheiratet)', 'Ggf. Apostille'],
+    href: '/beglaubigte-uebersetzungen/',
+  },
+  {
+    icon: 'graduation',
+    title: 'Studium & Uni-Assist',
+    text: 'Für die Hochschulzulassung über Uni-Assist werden beglaubigte Übersetzungen von Zeugnissen und Diplomen verlangt.',
+    items: ['Reifezeugnis mit Anlage', 'Ggf. Diplom', 'Ggf. Apostille'],
+    href: '/beglaubigte-uebersetzung/diplom/',
+  },
+  {
+    icon: 'briefcase',
+    title: 'Jobcenter & Berufsanerkennung',
+    text: 'Das Jobcenter kann die Übersetzungskosten übernehmen. Wir erstellen den Kostenvoranschlag in 30 Minuten — kostenlos.',
+    items: ['Diplom / Arbeitsbuch', 'Kostenvoranschlag kostenlos', 'Jobcenter zahlt direkt'],
+    href: '/preise/',
+  },
+  {
+    icon: 'heart',
+    title: 'Heirat & Standesamt',
+    text: 'Das Standesamt verlangt beglaubigte Übersetzungen ukrainischer Urkunden für die Eheschließung in Deutschland.',
+    items: ['Geburtsurkunde', 'Ledigkeitsbescheinigung', 'Ggf. Scheidungsurteil'],
+    href: '/beglaubigte-uebersetzungen/',
+  },
+];
+
+const cities = [
+  { name: 'Berlin', pop: '~250.000 Ukrainer', slug: 'berlin', state: 'BE' },
+  { name: 'Hamburg', pop: '~120.000', slug: 'hamburg', state: 'HH' },
+  { name: 'München', pop: '~100.000', slug: 'muenchen', state: 'BY' },
+  { name: 'Köln', pop: '~70.000', slug: 'koeln', state: 'NW' },
+  { name: 'Frankfurt', pop: '~65.000', slug: 'frankfurt', state: 'HE' },
+  { name: 'Düsseldorf', pop: '~55.000', slug: 'duesseldorf', state: 'NW' },
+  { name: 'Stuttgart', pop: '~50.000', slug: 'stuttgart', state: 'BW' },
+  { name: 'Hannover', pop: '~45.000', slug: 'hannover', state: 'NI' },
+  { name: 'Dortmund', pop: '~40.000', slug: 'dortmund', state: 'NW' },
+  { name: 'Nürnberg', pop: '~40.000', slug: 'nuernberg', state: 'BY' },
+  { name: 'Essen', pop: '~35.000', slug: 'essen', state: 'NW' },
+  { name: 'Leipzig', pop: '~30.000', slug: 'leipzig', state: 'SN' },
+  { name: 'Dresden', pop: '~30.000', slug: 'dresden', state: 'SN' },
+  { name: 'Bremen', pop: '~25.000', slug: 'bremen', state: 'HB' },
+  { name: 'Duisburg', pop: '~22.000', slug: 'duisburg', state: 'NW' },
+];
+
+const reviews = [
+  {
+    initials: 'OK',
+    name: 'Olena Kowalenko',
+    city: 'Berlin',
+    text: 'Innerhalb von 30 Minuten hatte ich den Kostenvoranschlag fürs Jobcenter. Übersetzung kam pünktlich, alles wurde anerkannt.',
+  },
+  {
+    initials: 'DA',
+    name: 'Dmitri Antonow',
+    city: 'München',
+    text: 'Diplom-Übersetzung für Uni-Assist — perfekt formatiert und beglaubigt. Herr Rosenblum hat alle Fragen geduldig beantwortet.',
+  },
+  {
+    initials: 'JW',
+    name: 'Julia Weber',
+    city: 'Köln',
+    text: 'Express in 24 Stunden. Genau das, was ich für meinen Aufenthaltstitel gebraucht habe. Sehr empfehlenswert.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'Was kostet eine beglaubigte Übersetzung Ukrainisch–Deutsch?',
+    a: 'Standarddokumente wie Geburtsurkunde, Heiratsurkunde oder Führerschein kosten ab 30,30 € inkl. MwSt. — Festpreis unabhängig von der genauen Seitenzahl. Den genauen Preis erhalten Sie in unserem kostenlosen Kostenvoranschlag innerhalb von 30 Minuten.',
+  },
+  {
+    q: 'Wie lange dauert eine Übersetzung Ukrainisch–Deutsch?',
+    a: 'Standarddokumente übersetzen wir in 72 Stunden. Mit Express-Option in 24 Stunden. Die fertige beglaubigte Übersetzung erhalten Sie per Post — deutschlandweit, ohne Aufpreis.',
+  },
+  {
+    q: 'Wird die Übersetzung bei der Ausländerbehörde anerkannt?',
+    a: 'Ja. Alle unsere Übersetzungen werden von Oleg Rosenblum erstellt — vereidigter Übersetzer am Landgericht Hannover. Sie sind mit offiziellem Siegel und handschriftlicher Unterschrift versehen und werden deutschlandweit von allen Behörden, Gerichten und Hochschulen anerkannt.',
+  },
+  {
+    q: 'Kann das Jobcenter die Kosten übernehmen?',
+    a: 'Ja. Das Jobcenter und die Agentur für Arbeit können die Kosten für beglaubigte Übersetzungen übernehmen. Sie reichen unseren Kostenvoranschlag bei Ihrem Sachbearbeiter ein — nach Bewilligung zahlt das Jobcenter direkt an uns.',
+  },
+  {
+    q: 'Muss ich das Originaldokument einsenden?',
+    a: 'Nein. Ein Foto oder Scan reicht aus. Das Original benötigen wir nur wenn die Behörde ausdrücklich verlangt, dass die Übersetzung am Original befestigt wird — das teilen wir Ihnen im Kostenvoranschlag mit.',
+  },
+  {
+    q: 'Übersetzen Sie auch Deutsch–Ukrainisch?',
+    a: 'Ja. Wir übersetzen in beide Richtungen — ukrainische Dokumente ins Deutsche und deutsche Bescheide, Briefe oder Dokumente ins Ukrainische. Auf Anfrage auch mit Beglaubigung.',
+  },
+  {
+    q: 'Brauche ich auch eine Apostille?',
+    a: 'Das hängt davon ab, wofür Sie die Übersetzung benötigen. Innerhalb Deutschlands ist in der Regel keine Apostille erforderlich — eine beglaubigte Übersetzung reicht aus. Wenn Ihre Dokumente jedoch im Ausland verwendet werden sollen, kann eine Apostille nötig sein. Wichtig: Wir stellen die Apostille auf unsere Übersetzung aus — nicht auf Ihr Originaldokument. Die Apostille auf das Original muss bei der zuständigen Behörde Ihres Herkunftslandes beantragt werden. Apostille auf unsere Übersetzung: 35,00 € (Landgericht Hannover).',
+  },
+  {
+    q: 'Arbeiten Sie auch für Kunden außerhalb von Osnabrück?',
+    a: 'Ja — wir arbeiten vollständig online und deutschlandweit. Dokumente hochladen, Übersetzung per Post erhalten — egal ob Berlin, Hamburg, München oder ein anderer Ort in Deutschland.',
+  },
+];
+
+const translationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TranslationService',
+  name: 'Rosenblum Übersetzungsbüro',
+  url: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/',
+  serviceType: 'Beglaubigte Übersetzung Ukrainisch Deutsch',
+  inLanguage: 'uk',
+  outLanguage: 'de',
+  provider: {
+    '@type': 'Person',
+    name: 'Oleg Rosenblum',
+    hasCredential: {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Vereidigter Übersetzer',
+      recognizedBy: { '@type': 'Organization', name: 'Landgericht Hannover' },
+    },
+  },
+  areaServed: { '@type': 'Country', name: 'Germany' },
+  priceRange: 'ab €30,30',
+  aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', reviewCount: '50' },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rosenblum-uebersetzungen.de/' },
+    { '@type': 'ListItem', position: 2, name: 'Beglaubigte Übersetzungen', item: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzungen/' },
+    { '@type': 'ListItem', position: 3, name: 'Ukrainisch–Deutsch', item: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Übersetzer Ukrainisch Deutsch — beglaubigt & vereidigt | Rosenblum"
+  description="Beglaubigte Übersetzungen Ukrainisch–Deutsch vom vereidigten Übersetzer am Landgericht Hannover. Geburtsurkunde, Führerschein, Diplom ab 30,30 €. Kostenvoranschlag in 30 Min. Deutschlandweit."
+  lang="de"
+  canonicalUrl="https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/"
+  hreflang={{
+    de: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/',
+    uk: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/',
+    ru: 'https://rosenblum-uebersetzungen.de/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/',
+  }}
+  schema={[translationSchema, faqSchema, breadcrumbSchema]}
+>
+  <Navbar />
+
+  <!-- ===== SECTION 1: HERO ===== -->
+  <section class="hero-section">
+    <div class="hero-watermark" aria-hidden="true">
+      <div class="hero-watermark-inner">
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+        <div class="hero-watermark-row">Переклад · Засвідчено · Документи · Офіційно · Переклад · Засвідчено · Документи · Офіційно ·</div>
+      </div>
+    </div>
+
+    <div class="container hero-grid">
+      <!-- TEXT: badge, h1, subline -->
+      <div class="hero-text">
+        <div class="hero-lang-pair">
+          <div class="lang-pair-flag">
+            <img src="/media/flags/ua.svg" width="24" height="16" alt="Ukrainisch" />
+            <span>Ukrainisch</span>
+          </div>
+          <svg class="lang-pair-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrowright} />
+          <div class="lang-pair-flag">
+            <img src="/media/flags/de.svg" width="24" height="16" alt="Deutsch" />
+            <span>Deutsch</span>
+          </div>
+        </div>
+
+        <h1 class="hero-h1">
+          Übersetzer<br />
+          <span class="hero-accent">Ukrainisch Deutsch</span>
+        </h1>
+      </div>
+
+      <!-- VISUAL: document stack (between text and bottom on mobile) -->
+      <div class="hero-visual" aria-label="Dokument-Übersetzungsvorschau">
+
+        <div class="hv-badge-top">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+          Vom Gericht beglaubigt · Amtlich anerkannt
+        </div>
+
+        <div class="hv-stack">
+          <!-- Original UA doc (behind, rotated) -->
+          <div class="hv-orig" aria-hidden="true">
+            <div class="hv-orig-chip">ORIGINAL</div>
+            <div class="hv-orig-heading">СВІДОЦТВО ПРО НАРОДЖЕННЯ</div>
+            <div class="hv-orig-country">Україна · Відділ РАЦС</div>
+            <div class="hv-orig-divider"></div>
+            <div class="hv-orig-line" style="width:78%"></div>
+            <div class="hv-orig-line" style="width:55%"></div>
+            <div class="hv-orig-line" style="width:85%"></div>
+            <div class="hv-orig-line" style="width:65%"></div>
+            <div class="hv-orig-circle">П.П.</div>
+          </div>
+
+          <!-- Main certified translation -->
+          <div class="hv-cert">
+            <div class="hv-cert-topbar">
+              <div>
+                <div class="hv-cert-topbar-title">BEGLAUBIGTE ÜBERSETZUNG</div>
+                <div class="hv-cert-topbar-sub">aus dem Ukrainischen ins Deutsche</div>
+              </div>
+              <div class="hv-cert-topbar-nr">Nr.&nbsp;UA-2026</div>
+            </div>
+
+            <div class="hv-cert-body">
+              <div class="hv-cert-doctype">Geburtsurkunde</div>
+
+              <div class="hv-cert-sep"></div>
+
+              <div class="hv-cert-rows">
+                <div class="hv-cert-row">
+                  <span class="hv-cert-key">Name:</span>
+                  <span class="hv-cert-dash">— — — — — — — —</span>
+                </div>
+                <div class="hv-cert-row">
+                  <span class="hv-cert-key">Geburtsdatum:</span>
+                  <span class="hv-cert-dash">— — — — — —</span>
+                </div>
+                <div class="hv-cert-row">
+                  <span class="hv-cert-key">Geburtsort:</span>
+                  <span class="hv-cert-dash">— — — — — — —</span>
+                </div>
+              </div>
+
+              <div class="hv-cert-sep"></div>
+
+              <p class="hv-cert-attest">
+                Die Richtigkeit und Vollständigkeit vorstehender Übersetzung aus der ukrainischen Sprache wird beglaubigt.
+              </p>
+
+              <div class="hv-cert-footer">
+                <div class="hv-stamp">
+                  <div class="hv-stamp-text1">BEGLAUBIGT</div>
+                  <div class="hv-stamp-divline"></div>
+                  <div class="hv-stamp-text2">LG HANNOVER</div>
+                </div>
+                <div class="hv-sig">
+                  <div class="hv-sig-name">O. Rosenblum</div>
+                  <div class="hv-sig-role">Vereidigter Übersetzer</div>
+                  <div class="hv-sig-court">Landgericht Hannover</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hv-badge-bottom">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Express 24 Std. · Deutschlandweit per Post
+        </div>
+
+      </div>
+
+      <!-- BOTTOM: subline, lang-switcher, CTA, trust -->
+      <div class="hero-bottom">
+        <p class="hero-subline">
+          Beglaubigte Übersetzungen ukrainischer Dokumente —
+          anerkannt bei allen deutschen Behörden, Gerichten
+          und Hochschulen. Vereidigt am Landgericht Hannover.
+          <strong class="hero-subline-accent">Deutschlandweit per Post.</strong>
+        </p>
+
+        <nav class="lang-switcher" aria-label="Sprachversion wählen">
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/" class="lang-btn lang-btn--active" aria-current="page">
+            <img src="/media/flags/de.svg" width="18" height="12" alt="" aria-hidden="true" />
+            Deutsch
+          </a>
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/ua/" class="lang-btn">
+            <img src="/media/flags/ua.svg" width="18" height="12" alt="" aria-hidden="true" />
+            Українська
+          </a>
+          <a href="/beglaubigte-uebersetzung/ukrainisch-deutsch/ru/" class="lang-btn">
+            <img src="/media/flags/ru.svg" width="18" height="12" alt="" aria-hidden="true" />
+            Русский
+          </a>
+        </nav>
+
+        <div class="hero-cta">
+          <a href="/app/bestellen" class="btn-primary">ÜBERSETZUNG BESTELLEN →</a>
+          <a href="/preise/" class="btn-secondary">Zur Preisliste →</a>
+        </div>
+
+        <div class="hero-trust-divider"></div>
+        <ul class="hero-trust-list" aria-label="Vertrauenssignale">
+          <li class="trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />Vereidigt LG Hannover</li>
+          <li class="trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />Ab 30,30 € Festpreis</li>
+          <li class="trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />Express 24 Std.</li>
+          <li class="trust-item"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />Deutschlandweit</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2: BIDIRECTIONAL ===== -->
+  <section class="bidir-section">
+    <div class="container">
+      <div class="section-label">
+        <span class="section-line"></span>
+        <span>BEIDE RICHTUNGEN</span>
+      </div>
+      <h2 class="section-h2">Übersetzungen Deutsch–Ukrainisch: beide Richtungen</h2>
+
+      <div class="bidir-grid">
+        <!-- Card 1 -->
+        <div class="bidir-card bidir-card--main">
+          <div class="bidir-card-header">
+            <div class="bidir-flags">
+              <img src="/media/flags/ua.svg" width="28" height="19" alt="Ukraine" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrowright} />
+              <img src="/media/flags/de.svg" width="28" height="19" alt="Deutschland" />
+            </div>
+            <span class="bidir-badge bidir-badge--primary">HAUPTRICHTUNG</span>
+          </div>
+          <h3 class="bidir-h3">Ukrainisch → Deutsch</h3>
+          <p class="bidir-text">Ukrainische Dokumente für deutsche Behörden, Gerichte, Hochschulen und Arbeitgeber — beglaubigt mit Siegel und Unterschrift.</p>
+          <ul class="bidir-list">
+            <li>Geburtsurkunde, Heiratsurkunde, Pass</li>
+            <li>Diplom, Reifezeugnis, Arbeitsbuch</li>
+            <li>Gerichtsentscheidungen, Vollmachten</li>
+          </ul>
+          <div class="bidir-price">Ab 30,30 € · Festpreis</div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bidir-card bidir-card--secondary">
+          <div class="bidir-card-header">
+            <div class="bidir-flags">
+              <img src="/media/flags/de.svg" width="28" height="19" alt="Deutschland" />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrowright} />
+              <img src="/media/flags/ua.svg" width="28" height="19" alt="Ukraine" />
+            </div>
+            <span class="bidir-badge bidir-badge--muted">AUCH MÖGLICH</span>
+          </div>
+          <h3 class="bidir-h3">Deutsch → Ukrainisch</h3>
+          <p class="bidir-text">Deutsche Bescheide, Briefe und Dokumente ins Ukrainische — für Behörden in der Ukraine oder persönliches Verständnis.</p>
+          <ul class="bidir-list">
+            <li>Behördenbescheide, Jobcenter-Schreiben</li>
+            <li>Mietverträge, Arbeitszeugnisse</li>
+            <li>Medizinische Befunde</li>
+          </ul>
+          <div class="bidir-price bidir-price--muted">Ab 30,30 € · auf Anfrage</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== SECTION 3: E-E-A-T / VERTRAUEN ===== -->
+  <section class="eeat-section">
+    <div class="container eeat-grid">
+      <div class="eeat-left">
+        <div class="eeat-label">E-E-A-T</div>
+        <h2 class="eeat-h2">Offiziell ermächtigt für Ukrainisch</h2>
+        <p class="eeat-text">
+          Oleg Rosenblum ist vom Landgericht Hannover allgemein beeidigter Dolmetscher
+          und ermächtigter Übersetzer für die ukrainische und russische Sprache —
+          gerichtlich überprüfbar.
+        </p>
+        <ul class="eeat-list">
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Vereidigt &amp; ermächtigt durch das <strong>Landgericht Hannover</strong></span>
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Spezialist für <strong>Ukrainisch</strong> und Russisch seit 2016</span>
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Jede Übersetzung mit offiziellem Siegel &amp; Unterschrift</span>
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+            <span>Bundesweit gültig — alle Behörden anerkannt</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="eeat-right">
+        <div class="register-card">
+          <div class="register-photo-wrap">
+            <img src="/media/oleg.jpg" class="register-photo" alt="Oleg Rosenblum — Vereidigter Übersetzer am Landgericht Hannover" />
+            <div class="register-photo-chip">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.check} />
+              Vereidigt · LG Hannover
+            </div>
+          </div>
+          <div class="register-card-body">
+            <div class="register-label">JUSTIZ-DOLMETSCHER-REGISTER</div>
+            <h3 class="register-name">Oleg Rosenblum</h3>
+            <p class="register-cred">
+              Allgemein beeidigter Dolmetscher &amp;<br />
+              ermächtigter Übersetzer
+            </p>
+            <p class="register-nr">Eintrag-Nr. 53923 · Landgericht Hannover</p>
+            <p class="register-langs">Sprachen: Ukrainisch · Russisch</p>
+            <div class="register-divider"></div>
+            <a
+              href="https://www.justizportal-niedersachsen.de/"
+              class="register-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              ↗ Eintrag im amtlichen Register prüfen
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 4: UKRAINISCHE DOKUMENTE ===== -->
+  <section class="docs-section">
+    <div class="container">
+      <div class="section-label">
+        <span class="section-line"></span>
+        <span>UKRAINISCHE DOKUMENTE</span>
+      </div>
+      <h2 class="section-h2">Welche ukrainischen Dokumente übersetzen wir?</h2>
+      <p class="section-sub">Alle gängigen ukrainischen Dokumente — beglaubigt und bei deutschen Behörden anerkannt.</p>
+
+      <div class="docs-grid">
+        {docs.map((doc) =>
+          doc.isAllLink ? (
+            <a href={doc.href} class="doc-card-item doc-card-item--all">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.arrowright} />
+              <span class="doc-all-text">Alle 20+ Dokumente ansehen</span>
+            </a>
+          ) : (
+            <a href={doc.href} class="doc-card-item">
+              <div class="doc-card-top">
+                <div class="doc-card-icon-wrap">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[doc.icon]} />
+                </div>
+                {doc.badge && <span class="doc-card-badge">{doc.badge}</span>}
+                <span class="doc-card-price">{doc.price}</span>
+              </div>
+              <h3 class="doc-card-name">{doc.name}</h3>
+              {doc.ua && <div class="doc-card-ua">{doc.ua}</div>}
+              <div class="doc-card-usage">{doc.usage}</div>
+              <div class="doc-card-link">Mehr erfahren →</div>
+            </a>
+          )
+        )}
+      </div>
+
+      <div class="docs-zeilen-card">
+        <div class="docs-zeilen-header">
+          <div class="docs-zeilen-badge">ZEILENPREIS</div>
+          <div class="docs-zeilen-price">1,4–1,8 € / Zeile</div>
+        </div>
+        <h3 class="docs-zeilen-h3">Mehrseitige Dokumente — Zeilenabrechnung</h3>
+        <div class="docs-zeilen-docs">
+          <span class="docs-zeilen-doc">Diplom mit Anlage</span>
+          <span class="docs-zeilen-doc">Arbeitsbuch</span>
+          <span class="docs-zeilen-doc">Gerichtsurteil</span>
+        </div>
+        <p class="docs-zeilen-text">Umfangreiche Dokumente werden nach Zeilen abgerechnet. Kostenvoranschlag kostenlos und unverbindlich — in 30 Minuten.</p>
+        <a href="/app/bestellen" class="docs-zeilen-cta">Kostenvoranschlag bestellen →</a>
+      </div>
+
+      <div class="apostille-hint">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.globe} />
+        <div>
+          <p>
+            <strong>Brauchen Sie eine Apostille auf Ihre Übersetzung?</strong>
+            Wir beantragen die Apostille auf unsere fertige Übersetzung
+            beim Landgericht Hannover — 35,00 €.
+            Übersetzung + Apostille ab 65,30 € aus einer Hand.
+          </p>
+          <p class="apostille-hint-note">
+            Hinweis: Die Apostille wird auf unsere Übersetzung gestellt —
+            nicht auf Ihr Originaldokument. Für die Apostille auf das
+            Original ist die Behörde Ihres Herkunftslandes zuständig.
+          </p>
+          <a href="/apostille/">Mehr zur Apostille →</a>
+        </div>
+      </div>
+
+      <p class="docs-note">
+        Ihr Dokument nicht dabei?{' '}
+        <a href="/app/bestellen" class="docs-note-link">Kostenvoranschlag anfordern →</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 6: SITUATIONEN ===== -->
+  <section class="situations-section">
+    <div class="container">
+      <div class="section-label">
+        <span class="section-line"></span>
+        <span>LEBENSSITUATIONEN</span>
+      </div>
+      <h2 class="section-h2">Wann brauchen Ukrainer in Deutschland eine Übersetzung?</h2>
+      <p class="section-sub">Typische Situationen — und welche Dokumente Sie benötigen.</p>
+
+      <div class="situations-grid">
+        {situations.map((s) => (
+          <div class="situation-card">
+            <div class="situation-icon-wrap">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons[s.icon]} />
+            </div>
+            <h3 class="situation-h3">{s.title}</h3>
+            <p class="situation-text">{s.text}</p>
+            <ul class="situation-list">
+              {s.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+            <a href={s.href} class="situation-link">Mehr erfahren →</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 7: JOBCENTER ===== -->
+  <section class="jobcenter-section">
+    <div class="container">
+      <div class="jobcenter-badge">KOSTENÜBERNAHME</div>
+      <h2 class="jobcenter-h2">Jobcenter übernimmt die Übersetzungskosten</h2>
+      <p class="jobcenter-text">
+        Das Jobcenter und die Agentur für Arbeit können die Kosten für notwendige
+        Übersetzungen übernehmen — besonders relevant für ukrainische Geflüchtete
+        bei der Berufsanerkennung und Arbeitssuche.
+      </p>
+
+      <div class="jobcenter-steps">
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">1</div>
+          <h3 class="jobcenter-step-title">Berater / Jobcenter fragen</h3>
+          <p class="jobcenter-step-text">Fragen Sie Ihren Sachbearbeiter, ob die Übersetzungskosten übernommen werden können.</p>
+        </div>
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">2</div>
+          <h3 class="jobcenter-step-title">Kostenvoranschlag anfordern</h3>
+          <p class="jobcenter-step-text">Wir erstellen kostenlos ein Angebot in 30 Minuten.</p>
+        </div>
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">3</div>
+          <h3 class="jobcenter-step-title">Antrag beim Jobcenter</h3>
+          <p class="jobcenter-step-text">Voranschlag beim Sachbearbeiter einreichen. Das Jobcenter zahlt direkt an uns.</p>
+        </div>
+        <div class="jobcenter-step">
+          <div class="jobcenter-num">4</div>
+          <h3 class="jobcenter-step-title">Übersetzung erhalten</h3>
+          <p class="jobcenter-step-text">Nach Bewilligung starten wir sofort. Keine Vorleistung nötig.</p>
+        </div>
+      </div>
+
+      <div class="jobcenter-cta-wrap">
+        <a href="/app/bestellen?type=jobcenter" class="jobcenter-cta">KOSTENVORANSCHLAG FÜR JOBCENTER →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 8: CITY HUB ===== -->
+  <section class="cities-section">
+    <div class="container">
+      <div class="section-label">
+        <span class="section-line"></span>
+        <span>DEUTSCHLANDWEIT</span>
+      </div>
+      <h2 class="section-h2">Übersetzer Ukrainisch Deutsch — in ganz Deutschland</h2>
+      <p class="section-sub">Wählen Sie Ihre Stadt für lokale Informationen.</p>
+
+      <div class="cities-grid">
+        {cities.map((city) => (
+          <a
+            href={`/beglaubigte-uebersetzung/ukrainisch-deutsch/${city.slug}/`}
+            class="city-card"
+            title={`Übersetzer Ukrainisch Deutsch ${city.name}`}
+          >
+            <div class="city-card-top">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.mappin} />
+              <span class="city-state-badge">{city.state}</span>
+            </div>
+            <span class="city-name">{city.name}</span>
+            <span class="city-pop">{city.pop}</span>
+          </a>
+        ))}
+      </div>
+
+      <p class="cities-surrounding">
+        Wir übersetzen auch für Kunden aus der Umgebung:
+        Potsdam, Lüneburg, Augsburg, Bonn, Wuppertal,
+        Bochum, Bielefeld, Mannheim, Karlsruhe und weiteren
+        Städten — vollständig online, Versand deutschlandweit.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 9: REVIEWS ===== -->
+  <section class="reviews-section">
+    <div class="container">
+      <div class="section-label">
+        <span class="section-line"></span>
+        <span>KUNDENBEWERTUNGEN</span>
+      </div>
+      <h2 class="section-h2 centered">Das sagen unsere Kunden</h2>
+      <p class="reviews-rating">★★★★★ 4,8 von 5 · 50 Google-Bewertungen</p>
+
+      <div class="reviews-grid">
+        {reviews.map((r) => (
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">„{r.text}"</p>
+            <div class="review-author">
+              <div class="review-avatar">{r.initials}</div>
+              <div>
+                <div class="review-name">{r.name}</div>
+                <div class="review-city">{r.city}</div>
+              </div>
+              <div class="review-source">GOOGLE-BEWERTUNG</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="reviews-all-wrap">
+        <a href="https://g.page/r/rosenblum" class="reviews-all" target="_blank" rel="noopener noreferrer">
+          Alle Bewertungen auf Google ansehen →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 10: FAQ ===== -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-label">
+        <span class="section-line"></span>
+        <span>HÄUFIGE FRAGEN</span>
+      </div>
+      <h2 class="section-h2 centered">Häufig gestellte Fragen</h2>
+
+      <div class="faq-list">
+        {faqs.map((faq, i) => (
+          <details class="faq-item" name="faq-ua-de">
+            <summary class="faq-question">
+              {faq.q}
+              <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </summary>
+            <div class="faq-answer">{faq.a}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 11: FINAL CTA ===== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-icon-wrap">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={icons.shieldcheck} />
+        </div>
+        <h2 class="cta-h2">Ihre ukrainischen Dokumente — professionell übersetzt</h2>
+        <p class="cta-text">Kostenvoranschlag in 30 Minuten — kostenlos, unverbindlich. Vereidigt am Landgericht Hannover.</p>
+        <div class="cta-buttons">
+          <a href="/app/bestellen" class="cta-btn-primary">KOSTENVORANSCHLAG ANFORDERN →</a>
+          <a href="/preise/" class="cta-btn-secondary">Zur Preisliste →</a>
+        </div>
+        <p class="cta-micro">✓ Vereidigt LG Hannover&nbsp;&nbsp;·&nbsp;&nbsp;✓ Ab 30,30 €&nbsp;&nbsp;·&nbsp;&nbsp;✓ Antwort in 30 Min.</p>
+      </div>
+    </div>
+  </section>
+
+  <StickyBar />
+</BaseLayout>
+
+<style>
+/* ===== HERO ===== */
+.hero-section {
+  position: relative;
+  background: var(--color-bg);
+  overflow: hidden;
+  padding: 72px 0 80px;
+}
+
+.hero-watermark {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .hero-watermark { display: block; }
+}
+
+.hero-watermark-inner {
+  position: absolute;
+  inset: -50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  transform: rotate(-12deg);
+}
+
+.hero-watermark-row {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--color-text);
+  opacity: 0.04;
+  white-space: nowrap;
+  line-height: 2;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "text visual"
+      "bottom visual";
+    row-gap: 16px;
+    column-gap: 64px;
+    align-items: start;
+  }
+  .hero-text { grid-area: text; }
+  .hero-visual { grid-area: visual; align-self: center; }
+  .hero-bottom { grid-area: bottom; }
+}
+
+.hero-lang-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 8px 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.lang-pair-flag {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+}
+
+.lang-pair-flag img {
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.lang-pair-arrow {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.hero-h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-black);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  margin: 0 0 12px;
+}
+
+@media (min-width: 1024px) {
+  .hero-h1 { font-size: var(--text-5xl); }
+}
+
+.hero-accent { color: var(--color-primary); }
+
+
+.hero-subline {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 24px;
+  max-width: 540px;
+}
+
+.hero-subline-accent {
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+}
+
+/* Lang switcher */
+.lang-switcher {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 6px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.lang-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.lang-btn--active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.lang-btn img { border-radius: 2px; object-fit: cover; flex-shrink: 0; }
+
+/* CTA */
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: var(--color-primary);
+  color: white;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 14px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover { background: var(--color-primary-dark); }
+
+.btn-secondary {
+  display: inline-block;
+  border: 1.5px solid var(--color-primary);
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  padding: 13px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Trust */
+.hero-trust-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--color-border);
+  margin-bottom: 16px;
+}
+
+.hero-trust-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  font-weight: var(--font-medium);
+}
+
+/* ===== HERO VISUAL (new design) ===== */
+.hero-visual {
+  position: relative;
+  padding: 56px 0 56px 16px;
+}
+
+@media (max-width: 639px) {
+  .hero-visual { padding: 0; }
+}
+
+.hv-badge-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+@media (max-width: 639px) {
+  .hv-badge-top {
+    position: static;
+    transform: none;
+    margin-bottom: 14px;
+    width: fit-content;
+  }
+}
+
+.hv-badge-bottom {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+@media (max-width: 639px) {
+  .hv-badge-bottom {
+    position: static;
+    margin-top: 12px;
+  }
+}
+
+/* Document stack */
+.hv-stack {
+  position: relative;
+  min-height: 420px;
+}
+
+@media (max-width: 639px) {
+  .hv-stack {
+    position: static;
+    min-height: auto;
+  }
+}
+
+/* Original doc (behind, rotated) */
+.hv-orig {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  width: 50%;
+  max-width: 195px;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px;
+  transform: rotate(-5deg);
+  z-index: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 639px) {
+  .hv-orig { display: none; }
+}
+
+.hv-orig-chip {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  background: var(--color-bg-soft);
+  border-radius: 3px;
+  padding: 2px 6px;
+  margin-bottom: 8px;
+}
+
+.hv-orig-heading {
+  font-size: 9px;
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: 3px;
+  letter-spacing: 0.03em;
+}
+
+.hv-orig-country {
+  font-size: 8px;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.hv-orig-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin-bottom: 8px;
+}
+
+.hv-orig-line {
+  height: 6px;
+  background: var(--color-border);
+  border-radius: 3px;
+  margin-bottom: 6px;
+  opacity: 0.55;
+}
+
+.hv-orig-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px dashed var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--color-text-muted);
+  margin: 10px auto 0;
+}
+
+/* Main certified card */
+.hv-cert {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80%;
+  background: white;
+  border: 2px solid var(--color-primary);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(59, 91, 219, 0.2);
+  z-index: 2;
+}
+
+@media (max-width: 639px) {
+  .hv-cert {
+    position: static;
+    width: 100%;
+  }
+}
+
+.hv-cert-topbar {
+  background: var(--color-primary);
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.hv-cert-topbar-title {
+  color: white;
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.hv-cert-topbar-sub {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 9px;
+  margin-top: 3px;
+}
+
+.hv-cert-topbar-nr {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 9px;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+.hv-cert-body { padding: 18px; }
+
+.hv-cert-doctype {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+}
+
+.hv-cert-sep {
+  height: 1px;
+  background: var(--color-border);
+  margin: 12px 0;
+}
+
+.hv-cert-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hv-cert-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-xs);
+}
+
+.hv-cert-key {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  width: 96px;
+  font-weight: var(--font-medium);
+}
+
+.hv-cert-dash {
+  color: var(--color-border);
+  letter-spacing: 0.06em;
+  flex: 1;
+  font-size: 11px;
+}
+
+.hv-cert-attest {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  margin: 0 0 14px;
+  font-style: italic;
+}
+
+.hv-cert-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Circular stamp */
+.hv-stamp {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 4px solid white;
+  box-shadow: 0 0 0 2px var(--color-primary), 0 8px 24px rgba(59, 91, 219, 0.45);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.hv-stamp-text1 {
+  color: white;
+  font-size: 8.5px;
+  font-weight: var(--font-black);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.hv-stamp-divline {
+  width: 40px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.hv-stamp-text2 {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 7.5px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* Signature block */
+.hv-sig { flex: 1; }
+
+.hv-sig-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  font-style: italic;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hv-sig-role {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  margin-bottom: 2px;
+}
+
+.hv-sig-court {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: var(--font-medium);
+}
+
+/* ===== SECTION 2: BIDIRECTIONAL ===== */
+.bidir-section {
+  background: var(--color-bg-soft);
+  padding: var(--section-py) 0;
+}
+
+.bidir-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .bidir-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.bidir-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.bidir-card--main { border: 2px solid var(--color-primary); }
+.bidir-card--secondary { border: 1px solid var(--color-border); background: var(--color-bg-soft); }
+
+.bidir-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.bidir-flags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bidir-badge {
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.bidir-badge--primary { background: var(--color-primary); color: white; }
+.bidir-badge--muted { background: var(--color-bg-soft); color: var(--color-text-muted); border: 1px solid var(--color-border); }
+
+.bidir-h3 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin: 0 0 10px;
+}
+
+.bidir-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 14px;
+}
+
+.bidir-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bidir-list li {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  padding-left: 16px;
+  position: relative;
+}
+
+.bidir-list li::before {
+  content: '✓';
+  color: var(--color-primary);
+  position: absolute;
+  left: 0;
+  font-weight: var(--font-bold);
+}
+
+.bidir-price {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+}
+
+.bidir-price--muted { color: var(--color-text-muted); }
+
+
+/* ===== SECTION 3: E-E-A-T ===== */
+.eeat-section {
+  background: #1e3a8a;
+  padding: 64px 0;
+}
+
+@media (max-width: 767px) {
+  .eeat-section { padding: 40px 0; }
+}
+
+.eeat-grid {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 40px;
+}
+
+@media (min-width: 1024px) {
+  .eeat-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 64px;
+    align-items: start;
+  }
+}
+
+.eeat-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+.eeat-h2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-black);
+  color: white;
+  margin: 0 0 16px;
+  line-height: var(--leading-tight);
+}
+
+.eeat-text {
+  font-size: var(--text-base);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 24px;
+}
+
+.eeat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.eeat-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.9);
+  line-height: var(--leading-normal);
+}
+
+.eeat-list li svg { flex-shrink: 0; margin-top: 2px; }
+
+.eeat-list strong { color: white; }
+
+/* Register card */
+.register-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.register-photo-wrap {
+  position: relative;
+  aspect-ratio: 3/2;
+  overflow: hidden;
+}
+
+.register-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.register-photo-chip {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 16px;
+  padding: 5px 12px;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.register-card-body {
+  padding: 14px 18px 18px;
+}
+
+.register-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+.register-name {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin: 0 0 4px;
+}
+
+.register-cred {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-normal);
+  margin: 0 0 6px;
+}
+
+.register-nr {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0 0 6px;
+}
+
+.register-langs {
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  font-weight: var(--font-medium);
+  margin: 0;
+}
+
+.register-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 12px 0;
+}
+
+.register-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  background: var(--color-primary-light);
+  border: 1.5px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 9px 14px;
+  transition: all 0.15s ease;
+}
+
+.register-link:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* ===== SECTION 4: DOCS ===== */
+.docs-section {
+  background: var(--color-bg);
+  padding: var(--section-py) 0;
+}
+
+.docs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 640px) {
+  .docs-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .docs-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.doc-card-item {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+}
+
+.doc-card-item:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.doc-card-item--all {
+  background: var(--color-primary-light);
+  border: 2px dashed var(--color-primary);
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 120px;
+}
+
+.doc-all-text {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  text-align: center;
+}
+
+.doc-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.doc-card-icon-wrap {
+  width: 32px;
+  height: 32px;
+  background: var(--color-primary-light);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.doc-card-badge {
+  font-size: 10px;
+  font-weight: var(--font-semibold);
+  background: #FEF3C7;
+  color: #92400E;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.doc-card-price {
+  margin-left: auto;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+}
+
+.doc-card-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  margin: 0 0 4px;
+}
+
+.doc-card-ua {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.doc-card-usage {
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  line-height: var(--leading-normal);
+  flex: 1;
+  margin-bottom: 10px;
+}
+
+.doc-card-link {
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+  margin-top: auto;
+}
+
+.docs-note {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.docs-note-link {
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+}
+
+.docs-note-link:hover { text-decoration: underline; }
+
+/* Zeilenpreis card */
+.docs-zeilen-card {
+  background: var(--color-primary-light);
+  border: 2px solid var(--color-primary);
+  border-radius: 16px;
+  padding: 22px 28px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.docs-zeilen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.docs-zeilen-badge {
+  display: inline-block;
+  background: var(--color-primary);
+  color: white;
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.docs-zeilen-price {
+  font-size: var(--text-xl);
+  font-weight: var(--font-black);
+  color: var(--color-primary);
+}
+
+.docs-zeilen-h3 {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.docs-zeilen-docs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.docs-zeilen-doc {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  background: white;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--color-primary);
+}
+
+
+.docs-zeilen-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+.docs-zeilen-cta {
+  display: inline-block;
+  background: var(--color-primary);
+  color: white;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+  align-self: flex-start;
+}
+
+.docs-zeilen-cta:hover { background: var(--color-primary-dark); }
+
+.apostille-hint {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #FEF3C7;
+  border-left: 3px solid #F59E0B;
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-top: 16px;
+}
+.apostille-hint svg { flex-shrink: 0; margin-top: 2px; }
+.apostille-hint p {
+  font-size: var(--text-sm);
+  color: #1c1917;
+  line-height: 1.6;
+  margin: 0 0 6px;
+}
+.apostille-hint-note {
+  color: #78716c !important;
+  font-size: 0.8125rem;
+  font-style: italic;
+}
+.apostille-hint a {
+  color: #92400e;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+.apostille-hint a:hover { text-decoration: underline; }
+
+/* ===== SECTION 6: SITUATIONEN ===== */
+.situations-section {
+  background: var(--color-bg);
+  padding: var(--section-py) 0;
+}
+
+.situations-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .situations-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .situations-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.situation-card {
+  background: var(--color-bg-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.situation-card:hover {
+  background: white;
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.situation-icon-wrap {
+  width: 44px;
+  height: 44px;
+  background: var(--color-primary-light);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.situation-h3 {
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin: 0 0 10px;
+}
+
+.situation-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 14px;
+}
+
+.situation-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.situation-list li {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  padding-left: 18px;
+  position: relative;
+}
+
+.situation-list li::before {
+  content: '✓';
+  color: var(--color-primary);
+  position: absolute;
+  left: 0;
+  font-weight: var(--font-bold);
+  font-size: var(--text-xs);
+}
+
+.situation-link {
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  margin-top: auto;
+}
+
+.situation-link:hover { text-decoration: underline; }
+
+/* ===== SECTION 7: JOBCENTER ===== */
+.jobcenter-section {
+  background: #FFFBEB;
+  border-top: 3px solid #F59E0B;
+  padding: var(--section-py) 0;
+}
+
+.jobcenter-badge {
+  display: inline-block;
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.jobcenter-h2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: #92400E;
+  margin: 0 0 16px;
+}
+
+.jobcenter-text {
+  font-size: var(--text-base);
+  color: #78350F;
+  line-height: var(--leading-relaxed);
+  max-width: 640px;
+  margin: 0 0 40px;
+}
+
+.jobcenter-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 36px;
+}
+
+@media (min-width: 768px) {
+  .jobcenter-steps { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .jobcenter-steps { grid-template-columns: repeat(4, 1fr); }
+}
+
+.jobcenter-step {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.jobcenter-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #F59E0B;
+  color: white;
+  font-weight: var(--font-black);
+  font-size: var(--text-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.jobcenter-step-title {
+  font-size: var(--text-base);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin: 0 0 8px;
+}
+
+.jobcenter-step-text {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+.jobcenter-cta-wrap { text-align: center; }
+
+.jobcenter-cta {
+  display: inline-block;
+  background: #F59E0B;
+  color: white;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.jobcenter-cta:hover { background: #D97706; }
+
+/* ===== SECTION 8: CITIES ===== */
+.cities-section {
+  background: var(--color-bg-soft);
+  padding: var(--section-py) 0;
+}
+
+.cities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+@media (min-width: 640px) {
+  .cities-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .cities-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+.city-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s ease;
+}
+
+.city-card:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.city-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.city-state-badge {
+  font-size: 10px;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.06em;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.city-card:hover .city-state-badge {
+  background: var(--color-primary);
+  color: white;
+}
+
+.city-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+}
+
+.city-pop {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.city-card:hover .city-name { color: var(--color-primary); }
+
+.cities-surrounding {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-align: center;
+  line-height: var(--leading-relaxed);
+}
+
+/* ===== SECTION 9: REVIEWS ===== */
+.reviews-section {
+  background: var(--color-bg);
+  padding: var(--section-py) 0;
+}
+
+.reviews-rating {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-base);
+  margin: 0 0 40px;
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  .reviews-grid { grid-template-columns: repeat(3, 1fr); overflow-x: unset; }
+}
+
+.review-card {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 16px;
+  padding: 24px;
+  min-width: 260px;
+}
+
+.review-stars {
+  color: var(--color-star);
+  font-size: var(--text-base);
+  margin-bottom: 12px;
+}
+
+.review-text {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 16px;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.review-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+}
+
+.review-city {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.review-source {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.reviews-all-wrap { text-align: center; }
+
+.reviews-all {
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  font-size: var(--text-sm);
+}
+
+.reviews-all:hover { text-decoration: underline; }
+
+/* ===== SECTION 10: FAQ ===== */
+.faq-section {
+  background: var(--color-bg-soft);
+  padding: var(--section-py) 0;
+}
+
+.faq-list {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.faq-item:first-child { border-top: 1px solid var(--color-border); }
+
+.faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq-question::-webkit-details-marker { display: none; }
+
+.faq-chevron {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: transform 0.2s ease;
+}
+
+.faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+.faq-answer {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  padding-bottom: 18px;
+}
+
+/* ===== SECTION 11: CTA ===== */
+.cta-section {
+  background: var(--color-bg);
+  padding: var(--section-py) 0;
+}
+
+.cta-card {
+  background: var(--color-bg-dark);
+  border-radius: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 64px 40px;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .cta-card { padding: 40px 24px; }
+}
+
+.cta-icon-wrap { margin-bottom: 20px; }
+
+.cta-h2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-black);
+  color: white;
+  margin: 0 0 14px;
+  line-height: var(--leading-tight);
+}
+
+.cta-text {
+  font-size: var(--text-base);
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 28px;
+  line-height: var(--leading-relaxed);
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.cta-btn-primary {
+  display: inline-block;
+  background: var(--color-primary);
+  color: white;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.cta-btn-primary:hover { background: var(--color-primary-dark); }
+
+.cta-btn-secondary {
+  display: inline-block;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: white;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.cta-btn-secondary:hover { border-color: white; }
+
+.cta-micro {
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+/* ===== SHARED ===== */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.section-line {
+  display: inline-block;
+  width: 32px;
+  height: 2px;
+  background: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.section-h2 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  margin: 0 0 12px;
+  line-height: var(--leading-tight);
+}
+
+.section-h2.centered { text-align: center; }
+
+.section-sub {
+  font-size: var(--text-base);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  margin: 0 0 40px;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 767px) {
+  /* Centering */
+  .hero-text { text-align: center; }
+  .hero-lang-pair { margin-left: auto; margin-right: auto; }
+  .hero-bottom { text-align: center; }
+  .hero-subline { margin-left: auto; margin-right: auto; }
+  .hero-trust-list { justify-content: center; }
+
+  /* Fix 1: lang switcher — all 3 in one row */
+  .lang-switcher { flex-wrap: nowrap; justify-content: center; }
+  .lang-btn { padding: 4px 8px; font-size: 12px; gap: 4px; }
+  .lang-btn img { width: 15px; height: 10px; }
+
+  /* Fix 2: hero CTA — equal full-width column buttons */
+  .hero-cta { flex-direction: column; align-items: stretch; justify-content: stretch; gap: 10px; }
+  .hero-cta .btn-primary,
+  .hero-cta .btn-secondary { display: block; text-align: center; }
+
+  /* Fix 3: EEAT — smaller text to avoid line break mess */
+  .eeat-h2 { font-size: var(--text-2xl); }
+  .eeat-text { font-size: var(--text-sm); }
+  .eeat-list li { font-size: var(--text-sm); }
+
+  /* Fix 4: Zeilenpreis pills — smaller so they fit */
+  .docs-zeilen-doc { font-size: 11px; padding: 2px 8px; }
+  .docs-zeilen-h3 { font-size: var(--text-base); }
+
+  /* Fix 5: Jobcenter — smaller heading */
+  .jobcenter-h2 { font-size: var(--text-2xl); }
+  .jobcenter-text { font-size: var(--text-sm); }
+
+  /* Fix 6: final CTA — equal full-width column buttons */
+  .cta-buttons { flex-direction: column; align-items: stretch; }
+  .cta-btn-primary,
+  .cta-btn-secondary { text-align: center; }
+
+  /* General: tighter section headings */
+  .section-h2 { font-size: var(--text-2xl); }
+  .cta-h2 { font-size: var(--text-2xl); }
+  .section-sub { font-size: var(--text-sm); margin-bottom: 28px; }
+}
+</style>

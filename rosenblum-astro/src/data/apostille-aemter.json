@@ -1,0 +1,259 @@
+{
+  "laender": [
+    {
+      "name": "Baden-Württemberg",
+      "slug": "baden-wuerttemberg",
+      "behoerden": [
+        {
+          "name": "Regierungspräsidium Stuttgart",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Ruppmannstr. 21, 70565 Stuttgart",
+          "url": "https://rp.baden-wuerttemberg.de/rps/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        },
+        {
+          "name": "Regierungspräsidium Karlsruhe",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Karl-Friedrich-Str. 17, 76133 Karlsruhe",
+          "url": "https://rp.baden-wuerttemberg.de/rpk/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Bayern",
+      "slug": "bayern",
+      "behoerden": [
+        {
+          "name": "Bayerisches Staatsministerium der Justiz",
+          "typ": "Gerichtsdokumente",
+          "adresse": "Prielmayerstr. 7, 80335 München",
+          "url": "https://www.justiz.bayern.de",
+          "dokumente": ["Gerichtliche Dokumente", "Notarielle Urkunden"]
+        },
+        {
+          "name": "Regierung von Oberbayern",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Maximilianstr. 39, 80538 München",
+          "url": "https://www.regierung.oberbayern.bayern.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Berlin",
+      "slug": "berlin",
+      "behoerden": [
+        {
+          "name": "Senatsverwaltung für Inneres und Sport",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Klosterstr. 47, 10179 Berlin",
+          "url": "https://www.berlin.de/sen/inneres/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Brandenburg",
+      "slug": "brandenburg",
+      "behoerden": [
+        {
+          "name": "Ministerium des Innern Brandenburg",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Henning-von-Tresckow-Str. 9-13, 14467 Potsdam",
+          "url": "https://mik.brandenburg.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Bremen",
+      "slug": "bremen",
+      "behoerden": [
+        {
+          "name": "Senator für Inneres Bremen",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Contrescarpe 22, 28203 Bremen",
+          "url": "https://www.inneres.bremen.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Hamburg",
+      "slug": "hamburg",
+      "behoerden": [
+        {
+          "name": "Behörde für Inneres und Sport Hamburg",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Johannes-Brahms-Platz 1, 20355 Hamburg",
+          "url": "https://www.hamburg.de/bis/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Hessen",
+      "slug": "hessen",
+      "behoerden": [
+        {
+          "name": "Regierungspräsidium Darmstadt",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Luisenplatz 2, 64283 Darmstadt",
+          "url": "https://rp-darmstadt.hessen.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        },
+        {
+          "name": "Hessisches Ministerium der Justiz",
+          "typ": "Gerichtsdokumente",
+          "adresse": "Luisenstr. 13, 65185 Wiesbaden",
+          "url": "https://justiz.hessen.de",
+          "dokumente": ["Gerichtliche Dokumente", "Notarielle Urkunden"]
+        }
+      ]
+    },
+    {
+      "name": "Mecklenburg-Vorpommern",
+      "slug": "mecklenburg-vorpommern",
+      "behoerden": [
+        {
+          "name": "Innenministerium Mecklenburg-Vorpommern",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Arsenal am Pfaffenteich, 19053 Schwerin",
+          "url": "https://www.regierung-mv.de/Ministerien/IM/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Niedersachsen",
+      "slug": "niedersachsen",
+      "behoerden": [
+        {
+          "name": "Landgericht Hannover",
+          "typ": "Übersetzungen",
+          "adresse": "Volgersweg 65, 30175 Hannover",
+          "url": "https://www.landgericht-hannover.niedersachsen.de",
+          "dokumente": [
+            "Beglaubigte Übersetzungen",
+            "Gerichtliche Dokumente",
+            "Notarielle Urkunden"
+          ],
+          "highlight": true
+        },
+        {
+          "name": "Niedersächsisches Ministerium für Inneres",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Lavesallee 6, 30169 Hannover",
+          "url": "https://www.mi.niedersachsen.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Nordrhein-Westfalen",
+      "slug": "nordrhein-westfalen",
+      "behoerden": [
+        {
+          "name": "Bezirksregierung Düsseldorf",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Cecilienallee 2, 40474 Düsseldorf",
+          "url": "https://www.brd.nrw.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        },
+        {
+          "name": "Bezirksregierung Köln",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Zeughausstr. 2-10, 50667 Köln",
+          "url": "https://www.bezreg-koeln.nrw.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        },
+        {
+          "name": "Justizministerium NRW",
+          "typ": "Gerichtsdokumente",
+          "adresse": "Martin-Luther-Platz 40, 40212 Düsseldorf",
+          "url": "https://www.justiz.nrw.de",
+          "dokumente": ["Gerichtliche Dokumente", "Notarielle Urkunden"]
+        }
+      ]
+    },
+    {
+      "name": "Rheinland-Pfalz",
+      "slug": "rheinland-pfalz",
+      "behoerden": [
+        {
+          "name": "Aufsichts- und Dienstleistungsdirektion Trier",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Willy-Brandt-Platz 3, 54290 Trier",
+          "url": "https://add.rlp.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Saarland",
+      "slug": "saarland",
+      "behoerden": [
+        {
+          "name": "Ministerium für Inneres, Bauen und Sport",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Franz-Josef-Röder-Str. 21, 66119 Saarbrücken",
+          "url": "https://www.saarland.de/mibs/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Sachsen",
+      "slug": "sachsen",
+      "behoerden": [
+        {
+          "name": "Landesdirektion Sachsen",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Altchemnitzer Str. 41, 09120 Chemnitz",
+          "url": "https://www.lds.sachsen.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Sachsen-Anhalt",
+      "slug": "sachsen-anhalt",
+      "behoerden": [
+        {
+          "name": "Landesverwaltungsamt Sachsen-Anhalt",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Ernst-Kamieth-Str. 2, 06112 Halle",
+          "url": "https://lvwa.sachsen-anhalt.de",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Schleswig-Holstein",
+      "slug": "schleswig-holstein",
+      "behoerden": [
+        {
+          "name": "Innenministerium Schleswig-Holstein",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Düsternbrooker Weg 92, 24105 Kiel",
+          "url": "https://www.schleswig-holstein.de/IM/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    },
+    {
+      "name": "Thüringen",
+      "slug": "thueringen",
+      "behoerden": [
+        {
+          "name": "Thüringer Landesverwaltungsamt",
+          "typ": "Öffentliche Urkunden",
+          "adresse": "Jorge-Semprún-Platz 4, 99423 Weimar",
+          "url": "https://www.thueringen.de/tlvwa/",
+          "dokumente": ["Personenstandsurkunden", "Behördliche Dokumente"]
+        }
+      ]
+    }
+  ]
+}

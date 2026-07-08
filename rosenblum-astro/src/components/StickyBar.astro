@@ -1,0 +1,85 @@
+---
+import languages from '../data/languages.json';
+
+// Показывать на всех публичных страницах кроме /bestellen
+// Скрывать когда hero CTA кнопка видна во viewport
+const langCount = languages.length;
+---
+
+<div class="sticky-bar" id="sticky-bar" role="complementary" aria-label="Schnellbestellung">
+  <div class="sticky-bar-inner container">
+    <p class="sticky-text">
+      Beglaubigte Übersetzung ab <strong class="sticky-price">€30,30</strong>
+      <span class="sticky-text-full"> · {langCount} Sprachen · Express 24h</span>
+    </p>
+    <a href="/app/bestellen" class="btn-primary sticky-cta">
+      <span class="cta-full">JETZT BESTELLEN</span>
+      <span class="cta-short">BESTELLEN</span>
+      →
+    </a>
+  </div>
+</div>
+
+<script>
+  const bar = document.getElementById('sticky-bar');
+  const heroCta = document.querySelector('.hero-cta');
+
+  if (heroCta && bar) {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        bar.style.transform = entry.isIntersecting ? 'translateY(100%)' : 'translateY(0)';
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(heroCta);
+  }
+</script>
+
+<style>
+  .sticky-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background: var(--color-bg-dark);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+  }
+
+  .sticky-bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .sticky-text {
+    color: white;
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    min-width: 0;
+  }
+
+  .sticky-price {
+    color: var(--color-primary-light);
+  }
+
+  .sticky-cta {
+    padding: 11px 22px;
+    font-size: var(--text-xs);
+    flex-shrink: 0;
+  }
+
+  /* Show short text on mobile */
+  .cta-short { display: none; }
+
+  @media (max-width: 639px) {
+    .sticky-text-full { display: none; }
+    .cta-full { display: none; }
+    .cta-short { display: inline; }
+    .sticky-text { font-size: var(--text-sm); }
+  }
+</style>

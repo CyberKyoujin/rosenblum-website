@@ -1,0 +1,795 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import StickyBar from '../components/StickyBar.astro';
+import languages from '../data/languages.json';
+
+const langCount = languages.length;
+
+const timeline = [
+  {
+    year: '2016',
+    title: 'Gründung in Osnabrück',
+    text: 'Oleg Rosenblum startet als vereidigter Übersetzer für Ukrainisch und Russisch.',
+  },
+  {
+    year: '2020',
+    title: '1.000 Kunden',
+    text: 'Das Büro wächst über die Region hinaus – deutschlandweite Nachfrage.',
+  },
+  {
+    year: '2022',
+    title: 'Online-Bestellsystem',
+    text: 'Dokumente hochladen, Angebot erhalten, Übersetzung per Post – vollständig digital.',
+  },
+  {
+    year: '2024',
+    title: '5.000 Kunden · 10.000 Übersetzungen',
+    text: 'Ein Netzwerk vereidigter Übersetzer betreut Privatkunden, Kanzleien und Behörden.',
+  },
+  {
+    year: '2026',
+    title: `${langCount} Sprachen · deutschlandweiter Versand`,
+    text: 'Ein Ansprechpartner für beglaubigte Übersetzungen in ganz Deutschland.',
+  },
+];
+
+const team = [
+  {
+    name: 'Oleg Rosenblum',
+    role: 'Gründer & vereidigter Übersetzer',
+    text: 'Vom Landgericht Hannover allgemein beeidigter Dolmetscher und ermächtigter Übersetzer für die russische und ukrainische Sprache.',
+    photo: '/media/oleg.jpg',
+  },
+  {
+    name: 'Elana Rosenblum',
+    role: 'Kundenbetreuung & Finanzen',
+    text: 'Erste Ansprechpartnerin für Anfragen, Angebote und Rechnungen – sie hält Kommunikation und Abläufe zuverlässig am Laufen.',
+    initials: 'ER',
+  },
+  {
+    name: 'Denys Novakov',
+    role: 'Digital Operations & IT',
+    text: 'Verantwortlich für das Online-Bestellsystem und den digitalen Workflow – damit Hochladen, Angebot und Versand reibungslos funktionieren.',
+    initials: 'DN',
+  },
+];
+
+const stats = [
+  { prefix: 'Ø ', target: 28, suffix: ' Min.', label: 'bis zum Kostenvoranschlag' },
+  { target: 97, suffix: '%', label: 'Annahmequote – keine Nachfragen der Behörden' },
+  { target: 100, suffix: '%', label: 'Online – kein Bürobesuch nötig' },
+  { target: 1, suffix: '', label: 'vereidigter Übersetzer – persönliche Verantwortung für jede Übersetzung' },
+  { target: 3, suffix: '', label: 'Länder – Deutschland, Ukraine, Österreich' },
+  { target: 0, suffix: ' €', label: 'Kostenvoranschlag – immer kostenlos & unverbindlich' },
+];
+
+const benefits = [
+  {
+    icon: '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>',
+    title: 'Vereidigter Übersetzer',
+    text: 'Alle Übersetzungen tragen ein offizielles Amtssiegel und werden von deutschen Behörden anerkannt.',
+  },
+  {
+    icon: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    title: `${langCount} Sprachen – ein Ansprechpartner`,
+    text: 'Sie brauchen nicht für jede Sprache ein neues Büro zu suchen. Wir koordinieren alles für Sie.',
+  },
+  {
+    icon: '<path d="M3 11V6a2 2 0 0 1 2-2h5l11 11-7 7L3 11z"/><circle cx="8.5" cy="8.5" r="1.5"/>',
+    title: 'Transparente Festpreise',
+    text: 'Keine versteckten Kosten. Sie kennen den Preis, bevor Sie bestellen.',
+  },
+  {
+    icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>',
+    title: 'Online-Bestellung',
+    text: 'Dokument hochladen, Angebot erhalten, Übersetzung per Post. Alles digital.',
+  },
+  {
+    icon: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/>',
+    title: 'Kostenübernahme durch Jobcenter',
+    text: 'Wir helfen beim Antrag. Kostenvoranschlag in 30 Minuten.',
+    href: '/preise/#jobcenter',
+  },
+  {
+    icon: '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
+    title: 'Express in 24 Stunden',
+    text: 'Dringende Übersetzung? Wir liefern innerhalb eines Werktages.',
+  },
+];
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Oleg Rosenblum',
+  jobTitle: 'Vereidigter Übersetzer',
+  worksFor: {
+    '@type': 'LocalBusiness',
+    name: 'Rosenblum Übersetzungsbüro',
+  },
+  hasCredential: {
+    '@type': 'EducationalOccupationalCredential',
+    credentialCategory: 'Vereidigter Übersetzer',
+    recognizedBy: {
+      '@type': 'Organization',
+      name: 'Landgericht Hannover',
+    },
+  },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Osnabrück',
+    addressCountry: 'DE',
+  },
+};
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Rosenblum Übersetzungsbüro',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Alte Poststraße 25',
+    addressLocality: 'Osnabrück',
+    postalCode: '49074',
+    addressCountry: 'DE',
+  },
+  telephone: '+4917624137205',
+  email: 'rosenblum.uebersetzungsbuero@gmail.com',
+  openingHours: 'Mo-Fr 09:00-18:00',
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 52.2715,
+    longitude: 8.048,
+  },
+  url: 'https://rosenblum-uebersetzungen.de',
+  priceRange: 'ab €30,30',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.8',
+    reviewCount: '50',
+  },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rosenblum-uebersetzungen.de/' },
+    { '@type': 'ListItem', position: 2, name: 'Über uns', item: 'https://rosenblum-uebersetzungen.de/ueber-uns/' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Über uns – Rosenblum Übersetzungsbüro Osnabrück"
+  description="Rosenblum Übersetzungsbüro – seit 2016 in Osnabrück. Oleg Rosenblum, vereidigter Übersetzer am Landgericht Hannover. 10.000+ beglaubigte Übersetzungen, deutschlandweit."
+  lang="de"
+  canonicalUrl="https://rosenblum-uebersetzungen.de/ueber-uns/"
+  schema={[personSchema, localBusinessSchema, breadcrumbSchema]}
+>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <Navbar currentLang="de" />
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 1 · HERO
+  ════════════════════════════════════════════════ -->
+  <section class="hero" aria-label="Hero">
+    <div class="container hero-grid">
+      <div class="hero-text-col">
+        <div class="section-label"><span class="line"></span>ÜBER UNS</div>
+
+        <h1 class="hero-h1">
+          Die Menschen hinter{' '}<br />
+          <span class="hero-accent">Ihren Übersetzungen.</span>
+        </h1>
+
+        <p class="hero-sub">
+          Seit 2016 übersetzen wir Dokumente – persönlich, zuverlässig, deutschlandweit.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="/kontakt" class="btn-primary btn-lg">Kontaktieren Sie uns</a>
+          <a href="#geschichte" class="hero-link">Unsere Geschichte ↓</a>
+        </div>
+
+        <ul class="trust-items" aria-label="Vertrauenssiegel">
+          <li class="trust-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Vom Landgericht Hannover vereidigt
+          </li>
+          <li class="trust-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Von deutschen Behörden anerkannt
+          </li>
+        </ul>
+
+        <div class="hero-stats" aria-label="Kennzahlen">
+          <div class="hero-stat"><span class="hero-stat-value">8+</span><span class="hero-stat-label">Jahre Erfahrung</span></div>
+          <div class="hero-stat"><span class="hero-stat-value">10.000+</span><span class="hero-stat-label">Übersetzungen</span></div>
+          <div class="hero-stat"><span class="hero-stat-value">5.000+</span><span class="hero-stat-label">Zufriedene Kunden</span></div>
+          <div class="hero-stat"><span class="hero-stat-value">{langCount}</span><span class="hero-stat-label">Sprachen</span></div>
+        </div>
+      </div>
+
+      <div class="hero-photos">
+        <img src="/media/oleg.jpg" alt="Oleg Rosenblum, Gründer von Rosenblum Übersetzungsbüro" class="photo-main" />
+
+        <div class="photo-secondary" aria-hidden="true">
+          <span class="photo-secondary-text">FOTO: Oleg bei der Arbeit</span>
+        </div>
+
+        <div class="hero-signature-card">
+          <img src="/media/oleg.jpg" alt="" class="signature-avatar" />
+          <div>
+            <div class="signature-name">Oleg Rosenblum</div>
+            <div class="signature-role">Gründer & vereidigter Übersetzer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 2 · UNSERE GESCHICHTE
+  ════════════════════════════════════════════════ -->
+  <section class="geschichte" id="geschichte" aria-labelledby="geschichte-h2">
+    <div class="container geschichte-grid">
+      <div class="geschichte-text">
+        <div class="section-label"><span class="line"></span>UNSERE GESCHICHTE</div>
+        <h2 id="geschichte-h2" class="section-h2">Von Osnabrück aus für ganz Deutschland</h2>
+
+        <p class="geschichte-p">
+          Rosenblum Übersetzungsbüro wurde <strong>2016 von Oleg Rosenblum</strong> in
+          Osnabrück gegründet. Als vom Landgericht Hannover vereidigter Übersetzer für
+          Ukrainisch und Russisch begann er mit beglaubigten Übersetzungen für die
+          ukrainische und russische Gemeinschaft in Niedersachsen.
+        </p>
+        <p class="geschichte-p">
+          Was als Ein-Mann-Büro begann, ist heute ein Übersetzungsbüro mit einem{' '}
+          <strong>Netzwerk vereidigter Übersetzer für {langCount} Sprachen</strong>. Über
+          5.000 Kunden vertrauen uns – von Privatpersonen über Anwaltskanzleien bis hin
+          zu Behörden.
+        </p>
+
+        <div class="geschichte-signature">
+          <img src="/media/oleg.jpg" alt="" class="geschichte-avatar" />
+          <div>
+            <div class="signature-name">Oleg Rosenblum</div>
+            <div class="signature-role-muted">Gründer, Rosenblum Übersetzungsbüro</div>
+          </div>
+        </div>
+      </div>
+
+      <ol class="timeline" role="list">
+        {timeline.map((item) => (
+          <li class="timeline-item" role="listitem">
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <span class="timeline-year">{item.year}</span>
+            <h3 class="timeline-title">{item.title}</h3>
+            <p class="timeline-text">{item.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 3 · PERSÖNLICHE WORTE VON OLEG
+  ════════════════════════════════════════════════ -->
+  <section class="quote-section" aria-label="Persönliche Worte von Oleg">
+    <div class="container quote-container">
+      <div class="quote-seal" aria-hidden="true">
+        <svg width="200" height="200" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="white" stroke-width="2"/>
+          <circle cx="100" cy="100" r="74" fill="none" stroke="white" stroke-width="1"/>
+          <text x="100" y="96" text-anchor="middle" fill="white" font-size="30" font-weight="900">O.R.</text>
+          <text x="100" y="118" text-anchor="middle" fill="white" font-size="8" letter-spacing="2">VEREIDIGT · LG HANNOVER</text>
+        </svg>
+      </div>
+
+      <div class="quote-mark" aria-hidden="true">&laquo;</div>
+
+      <blockquote class="quote-text">
+        Ich übersetze seit 2016. Nicht weil es mein Job ist – sondern weil ich weiß,
+        was ein fehlerhafter Stempel bedeutet. Ein abgelehnter Antrag, ein verpasster
+        Termin, ein Jahr Verzögerung. Jede Übersetzung trägt meine persönliche
+        Unterschrift. Das ist keine Formalität – das ist meine Verantwortung.
+      </blockquote>
+
+      <div class="quote-divider"></div>
+
+      <div class="quote-signature">
+        <img src="/media/oleg.jpg" alt="" class="quote-avatar" />
+        <div>
+          <div class="quote-name">Oleg Rosenblum</div>
+          <div class="quote-role">Gründer & vereidigter Übersetzer · Landgericht Hannover</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 4 · UNSER TEAM
+  ════════════════════════════════════════════════ -->
+  <section class="team" aria-labelledby="team-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>UNSER TEAM</div>
+      <h2 id="team-h2" class="section-h2">Echte Menschen, echte Verantwortung</h2>
+      <p class="section-sub">
+        Drei Personen sorgen dafür, dass Ihre Dokumente korrekt übersetzt und pünktlich
+        geliefert werden.
+      </p>
+
+      <div class="team-grid">
+        {team.map((member) => (
+          <div class="team-card">
+            {member.photo ? (
+              <img src={member.photo} alt={member.name} class="team-photo" />
+            ) : (
+              <div class="team-photo team-photo-placeholder" aria-hidden="true">
+                <span class="team-initials">{member.initials}</span>
+                <span class="team-photo-note">FOTO FOLGT</span>
+              </div>
+            )}
+            <div class="team-body">
+              <h3 class="team-name">{member.name}</h3>
+              <p class="team-role">{member.role}</p>
+              <p class="team-text">{member.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 5 · ROSENBLUM IN ZAHLEN
+  ════════════════════════════════════════════════ -->
+  <section class="zahlen" aria-labelledby="zahlen-h2">
+    <div class="container">
+      <div class="zahlen-label">— ZAHLEN &amp; FAKTEN</div>
+      <h2 id="zahlen-h2" class="zahlen-h2">Rosenblum in Zahlen</h2>
+      <p class="zahlen-sub">Acht Jahre Arbeit, in einer Übersicht.</p>
+
+      <div class="zahlen-grid">
+        {stats.map((s) => (
+          <div class="zahlen-card">
+            <div class="zahlen-value">
+              {s.prefix && <span class="zahlen-prefix">{s.prefix}</span>}
+              <span class="zahlen-num" data-target={s.target} data-suffix={s.suffix} aria-live="off">0</span>
+            </div>
+            <p class="zahlen-card-label">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 6 · WORAUF SIE SICH VERLASSEN KÖNNEN
+  ════════════════════════════════════════════════ -->
+  <section class="warum" aria-labelledby="warum-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>WARUM ROSENBLUM?</div>
+      <h2 id="warum-h2" class="section-h2">Worauf Sie sich verlassen können</h2>
+      <p class="section-sub">Konkrete Vorteile – keine leeren Versprechen.</p>
+
+      <div class="benefits-grid">
+        {benefits.map((b) => {
+          const Tag = b.href ? 'a' : 'div';
+          return (
+            <Tag class="benefit-card" {...(b.href ? { href: b.href } : {})}>
+              <div class="benefit-icon" set:html={`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${b.icon}</svg>`} />
+              <h3 class="benefit-title">{b.title}</h3>
+              <p class="benefit-text">{b.text}</p>
+            </Tag>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 7 · UNSER STANDORT
+  ════════════════════════════════════════════════ -->
+  <section class="standort" aria-labelledby="standort-h2">
+    <div class="container">
+      <div class="section-label"><span class="line"></span>UNSER STANDORT</div>
+      <h2 id="standort-h2" class="section-h2">Unser Büro in Osnabrück</h2>
+
+      <div class="standort-grid">
+        <div class="office-photo-placeholder" aria-hidden="true">
+          <span class="office-photo-text">FOTO: Büro-Eingang</span>
+          <span class="office-photo-sub">Rosenblum Übersetzungsbüro · ohne Nachbar-Schild</span>
+        </div>
+
+        <div class="standort-right">
+          <div class="contact-card">
+            <h3 class="contact-card-h3">Kontakt &amp; Öffnungszeiten</h3>
+
+            <div class="contact-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div>
+                <div class="contact-line1">Alte Poststraße 25</div>
+                <div class="contact-line2">49074 Osnabrück</div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <div>
+                <div class="contact-line1">0176 24137205</div>
+                <div class="contact-line2">Mobil &amp; WhatsApp</div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+              <div>
+                <div class="contact-line1 contact-email">rosenblum.uebersetzungsbuero@gmail.com</div>
+                <div class="contact-line2">Antwort meist am selben Tag</div>
+              </div>
+            </div>
+            <div class="contact-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <div>
+                <div class="contact-line1">Mo–Fr: 9:00–18:00 Uhr</div>
+                <div class="contact-line2">Termine nach Vereinbarung</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="map" class="map" role="img" aria-label="Standort Rosenblum Übersetzungsbüro in Osnabrück"></div>
+        </div>
+      </div>
+
+      <div class="standort-info">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <p>
+          Unser Büro befindet sich in Osnabrück – wir arbeiten jedoch
+          <strong> deutschlandweit</strong>. Ihre Dokumente können Sie bequem online
+          einreichen und erhalten die fertige Übersetzung per Post.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 8 · FINAL CTA
+  ════════════════════════════════════════════════ -->
+  <section class="final-cta-wrap">
+    <div class="container final-cta">
+      <h2 class="final-cta-h2">Haben Sie Fragen oder benötigen Sie ein Angebot?</h2>
+      <p class="final-cta-text">
+        Schreiben Sie uns – wir melden uns persönlich und erstellen Ihnen einen
+        unverbindlichen Kostenvoranschlag.
+      </p>
+      <div class="final-cta-buttons">
+        <a href="/kontakt" class="final-cta-primary">Kontaktieren Sie uns</a>
+        <a href="/app/bestellen" class="final-cta-secondary">Kostenvoranschlag anfordern</a>
+      </div>
+    </div>
+  </section>
+
+  <StickyBar />
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" is:inline></script>
+  <script is:inline>
+    const map = L.map('map').setView([52.2715, 8.048], 14);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+    L.marker([52.2715, 8.048])
+      .addTo(map)
+      .bindPopup('Rosenblum Übersetzungsbüro')
+      .openPopup();
+  </script>
+</BaseLayout>
+
+<script>
+  function animateCounter(el: HTMLElement, target: number, suffix: string, duration = 1500) {
+    const start = performance.now();
+    requestAnimationFrame(function update(time) {
+      const progress = Math.min((time - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(target * eased);
+      el.textContent = progress < 1 ? String(current) : `${target}${suffix}`;
+      if (progress < 1) requestAnimationFrame(update);
+    });
+  }
+
+  const zahlenGrid = document.querySelector('.zahlen-grid');
+  const nums = document.querySelectorAll<HTMLElement>('.zahlen-num');
+
+  if (zahlenGrid && nums.length) {
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            nums.forEach((el) => {
+              const target = parseInt(el.getAttribute('data-target') ?? '0', 10);
+              const suffix = el.getAttribute('data-suffix') ?? '';
+              animateCounter(el, target, suffix);
+            });
+            obs.disconnect();
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(zahlenGrid);
+  }
+</script>
+
+<style>
+  /* ══════════════════════════════════════
+     SHARED
+  ══════════════════════════════════════ */
+  .section-h2 { font-size: var(--text-3xl); font-weight: var(--font-bold); color: var(--color-text); margin-bottom: 12px; line-height: var(--leading-tight); }
+  .section-sub { font-size: var(--text-base); color: var(--color-text-muted); line-height: var(--leading-relaxed); margin-bottom: 40px; max-width: 640px; }
+  .btn-lg { padding: 16px 32px; font-size: var(--text-base); }
+
+  .signature-name { font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--color-text); }
+  .signature-role { font-size: var(--text-xs); color: var(--color-primary); }
+  .signature-role-muted { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+  /* ══════════════════════════════════════
+     HERO
+  ══════════════════════════════════════ */
+  .hero { background: var(--color-bg); padding: 56px 0 64px; }
+
+  .hero-grid {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px;
+  }
+
+  @media (min-width: 1024px) {
+    .hero-grid { grid-template-columns: 55fr 45fr; align-items: center; gap: 48px; }
+    .hero { padding: 88px 0; }
+  }
+
+  .hero-h1 {
+    font-size: var(--text-4xl); font-weight: var(--font-black);
+    line-height: var(--leading-tight); color: var(--color-text); margin-bottom: 18px;
+  }
+  @media (min-width: 1024px) { .hero-h1 { font-size: var(--text-5xl); } }
+
+  .hero-accent { color: var(--color-primary); }
+
+  .hero-sub { font-size: var(--text-lg); color: var(--color-text-muted); line-height: var(--leading-relaxed); margin-bottom: 28px; max-width: 520px; }
+
+  .hero-ctas { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; }
+  .hero-link { color: var(--color-text-muted); font-weight: var(--font-medium); text-decoration: none; }
+  .hero-link:hover { color: var(--color-primary); text-decoration: underline; }
+
+  .trust-items { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .trust-item { display: flex; align-items: center; gap: 10px; font-size: var(--text-sm); font-weight: var(--font-medium); color: var(--color-text); }
+
+  .hero-stats { display: flex; flex-wrap: wrap; gap: 24px 32px; padding-top: 24px; border-top: 1px solid var(--color-border); }
+  .hero-stat { display: flex; flex-direction: column; gap: 2px; }
+  .hero-stat-value { font-size: var(--text-2xl); font-weight: var(--font-black); color: var(--color-text); }
+  .hero-stat-label { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+  /* Hero photo collage */
+  .hero-photos { position: relative; max-width: 380px; margin: 0 auto; padding-bottom: 0; }
+
+  .photo-main {
+    width: 100%; aspect-ratio: 4/5; object-fit: cover; object-position: top center;
+    border-radius: 16px; position: relative; z-index: 1;
+  }
+
+  .photo-secondary { display: none; }
+
+  .hero-signature-card {
+    display: flex; align-items: center; gap: 10px; background: white;
+    box-shadow: var(--shadow-card); border-radius: 12px; padding: 12px 16px;
+    margin-top: 16px; max-width: 260px;
+  }
+  .signature-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+
+  @media (min-width: 1024px) {
+    .hero-photos { max-width: none; padding-bottom: 56px; padding-right: 60px; }
+    .photo-main { width: 62%; }
+    .photo-secondary {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: absolute; width: 48%; aspect-ratio: 4/5; right: 0; bottom: -36px; z-index: 2;
+      border: 2px dashed var(--color-border); border-radius: 12px; background: var(--color-bg-soft);
+      text-align: center; padding: 12px;
+    }
+    .photo-secondary-text { font-size: var(--text-xs); font-weight: var(--font-medium); color: var(--color-text-muted); letter-spacing: 0.02em; }
+    .hero-signature-card { position: absolute; left: 0; bottom: -16px; margin-top: 0; z-index: 3; }
+  }
+
+  /* ══════════════════════════════════════
+     GESCHICHTE / TIMELINE
+  ══════════════════════════════════════ */
+  .geschichte { background: var(--color-bg); padding: var(--section-py) 0; }
+
+  .geschichte-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; }
+  @media (min-width: 1024px) { .geschichte-grid { grid-template-columns: 45fr 55fr; gap: 64px; } }
+
+  .geschichte-p { font-size: var(--text-base); color: var(--color-text-muted); line-height: var(--leading-relaxed); margin-bottom: 20px; }
+  .geschichte-p strong { color: var(--color-text); font-weight: var(--font-semibold); }
+
+  .geschichte-signature { display: flex; align-items: center; gap: 12px; margin-top: 28px; }
+  .geschichte-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+
+  .timeline { position: relative; padding-left: 28px; border-left: 2px solid var(--color-border); display: flex; flex-direction: column; gap: 32px; }
+  .timeline-item { position: relative; }
+  .timeline-dot { position: absolute; left: -34px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-primary); }
+  .timeline-year { display: block; font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--color-primary); margin-bottom: 4px; }
+  .timeline-title { font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-text); margin-bottom: 6px; }
+  .timeline-text { font-size: var(--text-sm); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
+
+  @media (max-width: 1023px) {
+    .timeline { border-left: none; padding-left: 0; gap: 24px; }
+    .timeline-item { padding-left: 28px; }
+    .timeline-dot { left: 0; top: 6px; }
+  }
+
+  /* ══════════════════════════════════════
+     QUOTE SECTION
+  ══════════════════════════════════════ */
+  .quote-section { background: var(--color-bg-dark); padding: 80px 0; }
+  @media (max-width: 639px) { .quote-section { padding: 48px 0; } }
+
+  .quote-container { position: relative; max-width: 700px; margin: 0 auto; text-align: center; }
+
+  .quote-seal { position: absolute; top: -40px; right: -20px; opacity: 0.15; pointer-events: none; }
+  @media (max-width: 767px) { .quote-seal { display: none; } }
+
+  .quote-mark { font-size: 6rem; font-weight: var(--font-black); color: var(--color-primary); opacity: 0.3; line-height: 1; margin-bottom: -24px; }
+
+  .quote-text {
+    font-size: var(--text-2xl); font-weight: var(--font-bold); color: white;
+    line-height: 1.6; margin: 0; position: relative; z-index: 1;
+  }
+  @media (max-width: 639px) { .quote-text { font-size: var(--text-lg); } }
+
+  .quote-divider { width: 40px; height: 1px; background: rgba(255, 255, 255, 0.2); margin: 32px auto; }
+
+  .quote-signature { display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .quote-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-primary); }
+  .quote-name { font-size: var(--text-sm); font-weight: var(--font-semibold); color: white; text-align: left; }
+  .quote-role { font-size: var(--text-xs); color: white; opacity: 0.6; text-align: left; }
+
+  /* ══════════════════════════════════════
+     TEAM
+  ══════════════════════════════════════ */
+  .team { background: var(--color-bg-soft); padding: var(--section-py) 0; }
+
+  .team-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  @media (min-width: 768px) { .team-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .team-card {
+    background: white; border-radius: 16px; box-shadow: var(--shadow-card);
+    overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .team-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); }
+
+  .team-photo { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
+  .team-photo-placeholder {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+    background: var(--color-bg-soft);
+  }
+  .team-initials { font-size: var(--text-5xl); font-weight: var(--font-black); color: var(--color-primary); opacity: 0.4; }
+  .team-photo-note { font-size: var(--text-xs); color: var(--color-text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .team-body { padding: 20px; }
+  .team-name { font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-text); margin-bottom: 4px; }
+  .team-role { font-size: var(--text-sm); font-weight: var(--font-semibold); color: var(--color-primary); margin-bottom: 10px; }
+  .team-text { font-size: var(--text-sm); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
+
+  /* ══════════════════════════════════════
+     ZAHLEN
+  ══════════════════════════════════════ */
+  .zahlen { background: var(--color-bg-dark); padding: var(--section-py) 0; }
+
+  .zahlen-label { font-size: var(--text-xs); font-weight: var(--font-bold); color: var(--color-primary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .zahlen-h2 { font-size: var(--text-3xl); font-weight: var(--font-black); color: white; margin-bottom: 12px; }
+  .zahlen-sub { font-size: var(--text-base); color: white; opacity: 0.5; margin-bottom: 40px; }
+
+  .zahlen-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (min-width: 480px) { .zahlen-grid { gap: 20px; } }
+
+  .zahlen-card {
+    background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px; padding: 28px 24px;
+  }
+  .zahlen-value { display: flex; align-items: baseline; gap: 2px; margin-bottom: 8px; }
+  .zahlen-prefix, .zahlen-num {
+    font-size: var(--text-4xl); font-weight: var(--font-black); color: var(--color-primary);
+  }
+  .zahlen-card-label { font-size: var(--text-sm); color: white; opacity: 0.6; line-height: var(--leading-normal); }
+
+  /* ══════════════════════════════════════
+     WARUM ROSENBLUM
+  ══════════════════════════════════════ */
+  .warum { background: var(--color-bg-soft); padding: var(--section-py) 0; }
+
+  .benefits-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  @media (min-width: 768px) { .benefits-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1024px) { .benefits-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .benefit-card {
+    display: block; background: white; border: 1px solid transparent; border-radius: 12px;
+    padding: 24px; text-decoration: none; transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .benefit-card:hover { border-color: var(--color-primary); transform: translateY(-2px); }
+
+  .benefit-icon {
+    width: 48px; height: 48px; border-radius: 10px; background: var(--color-primary-light);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+  }
+  .benefit-title { font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-text); margin-bottom: 8px; }
+  .benefit-text { font-size: var(--text-sm); color: var(--color-text-muted); line-height: var(--leading-relaxed); }
+
+  /* ══════════════════════════════════════
+     STANDORT
+  ══════════════════════════════════════ */
+  .standort { background: var(--color-bg); padding: var(--section-py) 0; }
+
+  .standort-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin-bottom: 32px; }
+  @media (min-width: 1024px) { .standort-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .office-photo-placeholder {
+    aspect-ratio: 4/3; border-radius: 16px; border: 1px solid var(--color-border);
+    background: repeating-linear-gradient(135deg, var(--color-primary-light) 0 16px, white 16px 32px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 24px;
+  }
+  .office-photo-text { font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--color-primary); }
+  .office-photo-sub { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+  .standort-right { display: flex; flex-direction: column; gap: 20px; }
+
+  .contact-card { background: white; border: 1px solid var(--color-border); border-radius: 12px; overflow: hidden; }
+  .contact-card-h3 { font-size: var(--text-lg); font-weight: var(--font-bold); color: var(--color-text); padding: 20px 20px 4px; }
+
+  .contact-row {
+    display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px;
+    border-top: 1px solid var(--color-border); min-height: 48px;
+  }
+  .contact-line1 { font-size: var(--text-base); font-weight: var(--font-semibold); color: var(--color-text); }
+  .contact-email { word-break: break-all; }
+  .contact-line2 { font-size: var(--text-sm); color: var(--color-text-muted); }
+
+  .map { border-radius: 12px; height: 220px; width: 100%; }
+
+  .standort-info {
+    display: flex; gap: 14px; align-items: flex-start; background: var(--color-primary-light);
+    border-radius: 8px; padding: 16px 20px; font-size: var(--text-sm); color: var(--color-text);
+    line-height: var(--leading-relaxed);
+  }
+  .standort-info p { margin: 0; }
+  .standort-info strong { color: var(--color-text); }
+
+  /* ══════════════════════════════════════
+     FINAL CTA
+  ══════════════════════════════════════ */
+  .final-cta-wrap { background: var(--color-primary); padding: 80px 0; }
+  @media (max-width: 639px) { .final-cta-wrap { padding: 48px 0; } }
+
+  .final-cta { text-align: center; }
+
+  .final-cta-h2 { font-size: var(--text-3xl); font-weight: var(--font-black); color: white; margin-bottom: 16px; max-width: 640px; margin-left: auto; margin-right: auto; }
+  .final-cta-text { font-size: var(--text-lg); color: white; opacity: 0.85; line-height: var(--leading-relaxed); margin-bottom: 32px; max-width: 520px; margin-left: auto; margin-right: auto; }
+
+  .final-cta-buttons { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+  .final-cta-primary {
+    display: inline-flex; align-items: center; gap: 8px; background: white; color: var(--color-primary);
+    padding: 14px 28px; border-radius: var(--radius-btn); font-size: var(--text-sm); font-weight: var(--font-semibold);
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; transition: opacity 0.15s;
+  }
+  .final-cta-primary:hover { opacity: 0.9; }
+
+  .final-cta-secondary {
+    display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white; padding: 13px 28px; border-radius: var(--radius-btn); font-size: var(--text-sm); font-weight: var(--font-semibold);
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; transition: background 0.15s;
+  }
+  .final-cta-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+  @media (max-width: 639px) {
+    .final-cta-buttons { flex-direction: column; align-items: stretch; }
+    .final-cta-primary, .final-cta-secondary { width: 100%; text-align: center; justify-content: center; }
+  }
+</style>
