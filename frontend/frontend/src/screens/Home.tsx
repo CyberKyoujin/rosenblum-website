@@ -62,8 +62,8 @@ const Home = () => {
   useEffect(() => {
 
     animateCounter(0, 8, 3000, setYears); 
-    animateCounter(0, 10000, 3000, setTranslations); 
-    animateCounter(0, 5000, 3000, setLanguages);
+    animateCounter(0, 2000, 3000, setTranslations); 
+    animateCounter(0, 1000, 3000, setLanguages);
 
   }, []);
 
