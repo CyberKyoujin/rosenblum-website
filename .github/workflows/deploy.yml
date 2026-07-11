@@ -255,7 +255,7 @@ jobs:
     name: 🚀 Deploy to Hetzner
     needs: [backend-tests, frontend-tests, e2e-mocked]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: false
 
     steps:
       - name: Deploy via SSH

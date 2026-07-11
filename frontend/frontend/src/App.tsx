@@ -51,6 +51,7 @@ const NotFound = lazy(() => import("./screens/NotFound"));
 const PaymentPage = lazy(() => import('./screens/Payment'));
 const PaymentSuccess = lazy(() => import('./screens/PaymentSuccess'));
 const OrderSuccess = lazy(() => import('./screens/OrderSuccess'));
+const Bestellen = lazy(() => import('./screens/Bestellen'));
 
 function App() {
   
@@ -266,6 +267,12 @@ function App() {
         <Route path="/order-success" element={
           <Suspense fallback={<AppSkeleton/>}>
             <OrderSuccess/>
+          </Suspense>
+        }/>
+
+        <Route path="/bestellen" element={
+          <Suspense fallback={<AppSkeleton/>}>
+            <Bestellen/>
           </Suspense>
         }/>
 
